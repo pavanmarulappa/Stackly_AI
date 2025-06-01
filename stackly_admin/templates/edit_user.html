@@ -1,0 +1,23 @@
+<h2>Edit User: {{ user.username }}</h2>
+
+<form method="post">
+  {% csrf_token %}
+
+  Name: <input type="text" name="username" value="{{ user.username }}"><br>
+  Email: <input type="email" name="email" value="{{ user.email }}"><br>
+  Phone: <input type="text" name="phone_number" value="{{ user.phone_number }}"><br>
+  Country: <input type="text" name="country" value="{{ user.country }}"><br>
+
+  Plan:
+  <select name="plan">
+    <option value="Free" {% if user.plan == "Free" %}selected{% endif %}>Free</option>
+    <option value="Silver" {% if user.plan == "Silver" %}selected{% endif %}>Silver</option>
+    <option value="Gold" {% if user.plan == "Gold" %}selected{% endif %}>Gold</option>
+  </select><br>
+
+  Credits: <input type="number" name="credits" value="{{ user.credits }}"><br>
+
+  Active: <input type="checkbox" name="is_active" {% if user.is_active %}checked{% endif %}><br>
+
+  <button type="submit">Save</button>
+</form>

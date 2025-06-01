@@ -1,0 +1,146 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  box-sizing: border-box;
+  font-family: "inter", sans-serif !important;
+}
+
+@font-face {
+  font-family: inter;
+  src: url("./assets/fonts/Inter_18pt-Light.ttf");
+}
+
+a.active{
+  color: #007b82;
+}
+
+/* Home */
+.marquee-container {
+  width: 100%;
+  height: 46px;
+  position: relative;
+  z-index: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(3px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.marquee-content {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 25s linear infinite;
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1;
+  max-width: 1279px;
+  width: 100%;
+}
+
+.marquee-text {
+  display: inline-block;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.home-bg-img::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: url("./assets/home/sec3/Bg\ image.png") center/cover no-repeat;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.home-bg-img > * {
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes homeEntranceR {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes homeSide {
+  0% {
+    transform: translateX(-10%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateX(10%);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(-10%);
+    opacity: 1;
+  }
+}
+
+.home-bg-img .design {
+  animation: homeEntranceR 3s ease forwards 3s 1;
+}
+
+.ul-list > ul {
+  max-width: 405px;
+  width: 100%;
+  min-height: 24px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ul-list > ul > li {
+  color: white;
+  list-style: none;
+
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 140%;
+
+  text-align: center;
+}
+.ul-list > ul > li::before {
+  content: ".";
+  color: aqua;
+  font-size: 50px;
+  margin: 10px;
+}
+
+/*Api page table colors*/
+.gradient-bg {
+  background: linear-gradient(90deg, #007B82 0%, #001A1C 100%);
+  color: white;
+}
+
+/*Api page table colors*/
+.bg-header-teal {
+  background-color: #00B0BA1F;
+}

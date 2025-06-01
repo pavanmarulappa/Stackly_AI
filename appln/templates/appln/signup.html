@@ -1,0 +1,61 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- FontAwesome for Icons -->
+    <style>
+        /* Basic styling for the icons */
+        .auth-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .auth-buttons button {
+            font-size: 20px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        .auth-buttons button:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Create an Account</h2>
+        
+        <!-- Signup form -->
+        <form method="POST">
+            <!-- CSRF Token for Django -->
+            {% csrf_token %}
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <br><br>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br><br>
+            
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <p>Already have an account? <a href="{% url 'login' %}">Log In</a></p>
+
+        <!-- Third-party authentication buttons -->
+        <div class="auth-buttons">
+            <button onclick="window.location.href='/auth/google/'"><i class="fab fa-google"></i> Google</button>
+            <button onclick="window.location.href='/auth/facebook/'"><i class="fab fa-facebook"></i> Facebook</button>
+            <button onclick="window.location.href='/auth/apple/'"><i class="fab fa-apple"></i> Apple</button>
+        </div>
+    </div>
+
+</body>
+</html>

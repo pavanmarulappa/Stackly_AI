@@ -1,0 +1,44 @@
+<h2>User List</h2>
+
+<form method="get">
+  <input type="text" name="q" placeholder="Search by name or email" value="{{ request.GET.q }}">
+  <select name="plan">
+    <option value="">All Plans</option>
+    <option value="Free" {% if request.GET.plan == "Free" %}selected{% endif %}>Free</option>
+    <option value="Silver" {% if request.GET.plan == "Silver" %}selected{% endif %}>Silver</option>
+    <option value="Gold" {% if request.GET.plan == "Gold" %}selected{% endif %}>Gold</option>
+  </select>
+  <button type="submit">Search</button>
+</form>
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Country</th>
+      <th>Plan</th>
+      <th>Credits</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.phone_number }}</td>
+      <td>{{ user.country }}</td>
+      <td>{{ user.plan }}</td>
+      <td>{{ user.credits }}</td>
+      <td>{{ user.is_active|yesno:"Active,Inactive" }}</td>
+      <td>
+        <a href="{% url 'edit_user' user.id %}">Edit</a> |
+        <a href="{% url 'toggle_status' user.id %}">{{ user.is_active|yesno:"Deactivate,Activate" }}</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
