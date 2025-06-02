@@ -261,8 +261,7 @@ generated_path.mkdir(parents=True, exist_ok=True)
 # Static mounts
 app.mount("/static", StaticFiles(directory="fastapi_app/static"), name="static")
 app.mount("/media", StaticFiles(directory="fastapi_app/media"), name="media")
-#app.mount("/uploads", StaticFiles(directory="fastapi_app/uploads"), name="uploads")
-#app.mount("/generated", StaticFiles(directory="fastapi_app/generated"), name="generated")
+
 app.mount("/static_uploads", StaticFiles(directory=uploads_path), name="static_uploads")
 app.mount("/static_generated", StaticFiles(directory=generated_path), name="static_generated")
 

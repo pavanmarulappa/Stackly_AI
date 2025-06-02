@@ -21,8 +21,7 @@ from enum import Enum
 from concurrent.futures import ThreadPoolExecutor
 import math
 from pathlib import Path
-
-
+import logging
 
 load_dotenv()
 
@@ -55,7 +54,7 @@ HEADERS = {
     "Accept": "application/json",
     "Authorization": f"Bearer {STABILITY_API_KEY}",
 }
-
+        
 
 # Enums for frontend options
 class BuildingType(str, Enum):
@@ -320,10 +319,10 @@ async def generate_design(
 # 1) House Angle: only Front, Back
 #exterior 
 class HouseAngle(str, Enum):
-    FRONT = "Front side"
-    BACK = "Back side"
-    LEFT = "Left side"
-    RIGHT = "Right side"
+    FRONT = "front side"
+    BACK = "back side"
+    LEFT = "left side"
+    RIGHT = "right side"
 
 class ExteriorDesignStyle(str, Enum):
     CLASSIC = "classic"
@@ -557,9 +556,9 @@ class OutdoorSpaceType(str, Enum):
     FRONT_YARD = "front yard"
     BACKYARD = "backyard"
     BALCONY = "balcony"
-    TERRACE_ROOFTOP = "terrace rooftop"
-    DRIVEWAY_PARKING = "driveway parking"
-    WALKWAY_PATH = "walkway path"
+    TERRACE_ROOFTOP = "terrace/rooftop"  # Changed from terrace/rooftop
+    DRIVEWAY_PARKING = "driveway/parking"  # Changed from driveway/parking
+    WALKWAY_PATH = "walkway/path"  # Changed from walkway/path
     LOUNGE = "lounge"
     PORCH = "porch"
     FENCE = "fence"
@@ -579,11 +578,40 @@ class OutdoorDesignStyle(str, Enum):
     BEACH = "beach"
 
 OUTDOOR_STRENGTH_CONFIG = {
-    "very low": {"image_strength": 0.55, "steps": 35, "cfg_scale": 9},
-    "low": {"image_strength": 0.50, "steps": 40, "cfg_scale": 10},
-    "medium": {"image_strength": 0.45, "steps": 45, "cfg_scale": 11},
-    "high": {"image_strength": 0.40, "steps": 50, "cfg_scale": 12}
+    "very low": {"image_strength": 0.45, "steps": 45, "cfg_scale": 10},
+    "low": {"image_strength": 0.40, "steps": 50, "cfg_scale": 11},
+    "medium": {"image_strength": 0.35, "steps": 50, "cfg_scale": 12},  # Changed from 55 to 50
+    "high": {"image_strength": 0.30, "steps": 50, "cfg_scale": 13}     # Changed from 60 to 50
 }
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+async def outdoor_resize_to_allowed_dimensions(image_path: str) -> tuple[bytes, tuple[int, int]]:
+    """Improved image resizing with better error handling"""
+    try:
+        with Image.open(image_path) as img:
+            width, height = img.size
+            aspect = width / height
+            
+            # Find closest allowed dimension while maintaining aspect ratio
+            closest = min(
+                ALLOWED_DIMENSIONS,
+                key=lambda dim: abs((dim[0]/dim[1]) - aspect)
+            )
+            
+            # Only resize if significantly different
+            if abs(width - closest[0]) > 100 or abs(height - closest[1]) > 100:
+                img = img.resize(closest, Image.LANCZOS)
+                
+            img_bytes = io.BytesIO()
+            img.save(img_bytes, format="PNG", optimize=True, quality=95)
+            return img_bytes.getvalue(), img.size
+            
+    except Exception as e:
+        logger.error(f"Image processing failed: {str(e)}")
+        raise ValueError(f"Could not process image: {str(e)}")
+    
 
 # Style configurations for outdoor
 OUTDOOR_STYLE_CONFIGS = {
@@ -638,149 +666,168 @@ async def generate_outdoor_design_variation(
     image_bytes: bytes,
     design_config: dict,
     strength_level: str
-):
-    """Optimized outdoor design generation with enhanced prompts and parameters"""
-    async def _generate():
+) -> dict:
+    """Robust outdoor design generation with enhanced error handling"""
+    try:
+        # Validate strength level
+        strength_level = strength_level.lower()
+        if strength_level not in OUTDOOR_STRENGTH_CONFIG:
+            raise ValueError(f"Invalid strength level: {strength_level}")
+
+        params = OUTDOOR_STRENGTH_CONFIG[strength_level]
+
+        # Validate and format design style
+        style = design_config["style"].lower()
+        if style not in OUTDOOR_STYLE_CONFIGS:
+            raise ValueError(f"Invalid design style: {style}")
+
+        style_config = OUTDOOR_STYLE_CONFIGS[style]
+
+        # Format space type (handle enum values consistently)
+        space_type = design_config["space_type"].lower().replace("_", " ").replace("/", " ")
+
+        # Build enhanced prompt
+        prompt = style_config["prompt"].format(space_type=space_type.title(), style=style.lower().replace("_", " ")) # Corrected formatting
+        prompt += ", ultra realistic, 8K resolution, professional photography, detailed textures"
+
+        # Enhanced negative prompt
+        negative_prompt = (
+            style_config["negative_prompt"] + ", " +
+            "blurry, distorted proportions, bad lighting, flat colors, " +
+            "cartoonish, painting-like, unrealistic materials"
+        )
+
+        # Prepare API request
+        data = aiohttp.FormData()
+        data.add_field('init_image', image_bytes, filename='input.png', content_type='image/png')
+        data.add_field('init_image_mode', 'IMAGE_STRENGTH')
+        data.add_field('image_strength', str(params["image_strength"]))
+        data.add_field('text_prompts[0][text]', prompt)
+        data.add_field('text_prompts[0][weight]', '1.5')
+        data.add_field('text_prompts[1][text]', negative_prompt)
+        data.add_field('text_prompts[1][weight]', '-1.2')
+        data.add_field('cfg_scale', str(params["cfg_scale"]))
+        data.add_field('samples', '1')
+        data.add_field('steps', str(params["steps"]))
+        data.add_field('seed', str(random.randint(0, 100000)))
+        data.add_field('style_preset', 'photographic')
+        data.add_field('sampler', 'K_DPMPP_2M')
+
+        # Make API request with timeout
         try:
-            params = OUTDOOR_STRENGTH_CONFIG[strength_level]
-            style_config = OUTDOOR_STYLE_CONFIGS[design_config["style"]]
-            
-            # Enhanced prompt formatting for outdoor spaces
-            prompt = style_config["prompt"].format(
-                space_type=design_config["space_type"].replace("_", " "),
-                style=design_config["style"].replace("_", " ").title()
-            )
-            
-            # Outdoor-specific prompt enhancements
-            outdoor_modifiers = [
-                "professional landscape design",
-                "high quality 3D rendering",
-                "detailed garden planning",
-                "realistic outdoor lighting",
-                "natural materials",
-                "seasonal plants"
-            ]
-            
-            prompt += ", " + random.choice(outdoor_modifiers)
-            
-            # Outdoor-specific negative prompt enhancements
-            negative_prompt = style_config["negative_prompt"] + ", " + \
-                "distorted perspective, unnatural lighting, poor landscaping, " + \
-                "unrealistic plants, bad proportions"
-            
-            files = {
-                "init_image": ("input.png", BytesIO(image_bytes), "image/png"),
-            }
-            
-            # Outdoor-optimized parameters
-            data = {
-                "init_image_mode": "IMAGE_STRENGTH",
-                "image_strength": str(params["image_strength"]),
-                "text_prompts[0][text]": prompt,
-                "text_prompts[0][weight]": "1.2",  # Stronger focus on prompt
-                "text_prompts[1][text]": negative_prompt,
-                "text_prompts[1][weight]": "-1.0",
-                "cfg_scale": str(params["cfg_scale"]),
-                "samples": "1",
-                "steps": str(params["steps"]),
-                "seed": str(random.randint(0, 100000)),
-                "style_preset": "photographic",  # Sharper, more realistic
-                "sampler": "K_EULER_ANCESTRAL"   # Cleaner image edges (if supported)
-                }
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    STABILITY_API_URL,
+                    headers=HEADERS,
+                    data=data,
+                    timeout=aiohttp.ClientTimeout(total=90)
+                ) as response:
+                    if response.status != 200:
+                        error_detail = await response.text()
+                        logger.error(f"API Error: {response.status} - {error_detail}")
+                        raise ValueError(f"API request failed with status {response.status}")
 
-            # Outdoor-specific quality boost
-            if design_config["space_type"] in ["garden", "backyard", "front yard"]:
-                data["text_prompts[0][weight]"] = "1.4"
-                data["steps"] = str(int(params["steps"]) + 5)
+                    result = await response.json()
+                    if not result.get("artifacts"):
+                        raise ValueError("No artifacts in API response")
 
-            try:
-                response = await asyncio.wait_for(
-                    asyncio.get_event_loop().run_in_executor(
-                        None,
-                        lambda: requests.post(
-                            STABILITY_API_URL,
-                            headers=HEADERS,
-                            files=files,
-                            data=data,
-                            timeout=60  # Increased timeout for complex outdoor scenes
-                        )
-                    ),
-                    timeout=75
-                )
-            except asyncio.TimeoutError:
-                raise HTTPException(504, "API request timed out")
+                    return result["artifacts"][0]
 
-            if response.status_code != 200:
-                error_msg = response.text if response.text else "No error details"
-                raise HTTPException(502, f"API Error: {response.status_code} - {error_msg}")
+        except asyncio.TimeoutError:
+            raise ValueError("API request timed out")
+        except aiohttp.ClientError as e:
+            raise ValueError(f"Network error: {str(e)}")
 
-            result = response.json()
-            if not result.get("artifacts"):
-                raise HTTPException(502, "No artifacts returned from API")
-                
-            return result["artifacts"][0]
-            
-        except HTTPException:
-            raise
-        except Exception as e:
-            raise HTTPException(500, f"Outdoor generation error: {str(e)}")
+    except Exception as e:
+        logger.error(f"Generation failed: {str(e)}", exc_info=True)
+        raise
 
-    return await _generate()
-    
 @router.post("/generate-outdoor-design/")
 async def generate_outdoor_design(
     image: UploadFile = File(...),
     space_type: OutdoorSpaceType = Form(...),
     design_style: OutdoorDesignStyle = Form(...),
-    ai_strength: AIStylingStrength = Form("medium"),
+    ai_strength: str = Form("medium"),
     num_designs: int = Form(1, ge=1, le=12)
 ):
     try:
-        # Use consistent base directory paths
+        logger.info(f"Starting generation for {space_type.value} with style {design_style.value}")
+        
+        # Validate inputs
+        if num_designs < 1 or num_designs > 12:
+            raise ValueError("Number of designs must be between 1 and 12")
+            
+        # Setup directories
         from pathlib import Path
-        import uuid, os, shutil, base64, time
 
         BASE_DIR = Path(__file__).parent.parent
         uploads_dir = BASE_DIR / "fastapi_app" / "uploads"
         generated_dir = BASE_DIR / "fastapi_app" / "generated"
 
-        # Save original uploaded file
-        file_ext = os.path.splitext(image.filename)[1]
+        
+        
+        uploads_dir.mkdir(exist_ok=True, parents=True)
+        generated_dir.mkdir(exist_ok=True, parents=True)
+        
+        # Save original image
+        file_ext = os.path.splitext(image.filename)[1].lower()
+        if file_ext not in ('.jpg', '.jpeg', '.png'):
+            raise ValueError("Only JPG/PNG images are supported")
+            
         original_filename = f"original_{uuid.uuid4().hex}{file_ext}"
         original_path = uploads_dir / original_filename
-
-        with open(original_path, "wb") as f:
-            shutil.copyfileobj(image.file, f)
-
-        # Resize/process image
-        image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
-
-        # Prepare config for outdoor design
+        
+        try:
+            with open(original_path, "wb") as f:
+                shutil.copyfileobj(image.file, f)
+        except Exception as e:
+            raise ValueError(f"Failed to save image: {str(e)}")
+        
+        # Process image
+        try:
+            image_bytes, _ = await outdoor_resize_to_allowed_dimensions(original_path)
+            if not image_bytes:
+                raise ValueError("Image processing failed - empty result")
+        except Exception as e:
+            raise ValueError(f"Image processing error: {str(e)}")
+        
+        # Prepare config
         design_config = {
             "style": design_style.value,
-            "space_type": space_type.value,
+            "space_type": space_type.value
         }
-
-        # Generate design variations
+        
+        # Generate designs
+        generated_urls = []
         tasks = [
             generate_outdoor_design_variation(
                 image_bytes,
                 design_config,
-                ai_strength.value
+                ai_strength.lower()
             ) for _ in range(num_designs)
         ]
-
-        results = await asyncio.gather(*tasks)
-
-        # Save generated images and build URLs
-        generated_urls = []
-        for result in results:
+        
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # Process results
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                logger.error(f"Design {i} failed: {str(result)}")
+                continue
+                
             filename = f"generated_{uuid.uuid4().hex}.png"
             filepath = generated_dir / filename
-            with open(filepath, "wb") as f:
-                f.write(base64.b64decode(result["base64"]))
-            generated_urls.append(f"/static_generated/{filename}")
-
+            
+            try:
+                with open(filepath, "wb") as f:
+                    f.write(base64.b64decode(result["base64"]))
+                generated_urls.append(f"/static_generated/{filename}")
+            except Exception as e:
+                logger.error(f"Failed to save design {i}: {str(e)}")
+        
+        if not generated_urls:
+            raise ValueError("All design generations failed")
+            
         return {
             "success": True,
             "original_image": f"/static_uploads/{original_filename}",
@@ -789,12 +836,13 @@ async def generate_outdoor_design(
                 "space_type": space_type.value,
                 "design_style": design_style.value,
                 "num_designs": num_designs,
-                "styling_strength": ai_strength.value
-            },
-            "message": "Outdoor designs generated successfully"
+                "styling_strength": ai_strength
+            }
         }
-
-    except HTTPException:
-        raise
+        
+    except ValueError as e:
+        logger.error(f"Validation error: {str(e)}")
+        raise HTTPException(400, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+        logger.error(f"Unexpected error: {str(e)}", exc_info=True)
+        raise HTTPException(500, detail="Internal server error")

@@ -386,6 +386,8 @@ import Galley from "../../assets/product-pg/gallery.png";
 import I from "../../assets/product-pg/i.png";
 import Magic from "../../assets/product-pg/magic.png";
 import axios from "axios"; //For connect fastapi 
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import 'react-circular-progressbar/dist/styles.css';
 
 export default function Form() {
   const { userInfo } = useContext(UserContext);
@@ -531,14 +533,14 @@ export default function Form() {
   // };
 
   const handleChange = (value, key) => {
-  if (key === "roomType" && activeTab === "Exteriors") {
-    // For exterior angles, preserve the original case
-    setFormData(prev => ({ ...prev, [key]: value }));
-  } else {
-    // For other fields, keep the lowercase conversion
-    setFormData(prev => ({ ...prev, [key]: value.toLowerCase() }));
-  }
-};
+    if (key === "roomType" && activeTab === "Exteriors") {
+      // For exterior angles, preserve the original case
+      setFormData(prev => ({ ...prev, [key]: value }));
+    } else {
+      // For other fields, keep the lowercase conversion
+      setFormData(prev => ({ ...prev, [key]: value.toLowerCase() }));
+    }
+  };
 
   const handleTabChange = (tabName) => {
     if (tabName === "Upgrade to Unlock") {
@@ -559,79 +561,97 @@ export default function Form() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setProgress(0);
+  e.preventDefault();
+  setIsLoading(true);
+  setProgress(0);
 
-    try {
-      if (!imgFile) throw new Error("Please upload an image first!");
-
-      const formDataToSend = new FormData();
-      formDataToSend.append("image", imgFile);
-      formDataToSend.append("design_style", formData.roomStyle);
-      formDataToSend.append("ai_strength", formData.aiStrength); // Fixed to use aiStrength
-      formDataToSend.append("num_designs", formData.numDesigns.toString());
-
-      let endpoint = "";
-      switch (activeTab) {
-        case "Interiors":
-          endpoint = "generate-interior-design";
-          formDataToSend.append("building_type", formData.buildingType);
-          formDataToSend.append("room_type", formData.roomType);
-          break;
-        case "Exteriors":
-          endpoint = "generate-exterior-design";
-          formDataToSend.append("house_angle", formData.roomType);
-          break;
-        case "Outdoors":
-          endpoint = "generate-outdoor-design";
-          formDataToSend.append("space_type", formData.roomType);
-          break;
+  // Simulate progress (this will be updated by the actual upload progress)
+  const progressInterval = setInterval(() => {
+    setProgress(prev => {
+      if (prev >= 90) {
+        clearInterval(progressInterval);
+        return prev;
       }
+      return prev + 10;
+    });
+  }, 1000);
 
-      const response = await axios.post(
-        `http://localhost:8000/api/${endpoint}/`,
-        formDataToSend,
-        {
-          onUploadProgress: (progressEvent) => {
-            const percentCompleted = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setProgress(percentCompleted);
-          },
-        }
-      );
+  try {
+    if (!imgFile) throw new Error("Please upload an image first!");
 
-      if (response.data.success) {
-        navigate("/ImageGeneration", {
-          state: {
-            originalImage: imgURL,
-            generatedImages: Array.isArray(response.data.designs)
-              ? response.data.designs.map(url => ({
-                url: url.startsWith("http")
-                  ? url
-                  : backendBaseUrl + url,
-                id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-              }))
-              : [],
-            formData: {
-              style: formData.roomStyle,
-              type: activeTab.toLowerCase()
-            }
-          }
-        });
+    const formDataToSend = new FormData();
+    formDataToSend.append("image", imgFile);
+    formDataToSend.append("design_style", formData.roomStyle);
+    formDataToSend.append("ai_strength", formData.aiStrength);
+    formDataToSend.append("num_designs", formData.numDesigns.toString());
 
-      } else {
-        throw new Error(response.data.message || "Design generation failed");
-      }
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || "Failed to connect to server";
-      alert(`Error: ${errorMessage}`);
-    } finally {
-      setIsLoading(false);
+    let endpoint = "";
+    switch (activeTab) {
+      case "Interiors":
+        endpoint = "generate-interior-design";
+        formDataToSend.append("building_type", formData.buildingType);
+        formDataToSend.append("room_type", formData.roomType);
+        break;
+      case "Exteriors":
+        endpoint = "generate-exterior-design";
+        formDataToSend.append("house_angle", formData.roomType);
+        break;
+      case "Outdoors":
+        endpoint = "generate-outdoor-design";
+        formDataToSend.append("space_type", formData.roomType);
+        break;
     }
-  };
+
+    const response = await axios.post(
+      `http://localhost:8000/api/${endpoint}/`,
+      formDataToSend,
+      {
+        onUploadProgress: (progressEvent) => {
+          // Only update progress based on upload (first 50%)
+          const uploadPercent = Math.round(
+            (progressEvent.loaded * 50) / progressEvent.total
+          );
+          setProgress(uploadPercent);
+        },
+      }
+    );
+
+    // After upload, simulate generation progress (50-100%)
+    for (let i = 50; i <= 100; i += 10) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setProgress(i);
+    }
+
+    if (response.data.success) {
+      navigate("/ImageGeneration", {
+        state: {
+          originalImage: imgURL,
+          generatedImages: Array.isArray(response.data.designs)
+            ? response.data.designs.map(url => ({
+              url: url.startsWith("http")
+                ? url
+                : backendBaseUrl + url,
+              id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+            }))
+            : [],
+          formData: {
+            style: formData.roomStyle,
+            type: activeTab.toLowerCase()
+          }
+        }
+      });
+    } else {
+      throw new Error(response.data.message || "Design generation failed");
+    }
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || error.message || "Failed to connect to server";
+    alert(`Error: ${errorMessage}`);
+  } finally {
+    clearInterval(progressInterval);
+    setIsLoading(false);
+  }
+};
 
   return (
     <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
@@ -679,17 +699,36 @@ export default function Form() {
         {/* Upload */}
         <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
           <div
-            className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer"
+            className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer relative"
             onClick={() => inpRef.current.click()}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
           >
             {imgURL ? (
-              <img
-                src={imgURL}
-                alt="Preview"
-                className="w-full h-full object-cover rounded-xl"
-              />
+              <>
+                <img
+                  src={imgURL}
+                  alt="Preview"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+                {isLoading && (
+                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center rounded-xl">
+                    <div className="w-32 h-32 mb-4">
+                      <CircularProgressbar
+                        value={progress}
+                        text={`${progress}%`}
+                        styles={buildStyles({
+                          pathColor: '#00B0BA',
+                          textColor: 'white',
+                          trailColor: '#FFFFFF33',
+                          textSize: '28px',
+                        })}
+                      />
+                    </div>
+                    <p className="text-white text-lg">Rendering...</p>
+                  </div>
+                )}
+              </>
             ) : (
               <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
                 <div className="w-[clamp(40px,5vw,70px)] aspect-square rounded-full p-2 bg-[#FFFFFF1A] flex justify-center items-center">
@@ -761,19 +800,19 @@ export default function Form() {
                   : "Select Space"}
             </label>
             <select
-  name="roomType"
-  value={formData.roomType}
-  onChange={(e) => handleChange(e.target.value, "roomType")}
-  className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-  required
->
-  <option value="">Select an option</option>
-  {roomTypes[activeTab].map((room) => (
-    <option key={room} value={room}>
-      {room}
-    </option>
-  ))}
-</select>
+              name="roomType"
+              value={formData.roomType}
+              onChange={(e) => handleChange(e.target.value, "roomType")}
+              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
+              required
+            >
+              <option value="">Select an option</option>
+              {roomTypes[activeTab].map((room) => (
+                <option key={room} value={room.toLowerCase()}>
+                  {room}
+                </option>
+              ))}
+            </select>
           </div>
 
           {/* Style Selection */}

@@ -835,6 +835,357 @@
 //   );
 // }
 
+// import React, { useState, useEffect } from "react";
+// import { useNavigate, Link, useLocation } from "react-router-dom";
+// import { PacmanLoader } from "react-spinners";
+// import Interior from "../../assets/product-pg/Vector.png";
+// import Home from "../../assets/product-pg/home.png";
+// import Tree from "../../assets/product-pg/tree.png";
+// import SideArrow from "../../assets/pricing-pg/sideArrow.png";
+// import Report from "../../assets/product-pg/report.png";
+// import More from "../../assets/product-pg/more.png";
+// import Download from "../../assets/product-pg/do.png";
+// import Share from "../../assets/product-pg/share.png";
+// import Split from "../../assets/product-pg/split.png";
+
+// export default function ImageGeneration() {
+//   const location = useLocation();
+//   const navigate = useNavigate();
+
+//   const [originalImage, setOriginalImage] = useState(null);
+//   const [generatedImages, setGeneratedImages] = useState([]);
+//   const [selectedStyle, setSelectedStyle] = useState("interior");
+//   const [buildingType, setBuildingType] = useState("residential");
+//   const [roomType, setRoomType] = useState("living room");
+//   const [roomStyle, setRoomStyle] = useState("modern");
+//   const [numDesigns, setNumDesigns] = useState(1);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [showMoreOptions, setShowMoreOptions] = useState(false);
+//   const [error, setError] = useState(null);
+
+//   const backendBaseUrl = "http://localhost:8000";
+
+//   useEffect(() => {
+//     if (location.state) {
+//       // Handle originalImage
+//       if (location.state.originalImage) {
+//         if (typeof location.state.originalImage === "string") {
+//           setOriginalImage(location.state.originalImage);
+//         } else {
+//           setOriginalImage(URL.createObjectURL(location.state.originalImage));
+//         }
+//       }
+
+//       // Process generatedImages
+//       if (location.state.generatedImages) {
+//         const processedImages = location.state.generatedImages.map((img) => {
+//           let url = "";
+//           if (typeof img === "string") {
+//             url = img;
+//           } else if (img.url) {
+//             url = img.url;
+//           } else if (img instanceof Blob) {
+//             url = URL.createObjectURL(img);
+//           } else {
+//             url = "";
+//           }
+
+//           if (url && !url.startsWith("http") && !url.startsWith("blob:")) {
+//             url = backendBaseUrl + url;
+//           }
+
+//           return {
+//             url,
+//             id: img.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+//             ...img,
+//           };
+//         });
+//         setGeneratedImages(processedImages);
+//       }
+//     }
+//   }, [location.state]);
+
+//   // Clean up object URLs
+//   useEffect(() => {
+//     return () => {
+//       if (originalImage && originalImage.startsWith("blob:")) {
+//         URL.revokeObjectURL(originalImage);
+//       }
+//       generatedImages.forEach((img) => {
+//         if (img.url && img.url.startsWith("blob:")) {
+//           URL.revokeObjectURL(img.url);
+//         }
+//       });
+//     };
+//   }, [originalImage, generatedImages]);
+
+//   const handleDownload = (imageUrl, index) => {
+//     if (!imageUrl) return;
+//     const link = document.createElement("a");
+//     link.href = imageUrl;
+//     link.download = `design-${index}-${Date.now()}.jpg`;
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//   };
+
+//   const handleShare = (imageUrl) => {
+//     if (navigator.share) {
+//       navigator
+//         .share({
+//           title: "Check out my design!",
+//           text: "I created this using our awesome design tool",
+//           url: imageUrl,
+//         })
+//         .catch((err) => console.error("Error sharing:", err));
+//     } else {
+//       prompt("Copy this link to share:", imageUrl);
+//     }
+//   };
+
+//   const handleReport = (imageId) => {
+//     const reason = prompt("Please enter the reason for reporting:");
+//     if (reason) {
+//       alert("Thank you for your report. We'll review this design.");
+//     }
+//   };
+
+//   const handleGenerateDesigns = async () => {
+//     setIsLoading(true);
+//     setError(null);
+
+//     try {
+//       // Replace with actual API call if needed for re-generation
+//       setTimeout(() => {
+//         const newDesigns = Array.from({ length: numDesigns }, (_, i) => ({
+//           id: Date.now() + i,
+//           url: `https://example.com/generated-image-${i}.jpg`,
+//           style: selectedStyle,
+//           timestamp: new Date().toISOString(),
+//         }));
+//         setGeneratedImages([...generatedImages, ...newDesigns]);
+//         setIsLoading(false);
+//       }, 2000);
+//     } catch (err) {
+//       console.error("Generation error:", err);
+//       setError("Failed to generate designs. Please try again.");
+//       setIsLoading(false);
+//     }
+//   };
+
+//   // Function to chunk array into pairs for 2-column layout
+//   const chunkArray = (array, size) => {
+//     const chunked = [];
+//     for (let i = 0; i < array.length; i += size) {
+//       chunked.push(array.slice(i, i + size));
+//     }
+//     return chunked;
+//   };
+
+//   // Combine original image with generated images for display
+//   const allImages = originalImage 
+//     ? [{ url: originalImage, id: "original", isOriginal: true }, ...generatedImages]
+//     : generatedImages;
+
+//   // Split into rows of 2 images each
+//   const imageRows = chunkArray(allImages, 2);
+
+//   return (
+//     <div>
+//       <section className="w-full min-h-screen flex justify-center items-center bg-[#002628]">
+//         <div className="w-[1280px] min-h-[1199px]">
+//           <div className="w-[1280px] h-[287px] rounded-tl-[20px] rounded-tr-[20px] bg-gradient-to-t from-[#002628] to-[#00646A] via-[#00B0BA] flex flex-col justify-center items-center gap-4">
+//             <div className="w-[658px] h-[53px] font-bold text-[38px] leading-[140%] tracking-[20px] text-center text-white">
+//               YOUR GENERATED DESIGNS
+//             </div>
+//             <div className="w-[658px] h-[121px] flex justify-between items-center">
+//               {["interior", "exteriors", "outdoors"].map((style) => (
+//                 <div
+//                   key={style}
+//                   className="w-[101px] h-[121px] flex flex-col justify-center items-center gap-[20px] cursor-pointer"
+//                   onClick={() => setSelectedStyle(style)}
+//                 >
+//                   <div
+//                     className={`w-[70px] h-[70px] rounded-[90px] ${
+//                       selectedStyle === style
+//                         ? "bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] border-[2px] border-solid border-white"
+//                         : "bg-[#FFFFFF1A]"
+//                     } drop-shadow-[0_2px_4px_0 #00B0BA4D] flex justify-center items-center`}
+//                   >
+//                     <img
+//                       src={
+//                         style === "interior"
+//                           ? Interior
+//                           : style === "exteriors"
+//                           ? Home
+//                           : Tree
+//                       }
+//                       alt={style}
+//                     />
+//                   </div>
+//                   <div className="w-[101px] h-[31px] font-semibold text-[22px] leading-[140%] text-center text-white">
+//                     {style.charAt(0).toUpperCase() + style.slice(1)}
+//                   </div>
+//                 </div>
+//               ))}
+//             </div>
+//           </div>
+
+//           <div className="w-[1280px] min-h-[912px] rounded-bl-[20px] rounded-br-[20px] bg-[white] drop-shadow-[0_1px_4px_0 #00000059] p-[20px]">
+//             <div className="w-[1240px] min-h-[868px] rounded-[6px] flex flex-col justify-start items-start gap-[30px]">
+//               <div className="w-[100%] h-[30px] flex justify-between">
+//                 <Link to="/">
+//                   <div className="w-[75px] flex justify-center items-center cursor-pointer">
+//                     <img
+//                       src={SideArrow}
+//                       alt="Back"
+//                       className="w-[24px] h-[24px]"
+//                     />
+//                     <div className="font-medium text-[16px] leading-[156%] text-[#2A2A2A]">
+//                       Back
+//                     </div>
+//                   </div>
+//                 </Link>
+
+//                 <div className="w-[350px] h-[25px] flex justify-center items-center gap-[32px]">
+//                   {generatedImages.length > 0 && (
+//                     <>
+//                       <div
+//                         className="w-[105px] flex justify-center items-center gap-1 cursor-pointer"
+//                         onClick={() => handleDownload(generatedImages[0].url, 0)}
+//                       >
+//                         <img
+//                           src={Download}
+//                           alt="Download"
+//                           className="w-[24px] h-[24px]"
+//                         />
+//                         <div className="font-medium text-[16px] leading-[156%] text-[#2A2A2A]">
+//                           Download All
+//                         </div>
+//                       </div>
+//                       <div
+//                         className="w-[73px] flex justify-center items-center gap-1 cursor-pointer"
+//                         onClick={() => handleShare(generatedImages[0].url)}
+//                       >
+//                         <img
+//                           src={Share}
+//                           alt="Share"
+//                           className="w-[24px] h-[24px]"
+//                         />
+//                         <div className="font-medium text-[16px] leading-[156%] text-[#2A2A2A]">
+//                           Share
+//                         </div>
+//                       </div>
+//                     </>
+//                   )}
+//                   <div
+//                     className="w-[75px] flex justify-center items-center gap-1 cursor-pointer"
+//                     onClick={() => setShowMoreOptions(!showMoreOptions)}
+//                   >
+//                     <img
+//                       src={More}
+//                       alt="More options"
+//                       className="w-[24px] h-[24px]"
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {showMoreOptions && (
+//                 <div className="absolute right-[40px] top-[340px] bg-white shadow-lg rounded-md p-2 z-10">
+//                   <div className="py-1 cursor-pointer hover:bg-gray-100 px-3">
+//                     Save to favorites
+//                   </div>
+//                   <div className="py-1 cursor-pointer hover:bg-gray-100 px-3">
+//                     Duplicate design
+//                   </div>
+//                   <div className="py-1 cursor-pointer hover:bg-gray-100 px-3">
+//                     Delete design
+//                   </div>
+//                 </div>
+//               )}
+
+//               {/* Image Grid Display */}
+//               <div className="w-full p-4">
+//                 {isLoading ? (
+//                   <div className="w-full h-[500px] flex justify-center items-center">
+//                     <PacmanLoader color="#00B0BA" size={25} />
+//                     <span className="ml-4">Generating designs...</span>
+//                   </div>
+//                 ) : (
+//                   <div className="grid grid-cols-2 gap-6">
+//                     {imageRows.map((row, rowIndex) => (
+//                       <div key={`row-${rowIndex}`} className="flex gap-6 w-full">
+//                         {row.map((image, colIndex) => (
+//                           <div 
+//                             key={image.id} 
+//                             className="flex-1 flex flex-col items-center"
+//                           >
+//                             <div className="relative group">
+//                               <img
+//                                 src={image.url}
+//                                 alt={
+//                                   image.isOriginal 
+//                                     ? "Original design" 
+//                                     : `Generated design ${rowIndex * 2 + colIndex}`
+//                                 }
+//                                 className="w-full h-auto max-h-[400px] object-contain rounded-lg shadow-md"
+//                               />
+//                               <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 text-center">
+//                                 {image.isOriginal ? "Original Image" : `Design ${rowIndex * 2 + colIndex}`}
+//                               </div>
+//                               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+//                                 <button
+//                                   onClick={() => handleDownload(image.url, rowIndex * 2 + colIndex)}
+//                                   className="bg-white p-2 rounded-full shadow-md hover:bg-gray-200"
+//                                 >
+//                                   <img
+//                                     src={Download}
+//                                     alt="Download"
+//                                     className="w-4 h-4"
+//                                   />
+//                                 </button>
+//                               </div>
+//                             </div>
+//                             {!image.isOriginal && (
+//                               <button
+//                                 onClick={() => handleDownload(image.url, rowIndex * 2 + colIndex)}
+//                                 className="mt-2 px-4 py-1 bg-[#00B0BA] text-white rounded-md hover:bg-[#007B82]"
+//                               >
+//                                 Download
+//                               </button>
+//                             )}
+//                           </div>
+//                         ))}
+//                       </div>
+//                     ))}
+//                   </div>
+//                 )}
+//               </div>
+
+//               {/* Create More Designs Button */}
+//               <div className="w-[100%] h-[55px] flex justify-center items-center mt-[50px]">
+//                 <button
+//                   onClick={handleGenerateDesigns}
+//                   disabled={isLoading}
+//                   className={`w-[193px] h-[54px] flex justify-center items-center border-[1px] border-solid border-[#00B0BA] font-semibold text-[18px] rounded-[10px] text-[#2A2A2A] ${
+//                     isLoading
+//                       ? "opacity-50 cursor-not-allowed"
+//                       : "hover:bg-[#00B0BA20]"
+//                   }`}
+//                 >
+//                   {isLoading ? "Generating..." : "Create More Designs"}
+//                 </button>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </section>
+//     </div>
+//   );
+// }
+
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { PacmanLoader } from "react-spinners";
@@ -846,7 +1197,6 @@ import Report from "../../assets/product-pg/report.png";
 import More from "../../assets/product-pg/more.png";
 import Download from "../../assets/product-pg/do.png";
 import Share from "../../assets/product-pg/share.png";
-import Split from "../../assets/product-pg/split.png";
 
 export default function ImageGeneration() {
   const location = useLocation();
@@ -855,13 +1205,8 @@ export default function ImageGeneration() {
   const [originalImage, setOriginalImage] = useState(null);
   const [generatedImages, setGeneratedImages] = useState([]);
   const [selectedStyle, setSelectedStyle] = useState("interior");
-  const [buildingType, setBuildingType] = useState("residential");
-  const [roomType, setRoomType] = useState("living room");
-  const [roomStyle, setRoomStyle] = useState("modern");
-  const [numDesigns, setNumDesigns] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
-  const [error, setError] = useState(null);
 
   const backendBaseUrl = "http://localhost:8000";
 
@@ -870,15 +1215,25 @@ export default function ImageGeneration() {
       // Handle originalImage
       if (location.state.originalImage) {
         if (typeof location.state.originalImage === "string") {
-          setOriginalImage(location.state.originalImage);
+          setOriginalImage({
+            url: location.state.originalImage,
+            id: "original",
+            label: "Original Image",
+            isOriginal: true
+          });
         } else {
-          setOriginalImage(URL.createObjectURL(location.state.originalImage));
+          setOriginalImage({
+            url: URL.createObjectURL(location.state.originalImage),
+            id: "original",
+            label: "Original Image",
+            isOriginal: true
+          });
         }
       }
 
       // Process generatedImages
       if (location.state.generatedImages) {
-        const processedImages = location.state.generatedImages.map((img) => {
+        const processedImages = location.state.generatedImages.map((img, index) => {
           let url = "";
           if (typeof img === "string") {
             url = img;
@@ -896,8 +1251,8 @@ export default function ImageGeneration() {
 
           return {
             url,
-            id: img.id || `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-            ...img,
+            id: img.id || `design-${index}-${Date.now()}`,
+            label: `Design ${index + 1}`,
           };
         });
         setGeneratedImages(processedImages);
@@ -908,8 +1263,8 @@ export default function ImageGeneration() {
   // Clean up object URLs
   useEffect(() => {
     return () => {
-      if (originalImage && originalImage.startsWith("blob:")) {
-        URL.revokeObjectURL(originalImage);
+      if (originalImage && originalImage.url.startsWith("blob:")) {
+        URL.revokeObjectURL(originalImage.url);
       }
       generatedImages.forEach((img) => {
         if (img.url && img.url.startsWith("blob:")) {
@@ -919,270 +1274,193 @@ export default function ImageGeneration() {
     };
   }, [originalImage, generatedImages]);
 
-  const handleDownload = (imageUrl, index) => {
+  const handleDownload = (imageUrl, label) => {
     if (!imageUrl) return;
     const link = document.createElement("a");
     link.href = imageUrl;
-    link.download = `design-${index}-${Date.now()}.jpg`;
+    link.download = `${label.replace(' ', '-')}-${Date.now()}.jpg`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const handleShare = (imageUrl) => {
-    if (navigator.share) {
-      navigator
-        .share({
-          title: "Check out my design!",
-          text: "I created this using our awesome design tool",
-          url: imageUrl,
-        })
-        .catch((err) => console.error("Error sharing:", err));
-    } else {
-      prompt("Copy this link to share:", imageUrl);
+  const handleDownloadAll = () => {
+    if (originalImage) {
+      handleDownload(originalImage.url, originalImage.label);
     }
+    generatedImages.forEach((img) => {
+      handleDownload(img.url, img.label);
+    });
   };
 
-  const handleReport = (imageId) => {
-    const reason = prompt("Please enter the reason for reporting:");
-    if (reason) {
-      alert("Thank you for your report. We'll review this design.");
+  // Function to create the image pairs for display
+  const getImagePairs = () => {
+    const pairs = [];
+    
+    // First pair - original image with first generated image
+    if (originalImage && generatedImages.length > 0) {
+      pairs.push([originalImage, generatedImages[0]]);
+    } else if (originalImage) {
+      pairs.push([originalImage, null]);
+    } else if (generatedImages.length > 0) {
+      // If no original image, just show generated images in pairs
+      pairs.push([generatedImages[0], generatedImages[1] || null]);
     }
-  };
 
-  const handleGenerateDesigns = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      // Replace with actual API call if needed for re-generation
-      setTimeout(() => {
-        const newDesigns = Array.from({ length: numDesigns }, (_, i) => ({
-          id: Date.now() + i,
-          url: `https://example.com/generated-image-${i}.jpg`,
-          style: selectedStyle,
-          timestamp: new Date().toISOString(),
-        }));
-        setGeneratedImages([...generatedImages, ...newDesigns]);
-        setIsLoading(false);
-      }, 2000);
-    } catch (err) {
-      console.error("Generation error:", err);
-      setError("Failed to generate designs. Please try again.");
-      setIsLoading(false);
+    // Remaining generated images in pairs
+    const startIndex = originalImage ? 1 : 2;
+    for (let i = startIndex; i < generatedImages.length; i += 2) {
+      const pair = [generatedImages[i]];
+      if (i + 1 < generatedImages.length) {
+        pair.push(generatedImages[i + 1]);
+      }
+      pairs.push(pair);
     }
+
+    return pairs;
   };
-
-  // Function to chunk array into pairs for 2-column layout
-  const chunkArray = (array, size) => {
-    const chunked = [];
-    for (let i = 0; i < array.length; i += size) {
-      chunked.push(array.slice(i, i + size));
-    }
-    return chunked;
-  };
-
-  // Combine original image with generated images for display
-  const allImages = originalImage 
-    ? [{ url: originalImage, id: "original", isOriginal: true }, ...generatedImages]
-    : generatedImages;
-
-  // Split into rows of 2 images each
-  const imageRows = chunkArray(allImages, 2);
 
   return (
-    <div>
-      <section className="w-full min-h-screen flex justify-center items-center bg-[#002628]">
-        <div className="w-[1280px] min-h-[1199px]">
-          <div className="w-[1280px] h-[287px] rounded-tl-[20px] rounded-tr-[20px] bg-gradient-to-t from-[#002628] to-[#00646A] via-[#00B0BA] flex flex-col justify-center items-center gap-4">
-            <div className="w-[658px] h-[53px] font-bold text-[38px] leading-[140%] tracking-[20px] text-center text-white">
-              YOUR GENERATED DESIGNS
-            </div>
-            <div className="w-[658px] h-[121px] flex justify-between items-center">
-              {["interior", "exteriors", "outdoors"].map((style) => (
+    <div className="bg-[#002628] min-h-screen">
+      <div className="max-w-6xl mx-auto">
+        {/* Header Section */}
+        <div className="bg-gradient-to-t from-[#002628] to-[#00646A] via-[#00B0BA] rounded-t-xl p-8 text-center">
+          <h1 className="text-4xl font-bold text-white mb-6">YOUR GENERATED DESIGNS</h1>
+          <div className="flex justify-center space-x-12">
+            {["interior", "exteriors", "outdoors"].map((style) => (
+              <div
+                key={style}
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => setSelectedStyle(style)}
+              >
                 <div
-                  key={style}
-                  className="w-[101px] h-[121px] flex flex-col justify-center items-center gap-[20px] cursor-pointer"
-                  onClick={() => setSelectedStyle(style)}
+                  className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 ${
+                    selectedStyle === style
+                      ? "bg-gradient-to-l from-[#00B0BA] via-black to-[#007B82] border-2 border-white"
+                      : "bg-white bg-opacity-10"
+                  }`}
                 >
-                  <div
-                    className={`w-[70px] h-[70px] rounded-[90px] ${
-                      selectedStyle === style
-                        ? "bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] border-[2px] border-solid border-white"
-                        : "bg-[#FFFFFF1A]"
-                    } drop-shadow-[0_2px_4px_0 #00B0BA4D] flex justify-center items-center`}
-                  >
-                    <img
-                      src={
-                        style === "interior"
-                          ? Interior
-                          : style === "exteriors"
-                          ? Home
-                          : Tree
-                      }
-                      alt={style}
-                    />
-                  </div>
-                  <div className="w-[101px] h-[31px] font-semibold text-[22px] leading-[140%] text-center text-white">
-                    {style.charAt(0).toUpperCase() + style.slice(1)}
-                  </div>
+                  <img
+                    src={
+                      style === "interior"
+                        ? Interior
+                        : style === "exteriors"
+                        ? Home
+                        : Tree
+                    }
+                    alt={style}
+                    className="w-8 h-8"
+                  />
+                </div>
+                <span className="text-white font-medium">
+                  {style.charAt(0).toUpperCase() + style.slice(1)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="bg-white rounded-b-xl shadow-lg p-6">
+          {/* Action Bar */}
+          <div className="flex justify-between items-center mb-8">
+            <Link
+              to="/"
+              className="flex items-center text-gray-800 hover:text-[#00B0BA]"
+            >
+              <img src={SideArrow} alt="Back" className="w-6 h-6 mr-2" />
+              <span>Back</span>
+            </Link>
+
+            <div className="flex space-x-6">
+              <button
+                onClick={handleDownloadAll}
+                className="flex items-center text-gray-800 hover:text-[#00B0BA]"
+              >
+                <img src={Download} alt="Download" className="w-6 h-6 mr-2" />
+                <span>Download All</span>
+              </button>
+              <button className="flex items-center text-gray-800 hover:text-[#00B0BA]">
+                <img src={Share} alt="Share" className="w-6 h-6 mr-2" />
+                <span>Share</span>
+              </button>
+              <button
+                onClick={() => setShowMoreOptions(!showMoreOptions)}
+                className="flex items-center text-gray-800 hover:text-[#00B0BA]"
+              >
+                <img src={More} alt="More" className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+
+          {showMoreOptions && (
+            <div className="absolute right-8 bg-white shadow-lg rounded-md p-2 z-10 border border-gray-200">
+              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                Save to favorites
+              </button>
+              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+                Duplicate design
+              </button>
+              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500">
+                Delete design
+              </button>
+            </div>
+          )}
+
+          {/* Image Grid */}
+          {isLoading ? (
+            <div className="flex justify-center items-center h-96">
+              <PacmanLoader color="#00B0BA" size={25} />
+              <span className="ml-4 text-gray-700">Generating designs...</span>
+            </div>
+          ) : (
+            <div className="space-y-8">
+              {getImagePairs().map((pair, rowIndex) => (
+                <div key={`row-${rowIndex}`} className="flex space-x-8">
+                  {pair.map((image, colIndex) => (
+                    <div key={image?.id || `empty-${rowIndex}-${colIndex}`} className="flex-1">
+                      {image ? (
+                        <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                          <div className="relative">
+                            <img
+                              src={image.url}
+                              alt={image.label}
+                              className="w-full h-auto max-h-96 object-contain"
+                            />
+                            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white py-2 text-center">
+                              {image.label}
+                            </div>
+                            <button
+                              onClick={() => handleDownload(image.url, image.label)}
+                              className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+                            >
+                              <img src={Download} alt="Download" className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg h-96 flex items-center justify-center">
+                          <span className="text-gray-400">Empty Slot</span>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
-          </div>
+          )}
 
-          <div className="w-[1280px] min-h-[912px] rounded-bl-[20px] rounded-br-[20px] bg-[white] drop-shadow-[0_1px_4px_0 #00000059] p-[20px]">
-            <div className="w-[1240px] min-h-[868px] rounded-[6px] flex flex-col justify-start items-start gap-[30px]">
-              <div className="w-[100%] h-[30px] flex justify-between">
-                <Link to="/">
-                  <div className="w-[75px] flex justify-center items-center cursor-pointer">
-                    <img
-                      src={SideArrow}
-                      alt="Back"
-                      className="w-[24px] h-[24px]"
-                    />
-                    <div className="font-medium text-[16px] leading-[156%] text-[#2A2A2A]">
-                      Back
-                    </div>
-                  </div>
-                </Link>
-
-                <div className="w-[350px] h-[25px] flex justify-center items-center gap-[32px]">
-                  {generatedImages.length > 0 && (
-                    <>
-                      <div
-                        className="w-[105px] flex justify-center items-center gap-1 cursor-pointer"
-                        onClick={() => handleDownload(generatedImages[0].url, 0)}
-                      >
-                        <img
-                          src={Download}
-                          alt="Download"
-                          className="w-[24px] h-[24px]"
-                        />
-                        <div className="font-medium text-[16px] leading-[156%] text-[#2A2A2A]">
-                          Download All
-                        </div>
-                      </div>
-                      <div
-                        className="w-[73px] flex justify-center items-center gap-1 cursor-pointer"
-                        onClick={() => handleShare(generatedImages[0].url)}
-                      >
-                        <img
-                          src={Share}
-                          alt="Share"
-                          className="w-[24px] h-[24px]"
-                        />
-                        <div className="font-medium text-[16px] leading-[156%] text-[#2A2A2A]">
-                          Share
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  <div
-                    className="w-[75px] flex justify-center items-center gap-1 cursor-pointer"
-                    onClick={() => setShowMoreOptions(!showMoreOptions)}
-                  >
-                    <img
-                      src={More}
-                      alt="More options"
-                      className="w-[24px] h-[24px]"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {showMoreOptions && (
-                <div className="absolute right-[40px] top-[340px] bg-white shadow-lg rounded-md p-2 z-10">
-                  <div className="py-1 cursor-pointer hover:bg-gray-100 px-3">
-                    Save to favorites
-                  </div>
-                  <div className="py-1 cursor-pointer hover:bg-gray-100 px-3">
-                    Duplicate design
-                  </div>
-                  <div className="py-1 cursor-pointer hover:bg-gray-100 px-3">
-                    Delete design
-                  </div>
-                </div>
-              )}
-
-              {/* Image Grid Display */}
-              <div className="w-full p-4">
-                {isLoading ? (
-                  <div className="w-full h-[500px] flex justify-center items-center">
-                    <PacmanLoader color="#00B0BA" size={25} />
-                    <span className="ml-4">Generating designs...</span>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-6">
-                    {imageRows.map((row, rowIndex) => (
-                      <div key={`row-${rowIndex}`} className="flex gap-6 w-full">
-                        {row.map((image, colIndex) => (
-                          <div 
-                            key={image.id} 
-                            className="flex-1 flex flex-col items-center"
-                          >
-                            <div className="relative group">
-                              <img
-                                src={image.url}
-                                alt={
-                                  image.isOriginal 
-                                    ? "Original design" 
-                                    : `Generated design ${rowIndex * 2 + colIndex}`
-                                }
-                                className="w-full h-auto max-h-[400px] object-contain rounded-lg shadow-md"
-                              />
-                              <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 text-center">
-                                {image.isOriginal ? "Original Image" : `Design ${rowIndex * 2 + colIndex}`}
-                              </div>
-                              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <button
-                                  onClick={() => handleDownload(image.url, rowIndex * 2 + colIndex)}
-                                  className="bg-white p-2 rounded-full shadow-md hover:bg-gray-200"
-                                >
-                                  <img
-                                    src={Download}
-                                    alt="Download"
-                                    className="w-4 h-4"
-                                  />
-                                </button>
-                              </div>
-                            </div>
-                            {!image.isOriginal && (
-                              <button
-                                onClick={() => handleDownload(image.url, rowIndex * 2 + colIndex)}
-                                className="mt-2 px-4 py-1 bg-[#00B0BA] text-white rounded-md hover:bg-[#007B82]"
-                              >
-                                Download
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Create More Designs Button */}
-              <div className="w-[100%] h-[55px] flex justify-center items-center mt-[50px]">
-                <button
-                  onClick={handleGenerateDesigns}
-                  disabled={isLoading}
-                  className={`w-[193px] h-[54px] flex justify-center items-center border-[1px] border-solid border-[#00B0BA] font-semibold text-[18px] rounded-[10px] text-[#2A2A2A] ${
-                    isLoading
-                      ? "opacity-50 cursor-not-allowed"
-                      : "hover:bg-[#00B0BA20]"
-                  }`}
-                >
-                  {isLoading ? "Generating..." : "Create More Designs"}
-                </button>
-              </div>
-            </div>
+          {/* Generate More Button */}
+          <div className="mt-12 text-center">
+            <button
+              onClick={() => navigate("/form")}
+              className="bg-transparent border-2 border-[#00B0BA] text-[#00B0BA] font-semibold py-3 px-8 rounded-lg hover:bg-[#00B0BA] hover:text-white transition-colors"
+            >
+              Generate More Designs
+            </button>
           </div>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
-
-
