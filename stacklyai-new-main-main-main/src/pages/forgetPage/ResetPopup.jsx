@@ -5,9 +5,6 @@ import Pop from '../../assets/forgetPg/pop.png'
 import { Link } from 'react-router-dom'
 
 
-
-
-
 export default function ResetPopup() {
   return (
     <div>

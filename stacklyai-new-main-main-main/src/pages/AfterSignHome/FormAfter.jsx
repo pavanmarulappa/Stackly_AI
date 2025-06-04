@@ -718,10 +718,11 @@ export default function Form() {
                         value={progress}
                         text={`${progress}%`}
                         styles={buildStyles({
-                          pathColor: '#00B0BA',
+                          pathColor: '#FFFFFF',
                           textColor: 'white',
                           trailColor: '#FFFFFF33',
                           textSize: '28px',
+                          textBold: '700',
                         })}
                       />
                     </div>

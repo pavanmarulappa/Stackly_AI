@@ -22,7 +22,7 @@ class OTPManager:
        # Send OTP using Gmail or Mailtrap based on settings
         try:
             msg = MIMEText(
-                f"Hi, \n\nYour one-time password (OTP) is:  {otp},\n\nThis code is valid for the next {settings.OTP_EXPIRE_MINUTES} minutes. Please do not share it with anyone.\n\nIf you didn’t request this OTP, please ignore this message or contact our support team.\n\n-Thanks,\n\n-The Stackly.Ai Team"
+                f"Hi, \n\nYour one-time password (OTP) is:  {otp},\n\nThis code is valid for the next {settings.OTP_EXPIRE_MINUTES} minutes. Please do not share it with anyone.\n\nIf you didn’t request this OTP, please ignore this message or contact our support team.\n\n-Thanks,\n\n-The .Ai Team"
             )
             msg['Subject'] = 'Your Stackly.Ai OTP Code'
             msg['From'] = settings.EMAIL_FROM
@@ -277,7 +277,7 @@ class OTPManager:
                 f"This code is valid for the next {settings.OTP_EXPIRE_MINUTES} minutes.\n"
                 f"Do not share it with anyone.\n\n- Stackly.Ai Team"
             )
-            msg["Subject"] = "Your Stackly.Ai OTP Code"
+            msg["Subject"] = "Your .Ai OTP Code"
             msg["From"] = settings.EMAIL_FROM
             msg["To"] = email
 

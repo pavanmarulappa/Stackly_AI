@@ -2,8 +2,25 @@ import React from "react";
 import close from "../../assets/forgetPg/close.png";
 import Arrow from "../../assets/forgetPg/arrow.png";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
 export default function HeroForgetPg() {
+  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+
+  const handleSendOTP = async () => {
+    try {
+      await axios.post("http://localhost:8000/forget-password/send-otp", {
+        email,
+      });
+      localStorage.setItem("resetEmail", email); // store email for next steps
+      navigate("/Otp");
+    } catch (err) {
+      alert(err.response?.data?.detail || "Error sending OTP");
+    }
+  };
   return (
     <div>
       {/* Forget Your Password Page  */}
@@ -33,6 +50,8 @@ export default function HeroForgetPg() {
               <input
                 type="text"
                 placeholder="ramprakash@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-[460px] min-h-[48px] rounded-[8px] border-[1px] border-solid border-[#E2E2E2]  placeholder:text-[#2A2A2A] placeholder:text-[16px] placeholder:leading-[26px] px-[20px]"
               />
 
