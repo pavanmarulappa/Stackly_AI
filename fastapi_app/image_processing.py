@@ -316,122 +316,132 @@ async def generate_design(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
     
-async def generate_images(
-    category: str,
-    type_detail: str,
-    style: str,
-    ai_strength: str,
-    num_images: int,
-    uploaded_image: UploadFile,
-    user_id: str
-):
-    # Save uploaded image
-    file_ext = os.path.splitext(uploaded_image.filename)[1]
-    original_filename = f"moredesign_{uuid.uuid4().hex}{file_ext}"
-    original_path = uploads_path / original_filename
 
-    with open(original_path, "wb") as f:
-        shutil.copyfileobj(uploaded_image.file, f)
-
-    # Resize/process image
-    image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
-
-    # PROMPT TEMPLATE per category
-    if category == "interior":
-        prompt_template = STYLE_CONFIGS[style]["prompt"].format(
-            room_type=type_detail,
-            building_type="residential",  # You can later pass this from frontend if needed
-            style=style
-        )
-        negative_prompt = STYLE_CONFIGS[style]["negative_prompt"]
-
-    elif category == "exterior":
-        prompt_template = f"{style} style house {type_detail} view, modern architecture, HD rendering"
-        negative_prompt = "low quality, blurry, sketch, painting"
-
-    elif category == "outdoor":
-        prompt_template = f"{style} style {type_detail}, professional landscape design, natural elements, clean look"
-        negative_prompt = "cluttered, dark, blurry, low quality"
-
-    else:
-        raise HTTPException(400, f"Invalid category: {category}")
-
-    # Get strength config
-    params = STRENGTH_CONFIG[ai_strength.lower()]
-    modifiers = ["8k", "high resolution", "realistic", "photorealistic"]
-    prompt = f"{prompt_template}, {random.choice(modifiers)}"
-
-    # Build tasks
-    async def single_gen():
-        files = {
-            "init_image": ("input.png", BytesIO(image_bytes), "image/png"),
-        }
-        data = {
-            "init_image_mode": "IMAGE_STRENGTH",
-            "image_strength": str(params["image_strength"]),
-            "text_prompts[0][text]": prompt,
-            "text_prompts[0][weight]": "1.2",
-            "text_prompts[1][text]": negative_prompt,
-            "text_prompts[1][weight]": "-1.0",
-            "cfg_scale": str(params["cfg_scale"]),
-            "samples": "1",
-            "steps": str(params["steps"]),
-            "seed": str(random.randint(0, 100000)),
-            "style_preset": "photographic"
-        }
-
-        response = await asyncio.get_event_loop().run_in_executor(
-            None,
-            lambda: requests.post(
-                STABILITY_API_URL,
-                headers=HEADERS,
-                files=files,
-                data=data,
-                timeout=45
-            )
-        )
-
-        if response.status_code != 200:
-            raise HTTPException(502, f"Image generation failed: {response.text}")
-
-        result = response.json()
-        artifact = result["artifacts"][0]
-        filename = f"{category}_{uuid.uuid4().hex}.png"
-        out_path = generated_path / filename
-
-        with open(out_path, "wb") as f:
-            f.write(base64.b64decode(artifact["base64"]))
-
-        return f"/static_generated/{filename}"
-
-    # Run async tasks for image generation
-    tasks = [single_gen() for _ in range(num_images)]
-    generated_urls = await asyncio.gather(*tasks)
-
-    return generated_urls
 
 @router.post("/generate/more-designs")
 async def generate_more_designs(
-    user_id: str = Form(...),
-    category: Literal["interior", "exterior", "outdoor"] = Form(...),
-    type_detail: str = Form(...),  # room_type / house_angle / space_type
+    category: str = Form(...),
+    type_detail: str = Form(...),
     style: str = Form(...),
     ai_strength: str = Form(...),
     uploaded_image: UploadFile = File(...)
 ):
-    num_images = 2  # always 2
+    try:
+        # Validate inputs
+        if category not in {"interiors", "exteriors", "outdoors"}:
+            raise HTTPException(status_code=400, detail="Invalid category. Must be 'interiors', 'exteriors', or 'outdoors'")
+        
+        if ai_strength.lower() not in STRENGTH_CONFIG:
+            raise HTTPException(status_code=400, detail="Invalid AI strength level")
 
-    results = await generate_images(
-        category=category,
-        type_detail=type_detail,
-        style=style,
-        ai_strength=ai_strength,
-        num_images=num_images,
-        uploaded_image=uploaded_image,
-        user_id=user_id
-    )
+        num_images = 2  # Always generate 2 more images
+        
+        # Save uploaded image
+        file_ext = os.path.splitext(uploaded_image.filename)[1].lower()
+        if file_ext not in ['.jpg', '.jpeg', '.png']:
+            raise HTTPException(status_code=400, detail="Only JPG and PNG images are allowed")
 
-    return {"status": "success", "generated_images": results}
+        original_filename = f"more_{uuid.uuid4().hex}{file_ext}"
+        original_path = uploads_path / original_filename
+
+        try:
+            with open(original_path, "wb") as f:
+                shutil.copyfileobj(uploaded_image.file, f)
+
+            # Resize/process image
+            image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
+
+            # Select appropriate configuration based on category
+            if category == "interior":
+                if style not in STYLE_CONFIGS:
+                    raise HTTPException(status_code=400, detail="Invalid style for interior design")
+                
+                config = STYLE_CONFIGS[style]
+                prompt = config["prompt"].format(
+                    room_type=type_detail,
+                    building_type="residential",  # Default, can be made configurable
+                    style=style
+                )
+                negative_prompt = config["negative_prompt"]
+            elif category == "exterior":
+                prompt = f"{style} style house {type_detail} view, modern architecture, HD rendering"
+                negative_prompt = "low quality, blurry, sketch, painting"
+            else:  # outdoor
+                prompt = f"{style} style {type_detail}, professional landscape design, natural elements, clean look"
+                negative_prompt = "cluttered, dark, blurry, low quality"
+
+            # Get strength parameters
+            params = STRENGTH_CONFIG[ai_strength.lower()]
+
+            # Generate images
+            generated_urls = []
+            for _ in range(num_images):
+                files = {
+                    "init_image": ("input.png", BytesIO(image_bytes), "image/png"),
+                }
+                data = {
+                    "init_image_mode": "IMAGE_STRENGTH",
+                    "image_strength": str(params["image_strength"]),
+                    "text_prompts[0][text]": prompt,
+                    "text_prompts[0][weight]": "1.2",
+                    "text_prompts[1][text]": negative_prompt,
+                    "text_prompts[1][weight]": "-1.0",
+                    "cfg_scale": str(params["cfg_scale"]),
+                    "samples": "1",
+                    "steps": str(params["steps"]),
+                    "seed": str(random.randint(0, 100000)),
+                    "style_preset": "photographic"
+                }
+
+                try:
+                    response = requests.post(
+                        STABILITY_API_URL,
+                        headers=HEADERS,
+                        files=files,
+                        data=data,
+                        timeout=45
+                    )
+                    response.raise_for_status()
+                except requests.exceptions.RequestException as e:
+                    raise HTTPException(
+                        status_code=502,
+                        detail=f"Image generation API request failed: {str(e)}"
+                    )
+
+                result = response.json()
+                if not result.get("artifacts"):
+                    raise HTTPException(
+                        status_code=502,
+                        detail="No artifacts returned from generation API"
+                    )
+
+                artifact = result["artifacts"][0]
+                filename = f"more_{uuid.uuid4().hex}.png"
+                out_path = generated_path / filename
+
+                with open(out_path, "wb") as f:
+                    f.write(base64.b64decode(artifact["base64"]))
+
+                generated_urls.append(f"/static_generated/{filename}")
+
+            return {
+                "success": True,
+                "designs": generated_urls,
+                "message": f"Successfully generated {num_images} additional designs"
+            }
+
+        finally:
+            # Clean up the uploaded file
+            if original_path.exists():
+                original_path.unlink()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error generating more designs: {str(e)}"
+        )
     
     
 # 1) House Angle: only Front, Back

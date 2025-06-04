@@ -565,97 +565,107 @@ export default function Form() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setProgress(0);
+  e.preventDefault();
+  setIsLoading(true);
+  setProgress(0);
 
-    // Simulate progress (this will be updated by the actual upload progress)
-    const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return prev;
-        }
-        return prev + 10;
-      });
-    }, 1000);
-
-    try {
-      if (!imgFile) throw new Error("Please upload an image first!");
-
-      const formDataToSend = new FormData();
-      formDataToSend.append("image", imgFile);
-      formDataToSend.append("design_style", formData.roomStyle);
-      formDataToSend.append("ai_strength", formData.aiStrength);
-      formDataToSend.append("num_designs", formData.numDesigns.toString());
-
-      let endpoint = "";
-      switch (activeTab) {
-        case "Interiors":
-          endpoint = "generate-interior-design";
-          formDataToSend.append("building_type", formData.buildingType);
-          formDataToSend.append("room_type", formData.roomType);
-          break;
-        case "Exteriors":
-          endpoint = "generate-exterior-design";
-          formDataToSend.append("house_angle", formData.roomType);
-          break;
-        case "Outdoors":
-          endpoint = "generate-outdoor-design";
-          formDataToSend.append("space_type", formData.roomType);
-          break;
+  // Simulate progress (this will be updated by the actual upload progress)
+  const progressInterval = setInterval(() => {
+    setProgress(prev => {
+      if (prev >= 90) {
+        clearInterval(progressInterval);
+        return prev;
       }
+      return prev + 10;
+    });
+  }, 1000);
 
-      const response = await axios.post(
-        `http://localhost:8000/api/${endpoint}/`,
-        formDataToSend,
-        {
-          onUploadProgress: (progressEvent) => {
-            // Only update progress based on upload (first 50%)
-            const uploadPercent = Math.round(
-              (progressEvent.loaded * 50) / progressEvent.total
-            );
-            setProgress(uploadPercent);
-          },
-        }
-      );
+  try {
+    if (!imgFile) throw new Error("Please upload an image first!");
 
-      // After upload, simulate generation progress (50-100%)
-      for (let i = 50; i <= 100; i += 10) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setProgress(i);
+    const formDataToSend = new FormData();
+    formDataToSend.append("image", imgFile);
+    formDataToSend.append("design_style", formData.roomStyle);
+    formDataToSend.append("ai_strength", formData.aiStrength);
+    formDataToSend.append("num_designs", formData.numDesigns.toString());
+
+    let endpoint = "";
+    let typeDetail = "";
+
+    switch (activeTab) {
+      case "Interiors":
+        endpoint = "generate-interior-design";
+        formDataToSend.append("building_type", formData.buildingType);
+        formDataToSend.append("room_type", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+      case "Exteriors":
+        endpoint = "generate-exterior-design";
+        formDataToSend.append("house_angle", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+      case "Outdoors":
+        endpoint = "generate-outdoor-design";
+        formDataToSend.append("space_type", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+    }
+
+    const response = await axios.post(
+      `http://localhost:8000/api/${endpoint}/`,
+      formDataToSend,
+      {
+        onUploadProgress: (progressEvent) => {
+          // Only update progress based on upload (first 50%)
+          const uploadPercent = Math.round(
+            (progressEvent.loaded * 50) / progressEvent.total
+          );
+          setProgress(uploadPercent);
+        },
       }
+    );
 
-      if (response.data.success) {
-        navigate("/ImageGeneration", {
-          state: {
-            originalImage: imgURL,
-            generatedImages: Array.isArray(response.data.designs)
-              ? response.data.designs.map(url => ({
+    // After upload, simulate generation progress (50-100%)
+    for (let i = 50; i <= 100; i += 10) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setProgress(i);
+    }
+
+    if (response.data.success) {
+      navigate("/ImageGeneration", {
+        state: {
+          originalImage: imgURL,
+          uploadedFile: imgFile,
+          generatedImages: Array.isArray(response.data.designs)
+            ? response.data.designs.map(url => ({
                 url: url.startsWith("http")
                   ? url
                   : backendBaseUrl + url,
                 id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
               }))
-              : [],
-            formData: {
-              style: formData.roomStyle,
-              type: activeTab.toLowerCase()
-            }
+            : [],
+          formData: {
+            //userId: userInfo.userId,
+            category: activeTab.toLowerCase(),
+            typeDetail: typeDetail,
+            style: formData.roomStyle,
+            aiStrength: formData.aiStrength,
+            numDesigns: formData.numDesigns
           }
-        });
-      } else {
-        throw new Error(response.data.message || "Design generation failed");
-      }
-    } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || "Failed to connect to server";
-      alert(`Error: ${errorMessage}`);
-    } finally {
-      clearInterval(progressInterval);
-      setIsLoading(false);
+        }
+      });
+    } else {
+      throw new Error(response.data.message || "Design generation failed");
     }
-  };
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || error.message || "Failed to connect to server";
+    alert(`Error: ${errorMessage}`);
+  } finally {
+    clearInterval(progressInterval);
+    setIsLoading(false);
+  }
+};
 
   return (
     <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
