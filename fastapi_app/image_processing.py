@@ -22,6 +22,7 @@ from concurrent.futures import ThreadPoolExecutor
 import math
 from pathlib import Path
 import logging
+from typing import Literal
 
 load_dotenv()
 
@@ -314,6 +315,123 @@ async def generate_design(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
+async def generate_images(
+    category: str,
+    type_detail: str,
+    style: str,
+    ai_strength: str,
+    num_images: int,
+    uploaded_image: UploadFile,
+    user_id: str
+):
+    # Save uploaded image
+    file_ext = os.path.splitext(uploaded_image.filename)[1]
+    original_filename = f"moredesign_{uuid.uuid4().hex}{file_ext}"
+    original_path = uploads_path / original_filename
+
+    with open(original_path, "wb") as f:
+        shutil.copyfileobj(uploaded_image.file, f)
+
+    # Resize/process image
+    image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
+
+    # PROMPT TEMPLATE per category
+    if category == "interior":
+        prompt_template = STYLE_CONFIGS[style]["prompt"].format(
+            room_type=type_detail,
+            building_type="residential",  # You can later pass this from frontend if needed
+            style=style
+        )
+        negative_prompt = STYLE_CONFIGS[style]["negative_prompt"]
+
+    elif category == "exterior":
+        prompt_template = f"{style} style house {type_detail} view, modern architecture, HD rendering"
+        negative_prompt = "low quality, blurry, sketch, painting"
+
+    elif category == "outdoor":
+        prompt_template = f"{style} style {type_detail}, professional landscape design, natural elements, clean look"
+        negative_prompt = "cluttered, dark, blurry, low quality"
+
+    else:
+        raise HTTPException(400, f"Invalid category: {category}")
+
+    # Get strength config
+    params = STRENGTH_CONFIG[ai_strength.lower()]
+    modifiers = ["8k", "high resolution", "realistic", "photorealistic"]
+    prompt = f"{prompt_template}, {random.choice(modifiers)}"
+
+    # Build tasks
+    async def single_gen():
+        files = {
+            "init_image": ("input.png", BytesIO(image_bytes), "image/png"),
+        }
+        data = {
+            "init_image_mode": "IMAGE_STRENGTH",
+            "image_strength": str(params["image_strength"]),
+            "text_prompts[0][text]": prompt,
+            "text_prompts[0][weight]": "1.2",
+            "text_prompts[1][text]": negative_prompt,
+            "text_prompts[1][weight]": "-1.0",
+            "cfg_scale": str(params["cfg_scale"]),
+            "samples": "1",
+            "steps": str(params["steps"]),
+            "seed": str(random.randint(0, 100000)),
+            "style_preset": "photographic"
+        }
+
+        response = await asyncio.get_event_loop().run_in_executor(
+            None,
+            lambda: requests.post(
+                STABILITY_API_URL,
+                headers=HEADERS,
+                files=files,
+                data=data,
+                timeout=45
+            )
+        )
+
+        if response.status_code != 200:
+            raise HTTPException(502, f"Image generation failed: {response.text}")
+
+        result = response.json()
+        artifact = result["artifacts"][0]
+        filename = f"{category}_{uuid.uuid4().hex}.png"
+        out_path = generated_path / filename
+
+        with open(out_path, "wb") as f:
+            f.write(base64.b64decode(artifact["base64"]))
+
+        return f"/static_generated/{filename}"
+
+    # Run async tasks for image generation
+    tasks = [single_gen() for _ in range(num_images)]
+    generated_urls = await asyncio.gather(*tasks)
+
+    return generated_urls
+
+@router.post("/generate/more-designs")
+async def generate_more_designs(
+    user_id: str = Form(...),
+    category: Literal["interior", "exterior", "outdoor"] = Form(...),
+    type_detail: str = Form(...),  # room_type / house_angle / space_type
+    style: str = Form(...),
+    ai_strength: str = Form(...),
+    uploaded_image: UploadFile = File(...)
+):
+    num_images = 2  # always 2
+
+    results = await generate_images(
+        category=category,
+        type_detail=type_detail,
+        style=style,
+        ai_strength=ai_strength,
+        num_images=num_images,
+        uploaded_image=uploaded_image,
+        user_id=user_id
+    )
+
+    return {"status": "success", "generated_images": results}
     
     
 # 1) House Angle: only Front, Back
@@ -846,3 +964,4 @@ async def generate_outdoor_design(
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}", exc_info=True)
         raise HTTPException(500, detail="Internal server error")
+    

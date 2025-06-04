@@ -68,25 +68,31 @@
 //     </div>
 //   );
 // }
-
+// import React from 'react'
+// import close from '../../assets/forgetPg/close.png'
+// import Arrow from '../../assets/forgetPg/arrow.png'
+// import { Link } from 'react-router-dom'
 import React, { useState, useEffect } from 'react';
-import close from '../../assets/forgetPg/close.png';
-import Arrow from '../../assets/forgetPg/arrow.png';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import close from '../../assets/forgetPg/close.png'
+import Arrow from '../../assets/forgetPg/arrow.png'
 import axios from 'axios';
 
 export default function Otp() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [timer, setTimer] = useState(45);
   const [error, setError] = useState('');
+  const [isResending, setIsResending] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email;
+  
+  // Get email from location state or localStorage
+  const email = location.state?.email || localStorage.getItem('resetEmail');
 
   // Timer countdown
   useEffect(() => {
     const interval = setInterval(() => {
-      setTimer(prev => prev > 0 ? prev - 1 : 0);
+      setTimer(prev => (prev > 0 ? prev - 1 : 0));
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -98,7 +104,6 @@ export default function Otp() {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    // Auto move to next input
     if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`).focus();
     }
@@ -113,9 +118,13 @@ export default function Otp() {
     }
 
     try {
-      const response = await axios.post('http://localhost:8000/forget-password/verify-otp', {
-        otp: enteredOtp
-      });
+      const response = await axios.post(
+        'http://localhost:8000/forget-password/verify-otp', 
+        { 
+          otp: enteredOtp,
+          email: email 
+        }
+      );
       navigate('/ResetPassword', { state: { email } });
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid OTP');
@@ -123,17 +132,35 @@ export default function Otp() {
   };
 
   const handleResendOTP = async () => {
-    if (timer > 0) return;
+    if (timer > 0 || !email) return;
+    
+    setIsResending(true);
+    setError('');
     
     try {
-      await axios.post('http://localhost:8000/forget-password/resend-otp', {
-        email
-      });
+      const response = await axios.post(
+        'http://localhost:8000/forget-password/resend-otp',
+        { email },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
       setTimer(45);
       setOtp(['', '', '', '', '', '']);
-      setError('');
+      alert('New OTP has been sent to your email');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Failed to resend OTP');
+      const errorMsg = err.response?.data?.detail || 'Failed to resend OTP';
+      setError(errorMsg);
+      
+      // If rate limited, set timer to remaining time
+      if (err.response?.status === 429) {
+        setTimer(60); // Reset to 1 minute
+      }
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -149,8 +176,8 @@ export default function Otp() {
               <div className="w-[289px] min-h-[26px] font-semibold text-[26px] leading-[26px] text-center text-[#009A98]">
                 Enter OTP
               </div>
-              <div className="w-[461px] min-h-[48px] font-[400] text-[15px] leading-[24px] text-center text-[#B0B0B0] ">
-                We've sent a 6-digit OTP to your email. Please enter it below to continue.
+              <div className="w-[461px] min-h-[48px] font-[400] text-[15px] leading-[24px] text-center text-[#B0B0B0]">
+                We've sent a 6-digit OTP to {email}. Please enter it below to continue.
               </div>
             </div>
 
@@ -183,7 +210,7 @@ export default function Otp() {
 
                 <div 
                   onClick={handleVerify}
-                  className="w-[461px] min-h-[46px] rounded-[8px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] flex justify-center items-center text-white font-bold text-[16px] leading-[35px] text-center cursor-pointer"
+                  className="w-[461px] min-h-[46px] rounded-[8px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] flex justify-center items-center text-white font-bold text-[16px] leading-[35px] text-center cursor-pointer hover:opacity-90"
                 >
                   Verify OTP
                 </div>
@@ -191,22 +218,24 @@ export default function Otp() {
                 <div className="w-[461px] min-h-[24px] font-[400] text-[13px] leading-[24px] text-center text-white">
                   Didn't receive the code?
                   <span 
-                    className={`${timer > 0 ? 'text-[#007B82]' : 'text-[#007B82] cursor-pointer'}`}
+                    className={`${timer > 0 ? 'text-gray-400' : 'text-[#007B82] cursor-pointer hover:underline'}`}
                     onClick={handleResendOTP}
                   >
-                    {timer > 0 ? ` Resend in 00:${timer.toString().padStart(2, '0')}` : ' Resend OTP'}
+                    {isResending ? ' Resending...' : 
+                     timer > 0 ? ` Resend in 00:${timer.toString().padStart(2, '0')}` : 
+                     ' Resend OTP'}
                   </span>
                 </div>
 
                 <div className="w-[461px] text-center flex justify-center">
                   <Link
                     to="/Sign-in"
-                    className="w-[122px] h-[20px] flex justify-center items-center gap-[4px]"
+                    className="w-[122px] h-[20px] flex justify-center items-center gap-[4px] hover:opacity-80"
                   >
-                    <img src={Arrow} alt="" />
-                    <div className="font-semibold text-[15px] leading-[100%] text-[#009A98]">
+                    <img src={Arrow} alt="Back arrow" />
+                    <span className="font-semibold text-[15px] leading-[100%] text-[#009A98]">
                       Back to Login
-                    </div>
+                    </span>
                   </Link>
                 </div>
               </div>

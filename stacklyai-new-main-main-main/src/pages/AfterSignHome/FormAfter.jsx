@@ -388,6 +388,10 @@ import Magic from "../../assets/product-pg/magic.png";
 import axios from "axios"; //For connect fastapi 
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { FormDataContext } from "../../context/FormDataContext";
+
+const CloseIcon =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E";
 
 export default function Form() {
   const { userInfo } = useContext(UserContext);
@@ -561,97 +565,97 @@ export default function Form() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
-  setProgress(0);
+    e.preventDefault();
+    setIsLoading(true);
+    setProgress(0);
 
-  // Simulate progress (this will be updated by the actual upload progress)
-  const progressInterval = setInterval(() => {
-    setProgress(prev => {
-      if (prev >= 90) {
-        clearInterval(progressInterval);
-        return prev;
-      }
-      return prev + 10;
-    });
-  }, 1000);
-
-  try {
-    if (!imgFile) throw new Error("Please upload an image first!");
-
-    const formDataToSend = new FormData();
-    formDataToSend.append("image", imgFile);
-    formDataToSend.append("design_style", formData.roomStyle);
-    formDataToSend.append("ai_strength", formData.aiStrength);
-    formDataToSend.append("num_designs", formData.numDesigns.toString());
-
-    let endpoint = "";
-    switch (activeTab) {
-      case "Interiors":
-        endpoint = "generate-interior-design";
-        formDataToSend.append("building_type", formData.buildingType);
-        formDataToSend.append("room_type", formData.roomType);
-        break;
-      case "Exteriors":
-        endpoint = "generate-exterior-design";
-        formDataToSend.append("house_angle", formData.roomType);
-        break;
-      case "Outdoors":
-        endpoint = "generate-outdoor-design";
-        formDataToSend.append("space_type", formData.roomType);
-        break;
-    }
-
-    const response = await axios.post(
-      `http://localhost:8000/api/${endpoint}/`,
-      formDataToSend,
-      {
-        onUploadProgress: (progressEvent) => {
-          // Only update progress based on upload (first 50%)
-          const uploadPercent = Math.round(
-            (progressEvent.loaded * 50) / progressEvent.total
-          );
-          setProgress(uploadPercent);
-        },
-      }
-    );
-
-    // After upload, simulate generation progress (50-100%)
-    for (let i = 50; i <= 100; i += 10) {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setProgress(i);
-    }
-
-    if (response.data.success) {
-      navigate("/ImageGeneration", {
-        state: {
-          originalImage: imgURL,
-          generatedImages: Array.isArray(response.data.designs)
-            ? response.data.designs.map(url => ({
-              url: url.startsWith("http")
-                ? url
-                : backendBaseUrl + url,
-              id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-            }))
-            : [],
-          formData: {
-            style: formData.roomStyle,
-            type: activeTab.toLowerCase()
-          }
+    // Simulate progress (this will be updated by the actual upload progress)
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return prev;
         }
+        return prev + 10;
       });
-    } else {
-      throw new Error(response.data.message || "Design generation failed");
+    }, 1000);
+
+    try {
+      if (!imgFile) throw new Error("Please upload an image first!");
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("image", imgFile);
+      formDataToSend.append("design_style", formData.roomStyle);
+      formDataToSend.append("ai_strength", formData.aiStrength);
+      formDataToSend.append("num_designs", formData.numDesigns.toString());
+
+      let endpoint = "";
+      switch (activeTab) {
+        case "Interiors":
+          endpoint = "generate-interior-design";
+          formDataToSend.append("building_type", formData.buildingType);
+          formDataToSend.append("room_type", formData.roomType);
+          break;
+        case "Exteriors":
+          endpoint = "generate-exterior-design";
+          formDataToSend.append("house_angle", formData.roomType);
+          break;
+        case "Outdoors":
+          endpoint = "generate-outdoor-design";
+          formDataToSend.append("space_type", formData.roomType);
+          break;
+      }
+
+      const response = await axios.post(
+        `http://localhost:8000/api/${endpoint}/`,
+        formDataToSend,
+        {
+          onUploadProgress: (progressEvent) => {
+            // Only update progress based on upload (first 50%)
+            const uploadPercent = Math.round(
+              (progressEvent.loaded * 50) / progressEvent.total
+            );
+            setProgress(uploadPercent);
+          },
+        }
+      );
+
+      // After upload, simulate generation progress (50-100%)
+      for (let i = 50; i <= 100; i += 10) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setProgress(i);
+      }
+
+      if (response.data.success) {
+        navigate("/ImageGeneration", {
+          state: {
+            originalImage: imgURL,
+            generatedImages: Array.isArray(response.data.designs)
+              ? response.data.designs.map(url => ({
+                url: url.startsWith("http")
+                  ? url
+                  : backendBaseUrl + url,
+                id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+              }))
+              : [],
+            formData: {
+              style: formData.roomStyle,
+              type: activeTab.toLowerCase()
+            }
+          }
+        });
+      } else {
+        throw new Error(response.data.message || "Design generation failed");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || error.message || "Failed to connect to server";
+      alert(`Error: ${errorMessage}`);
+    } finally {
+      clearInterval(progressInterval);
+      setIsLoading(false);
     }
-  } catch (error) {
-    const errorMessage =
-      error.response?.data?.message || error.message || "Failed to connect to server";
-    alert(`Error: ${errorMessage}`);
-  } finally {
-    clearInterval(progressInterval);
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
@@ -696,7 +700,7 @@ export default function Form() {
 
       {/* Form Section */}
       <div className="w-full max-w-7xl flex flex-col xl:flex-row gap-10 items-start justify-between">
-        {/* Upload */}
+        {/* Upload  */}
         <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
           <div
             className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer relative"
@@ -759,7 +763,7 @@ export default function Form() {
             </div>
           </div>
         </div>
-
+      
         {/* Form Controls */}
         <form
           onSubmit={handleSubmit}

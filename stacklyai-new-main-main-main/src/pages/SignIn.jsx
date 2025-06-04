@@ -241,7 +241,7 @@
 //     </div>
 //   );
 // }
-
+//Signin
 import React, { useState } from "react";
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -255,30 +255,33 @@ export default function SignIn({ setUser }) {
   const navigate = useNavigate();
 
   const { userInfo, setUserInfo } = useContext(UserContext);
+
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
 
-  try {
-    const res = await axios.post(
-      "http://localhost:8000/login", // Change to your FastAPI URL
-      {
-        email: formData.email,
-        password: formData.password,
-      },
-      {
-        withCredentials: true, // to allow setting cookie
-      }
-    );
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/login",
+        {
+          email: formData.email,
+          password: formData.password,
+        },
+        { withCredentials: true }
+      );
 
-    // Save user info
-    setUserInfo(res.data);
-    navigate("/afterHome");
-  } catch (err) {
-    console.error(err);
-    setError("Invalid email or password");
-  }
-};
+      const { userId, email, access_token } = res.data;
+
+      // Store user info in context or state
+      setUserInfo({ userId, email, token: access_token });
+
+      // Redirect to after-login home
+      navigate("/AfterHome");
+    } catch (err) {
+      console.error(err);
+      setError("Invalid email or password");
+    }
+  };
 
   return (
     <div>

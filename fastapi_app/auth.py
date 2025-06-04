@@ -265,6 +265,8 @@ def verify_token(token: str = Depends(oauth2_scheme)):
     except JWTError:
         raise HTTPException
 """
+
+#auth.py
 from fastapi import APIRouter, HTTPException, status, Request, Depends,Response
 from pydantic import BaseModel, EmailStr, validator
 from passlib.context import CryptContext
@@ -272,6 +274,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordBearer
 from asgiref.sync import sync_to_async
 from jose import JWTError, jwt
+from datetime import datetime, timedelta
 from django.core.exceptions import ObjectDoesNotExist
 from fastapi_app.config import SECRET_KEY, ALGORITHM
 from fastapi_app.django_setup import django_setup
@@ -301,7 +304,6 @@ AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID")
 AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET")
 AUTH0_CALLBACK_URL = os.getenv("AUTH0_CALLBACK_URL")
 FRONTEND_HOME_URL = os.getenv("FRONTEND_HOME_URL")
-FRONTEND_LOGIN_URL = os.getenv("FRONTEND_LOGIN_URL")
 SMTP_HOST = os.getenv("SMTP_HOST")
 SMTP_PORT = os.getenv("SMTP_PORT")
 SMTP_USER = os.getenv("SMTP_USER")  # Add to .env
@@ -532,6 +534,36 @@ async def verify_otp(otp_data: VerifyOTP):
 
 
 
+# @router.post("/login")
+# async def login(user_data: LoginUser):  # define LoginUser Pydantic model with email and password
+#     try:
+#         @sync_to_async
+#         def verify_user():
+#             user = UserData.objects.get(email=user_data.email)
+#             if not verify_password(user_data.password, user.password):
+#                 raise HTTPException(status_code=401, detail="Invalid password")
+#             return user
+
+#         user = await verify_user()
+
+#         token = create_access_token(data={"sub": user.email, "user_id": user.id})
+
+#         response = JSONResponse(content={"message": "Login successful", "access_token": token})
+#         response.set_cookie(
+#             key="access_token",
+#             value=token,
+#             httponly=True,
+#             secure=True,  # False if testing on localhost without HTTPS
+#             samesite="lax",
+#             max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+#         )
+#         return response
+
+#     except UserData.DoesNotExist:
+#         raise HTTPException(status_code=404, detail="User not found")
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+
 @router.post("/login")
 async def login(user_data: LoginUser):
     try:
@@ -544,11 +576,16 @@ async def login(user_data: LoginUser):
 
         user = await verify_user()
 
-        # Generate JWT token after successful login
+        # Generate JWT token
         token = jwt.encode({"sub": user.email}, SECRET_KEY, algorithm=ALGORITHM)
 
         response = JSONResponse(
-            content={"message": "Login successful", "access_token": token}
+            content={
+                "message": "Login successful",
+                "access_token": token,
+                "userId": user.id,
+                "email": user.email
+            }
         )
         response.set_cookie(key="access_token", value=token, httponly=True, secure=True)
         return response
@@ -660,11 +697,11 @@ async def handle_provider_signup_login(email: str, first_name: str, last_name: s
                     APIKeyManager.objects.create(
                         user=user,
                         plan='basic',
-                        active_keys=unique_api_key, 
+                        active_keys=unique_api_key,
                         revoked_keys=[],
                         credits_remaining=10,
                         monthly_credits=10,
-                        created_at=timezone.now(),
+                        created_at=datetime.utcnow(),
                         updated_at=None,
                         is_active=True,
                         usage_count=0
@@ -672,11 +709,18 @@ async def handle_provider_signup_login(email: str, first_name: str, last_name: s
                 return user, created
 
         user, created = await process_user()
-        token = jwt.encode({"sub": user.email or user.userid}, SECRET_KEY, algorithm=ALGORITHM)
 
-        redirect_url = FRONTEND_HOME_URL
-        response = RedirectResponse(url=redirect_url, status_code=302)
-        response.set_cookie(key="access_token", value=token, httponly=True, secure=True)
+        token = create_access_token(data={"sub": user.email or user.userid, "user_id": user.id})
+
+        response = RedirectResponse(url=FRONTEND_HOME_URL, status_code=302)
+        response.set_cookie(
+            key="access_token",
+            value=token,
+            httponly=True,
+            secure=True,
+            samesite="lax",
+            max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
+        )
         return response
 
     except Exception as e:
@@ -699,14 +743,24 @@ async def apple_signup(userid: str):
     return await handle_provider_signup_login(None, None, None, provider="apple", user_id=userid)
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 
-def verify_token(token: str = Depends(oauth2_scheme)):
+async def verify_token(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_email: str = payload.get("sub")
+        if user_email is None:
+            raise HTTPException(status_code=401, detail="Invalid token payload")
         return payload
     except JWTError:
-        raise HTTPException(status_code=403, detail="Invalid token")
-
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
