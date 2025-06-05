@@ -1278,7 +1278,7 @@ export default function ImageGeneration() {
 
   const generateMoreImages = async () => {
     if (!formData || !uploadedFile) return;
-    
+
     setIsLoading(true);
     try {
       const formDataToSend = new FormData();
@@ -1299,13 +1299,12 @@ export default function ImageGeneration() {
         }
       );
 
-      if (response.data.status === "success") {
-        const newImages = response.data.generated_images.map((url, index) => ({
+      if (response.data.success === true) {
+        const newImages = response.data.designs.map((url, index) => ({
           url: backendBaseUrl + url,
-          id: `more-design-${index}-${Date.now()}`,
+          id: `more-design-${index }-${Date.now()}`,
           label: `Additional Design ${generatedImages.length + index + 1}`
         }));
-        
         setGeneratedImages([...generatedImages, ...newImages]);
       }
     } catch (error) {
@@ -1334,6 +1333,7 @@ export default function ImageGeneration() {
   const getImagePairs = () => {
     const pairs = [];
 
+    // First row: Original + first generated image
     if (originalImage && generatedImages.length > 0) {
       pairs.push([originalImage, generatedImages[0]]);
     } else if (originalImage) {
@@ -1342,13 +1342,13 @@ export default function ImageGeneration() {
       pairs.push([generatedImages[0], generatedImages[1] || null]);
     }
 
-    const startIndex = originalImage ? 1 : 2;
+    // Remaining rows: next pairs of generated images
+    let startIndex = originalImage ? 1 : 2;
+
     for (let i = startIndex; i < generatedImages.length; i += 2) {
-      const pair = [generatedImages[i]];
-      if (i + 1 < generatedImages.length) {
-        pair.push(generatedImages[i + 1]);
-      }
-      pairs.push(pair);
+      const first = generatedImages[i];
+      const second = generatedImages[i + 1] || null;
+      pairs.push([first, second]);
     }
 
     return pairs;
@@ -1370,19 +1370,18 @@ export default function ImageGeneration() {
                 onClick={() => setSelectedStyle(style)}
               >
                 <div
-                  className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 ${
-                    selectedStyle === style
+                  className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 ${selectedStyle === style
                       ? "bg-gradient-to-l from-[#00B0BA] via-black to-[#007B82] border-2 border-white"
                       : "bg-white bg-opacity-10"
-                  }`}
+                    }`}
                 >
                   <img
                     src={
                       style === "interior"
                         ? Interior
                         : style === "exteriors"
-                        ? Home
-                        : Tree
+                          ? Home
+                          : Tree
                     }
                     alt={style}
                     className="w-8 h-8"
@@ -1486,12 +1485,12 @@ export default function ImageGeneration() {
           {/* Generate More Button */}
           <div className="mt-12 text-center">
             <button
-          onClick={generateMoreImages}
-          disabled={isLoading}
-          className="bg-[#00B0BA] text-white font-semibold py-3 px-8 rounded-lg hover:bg-[#00858C] transition-colors disabled:opacity-50"
-        >
-          {isLoading ? "Generating..." : "Generate 2 More Designs"}
-        </button>
+              onClick={generateMoreImages}
+              disabled={isLoading}
+              className="bg-[#00B0BA] text-white font-semibold py-3 px-8 rounded-lg hover:bg-[#00858C] transition-colors disabled:opacity-50"
+            >
+              {isLoading ? "Generating..." : "Generate 2 More Designs"}
+            </button>
           </div>
         </div>
       </div>

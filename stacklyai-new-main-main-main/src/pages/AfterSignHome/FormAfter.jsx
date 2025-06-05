@@ -404,6 +404,7 @@ export default function Form() {
   const [generatedImages, setGeneratedImages] = useState([]); // To store generated image URLs
   const [originalImageUrl, setOriginalImageUrl] = useState(null);
   const backendBaseUrl = "http://localhost:8000";
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
 
 
@@ -565,107 +566,107 @@ export default function Form() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setIsLoading(true);
-  setProgress(0);
+    e.preventDefault();
+    setIsLoading(true);
+    setProgress(0);
 
-  // Simulate progress (this will be updated by the actual upload progress)
-  const progressInterval = setInterval(() => {
-    setProgress(prev => {
-      if (prev >= 90) {
-        clearInterval(progressInterval);
-        return prev;
+    // Simulate progress (this will be updated by the actual upload progress)
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return prev;
+        }
+        return prev + 10;
+      });
+    }, 1000);
+
+    try {
+      if (!imgFile) throw new Error("Please upload an image first!");
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("image", imgFile);
+      formDataToSend.append("design_style", formData.roomStyle);
+      formDataToSend.append("ai_strength", formData.aiStrength);
+      formDataToSend.append("num_designs", formData.numDesigns.toString());
+
+      let endpoint = "";
+      let typeDetail = "";
+
+      switch (activeTab) {
+        case "Interiors":
+          endpoint = "generate-interior-design";
+          formDataToSend.append("building_type", formData.buildingType);
+          formDataToSend.append("room_type", formData.roomType);
+          typeDetail = formData.roomType;
+          break;
+        case "Exteriors":
+          endpoint = "generate-exterior-design";
+          formDataToSend.append("house_angle", formData.roomType);
+          typeDetail = formData.roomType;
+          break;
+        case "Outdoors":
+          endpoint = "generate-outdoor-design";
+          formDataToSend.append("space_type", formData.roomType);
+          typeDetail = formData.roomType;
+          break;
       }
-      return prev + 10;
-    });
-  }, 1000);
 
-  try {
-    if (!imgFile) throw new Error("Please upload an image first!");
+      const response = await axios.post(
+        `http://localhost:8000/api/${endpoint}/`,
+        formDataToSend,
+        {
+          onUploadProgress: (progressEvent) => {
+            // Only update progress based on upload (first 50%)
+            const uploadPercent = Math.round(
+              (progressEvent.loaded * 50) / progressEvent.total
+            );
+            setProgress(uploadPercent);
+          },
+        }
+      );
 
-    const formDataToSend = new FormData();
-    formDataToSend.append("image", imgFile);
-    formDataToSend.append("design_style", formData.roomStyle);
-    formDataToSend.append("ai_strength", formData.aiStrength);
-    formDataToSend.append("num_designs", formData.numDesigns.toString());
-
-    let endpoint = "";
-    let typeDetail = "";
-
-    switch (activeTab) {
-      case "Interiors":
-        endpoint = "generate-interior-design";
-        formDataToSend.append("building_type", formData.buildingType);
-        formDataToSend.append("room_type", formData.roomType);
-        typeDetail = formData.roomType;
-        break;
-      case "Exteriors":
-        endpoint = "generate-exterior-design";
-        formDataToSend.append("house_angle", formData.roomType);
-        typeDetail = formData.roomType;
-        break;
-      case "Outdoors":
-        endpoint = "generate-outdoor-design";
-        formDataToSend.append("space_type", formData.roomType);
-        typeDetail = formData.roomType;
-        break;
-    }
-
-    const response = await axios.post(
-      `http://localhost:8000/api/${endpoint}/`,
-      formDataToSend,
-      {
-        onUploadProgress: (progressEvent) => {
-          // Only update progress based on upload (first 50%)
-          const uploadPercent = Math.round(
-            (progressEvent.loaded * 50) / progressEvent.total
-          );
-          setProgress(uploadPercent);
-        },
+      // After upload, simulate generation progress (50-100%)
+      for (let i = 50; i <= 100; i += 10) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setProgress(i);
       }
-    );
 
-    // After upload, simulate generation progress (50-100%)
-    for (let i = 50; i <= 100; i += 10) {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setProgress(i);
-    }
-
-    if (response.data.success) {
-      navigate("/ImageGeneration", {
-        state: {
-          originalImage: imgURL,
-          uploadedFile: imgFile,
-          generatedImages: Array.isArray(response.data.designs)
-            ? response.data.designs.map(url => ({
+      if (response.data.success) {
+        navigate("/ImageGeneration", {
+          state: {
+            originalImage: imgURL,
+            uploadedFile: imgFile,
+            generatedImages: Array.isArray(response.data.designs)
+              ? response.data.designs.map(url => ({
                 url: url.startsWith("http")
                   ? url
                   : backendBaseUrl + url,
                 id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
               }))
-            : [],
-          formData: {
-            //userId: userInfo.userId,
-            category: activeTab.toLowerCase(),
-            typeDetail: typeDetail,
-            style: formData.roomStyle,
-            aiStrength: formData.aiStrength,
-            numDesigns: formData.numDesigns
+              : [],
+            formData: {
+              //userId: userInfo.userId,
+              category: activeTab.toLowerCase(),
+              typeDetail: typeDetail,
+              style: formData.roomStyle,
+              aiStrength: formData.aiStrength,
+              numDesigns: formData.numDesigns
+            }
           }
-        }
-      });
-    } else {
-      throw new Error(response.data.message || "Design generation failed");
+        });
+      } else {
+        throw new Error(response.data.message || "Design generation failed");
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || error.message || "Failed to connect to server";
+      alert(`Error: ${errorMessage}`);
+    } finally {
+      clearInterval(progressInterval);
+      setIsLoading(false);
     }
-  } catch (error) {
-    const errorMessage =
-      error.response?.data?.message || error.message || "Failed to connect to server";
-    alert(`Error: ${errorMessage}`);
-  } finally {
-    clearInterval(progressInterval);
-    setIsLoading(false);
-  }
-};
+  };
 
   return (
     <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
@@ -710,70 +711,115 @@ export default function Form() {
 
       {/* Form Section */}
       <div className="w-full max-w-7xl flex flex-col xl:flex-row gap-10 items-start justify-between">
-        {/* Upload  */}
-        <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
-          <div
-            className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer relative"
-            onClick={() => inpRef.current.click()}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-          >
-            {imgURL ? (
-              <>
-                <img
-                  src={imgURL}
-                  alt="Preview"
-                  className="w-full h-full object-cover rounded-xl"
-                />
-                {isLoading && (
-                  <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center rounded-xl">
-                    <div className="w-32 h-32 mb-4">
-                      <CircularProgressbar
-                        value={progress}
-                        text={`${progress}%`}
-                        styles={buildStyles({
-                          pathColor: '#FFFFFF',
-                          textColor: 'white',
-                          trailColor: '#FFFFFF33',
-                          textSize: '28px',
-                          textBold: '700',
-                        })}
-                      />
-                    </div>
-                    <p className="text-white text-lg">Rendering...</p>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
-                <div className="w-[clamp(40px,5vw,70px)] aspect-square rounded-full p-2 bg-[#FFFFFF1A] flex justify-center items-center">
-                  <img src={Galley} alt="gallery" className="w-full h-auto" />
-                </div>
-                <p className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug">
-                  Drag & drop or click to upload a photo
-                </p>
-              </div>
-            )}
-            <input
-              type="file"
-              name="image"
-              ref={inpRef}
-              onChange={changeImage}
-              accept="image/*"
-              className="hidden"
+        {/* Upload Box */}
+<div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
+  <div
+    className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer relative"
+    onClick={() => inpRef.current.click()}
+    onDragOver={handleDragOver}
+    onDrop={handleDrop}
+  >
+    {imgURL ? (
+      <>
+        {!isImageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-[#FFFFFF1A] rounded-xl">
+            <p className="text-[#FFFFFFB2]">Loading image...</p>
+          </div>
+        )}
+        <div className="cursor-default relative h-full w-full flex justify-center items-center rounded-xl p-4"> {/* Added p-4 for padding */}
+          <div className="relative h-full w-full flex justify-center items-center rounded-xl overflow-hidden">
+            <img
+              src={imgURL}
+              alt="Preview"
+              className={`max-w-[calc(100%-8px)] max-h-[calc(100%-8px)] object-contain ${isImageLoaded ? "block" : "hidden"}`}
+              onLoad={() => setIsImageLoaded(true)}
+              onError={() => setIsImageLoaded(false)}
             />
           </div>
 
-          <div className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] flex justify-around items-center cursor-pointer">
-            <div className="w-[24px] h-[24px]">
-              <img src={I} alt="i" />
-            </div>
-            <div className="w-[93px] h-[19px] text-[16px] font-[medium] leading-[100%] text-center text-white">
-              Photo guide
-            </div>
-          </div>
+          {/* Close button */}
+          <svg
+            onClick={(e) => {
+              e.stopPropagation();
+              setImgURL(null);
+              setIsImageLoaded(false);
+            }}
+            className="absolute p-1 w-7 h-7 rounded-full bg-black/70 fill-white top-3 right-3 cursor-pointer hover:bg-black/90 transition-colors"
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 -960 960 960"
+            width="24px"
+          >
+            <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+          </svg>
         </div>
-      
+        {isLoading && (
+          <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center rounded-xl">
+            <div className="relative w-24 h-24 mb-4">
+              <svg className="w-full h-full" viewBox="0 0 100 100">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  fill="none"
+                  stroke="#FFFFFF20"
+                  strokeWidth="8"
+                />
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  strokeDasharray="283"
+                  strokeDashoffset={283 - (283 * progress) / 100}
+                  transform="rotate(-90 50 50)"
+                />
+              </svg>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-white text-xl font-bold">
+                  {progress}%
+                </span>
+              </div>
+            </div>
+            <p className="text-white text-lg text-center">
+              {progress < 100 ? "Rendering..." : "Finalizing designs..."}
+            </p>
+          </div>
+        )}
+      </>
+    ) : (
+      <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
+        <div className="w-[clamp(40px,5vw,70px)] aspect-square rounded-full p-2 bg-[#FFFFFF1A] flex justify-center items-center">
+          <img src={Galley} alt="gallery" className="w-full h-auto" />
+        </div>
+        <p className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug">
+          Drag & drop or click to upload a photo
+        </p>
+      </div>
+    )}
+    <input
+      type="file"
+      name="image"
+      ref={inpRef}
+      onChange={changeImage}
+      accept="image/*"
+      className="hidden"
+    />
+  </div>
+
+  <div className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] flex justify-around items-center cursor-pointer hover:bg-white/10 transition-colors">
+    <div className="w-[24px] h-[24px]">
+      <img src={I} alt="i" />
+    </div>
+    <div className="w-[93px] h-[19px] text-[16px] font-[medium] leading-[100%] text-center text-white">
+      Photo guide
+    </div>
+  </div>
+</div>
+
         {/* Form Controls */}
         <form
           onSubmit={handleSubmit}

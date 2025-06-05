@@ -11,7 +11,7 @@ from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from dotenv import load_dotenv
 from io import BytesIO
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import io
 import hashlib
 import aiohttp
@@ -23,6 +23,7 @@ import math
 from pathlib import Path
 import logging
 from typing import Literal
+from PIL import UnidentifiedImageError
 
 load_dotenv()
 
@@ -158,30 +159,36 @@ STRENGTH_CONFIG = {
 
 ALLOWED_DIMENSIONS = [
     (1024, 1024), (1152, 896), (1216, 832), (1344, 768),
-    (640, 1536), (768, 1344), (832, 1216), (896, 1152)
+    (1536, 640), (640, 1536), (768, 1344), (832, 1216), (896, 1152)
 ]
 
 executor = ThreadPoolExecutor(max_workers=8)
 
-async def resize_to_allowed_dimensions(image_path):
-    """Optimized image resizing that preserves the original file"""
+async def resize_to_allowed_dimensions(image_path: str):
     try:
         with Image.open(image_path) as img:
-            width, height = img.size
-            aspect = width / height
-            closest = min(ALLOWED_DIMENSIONS, 
-                         key=lambda dim: abs((dim[0]/dim[1]) - aspect))
-            
-            if abs(width - closest[0]) < 100 and abs(height - closest[1]) < 100:
-                with open(image_path, "rb") as f:
-                    return f.read(), (width, height)
-                    
-            img = img.resize(closest, Image.LANCZOS)
+            img = img.convert("RGB")  # Fix image mode issues
+            original_width, original_height = img.size
+            original_aspect = original_width / original_height
+
+            # Find best match from allowed dimensions based on aspect ratio difference
+            closest_dim = min(
+                ALLOWED_DIMENSIONS,
+                key=lambda dim: abs((dim[0] / dim[1]) - original_aspect)
+            )
+
+            resized_img = img.resize(closest_dim, Image.LANCZOS)
+
             img_bytes = io.BytesIO()
-            img.save(img_bytes, format="PNG", optimize=True, quality=90)
-            return img_bytes.getvalue(), closest
+            resized_img.save(img_bytes, format="PNG", optimize=True, quality=90)
+            return img_bytes.getvalue(), closest_dim
+
+    except UnidentifiedImageError:
+        raise HTTPException(400, detail="Invalid or unsupported image format.")
     except Exception as e:
-        raise HTTPException(400, f"Image processing error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(500, detail=f"Internal error: {str(e)}")
 
 async def generate_design_variation(
     image_bytes: bytes,
@@ -715,30 +722,36 @@ OUTDOOR_STRENGTH_CONFIG = {
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-async def outdoor_resize_to_allowed_dimensions(image_path: str) -> tuple[bytes, tuple[int, int]]:
-    """Improved image resizing with better error handling"""
+async def outdoor_resize_to_allowed_dimensions(image_path: str):
+    """
+    Resize the image to the closest allowed SDXL dimension based on aspect ratio.
+    Returns: (image_bytes, (new_width, new_height))
+    """
     try:
         with Image.open(image_path) as img:
+            img = img.convert("RGB")  # Ensure correct mode
             width, height = img.size
-            aspect = width / height
-            
-            # Find closest allowed dimension while maintaining aspect ratio
-            closest = min(
+            aspect_ratio = width / height
+
+            # Find closest allowed dimension by comparing aspect ratios
+            closest_dim = min(
                 ALLOWED_DIMENSIONS,
-                key=lambda dim: abs((dim[0]/dim[1]) - aspect)
+                key=lambda dim: abs((dim[0] / dim[1]) - aspect_ratio)
             )
-            
-            # Only resize if significantly different
-            if abs(width - closest[0]) > 100 or abs(height - closest[1]) > 100:
-                img = img.resize(closest, Image.LANCZOS)
-                
+
+            # If the image is already close enough to a valid dimension, skip resizing
+            if abs(width - closest_dim[0]) < 100 and abs(height - closest_dim[1]) < 100:
+                with open(image_path, "rb") as f:
+                    return f.read(), (width, height)
+
+            # Resize using high-quality resampling
+            resized_img = img.resize(closest_dim, Image.LANCZOS)
             img_bytes = io.BytesIO()
-            img.save(img_bytes, format="PNG", optimize=True, quality=95)
-            return img_bytes.getvalue(), img.size
-            
+            resized_img.save(img_bytes, format="PNG", optimize=True, quality=90)
+            return img_bytes.getvalue(), closest_dim
+
     except Exception as e:
-        logger.error(f"Image processing failed: {str(e)}")
-        raise ValueError(f"Could not process image: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Image processing error: {str(e)}")
     
 
 # Style configurations for outdoor
@@ -974,4 +987,3 @@ async def generate_outdoor_design(
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}", exc_info=True)
         raise HTTPException(500, detail="Internal server error")
-    
