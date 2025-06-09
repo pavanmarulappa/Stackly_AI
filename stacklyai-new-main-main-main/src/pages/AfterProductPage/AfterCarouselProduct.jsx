@@ -258,7 +258,7 @@ export default function AfterCarouselProducts() {
       </div>
 
       <div className="flex gap-2.5 justify-center items-center mt-10">
-        <button
+        {/* <button
           onClick={scrollToForm}
           className="bg-[#00b0ba] p-3 sm:px-[25px] sm:py-[15px] rounded-[5px] flex gap-2.5 justify-center items-center"
         >
@@ -276,7 +276,7 @@ export default function AfterCarouselProducts() {
           <p className="text-md sm:text-xl font-bold text-white">
             Create Magic
           </p>
-        </button>
+        </button> */}
       </div>
 
       {/* Your form section - add this somewhere below in your component */}

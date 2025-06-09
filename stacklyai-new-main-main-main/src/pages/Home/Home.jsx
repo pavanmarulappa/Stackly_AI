@@ -58,6 +58,7 @@ import Reacts from "../../assets/home/react.png";
 import Stars from "../../assets/home/stars.png";
 import Magic from "../../assets/product-pg/magic.png";
 import {Link} from "react-router-dom"
+import BasicForm from "./BasicForm";
 
 
 //export default function Home() {
@@ -446,7 +447,7 @@ export default function Home() {
 
       {/* Section 7 */}
 
-      <Form />
+      <BasicForm />
 
       {/* Section 7.5 */}
 
@@ -644,7 +645,7 @@ export default function Home() {
         </h2>
 
         <Link
-          to="/UiPlans"
+          to="/Sign-in"
           className="max-w-[406px] min-h-[60px] rounded-[5px] bg-gradient-to-r from-[#00B0BA] via-[#000000] to-[#007B82] text-white font-bold py-5 px-16 rounded-md hover:opacity-50 transition"
         >
           Start Free Trial

@@ -374,7 +374,7 @@
 // </section>
 //   );
 // }
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Interior from "../../assets/product-pg/Vector.png";
@@ -385,7 +385,7 @@ import Galley from "../../assets/product-pg/gallery.png";
 import I from "../../assets/product-pg/i.png";
 import Magic from "../../assets/product-pg/magic.png";
 
-export default function Form() {
+export default function Form({ imageValue, id }) {
   const { userInfo } = useContext(UserContext);
   const navigate = useNavigate();
   const inpRef = useRef(null);
@@ -397,93 +397,94 @@ export default function Form() {
     roomStyle: "",
     noOfDesign: "1",
     aiTouch: "Low",
-    houseAngle: "", // Added for exterior
-    spaceType: "", // Added for outdoor
   });
   const [imgURL, setImgURL] = useState(null);
 
+  useEffect(() => {
+    if (imageValue) {
+      setImgURL(imageValue);
+    }
+  }, [imageValue]);
+
   const tabs = [
-    { name: "Interiors", icon: Interior },
-    { name: "Exteriors", icon: Home },
-    { name: "Outdoors", icon: Tree },
-    // { name: "Upgrade to Unlock", icon: Lock },
+    { name: "Interiors", icon: Interior, disabled: false },
+    { name: "Exteriors", icon: Home, disabled: false },
+    { name: "Outdoors", icon: Tree, disabled: false },
+    { name: "Upgrade to Unlock", icon: Lock, disabled: true },
   ];
 
-  // Updated options for each tab
   const roomTypes = {
     Interiors: [
       "Living room",
       "Bedroom",
       "Kitchen",
-      "Home office",
-      "Dining room",
-      "Study room",
-      "Family room",
-      "Kid room",
+      "Dining Room",
+      "Study Room",
+      "Home Office",
+      "Family Room",
+      "Kids Room",
       "Balcony",
     ],
     Exteriors: [
-      "Front side",
-      "Back side",
-      "Left side",
-      "Right side",
-    ],
-    Outdoors: [
       "Front Yard",
       "Backyard",
-      "Balcony",
-      "Terrace/Rooftop",
-      "Driveway/Parking Area",
-      "Walkway/Path",
-      "Lounge",
-      "Porch",
-      "Fence",
       "Garden",
-    ],
-  };
-
-  const styles = {
-    Interiors: [
-      "Classic",
-      "Modern",
-      "Minimal",
-      "Scandinavian",
-      "Contemporary",
-      "Industrial",
-      "Japandi",
-      "Bohemian (Boho)",
-      "Coastal",
-    ],
-    Exteriors: [
-      "Classic",
-      "Modern",
-      "Bohemian (Boho)",
-      "Coastal",
-      "International",
-      "Elephant",
-      "Stone clad",
-      "Glass house",
-      "Red brick",
-      "Painted brick",
-      "Wood accents",
-      "Industrial",
+      "Patio",
+      "Deck",
+      "Pool Area",
+      "Driveway",
     ],
     Outdoors: [
-      "Modern",
-      "Contemporary",
-      "Traditional",
-      "Rustic",
-      "Scandinavian",
-      "Classic Garden",
-      "Coastal Outdoor",
-      "Farmhouse",
-      "Cottage Garden",
-      "Industrial",
+      "Park",
+      "Camping Site",
       "Beach",
+      "Mountain View",
+      "Forest",
+      "Lake Side",
     ],
   };
 
+  const styles = [
+    "Modern",
+    "Tropical",
+    "Rustic",
+    "Tribal",
+    "Cyberpunk",
+    "Zen",
+    "Japanese Design",
+    "Biophilic",
+    "Christmas",
+    "Bohemian",
+    "Contemporary",
+    "Maximalist",
+    "Vintage",
+    "Baroque",
+    "Farmhouse",
+    "Minimalist",
+    "Gaming Room",
+    "French Country",
+    "Art Deco",
+    "Art Nouveau",
+    "Halloween",
+    "Ski Chalet",
+    "Sketch",
+    "Scandinavian",
+    "Industrial",
+    "Neoclassic",
+    "Medieval",
+    "Shabby Chic",
+    "Eclectic",
+    "Asian Traditional",
+    "Hollywood Glam",
+    "Western Traditional",
+    "Transitional",
+  ];
+
   const changeImage = (e) => {
+    if (!userInfo?.userId) {
+      navigate("/sign-in");
+      return;
+    }
     const file = e.target.files[0];
     if (file) {
       const preview = URL.createObjectURL(file);
@@ -497,7 +498,12 @@ export default function Form() {
 
   const handleDrop = (e) => {
     e.preventDefault();
+    if (!userInfo?.userId) {
+      navigate("/sign-in");
+      return;
+    }
     const file = e.dataTransfer.files[0];
+
     if (file && file.type.startsWith("image/")) {
       const preview = URL.createObjectURL(file);
       setImgURL(preview);
@@ -507,77 +513,48 @@ export default function Form() {
   };
 
   const handleChange = (value, key) => {
-    setFormData((prev) => {
-      return { ...prev, [key]: value };
-    });
-  };
-
-  const handleTabChange = (tabName) => {
-    if (tabName === "Upgrade to Unlock") {
-      alert("Please upgrade your account to access this feature");
-    } else {
-      setActiveTab(tabName);
-      // Reset relevant form fields when switching tabs
-      setFormData({
-        buildingType: "",
-        roomType: "",
-        roomStyle: "",
-        noOfDesign: "1",
-        aiTouch: "Low",
-        houseAngle: "",
-        spaceType: "",
-      });
-    }
+    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!userInfo.userId) {
-      return navigate("/sign-in");
+    if (!userInfo?.userId) {
+      navigate("/sign-in");
+      return;
     }
-    
-    // Validate based on active tab
-    let isValid = false;
-    const commonFields = formData.roomStyle && formData.noOfDesign && formData.aiTouch && imgURL;
-    
-    if (activeTab === "Interiors") {
-      isValid = commonFields && formData.buildingType && formData.roomType;
-    } else if (activeTab === "Exteriors") {
-      isValid = commonFields && formData.roomType; // roomType used for house angle
-    } else if (activeTab === "Outdoors") {
-      isValid = commonFields && formData.roomType; // roomType used for space type
-    }
-
-    if (isValid) {
+    if (
+      formData.aiTouch &&
+      formData.noOfDesign &&
+      formData.roomStyle &&
+      formData.roomType &&
+      formData.buildingType &&
+      imgURL
+    ) {
       console.log("Form Data:", formData);
       console.log("Image URL:", imgURL);
       alert("Design generation started!");
-      // Reset form
       setFormData({
         buildingType: "",
         roomType: "",
         roomStyle: "",
         noOfDesign: "1",
         aiTouch: "Low",
-        houseAngle: "",
-        spaceType: "",
       });
       setImgURL(null);
     } else {
-      alert("Please fill out all the required fields!");
+      alert("Please fill out all the fields!");
     }
   };
 
   return (
-    <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
+    <section className="w-full min-h-screen pb-12 px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
       {/* Header */}
       <div className="w-full max-w-4xl text-center space-y-2">
         <h1 className="text-[clamp(2rem,5vw,3rem)] font-semibold text-white leading-snug">
           Let AI Style It
         </h1>
         <p className="text-[clamp(1rem,2.5vw,1.5rem)] font-medium text-white leading-snug">
-          Upload a photo to begin your AI-powered {activeTab.toLowerCase()}{" "}
-          design
+          Upload a photo to begin your AI-powered room design
         </p>
       </div>
 
@@ -586,8 +563,21 @@ export default function Form() {
         {tabs.map((tab) => (
           <div
             key={tab.name}
-            className="w-[clamp(120px,15vw,200px)] max-w-[200px] h-[clamp(100px,12vh,128px)] flex flex-col justify-center items-center gap-2 cursor-pointer"
-            onClick={() => handleTabChange(tab.name)}
+            className={`w-[clamp(120px,15vw,200px)] max-w-[200px] h-[clamp(100px,12vh,128px)] flex flex-col justify-center items-center gap-2 cursor-pointer ${
+              tab.disabled ? "opacity-40 cursor-not-allowed" : ""
+            }`}
+            onClick={() => {
+              if (tab.disabled) {
+                alert("Please upgrade your account to access this feature");
+              } else {
+                setActiveTab(tab.name);
+                setFormData((prev) => ({
+                  ...prev,
+                  roomType: "",
+                  buildingType: "",
+                }));
+              }
+            }}
           >
             <div
               className={`w-[clamp(60px,6vw,77px)] aspect-square border-2 p-2 flex justify-center items-center rounded-full transition-all duration-200 ${
@@ -610,7 +600,10 @@ export default function Form() {
       </div>
 
       {/* Form Section */}
-      <div className="w-full max-w-7xl flex flex-col xl:flex-row gap-10 items-start justify-between">
+      <div
+        className="w-full max-w-7xl flex flex-col xl:flex-row gap-10 items-start justify-between"
+        id="form-section"
+      >
         {/* Upload */}
         <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
           <div
@@ -654,96 +647,67 @@ export default function Form() {
           </div>
         </div>
 
-        {/* Form Controls */}
+        {/* Inputs */}
         <form
           onSubmit={handleSubmit}
           className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
         >
-          {/* Building Type (only for Interior) */}
-          {activeTab === "Interiors" && (
-            <div className="space-y-2">
-              <label className="text-white text-lg">Choose Building Type</label>
-              <div className="flex flex-col sm:flex-row gap-4">
-                {["Commercial", "Residential"].map((type) => (
-                  <div
-                    key={type}
-                    className={`flex-1 flex justify-between items-center px-4 py-2 rounded-md cursor-pointer ${
-                      formData.buildingType === type
-                        ? "bg-white text-[#007B82]"
-                        : "bg-[#00000033] text-[#FFFFFF80]"
-                    }`}
-                    onClick={() => handleChange(type, "buildingType")}
-                  >
-                    <span>{type}</span>
-                    <input
-                      type="radio"
-                      checked={formData.buildingType === type}
-                      onChange={() => {}}
-                    />
-                  </div>
-                ))}
-              </div>
+          {/* Building Type */}
+          <div className="space-y-2">
+            <label className="text-white text-lg">Choose Building Type</label>
+            <div className="flex flex-col sm:flex-row gap-4">
+              {["Commercial", "Residential"].map((type) => (
+                <div
+                  key={type}
+                  className={`flex-1 flex justify-between items-center px-4 py-2 rounded-md cursor-pointer ${
+                    formData.buildingType === type
+                      ? "bg-white text-[#007B82]"
+                      : "bg-[#00000033] text-[#FFFFFF80]"
+                  }`}
+                  onClick={() => handleChange(type, "buildingType")}
+                >
+                  <span>{type}</span>
+                  <input
+                    type="radio"
+                    checked={formData.buildingType === type}
+                    onChange={() => {}}
+                  />
+                </div>
+              ))}
             </div>
-          )}
-
-          {/* Room Type (dynamic label based on tab) */}
-          <div className="space-y-2">
-            <label className="text-white text-lg">
-              {activeTab === "Interiors"
-                ? "Select Room Type"
-                : activeTab === "Exteriors"
-                ? "Select House Angle"
-                : "Select Space"}
-            </label>
-            <select
-              name="roomType"
-              value={formData.roomType}
-              onChange={(e) => handleChange(e.target.value, "roomType")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-            >
-              <option value="">Select an option</option>
-              {roomTypes[activeTab].map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
           </div>
 
-          {/* Style Selection */}
-          <div className="space-y-2">
-            <label className="text-white text-lg">Pick a Style</label>
-            <select
-              name="roomStyle"
-              value={formData.roomStyle}
-              onChange={(e) => handleChange(e.target.value, "roomStyle")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-            >
-              <option value="">Select a style</option>
-              {styles[activeTab].map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Number of designs */}
-          <div className="space-y-2">
-            <label className="text-white text-lg">Number of designs</label>
-            <select
-              name="noOfDesign"
-              value={formData.noOfDesign}
-              onChange={(e) => handleChange(e.target.value, "noOfDesign")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-            >
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
-                <option key={num} value={num}>
-                  {num}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Dynamic Fields */}
+          {[
+            {
+              label: "Select Room Type",
+              name: "roomType",
+              options: roomTypes[activeTab],
+            },
+            { label: "Pick a Style", name: "roomStyle", options: styles },
+            {
+              label: "Number of designs",
+              name: "noOfDesign",
+              options: Array.from({ length: 9 }, (_, i) => i + 1),
+            },
+          ].map((field) => (
+            <div key={field.name} className="space-y-2">
+              <label className="text-white text-lg">{field.label}</label>
+              <select
+                name={field.name}
+                value={formData[field.name]}
+                onChange={(e) => handleChange(e.target.value, field.name)}
+                className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
+              >
+                <option value="">Select {field.name}</option>
+                {field.options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ))}
 
           {/* AI Strength */}
           <div className="space-y-2">
@@ -766,17 +730,17 @@ export default function Form() {
           </div>
         </form>
       </div>
-
-      {/* Generate Button */}
       <div
         className="w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
         style={{
-          backgroundImage:
-            "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+          backgroundImage: `
+        linear-gradient(to right, #007c82 0%,rgb(4, 68, 75),rgb(3, 89, 94) 100%)
+        
+        `,
         }}
       >
         <button
-          type="button"
+          type="submit"
           className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
         >
           <span>

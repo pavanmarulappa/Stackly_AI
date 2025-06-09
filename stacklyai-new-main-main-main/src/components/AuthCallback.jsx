@@ -23,7 +23,7 @@ export default function AuthCallback() {
           login({
             userId: userRes.data.id,
             email: userRes.data.email,
-            token: res.data.token
+            
           });
           
           navigate('/AfterHome');

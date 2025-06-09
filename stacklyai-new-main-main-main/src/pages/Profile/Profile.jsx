@@ -8,9 +8,9 @@ export default function Profile() {
   return (
     <div>
       <HeroProfile />
-      <Myplan />
+      {/* <Myplan />
       <Mybilling />
-      <HelpCenter />
+      <HelpCenter /> */}
     </div>
   )
 }

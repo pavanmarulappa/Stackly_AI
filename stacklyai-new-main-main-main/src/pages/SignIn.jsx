@@ -242,19 +242,18 @@
 //   );
 // }
 //Signin
-import React, { useState } from "react";
-import { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
-import axios from "axios"; 
+import axios from "axios";
 
-export default function SignIn({ setUser }) {
+export default function SignIn() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const { userInfo, setUserInfo } = useContext(UserContext);
+  const { setUserInfo } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -272,11 +271,10 @@ export default function SignIn({ setUser }) {
 
       const { userId, email, access_token } = res.data;
 
-      // Store user info in context or state
       setUserInfo({ userId, email, token: access_token });
 
-      // Redirect to after-login home
-      navigate("/AfterHome");
+      // ✅ Use lowercase route for redirect
+      navigate("/afterhome");
     } catch (err) {
       console.error(err);
       setError("Invalid email or password");

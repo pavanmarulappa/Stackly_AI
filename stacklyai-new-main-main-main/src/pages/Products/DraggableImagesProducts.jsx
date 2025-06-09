@@ -15,6 +15,7 @@ import DraggableImages from "../../components/DraggableImages";
 import Banner from "../../assets/product-pg/bannercode.png";
 import Banner1 from "../../assets/product-pg/bannercode1.png";
 import Star from "../../assets/product-pg/star.png";
+import { Link } from "react-router-dom";
 
 export default function DraggableImagesProducts() {
   const navigate = useNavigate();
@@ -69,9 +70,12 @@ export default function DraggableImagesProducts() {
         </div>
         <div
           className="w-[28px] h-[28px] cursor-pointer hover:opacity-80"
-          onClick={() => handleFullscreen(transformedImage)}
+          onClick={() => handleFullscreenn(transformedImage)}
         >
-          <img src={DragSize} alt="Fullscreen" title="View fullscreen" />
+          <Link to="/Sign-in">
+            {" "}
+            <img src={DragSize} alt="Fullscreen" title="View fullscreen" />
+          </Link>
         </div>
       </div>
       <div className="max-w-[522px] w-full h-auto rounded-[4px]">
@@ -83,30 +87,38 @@ export default function DraggableImagesProducts() {
       <div className="max-w-[520px] min-h-[57px] flex justify-between items-center">
         <div
           className="max-w-[40px] min-h-[57px] flex flex-col justify-center items-center cursor-pointer hover:opacity-80"
-          onClick={() => toggleOriginalImage(roomKey, originalImage)}
+          onClick={() => toggleOriginalImagee(roomKey, originalImage)}
         >
+          <Link to="/Sign-in">
           <img src={Search} alt="Toggle original" title="View original image" />
-          <div className="max-w-[40px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]">
-            Show
-          </div>
+            {" "}
+            <div className="max-w-[40px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]">
+              Show
+            </div>
+          </Link>
         </div>
         <div
           className="max-w-[40px] min-h-[57px] flex flex-col justify-center items-center cursor-pointer hover:opacity-80"
-          onClick={() => handleInputRedirect(roomName, originalImage)}
+          onClick={() => handleInputRedirectt(roomName, originalImage)}
         >
+          <Link to="/Sign-in">
           <img src={Input} alt="Input" title="Go to input form" />
-          <div className="max-w-[40px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]">
-            Input
-          </div>
+            {" "}
+            <div className="max-w-[40px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]">
+              Input
+            </div>
+          </Link>
         </div>
         <div
           className="max-w-[40px] min-h-[57px] flex flex-col justify-center items-center cursor-pointer hover:opacity-80"
-          onClick={() => handleDownload(transformedImage)}
+          onClick={() => handleDownloadd(transformedImage)}
         >
+          <Link to="/sign-in">
           <img src={Download} alt="Download" title="Download image" />
-          <div className="max-w-[57px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]">
-            Download
-          </div>
+            <div className="max-w-[57px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]">
+              Download
+            </div>
+          </Link>
         </div>
       </div>
     </div>
@@ -125,7 +137,7 @@ export default function DraggableImagesProducts() {
             />
             <button
               className="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center"
-              onClick={() => setFullscreenImage(null)}
+              onClick={() => setFullscreenImagee(null)}
             >
               ×
             </button>
@@ -144,7 +156,7 @@ export default function DraggableImagesProducts() {
             />
             <button
               className="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center"
-              onClick={() => setPopupImage(null)}
+              onClick={() => setPopupImagee(null)}
             >
               ×
             </button>

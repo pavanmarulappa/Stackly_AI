@@ -56,14 +56,20 @@ export default function Header() {
                 <NavLink
                   className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82] NavLink visited:font-bold"
                   to="/pricing"
+                  onClick={() => {
+                    setShowSideBar(false);
+                  }}
                 >
                   Pricing
                 </NavLink>
               </li>
               <li>
                 <NavLink
+                  onClick={() => {
+                    setShowSideBar(false);
+                  }}
                   className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82] NavLink visited:font-bold"
-                  to="/Api"
+                  to="/api"
                 >
                   API
                 </NavLink>
@@ -152,13 +158,20 @@ export default function Header() {
                 className="profile-list min-w-[150px] p-4 z-10 hidden group-hover:flex flex-col gap-2 absolute bottom-0 right-0 bg-white rounded-md"
                 style={{ transform: "translateY(95%)" }}
               >
-                <NavLink to="#">My Profile</NavLink>
+                <NavLink to="/Profile">My Profile</NavLink>
                 <NavLink to="#">My Creations</NavLink>
                 <p className="w-full h-[1px] bg-gray-600 my-1"></p>
                 <NavLink
                   onClick={() => {
+                    // Clear user info from context
                     setUserInfo({});
+                    // Clear any authentication tokens from storage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    // Redirect to login
                     navigate("/sign-in");
+                    // Force refresh if needed (optional)
+                    window.location.reload();
                   }}
                 >
                   Logout
@@ -195,9 +208,8 @@ export default function Header() {
       </header>
 
       <section
-        className={`fixed top-0 ${
-          showSideBar ? "right-0" : "right-[-200%]"
-        } transition-all w-[70vw] sm:w-[50%] bg-white shadow-2xl min-h-[120vh] flex flex-col min-[900px]:hidden gap-7 justify-start items-start p-[40px] z-10`}
+        className={`fixed top-0 ${showSideBar ? "right-0" : "right-[-200%]"
+          } transition-all w-[70vw] sm:w-[50%] bg-white shadow-2xl min-h-[120vh] flex flex-col min-[900px]:hidden gap-7 justify-start items-start p-[40px] z-10`}
         style={{ listStyle: "none" }}
       >
         <svg
@@ -244,7 +256,7 @@ export default function Header() {
 
         <NavLink
           className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82] NavLink visited:font-bold"
-          to="/Api"
+          to="/api"
           onClick={() => {
             setShowSideBar(false);
           }}

@@ -14,6 +14,7 @@ import dragImg2_1 from "../../assets/home/draggableImgSection/drag2(1).png";
 import dragImg2_2 from "../../assets/home/draggableImgSection/drag2(2).png";
 import dragImg3_1 from "../../assets/home/draggableImgSection/drag3(1).png";
 import dragImg3_2 from "../../assets/home/draggableImgSection/drag3(2).png";
+import BasicForm from "../Home/BasicForm";
 
 
 export default function Products() {
@@ -50,9 +51,9 @@ export default function Products() {
       <HeroProducts />
       <CarouselProducts />
       <DraggableImages />
-      <Form id="form-section" imageValue={selectedImage} />
+      <BasicForm id="form-section" imageValue={selectedImage} />
       <PackageProducts />
-      {/* <ImageGeneration />  */}
+     
     </div>
   );
 }

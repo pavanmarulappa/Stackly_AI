@@ -72,6 +72,7 @@
 // import close from '../../assets/forgetPg/close.png'
 // import Arrow from '../../assets/forgetPg/arrow.png'
 // import { Link } from 'react-router-dom'
+
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import close from '../../assets/forgetPg/close.png'
@@ -88,6 +89,7 @@ export default function Otp() {
   
   // Get email from location state or localStorage
   const email = location.state?.email || localStorage.getItem('resetEmail');
+  const mode = location.state?.mode || "forgot-password"; // default to forgot
 
   // Timer countdown
   useEffect(() => {

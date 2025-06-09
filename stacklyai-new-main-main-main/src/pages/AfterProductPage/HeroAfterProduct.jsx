@@ -35,7 +35,7 @@ export default function HeroAfterProducts() {
         ].map((item, index) => (
           <p
             key={index}
-            className="rounded-full cursor-pointer border-2 border-solid border-[#007b82] p-2 sm:px-[15px] sm:py-[10px] w-fit"
+            className="rounded-full border-dashed cursor-pointer border-2 border border-[#007b82] p-2 sm:px-[15px] sm:py-[10px] w-fit"
           >
             {item}
           </p>

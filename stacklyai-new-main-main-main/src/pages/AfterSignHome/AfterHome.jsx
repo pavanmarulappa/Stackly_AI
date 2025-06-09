@@ -1,3 +1,4 @@
+//AfterHome.jsx
 import React from 'react'
 import HeroAfterHome from './HeroAfterHome'
 

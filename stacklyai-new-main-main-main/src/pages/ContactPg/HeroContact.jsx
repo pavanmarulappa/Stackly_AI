@@ -11,7 +11,7 @@ export default function HeroContact() {
 
       <ContactForm/>
 
-      <Profile />
+      {/* <Profile /> */}
     </div>
   )
 }

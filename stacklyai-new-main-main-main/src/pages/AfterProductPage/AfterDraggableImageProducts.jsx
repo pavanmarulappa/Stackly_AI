@@ -15,13 +15,13 @@ import DraggableImages from "../../components/DraggableImages";
 import Banner from "../../assets/product-pg/bannercode.png";
 import Banner1 from "../../assets/product-pg/bannercode1.png";
 import Star from "../../assets/product-pg/star.png";
-import { FormDataContext } from "../../context/FormDataContext";
+//import { FormDataContext } from "../../context/FormDataContext";
 
 export default function AfterDraggableImagesProducts() {
 
-  const navigate = useNavigate();
-  const { setImgURL, setFormData } =
-    useContext(FormDataContext);
+  // const navigate = useNavigate();
+  // const { setImgURL, setFormData } =
+  //   useContext(FormDataContext);
 
   const [fullscreenImage, setFullscreenImage] = useState(null);
   const [popupImage, setPopupImage] = useState(null);

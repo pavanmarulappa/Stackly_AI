@@ -57,11 +57,11 @@ export default function AfterProducts() {
       <HeroAfterProducts />
       <AfterCarouselProducts />
       <AfterDraggableImagesProducts />
-      <AfterForm
+      {/* <AfterForm
         id="AfterForm-section"
         imageValue={selectedImage}
         selectedRoom={selectedRoom}
-      />
+      /> */}
       <AfterPackageProducts />
     </div>
   );

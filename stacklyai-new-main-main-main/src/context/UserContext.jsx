@@ -1,4 +1,4 @@
-// //UserContext.jsx
+//UserContext.jsx
 // import React, { createContext, useState } from "react";
 
 // export const UserContext = createContext();
@@ -22,64 +22,65 @@ import React, { createContext, useState, useEffect } from "react";
 export const UserContext = createContext();
 
 export default function UserContextProvider({ children }) {
-  const [userInfo, setUserInfo] = useState(() => {
-    const saved = localStorage.getItem('userInfo');
-    return saved ? JSON.parse(saved) : {
-      userId: "",
-      email: "",
-      userName: "",
-      token: "",
-      isAuthenticated: false
-    };
+  const [userInfo, setUserInfoState] = useState({
+    userId: null,
+    email: "",
+    //userName: "",
+    token: "",
   });
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    localStorage.setItem('userInfo', JSON.stringify(userInfo));
-  }, [userInfo]);
+    const savedUser = localStorage.getItem("userInfo");
+    if (savedUser) {
+      setUserInfoState(JSON.parse(savedUser));
+      setLoading(false);
+    } else {
+      fetchCurrentUser();
+    }
+  }, []);
 
-  const login = (userData) => {
-    setUserInfo({
-      userId: userData.userId,
-      email: userData.email,
-      userName: userData.userName || "",
-      token: userData.token,
-      isAuthenticated: true
-    });
-  };
-
-  const logout = () => {
-    localStorage.removeItem('userInfo');
-    setUserInfo({
-      userId: "",
-      email: "",
-      userName: "",
-      token: "",
-      isAuthenticated: false
-    });
-  };
-
-  const checkAuth = async () => {
+  const fetchCurrentUser = async () => {
     try {
-      if (userInfo.token && userInfo.isAuthenticated) {
-        return true;
+      const response = await fetch("http://localhost:8000/me", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const userData = {
+          userId: data.id || null,
+          email: data.email || "",
+          //userName: "", // add if needed
+          token: "",    // optional
+        };
+        setUserInfoState(userData);
+        localStorage.setItem("userInfo", JSON.stringify(userData));
+      } else {
+        clearUserInfo();
       }
-      return false;
-    } catch (error) {
-      return false;
+    } catch (err) {
+      console.error("Fetch user error:", err);
+      clearUserInfo();
+    } finally {
+      setLoading(false);
     }
   };
 
+  const setUserInfo = (userData) => {
+    setUserInfoState(userData);
+    localStorage.setItem("userInfo", JSON.stringify(userData));
+  };
+
+
   return (
-    <UserContext.Provider 
-      value={{ 
-        userInfo, 
-        setUserInfo,
-        login,
-        logout,
-        checkAuth
-      }}
+    <UserContext.Provider
+      value={{ userInfo, setUserInfo,  loading }}
     >
       {children}
     </UserContext.Provider>
   );
 }
+
+

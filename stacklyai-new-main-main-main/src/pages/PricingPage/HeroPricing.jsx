@@ -74,7 +74,7 @@ export default function HeroPricing() {
         </h2>
 
         {/* CTA Button */}
-        <Link to="/Form">
+        <Link to="/Sign-in">
           {" "}
           <button className="bg-gradient-to-r from-[#00B0BA] via-[black] to-[#007B82] hover:from-cyan-600  text-white font-bold py-3 px-8 rounded-md text-[20px] transition-all duration-300">
             Get Started for Free

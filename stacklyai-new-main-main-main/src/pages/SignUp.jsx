@@ -281,46 +281,35 @@ export default function SignUp({ setUser }) {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // Validate passwords match
-    if (password !== confirmPassword) {
-      setError("Passwords don't match!");
+  if (password !== confirmPassword) {
+    setError("Passwords don't match!");
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:8000/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password, confirm_password: confirmPassword }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.detail || "Something went wrong!");
       return;
     }
 
-    // Get existing users from localStorage or initialize empty array
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+    alert("OTP sent to your email.");
+    navigate("/Otp", { state: { email, password } });
 
-    // Check if user already exists (case-insensitive comparison)
-    const userExists = users.some(
-      (user) => user.email.toLowerCase() === email.toLowerCase()
-    );
-
-    if (userExists) {
-      setError("User with this email already exists!");
-      return;
-    }
-
-    // Create new user
-    const newUser = {
-      email,
-      password,
-      createdAt: new Date().toISOString(),
-    };
-
-    // Update users array and save to localStorage
-    const updatedUsers = [...users, newUser];
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
-
-    // Also save current user separately
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-
-    // Update state and navigate
-    setUser(newUser);
-    navigate("/AfterHome");
-  };
+  } catch (err) {
+    setError("Failed to connect to server");
+  }
+};
 
   // Rest of your JSX remains exactly the same
   return (

@@ -1,3 +1,4 @@
+//HeroAfterHome.jsx
 import React, { useEffect, useState } from "react";
 import { Form, Link } from "react-router-dom";
 import G1 from "../../assets/afterHome/g1.png"

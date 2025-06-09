@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Banner from "../../assets/profile/banner.jpg";
 import Pimage from "../../assets/profile/pimage.png";
 import Img from "../../assets/profile/msg.png";
@@ -6,7 +6,47 @@ import Eye from "../../assets/profile/eye.png";
 import { Link } from "react-router-dom";
 import { px } from "framer-motion";
 
+
 export default function HelpCenter() {
+  const [email, setEmail] = useState("");
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    try {
+      const response = await fetch("http://localhost:8000/help-center", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          subject,
+          message,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) throw new Error(result.detail || "Submission failed");
+
+      setSuccessMsg("Your message has been sent successfully!");
+      setEmail("");
+      setSubject("");
+      setMessage("");
+    } catch (err) {
+      setErrorMsg(err.message || "Something went wrong.");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <div>
       <section className="w-full h-auto p-[50px] flex flex-col justify-start items-center gap-[15px]">
@@ -113,23 +153,33 @@ export default function HelpCenter() {
                     <div className="w-[487px] h-[282px] flex flex-col justify-between items-center gap-[24px]">
                       <input
                         type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter Your email"
                         className="w-[487px] h-[44px] rounded-[10px] border-[1px] border-[#007B82] border-solid px-[16px] py-[10px] text-[16px] text-[#2A2A2A] focus:outline-none focus:border-[#007B82]"
                       />
                       <input
                         type="email"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
                         placeholder="Write a Subject"
                         className="w-[487px] h-[44px] rounded-[10px] border-[1px] border-[#007B82] border-solid px-[16px] py-[10px] text-[16px] text-[#2A2A2A] focus:outline-none focus:border-[#007B82]"
                       />
                       <textarea
                         type="email"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
                         placeholder="Your Message (Max 500 characters)"
                         className="w-[487px] h-[144px] rounded-[10px] border-[1px] border-[#007B82] border-solid px-[16px] py-[10px] text-[16px] text-[#2A2A2A] focus:outline-none focus:border-[#007B82]"
                       />
 
-                      <div className="w-[371px] h-[41px] rounded-[10px] px-[40px] py-[6px] flex justify-center items-center bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] font-semibold text-[16px] text-[white]">
-                        Submit
-                      </div>
+                      <button
+                        onClick={handleSubmit}
+                        disabled={loading}
+                        className="w-[371px] h-[41px] rounded-[10px] px-[40px] py-[6px] flex justify-center items-center bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] font-semibold text-[16px] text-[white]"
+                      >
+                        {loading ? "Submitting..." : "Submit"}
+                      </button>
                     </div>
                   </div>
                 </div>

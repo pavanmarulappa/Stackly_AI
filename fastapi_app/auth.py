@@ -291,6 +291,7 @@ import random, string, time
 import smtplib, secrets
 from email.message import EmailMessage
 
+
 # Setup
 load_dotenv()
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "my_project.settings")
@@ -534,36 +535,6 @@ async def verify_otp(otp_data: VerifyOTP):
 
 
 
-# @router.post("/login")
-# async def login(user_data: LoginUser):  # define LoginUser Pydantic model with email and password
-#     try:
-#         @sync_to_async
-#         def verify_user():
-#             user = UserData.objects.get(email=user_data.email)
-#             if not verify_password(user_data.password, user.password):
-#                 raise HTTPException(status_code=401, detail="Invalid password")
-#             return user
-
-#         user = await verify_user()
-
-#         token = create_access_token(data={"sub": user.email, "user_id": user.id})
-
-#         response = JSONResponse(content={"message": "Login successful", "access_token": token})
-#         response.set_cookie(
-#             key="access_token",
-#             value=token,
-#             httponly=True,
-#             secure=True,  # False if testing on localhost without HTTPS
-#             samesite="lax",
-#             max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60,
-#         )
-#         return response
-
-#     except UserData.DoesNotExist:
-#         raise HTTPException(status_code=404, detail="User not found")
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
 @router.post("/login")
 async def login(user_data: LoginUser):
     try:
@@ -577,7 +548,7 @@ async def login(user_data: LoginUser):
         user = await verify_user()
 
         # Generate JWT token
-        token = jwt.encode({"sub": user.email}, SECRET_KEY, algorithm=ALGORITHM)
+        token = jwt.encode({"user_id": user.id, "sub": user.email}, SECRET_KEY, algorithm=ALGORITHM)
 
         response = JSONResponse(
             content={
@@ -587,7 +558,8 @@ async def login(user_data: LoginUser):
                 "email": user.email
             }
         )
-        response.set_cookie(key="access_token", value=token, httponly=True, secure=True)
+        #Once deployed with HTTPS, set secure=True again
+        response.set_cookie(key="access_token", value=token, httponly=True, secure=False)
         return response
 
     except UserData.DoesNotExist:
@@ -702,7 +674,7 @@ async def handle_provider_signup_login(email: str, first_name: str, last_name: s
                         credits_remaining=10,
                         monthly_credits=10,
                         created_at=datetime.utcnow(),
-                        updated_at=None,
+                        updated_at=None,  
                         is_active=True,
                         usage_count=0
                     )
@@ -763,4 +735,33 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
         return payload
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+
+
+
+def get_current_user(request: Request):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Token not found")
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("user_id")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid token: No user ID")
+        
+        # fetch user from Django DB
+        user = UserData.objects.get(id=user_id)
+        return user
+
+    except (JWTError, UserData.DoesNotExist):
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+@router.get("/me")
+def get_me(user=Depends(get_current_user)):
+    return {
+        "userId": user.id,
+        "email": user.email,
+        #"firstName": user.first_name,
+        #"lastName": user.last_name,
+    }
 

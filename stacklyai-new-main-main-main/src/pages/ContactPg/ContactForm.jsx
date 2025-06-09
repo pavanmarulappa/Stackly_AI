@@ -1,6 +1,6 @@
 //import React from 'react';
 import React, { useState } from "react";
-//import axios from "axios";
+import axios from "axios";
 import formBanner from "../../assets/pricing-pg/formBanner.jpg"; // Adjust path as needed
 
 //Connect fastapi
