@@ -197,6 +197,7 @@ import Api from "./pages/API/Api";
 import Contact from "./pages/ContactPg/Contact";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import SignupOtp from "./pages/forgetPage/SignupOtp";
 import ForgetPg from "./pages/forgetPage/ForgetPg";
 import HeroForgetPg from "./pages/forgetPage/HeroForgetPg";
 import Otp from "./pages/forgetPage/Otp";
@@ -252,6 +253,7 @@ export default function App() {
         {/* Auth Pages */}
         <Route path="/sign-in" element={<SignIn />} />
         <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/SignupOtp" element={<SignupOtp />} />
 
         {/* Forget Password Flow */}
         <Route path="/forgetpg" element={<ForgetPg />} />

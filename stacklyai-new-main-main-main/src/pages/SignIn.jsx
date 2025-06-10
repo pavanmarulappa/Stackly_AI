@@ -256,30 +256,35 @@ export default function SignIn() {
   const { setUserInfo } = useContext(UserContext);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
+  setError("");
 
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/login",
-        {
-          email: formData.email,
-          password: formData.password,
-        },
-        { withCredentials: true }
-      );
+  try {
+    const res = await axios.post(
+      "http://localhost:8000/login",
+      {
+        email: formData.email,
+        password: formData.password,
+      },
+      { withCredentials: true }
+    );
 
-      const { userId, email, access_token } = res.data;
+    const { userId, email, access_token } = res.data;
 
-      setUserInfo({ userId, email, token: access_token });
+    // ✅ Save to context (already correct)
+    setUserInfo({ userId, email, token: access_token });
 
-      // ✅ Use lowercase route for redirect
-      navigate("/afterhome");
-    } catch (err) {
-      console.error(err);
-      setError("Invalid email or password");
-    }
-  };
+    // ✅ ALSO save to localStorage
+    localStorage.setItem("token", access_token);
+    localStorage.setItem("userId", userId);
+    localStorage.setItem("userEmail", email);
+
+    navigate("/afterhome");
+  } catch (err) {
+    console.error(err);
+    setError("Invalid email or password");
+  }
+};
 
   return (
     <div>

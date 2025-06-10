@@ -282,34 +282,42 @@ export default function SignUp({ setUser }) {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (password !== confirmPassword) {
-    setError("Passwords don't match!");
-    return;
-  }
-
-  try {
-    const res = await fetch("http://localhost:8000/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, confirm_password: confirmPassword }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.detail || "Something went wrong!");
+    if (password !== confirmPassword) {
+      setError("Passwords don't match!");
       return;
     }
 
-    alert("OTP sent to your email.");
-    navigate("/Otp", { state: { email, password } });
+    try {
+      const res = await fetch("http://localhost:8000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          password,
+          confirm_password: confirmPassword,
+        }),
+      });
 
-  } catch (err) {
-    setError("Failed to connect to server");
-  }
-};
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.detail || "Something went wrong!");
+        return;
+      }
+
+      // ✅ Store email and password temporarily in localStorage
+      localStorage.setItem("signupEmail", email);
+      localStorage.setItem("signupPassword", password);
+
+      alert("OTP sent to your email.");
+      navigate("/SignupOtp", { state: { email, password } });
+
+    } catch (err) {
+      setError("Failed to connect to server");
+    }
+  };
 
   // Rest of your JSX remains exactly the same
   return (

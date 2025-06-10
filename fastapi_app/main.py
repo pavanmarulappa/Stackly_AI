@@ -212,6 +212,7 @@ from fastapi_app.pricing_page import update_subscription, router as pricing_rout
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from appln.models import UserData
+from asgiref.sync import sync_to_async
 from fastapi_app.forget_password import router as forgot_password_router
 from pathlib import Path
 
@@ -371,11 +372,6 @@ async def get_profile_by_userid(userid: str = Query(...)):
         "profile_pic": profile_pic_url,
     })
 
-def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=1)):
-    to_encode = data.copy()
-    expire = datetime.utcnow() + expires_delta
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
 @app.get("/")

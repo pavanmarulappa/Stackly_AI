@@ -271,7 +271,7 @@ from fastapi import APIRouter, HTTPException, status, Request, Depends,Response
 from pydantic import BaseModel, EmailStr, validator
 from passlib.context import CryptContext
 from fastapi.responses import JSONResponse, RedirectResponse
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials, OAuth2PasswordBearer
 from asgiref.sync import sync_to_async
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
@@ -381,7 +381,8 @@ def create_subscription_for_user(user: UserData):
         return subscription
 
 class VerifyOTP(BaseModel):
-    otp: str  # Only OTP is needed!
+    email: EmailStr
+    otp: str
 
 class ResendOTPRequest(BaseModel):
     email: EmailStr
@@ -456,7 +457,7 @@ async def signup(user_data: SignupUser):
     except Exception as e:
         raise HTTPException(400, detail=str(e))
     
-@router.post("/resend-otp")
+@router.post("/signup-resend-otp")
 async def resend_otp(request: ResendOTPRequest):
     try:
         if await user_exists(request.email):
@@ -481,54 +482,59 @@ async def resend_otp(request: ResendOTPRequest):
 @router.post("/verify-otp")
 async def verify_otp(otp_data: VerifyOTP):
     try:
-        # Loop over stored OTPs to match the one user entered
-        for email, data in temp_otp_storage.items():
-            if data["otp"] == otp_data.otp:
-                if (time.time() - data["created_at"]) > 600:
-                    del temp_otp_storage[email]
-                    raise HTTPException(status_code=400, detail="OTP expired")
+        email = otp_data.email
 
-                @sync_to_async
-                def create_user_and_subscription():
-                    with transaction.atomic():
-                        user = UserData.objects.create(
-                            email=email,
-                            password=data["hashed_password"],
-                            provider="email"
-                        )
-                        UserSubscription.objects.create(
-                            user=user,
-                            email=user.email,
-                            current_plan='basic',
-                            total_credits=10,
-                            used_credits=0
-                        )
-                        api_key = create_unique_api_key()
-                        APIKeyManager.objects.create(
-                            user=user,
-                            plan='basic',
-                            active_keys=api_key,
-                            monthly_credits=10,
-                            usage_count=0,
-                            is_active=True
-                        )
-                        return user
+        if email not in temp_otp_storage:
+            raise HTTPException(status_code=400, detail="No signup attempt found for this email")
 
-                user = await create_user_and_subscription()
+        data = temp_otp_storage[email]
 
-                # Clean up OTP
-                del temp_otp_storage[email]
+        if data["otp"] != otp_data.otp:
+            raise HTTPException(status_code=400, detail="Invalid OTP")
 
-                # Token
-                token = jwt.encode({"sub": user.email}, SECRET_KEY, algorithm=ALGORITHM)
-                response = JSONResponse(
-                    status_code=status.HTTP_201_CREATED,
-                    content={"message": "User created successfully", "access_token": token}
+        if (time.time() - data["created_at"]) > 600:
+            del temp_otp_storage[email]
+            raise HTTPException(status_code=400, detail="OTP expired")
+
+        @sync_to_async
+        def create_user_and_subscription():
+            with transaction.atomic():
+                user = UserData.objects.create(
+                    email=email,
+                    password=data["hashed_password"],
+                    provider="email"
                 )
-                response.set_cookie(key="access_token", value=token, httponly=True, secure=True)
-                return response
+                UserSubscription.objects.create(
+                    user=user,
+                    email=user.email,
+                    current_plan='basic',
+                    total_credits=10,
+                    used_credits=0
+                )
+                api_key = create_unique_api_key()
+                APIKeyManager.objects.create(
+                    user=user,
+                    plan='basic',
+                    active_keys=api_key,
+                    monthly_credits=10,
+                    usage_count=0,
+                    is_active=True
+                )
+                return user
 
-        raise HTTPException(status_code=400, detail="Invalid OTP")
+        user = await create_user_and_subscription()
+
+        # Clean up OTP
+        del temp_otp_storage[email]
+
+        # Create token
+        token = jwt.encode({"sub": user.email}, SECRET_KEY, algorithm=ALGORITHM)
+        response = JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={"message": "User created successfully", "access_token": token}
+        )
+        response.set_cookie(key="access_token", value=token, httponly=True, secure=True)
+        return response
 
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -716,6 +722,7 @@ async def apple_signup(userid: str):
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
+auth_scheme = HTTPBearer()
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 def create_access_token(data: dict):
@@ -738,19 +745,15 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
 
 
 
-def get_current_user(request: Request):
-    token = request.cookies.get("access_token")
-    if not token:
-        raise HTTPException(status_code=401, detail="Token not found")
-
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    token = credentials.credentials
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id = payload.get("user_id")
         if user_id is None:
-            raise HTTPException(status_code=401, detail="Invalid token: No user ID")
+            raise HTTPException(status_code=401, detail="Invalid token")
         
-        # fetch user from Django DB
-        user = UserData.objects.get(id=user_id)
+        user = await sync_to_async(UserData.objects.get)(id=user_id)
         return user
 
     except (JWTError, UserData.DoesNotExist):
