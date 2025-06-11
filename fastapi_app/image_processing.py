@@ -24,7 +24,8 @@ from pathlib import Path
 import logging
 from typing import Literal
 from PIL import UnidentifiedImageError
-
+from asgiref.sync import sync_to_async
+from django.db import transaction
 load_dotenv()
 
 app = FastAPI()
@@ -256,7 +257,321 @@ async def generate_design_variation(
 
     return await _generate()
 
+
+
 @router.post("/generate-interior-design/")
+async def generate_design(
+    user_id: str = Form(...),
+    image: UploadFile = File(...),
+    building_type: str = Form(...),
+    room_type: str = Form(...),
+    design_style: str = Form(...),
+    ai_strength: str = Form("medium"),
+    num_designs: int = Form(1, ge=1, le=6)
+):
+    try:
+        from django.utils import timezone
+        from datetime import date
+        from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
+
+        uploads_path.mkdir(parents=True, exist_ok=True)
+        generated_path.mkdir(parents=True, exist_ok=True)
+
+        # Step 1: User & Subscription
+        try:
+            user = await sync_to_async(UserData.objects.get)(id=user_id)
+            subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)()
+            if not subscription:
+                raise HTTPException(status_code=404, detail="Subscription not found")
+        except UserData.DoesNotExist:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Step 2: Credit Check
+        remaining_credits = subscription.total_credits - subscription.used_credits
+        if remaining_credits < num_designs:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "message": "Not enough credits",
+                    "available": remaining_credits,
+                    "required": num_designs
+        }
+        )
+        # Step 3: Process Original Image
+        try:
+            file_ext = os.path.splitext(image.filename)[1].lower()
+            if file_ext not in ['.jpg', '.jpeg', '.png']:
+                raise HTTPException(status_code=400, detail="Only JPG, JPEG, and PNG files are allowed")
+
+            original_filename = f"original_{uuid.uuid4().hex}{file_ext}"
+            original_path = uploads_path / original_filename
+            await sync_to_async(lambda: shutil.copyfileobj(image.file, open(original_path, "wb")))()
+
+            image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
+        except Exception as e:
+            if 'original_path' in locals() and original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=400, detail=f"Image processing failed: {str(e)}")
+
+        # Step 4: Generate Designs
+        try:
+            design_config = {
+                "style": design_style.lower(),
+                "room_type": room_type.lower(),
+                "building_type": building_type.lower(),
+            }
+
+            tasks = [
+                generate_design_variation(image_bytes, design_config, ai_strength.lower())
+                for _ in range(num_designs)
+            ]
+            results = await asyncio.gather(*tasks)
+        except Exception as e:
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Design generation failed: {str(e)}")
+
+        # Step 5: Save Generated Images (file system only, not DB yet)
+        generated_filenames = []
+        try:
+            for result in results:
+                filename = f"generated_{uuid.uuid4().hex}.png"
+                filepath = generated_path / filename
+                await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
+                generated_filenames.append(filename)
+        except Exception as e:
+            for fname in generated_filenames:
+                await sync_to_async(os.remove)(generated_path / fname)
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Image saving failed: {str(e)}")
+
+        # Step 6: Safe DB Update Using transaction.atomic()
+        try:
+            @sync_to_async
+            def save_db_changes():
+                with transaction.atomic():
+                    for filename in generated_filenames:
+                        UserDesignHistory.objects.create(
+                            user=user,
+                            uploaded_image=f"uploads/{original_filename}",
+                            generated_image=f"generated/{filename}"
+                        )
+
+                    subscription.used_credits += num_designs
+                    subscription.total_credits_used_all_time += num_designs
+                    subscription.save()
+
+                    today = date.today()
+                    credit_entry, created = CreditUsage.objects.get_or_create(
+                        user=user,
+                        date=today,
+                        defaults={"credits_used": num_designs}
+                    )
+                    if not created:
+                        credit_entry.credits_used += num_designs
+                        credit_entry.save()
+
+            await save_db_changes()
+
+        except Exception as e:
+            # Rollback image files if DB save failed
+            for fname in generated_filenames:
+                await sync_to_async(os.remove)(generated_path / fname)
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Database update failed: {str(e)}")
+
+        # Step 7: Success Response
+        return {
+            "success": True,
+            "original_image": f"/static_uploads/{original_filename}",
+            "designs": [f"/static_generated/{f}" for f in generated_filenames],
+            "credits": {
+                "remaining": subscription.balance_credits,
+                "used": subscription.used_credits,
+                "total": subscription.total_credits
+            },
+            "message": "Designs generated successfully"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+    
+@router.post("/generate/more-designs")
+async def generate_more_designs(
+    user_id: str = Form(...),
+    category: str = Form(...),
+    type_detail: str = Form(...),
+    style: str = Form(...),
+    ai_strength: str = Form(...),
+    uploaded_image: UploadFile = File(...)
+):
+    try:
+        from django.utils import timezone
+        from datetime import date
+        from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
+
+        # Validate inputs
+        if category not in {"interiors", "exteriors", "outdoors"}:
+            raise HTTPException(status_code=400, detail="Invalid category. Must be 'interiors', 'exteriors', or 'outdoors'")
+
+        if ai_strength.lower() not in STRENGTH_CONFIG:
+            raise HTTPException(status_code=400, detail="Invalid AI strength level")
+
+        num_images = 2
+
+        uploads_path.mkdir(parents=True, exist_ok=True)
+        generated_path.mkdir(parents=True, exist_ok=True)
+
+        # Step 1: User & Subscription
+        try:
+            user = await sync_to_async(UserData.objects.get)(id=user_id)
+            subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)()
+            if not subscription:
+                raise HTTPException(status_code=404, detail="Subscription not found")
+        except UserData.DoesNotExist:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Step 2: Credit Check
+        remaining_credits = subscription.total_credits - subscription.used_credits
+        if remaining_credits < num_images:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "message": "Not enough credits",
+                    "available": remaining_credits,
+                    "required": num_images
+        }
+        )
+    
+
+        # Step 3: Process Uploaded Image
+        file_ext = os.path.splitext(uploaded_image.filename)[1].lower()
+        if file_ext not in ['.jpg', '.jpeg', '.png']:
+            raise HTTPException(status_code=400, detail="Only JPG and PNG images are allowed")
+
+        original_filename = f"more_{uuid.uuid4().hex}{file_ext}"
+        original_path = uploads_path / original_filename
+
+        try:
+            with open(original_path, "wb") as f:
+                shutil.copyfileobj(uploaded_image.file, f)
+
+            image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
+
+            # Generate prompt
+            if category == "interiors":
+                if style not in STYLE_CONFIGS:
+                    raise HTTPException(status_code=400, detail="Invalid style for interior design")
+
+                config = STYLE_CONFIGS[style]
+                prompt = config["prompt"].format(
+                    room_type=type_detail,
+                    building_type="residential",
+                    style=style
+                )
+                negative_prompt = config["negative_prompt"]
+            elif category == "exteriors":
+                prompt = f"{style} style house {type_detail} view, modern architecture, HD rendering"
+                negative_prompt = "low quality, blurry, sketch, painting"
+            else:
+                prompt = f"{style} style {type_detail}, professional landscape design, natural elements, clean look"
+                negative_prompt = "cluttered, dark, blurry, low quality"
+
+            params = STRENGTH_CONFIG[ai_strength.lower()]
+
+            generated_filenames = []
+            for _ in range(num_images):
+                files = {
+                    "init_image": ("input.png", BytesIO(image_bytes), "image/png"),
+                }
+                data = {
+                    "init_image_mode": "IMAGE_STRENGTH",
+                    "image_strength": str(params["image_strength"]),
+                    "text_prompts[0][text]": prompt,
+                    "text_prompts[0][weight]": "1.2",
+                    "text_prompts[1][text]": negative_prompt,
+                    "text_prompts[1][weight]": "-1.0",
+                    "cfg_scale": str(params["cfg_scale"]),
+                    "samples": "1",
+                    "steps": str(params["steps"]),
+                    "seed": str(random.randint(0, 100000)),
+                    "style_preset": "photographic"
+                }
+
+                response = requests.post(
+                    STABILITY_API_URL,
+                    headers=HEADERS,
+                    files=files,
+                    data=data,
+                    timeout=45
+                )
+                response.raise_for_status()
+
+                result = response.json()
+                artifact = result["artifacts"][0]
+                filename = f"more_{uuid.uuid4().hex}.png"
+                out_path = generated_path / filename
+
+                with open(out_path, "wb") as f:
+                    f.write(base64.b64decode(artifact["base64"]))
+
+                generated_filenames.append(filename)
+
+            # Step 4: Update Database
+            @sync_to_async
+            def save_to_db():
+                with transaction.atomic():
+                    for fname in generated_filenames:
+                        UserDesignHistory.objects.create(
+                            user=user,
+                            uploaded_image=f"uploads/{original_filename}",
+                            generated_image=f"generated/{fname}"
+                        )
+
+                    subscription.used_credits += num_images
+                    subscription.total_credits_used_all_time += num_images
+                    subscription.save()
+
+                    today = date.today()
+                    credit_entry, created = CreditUsage.objects.get_or_create(
+                        user=user,
+                        date=today,
+                        defaults={"credits_used": num_images}
+                    )
+                    if not created:
+                        credit_entry.credits_used += num_images
+                        credit_entry.save()
+
+            await save_to_db()
+
+            return {
+                "success": True,
+                "designs": [f"/static_generated/{f}" for f in generated_filenames],
+                "credits": {
+                    "remaining": subscription.balance_credits,
+                    "used": subscription.used_credits,
+                    "total": subscription.total_credits
+                },
+                "message": f"Successfully generated {num_images} additional designs"
+            }
+
+        finally:
+            if original_path.exists():
+                original_path.unlink()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unexpected error generating more designs: {str(e)}"
+        )
+    
+"""@router.post("/generate-interior-design/")
 async def generate_design(
     image: UploadFile = File(...),
     building_type: str = Form(...),
@@ -321,11 +636,10 @@ async def generate_design(
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")"""
     
 
-
-@router.post("/generate/more-designs")
+"""@router.post("/generate/more-designs")
 async def generate_more_designs(
     category: str = Form(...),
     type_detail: str = Form(...),
@@ -448,7 +762,7 @@ async def generate_more_designs(
         raise HTTPException(
             status_code=500,
             detail=f"Unexpected error generating more designs: {str(e)}"
-        )
+        )"""
     
     
 # 1) House Angle: only Front, Back
@@ -625,8 +939,157 @@ async def generate_exterior_design_variation(
 
     except Exception as e:
         raise ValueError(f"Generation failed: {str(e)}")
-
+    
 @router.post("/generate-exterior-design/")
+async def generate_exterior_design(
+    user_id: str = Form(...),
+    image: UploadFile = File(...),
+    house_angle: HouseAngle = Form(...),
+    design_style: ExteriorDesignStyle = Form(...),
+    ai_strength: AIStylingStrength = Form("medium"),
+    num_designs: int = Form(1, ge=1, le=12)
+):
+    try:
+        from pathlib import Path
+        from datetime import date
+        from django.db import transaction
+        from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
+
+        BASE_DIR = Path(__file__).parent.parent
+        uploads_dir = BASE_DIR / "fastapi_app" / "uploads"
+        generated_dir = BASE_DIR / "fastapi_app" / "generated"
+        uploads_dir.mkdir(parents=True, exist_ok=True)
+        generated_dir.mkdir(parents=True, exist_ok=True)
+
+        # Step 1: User & Subscription check
+        try:
+            user = await sync_to_async(UserData.objects.get)(id=user_id)
+            subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)()
+            if not subscription:
+                raise HTTPException(status_code=404, detail="Subscription not found")
+        except UserData.DoesNotExist:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Step 2: Credit Check
+        remaining_credits = subscription.total_credits - subscription.used_credits
+        if remaining_credits < num_designs:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "message": "Not enough credits",
+                    "available": remaining_credits,
+                    "required": num_designs
+        }
+            )
+
+        # Step 3: Save original file
+        try:
+            file_ext = os.path.splitext(image.filename)[1].lower()
+            if file_ext not in ['.jpg', '.jpeg', '.png']:
+                raise HTTPException(status_code=400, detail="Only JPG, JPEG, and PNG files are allowed")
+
+            original_filename = f"original_{uuid.uuid4().hex}{file_ext}"
+            original_path = uploads_dir / original_filename
+
+            await sync_to_async(lambda: shutil.copyfileobj(image.file, open(original_path, "wb")))()
+            image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
+
+        except Exception as e:
+            if 'original_path' in locals() and original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=400, detail=f"Image processing failed: {str(e)}")
+
+        # Step 4: Generate designs
+        try:
+            design_config = {
+                "style": design_style.value,
+                "angle": house_angle.value,
+            }
+
+            tasks = [
+                generate_exterior_design_variation(image_bytes, design_config, ai_strength.value)
+                for _ in range(num_designs)
+            ]
+            results = await asyncio.gather(*tasks)
+
+        except Exception as e:
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Design generation failed: {str(e)}")
+
+        # Step 5: Save generated images to file system only
+        generated_filenames = []
+        try:
+            for result in results:
+                filename = f"generated_{uuid.uuid4().hex}.png"
+                filepath = generated_dir / filename
+                await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
+                generated_filenames.append(filename)
+
+        except Exception as e:
+            for fname in generated_filenames:
+                await sync_to_async(os.remove)(generated_dir / fname)
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Image saving failed: {str(e)}")
+
+        # Step 6: Safe DB Update inside transaction.atomic
+        try:
+            @sync_to_async
+            def save_db_changes():
+                with transaction.atomic():
+                    for filename in generated_filenames:
+                        UserDesignHistory.objects.create(
+                            user=user,
+                            uploaded_image=f"uploads/{original_filename}",
+                            generated_image=f"generated/{filename}"
+                        )
+
+                    subscription.used_credits += num_designs
+                    subscription.total_credits_used_all_time += num_designs
+                    subscription.save()
+                    
+
+                    today = date.today()
+                    credit_entry, created = CreditUsage.objects.get_or_create(
+                        user=user,
+                        date=today,
+                        defaults={"credits_used": num_designs}
+                    )
+                    if not created:
+                        credit_entry.credits_used += num_designs
+                        credit_entry.save()
+
+            await save_db_changes()
+
+        except Exception as e:
+            for fname in generated_filenames:
+                await sync_to_async(os.remove)(generated_dir / fname)
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Database update failed: {str(e)}")
+
+        # Step 7: Final Response
+        return {
+            "success": True,
+            "original_image": f"/static_uploads/{original_filename}",
+            "designs": [f"/static_generated/{f}" for f in generated_filenames],
+            "credits": {
+                "remaining": subscription.balance_credits,
+                "used": subscription.used_credits,
+                "total": subscription.total_credits
+            },
+            "message": "Exterior designs generated successfully"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+
+
+
+"""@router.post("/generate-exterior-design/")
 async def generate_exterior_design(
     image: UploadFile = File(...),
     house_angle: HouseAngle = Form(...),
@@ -684,7 +1147,7 @@ async def generate_exterior_design(
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")"""
 
 #out door 
 class OutdoorSpaceType(str, Enum):
@@ -882,8 +1345,146 @@ async def generate_outdoor_design_variation(
     except Exception as e:
         logger.error(f"Generation failed: {str(e)}", exc_info=True)
         raise
-
 @router.post("/generate-outdoor-design/")
+async def generate_outdoor_design(
+    user_id: str = Form(...),
+    image: UploadFile = File(...),
+    space_type: OutdoorSpaceType = Form(...),
+    design_style: OutdoorDesignStyle = Form(...),
+    ai_strength: str = Form("medium"),
+    num_designs: int = Form(1, ge=1, le=6)
+):
+    try:
+        from django.utils import timezone
+        from datetime import date
+        from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
+
+        uploads_path.mkdir(parents=True, exist_ok=True)
+        generated_path.mkdir(parents=True, exist_ok=True)
+
+        # Step 1: User & Subscription
+        try:
+            user = await sync_to_async(UserData.objects.get)(id=user_id)
+            subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)()
+            if not subscription:
+                raise HTTPException(status_code=404, detail="Subscription not found")
+        except UserData.DoesNotExist:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Step 2: Credit Check
+        remaining_credits = subscription.total_credits - subscription.used_credits
+        if remaining_credits < num_designs:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "message": "Not enough credits",
+                    "available": remaining_credits,
+                    "required": num_designs
+        }
+        )
+
+        # Step 3: Process Original Image
+        try:
+            file_ext = os.path.splitext(image.filename)[1].lower()
+            if file_ext not in ['.jpg', '.jpeg', '.png']:
+                raise HTTPException(status_code=400, detail="Only JPG, JPEG, and PNG files are allowed")
+
+            original_filename = f"original_{uuid.uuid4().hex}{file_ext}"
+            original_path = uploads_path / original_filename
+            await sync_to_async(lambda: shutil.copyfileobj(image.file, open(original_path, "wb")))()
+
+            image_bytes, _ = await outdoor_resize_to_allowed_dimensions(str(original_path))
+        except Exception as e:
+            if 'original_path' in locals() and original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=400, detail=f"Image processing failed: {str(e)}")
+
+        # Step 4: Generate Designs
+        try:
+            design_config = {
+                "style": design_style.value.lower(),
+                "space_type": space_type.value.lower(),
+            }
+
+            tasks = [
+                generate_outdoor_design_variation(image_bytes, design_config, ai_strength.lower())
+                for _ in range(num_designs)
+            ]
+            results = await asyncio.gather(*tasks)
+        except Exception as e:
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Design generation failed: {str(e)}")
+
+        # Step 5: Save Generated Images
+        generated_filenames = []
+        try:
+            for result in results:
+                filename = f"generated_{uuid.uuid4().hex}.png"
+                filepath = generated_path / filename
+                await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
+                generated_filenames.append(filename)
+        except Exception as e:
+            for fname in generated_filenames:
+                await sync_to_async(os.remove)(generated_path / fname)
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Image saving failed: {str(e)}")
+
+        # Step 6: DB Save
+        try:
+            @sync_to_async
+            def save_db_changes():
+                with transaction.atomic():
+                    for filename in generated_filenames:
+                        UserDesignHistory.objects.create(
+                            user=user,
+                            uploaded_image=f"uploads/{original_filename}",
+                            generated_image=f"generated/{filename}"
+                        )
+
+                    subscription.used_credits += num_designs
+                    subscription.total_credits_used_all_time += num_designs
+                    subscription.save()
+
+                    today = date.today()
+                    credit_entry, created = CreditUsage.objects.get_or_create(
+                        user=user,
+                        date=today,
+                        defaults={"credits_used": num_designs}
+                    )
+                    if not created:
+                        credit_entry.credits_used += num_designs
+                        credit_entry.save()
+
+            await save_db_changes()
+
+        except Exception as e:
+            for fname in generated_filenames:
+                await sync_to_async(os.remove)(generated_path / fname)
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Database update failed: {str(e)}")
+
+        # Step 7: Response
+        return {
+            "success": True,
+            "original_image": f"/static_uploads/{original_filename}",
+            "designs": [f"/static_generated/{f}" for f in generated_filenames],
+            "credits": {
+                "remaining": subscription.balance_credits,
+                "used": subscription.used_credits,
+                "total": subscription.total_credits
+            },
+            "message": "Designs generated successfully"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+    
+"""@router.post("/generate-outdoor-design/")
 async def generate_outdoor_design(
     image: UploadFile = File(...),
     space_type: OutdoorSpaceType = Form(...),
@@ -986,4 +1587,4 @@ async def generate_outdoor_design(
         raise HTTPException(400, detail=str(e))
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}", exc_info=True)
-        raise HTTPException(500, detail="Internal server error")
+        raise HTTPException(500, detail="Internal server error")"""

@@ -590,6 +590,14 @@ export default function Form() {
       formDataToSend.append("ai_strength", formData.aiStrength);
       formDataToSend.append("num_designs", formData.numDesigns.toString());
 
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        alert("User not logged in.");
+        setIsLoading(false);
+        return;
+      }
+      formDataToSend.append("user_id", userId);
+
       let endpoint = "";
       let typeDetail = "";
 
@@ -646,7 +654,7 @@ export default function Form() {
               }))
               : [],
             formData: {
-              //userId: userInfo.userId,
+              userId: userInfo.userId,
               category: activeTab.toLowerCase(),
               typeDetail: typeDetail,
               style: formData.roomStyle,
@@ -712,113 +720,113 @@ export default function Form() {
       {/* Form Section */}
       <div className="w-full max-w-7xl flex flex-col xl:flex-row gap-10 items-start justify-between">
         {/* Upload Box */}
-<div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
-  <div
-    className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer relative"
-    onClick={() => inpRef.current.click()}
-    onDragOver={handleDragOver}
-    onDrop={handleDrop}
-  >
-    {imgURL ? (
-      <>
-        {!isImageLoaded && (
-          <div className="absolute inset-0 flex items-center justify-center bg-[#FFFFFF1A] rounded-xl">
-            <p className="text-[#FFFFFFB2]">Loading image...</p>
-          </div>
-        )}
-        <div className="cursor-default relative h-full w-full flex justify-center items-center rounded-xl p-4"> {/* Added p-4 for padding */}
-          <div className="relative h-full w-full flex justify-center items-center rounded-xl overflow-hidden">
-            <img
-              src={imgURL}
-              alt="Preview"
-              className={`max-w-[calc(100%-8px)] max-h-[calc(100%-8px)] object-contain ${isImageLoaded ? "block" : "hidden"}`}
-              onLoad={() => setIsImageLoaded(true)}
-              onError={() => setIsImageLoaded(false)}
+        <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
+          <div
+            className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer relative"
+            onClick={() => inpRef.current.click()}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            {imgURL ? (
+              <>
+                {!isImageLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#FFFFFF1A] rounded-xl">
+                    <p className="text-[#FFFFFFB2]">Loading image...</p>
+                  </div>
+                )}
+                <div className="cursor-default relative h-full w-full flex justify-center items-center rounded-xl p-4"> {/* Added p-4 for padding */}
+                  <div className="relative h-full w-full flex justify-center items-center rounded-xl overflow-hidden">
+                    <img
+                      src={imgURL}
+                      alt="Preview"
+                      className={`max-w-[calc(100%-8px)] max-h-[calc(100%-8px)] object-contain ${isImageLoaded ? "block" : "hidden"}`}
+                      onLoad={() => setIsImageLoaded(true)}
+                      onError={() => setIsImageLoaded(false)}
+                    />
+                  </div>
+
+                  {/* Close button */}
+                  <svg
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setImgURL(null);
+                      setIsImageLoaded(false);
+                    }}
+                    className="absolute p-1 w-7 h-7 rounded-full bg-black/70 fill-white top-3 right-3 cursor-pointer hover:bg-black/90 transition-colors"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 -960 960 960"
+                    width="24px"
+                  >
+                    <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                  </svg>
+                </div>
+                {isLoading && (
+                  <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center rounded-xl">
+                    <div className="relative w-24 h-24 mb-4">
+                      <svg className="w-full h-full" viewBox="0 0 100 100">
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          fill="none"
+                          stroke="#FFFFFF20"
+                          strokeWidth="8"
+                        />
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="45"
+                          fill="none"
+                          stroke="#ffffff"
+                          strokeWidth="8"
+                          strokeLinecap="round"
+                          strokeDasharray="283"
+                          strokeDashoffset={283 - (283 * progress) / 100}
+                          transform="rotate(-90 50 50)"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-white text-xl font-bold">
+                          {progress}%
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-white text-lg text-center">
+                      {progress < 100 ? "Rendering..." : "Finalizing designs..."}
+                    </p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
+                <div className="w-[clamp(40px,5vw,70px)] aspect-square rounded-full p-2 bg-[#FFFFFF1A] flex justify-center items-center">
+                  <img src={Galley} alt="gallery" className="w-full h-auto" />
+                </div>
+                <p className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug">
+                  Drag & drop or click to upload a photo
+                </p>
+              </div>
+            )}
+            <input
+              type="file"
+              name="image"
+              ref={inpRef}
+              onChange={changeImage}
+              accept="image/*"
+              className="hidden"
             />
           </div>
 
-          {/* Close button */}
-          <svg
-            onClick={(e) => {
-              e.stopPropagation();
-              setImgURL(null);
-              setIsImageLoaded(false);
-            }}
-            className="absolute p-1 w-7 h-7 rounded-full bg-black/70 fill-white top-3 right-3 cursor-pointer hover:bg-black/90 transition-colors"
-            xmlns="http://www.w3.org/2000/svg"
-            height="24px"
-            viewBox="0 -960 960 960"
-            width="24px"
-          >
-            <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-          </svg>
-        </div>
-        {isLoading && (
-          <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center rounded-xl">
-            <div className="relative w-24 h-24 mb-4">
-              <svg className="w-full h-full" viewBox="0 0 100 100">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
-                  stroke="#FFFFFF20"
-                  strokeWidth="8"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="45"
-                  fill="none"
-                  stroke="#ffffff"
-                  strokeWidth="8"
-                  strokeLinecap="round"
-                  strokeDasharray="283"
-                  strokeDashoffset={283 - (283 * progress) / 100}
-                  transform="rotate(-90 50 50)"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-white text-xl font-bold">
-                  {progress}%
-                </span>
-              </div>
+          <div className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] flex justify-around items-center cursor-pointer hover:bg-white/10 transition-colors">
+            <div className="w-[24px] h-[24px]">
+              <img src={I} alt="i" />
             </div>
-            <p className="text-white text-lg text-center">
-              {progress < 100 ? "Rendering..." : "Finalizing designs..."}
-            </p>
+            <div className="w-[93px] h-[19px] text-[16px] font-[medium] leading-[100%] text-center text-white">
+              Photo guide
+            </div>
           </div>
-        )}
-      </>
-    ) : (
-      <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
-        <div className="w-[clamp(40px,5vw,70px)] aspect-square rounded-full p-2 bg-[#FFFFFF1A] flex justify-center items-center">
-          <img src={Galley} alt="gallery" className="w-full h-auto" />
         </div>
-        <p className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug">
-          Drag & drop or click to upload a photo
-        </p>
-      </div>
-    )}
-    <input
-      type="file"
-      name="image"
-      ref={inpRef}
-      onChange={changeImage}
-      accept="image/*"
-      className="hidden"
-    />
-  </div>
-
-  <div className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] flex justify-around items-center cursor-pointer hover:bg-white/10 transition-colors">
-    <div className="w-[24px] h-[24px]">
-      <img src={I} alt="i" />
-    </div>
-    <div className="w-[93px] h-[19px] text-[16px] font-[medium] leading-[100%] text-center text-white">
-      Photo guide
-    </div>
-  </div>
-</div>
 
         {/* Form Controls */}
         <form

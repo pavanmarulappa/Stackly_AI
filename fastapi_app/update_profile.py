@@ -352,6 +352,7 @@ from asgiref.sync import sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
+
 router = APIRouter()
 
 @sync_to_async
@@ -400,15 +401,11 @@ def get_user_by_external_userid_db(external_userid_str: str):
 @router.get("/profile", tags=["Profile"])
 async def get_profile(
     email: Optional[str] = Query(None, description="User's email address"),
-    # IMPORTANT: Change 'userid' to int, and add an alias to accept 'userid' from URL
     user_id_pk: Optional[int] = Query(
         None,
         alias="userid", # This makes /profile?userid=71 map to user_id_pk
         description="User's internal integer primary key ID (e.g., 71)"
     ),
-    # If you also have an external string 'userid' field in your DB for Auth0-like IDs,
-    # you'd add another parameter here, perhaps named 'external_userid_str'.
-    # For now, we'll assume 'userid' in the URL strictly means the integer PK.
 ):
     """
     Get user profile by either email or user's internal integer ID.
@@ -431,11 +428,6 @@ async def get_profile(
             user = await get_user_by_email_db(email)
         elif user_id_pk is not None: # Call the correct function for integer PK
             user = await get_user_by_internal_id_db(user_id_pk)
-        # If you had an external string 'userid' you'd add an elif here
-        # elif external_userid_str:
-        #    user = await get_user_by_external_userid_db(external_userid_str)
-
-
         if not user:
             raise HTTPException(
                 status_code=404,
@@ -445,19 +437,13 @@ async def get_profile(
         profile_pic_url = None
         # Ensure user.profile_pic exists and has a .name attribute
         if user.profile_pic and hasattr(user.profile_pic, 'name') and user.profile_pic.name:
-            # Construct the full URL for the profile picture
-            # Assuming settings.BASE_URL is your domain (e.g., "http://localhost:8000")
-            # and settings.MEDIA_URL is the base path for media (e.g., "/media/")
             profile_pic_url = user.profile_pic.url if user.profile_pic else None
 
-        # Determine which user ID to return in the 'userid' field of the response.
-        # If you have an external 'userid' field, prioritize that. Otherwise, use the Django 'id'.
         returned_user_id = None
         if hasattr(user, 'userid') and user.userid: # Checks for the external string 'userid' field
             returned_user_id = user.userid
         elif hasattr(user, 'id'): # Fallback to Django's integer primary key 'id'
             returned_user_id = user.id
-
 
         return {
             "userid": returned_user_id, # This will be the Auth0 ID if present, else Django PK
@@ -480,6 +466,56 @@ async def get_profile(
             status_code=500,
             detail=f"An unexpected error occurred while fetching profile: {str(e)}"
         )
+    
+
+@router.get("/subscription", tags=["Subscription"])
+async def get_user_subscription(
+    user_id_pk: Optional[int] = Query(
+        None,
+        alias="userid",
+        description="User's internal integer ID"
+    )
+):
+    """
+    Get subscription details for a user.
+    """
+    if user_id_pk is None:
+        raise HTTPException(status_code=400, detail="userid must be provided")
+
+    try:
+        # Correctly wrapping the entire synchronous Django ORM call
+        # We need to await the result of the sync_to_async call
+        user = await sync_to_async(UserData.objects.filter(id=user_id_pk).first)() # Call .first() inside sync_to_async
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Correctly wrapping the entire synchronous Django ORM call
+        subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)() # Call .first() inside sync_to_async
+        if not subscription:
+            raise HTTPException(status_code=404, detail="Subscription not found for this user")
+
+        return {
+            "current_plan": subscription.current_plan,
+            "duration": subscription.duration,
+            "original_price": float(subscription.original_price),
+            "discount_price": float(subscription.discount_price) if subscription.discount_price else None,
+            "total_credits": subscription.total_credits,
+            "used_credits": subscription.used_credits,
+            "balance_credits": subscription.balance_credits,
+            "renews_on": subscription.renews_on,
+            "plan_expiring_date": subscription.plan_expiring_date,
+            "total_members": subscription.total_members,
+            "user": {
+                "name": subscription.name,
+                "email": subscription.email,
+                "userid": subscription.userid
+            }
+        }
+
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+    
 @router.post("/update_profile")
 async def update_profile(
     current_user: UserData = Depends(get_current_user),

@@ -228,6 +228,7 @@ import HelpCenter from "./pages/Profile/HelpCenter";
 // Design Forms
 import ExteriorForm from "./pages/AfterSignHome/ExteriorForm";
 import OutdoorForm from "./pages/AfterSignHome/OutdoorForm";
+import ImageGeneration from "./pages/Products/ImageGeneration";
 
 export default function App() {
   const { userInfo, loading } = useContext(UserContext);
@@ -281,6 +282,7 @@ export default function App() {
         <Route path="/formafter" element={<FormAfter />} />
         <Route path="/exteriorform" element={<ExteriorForm />} />
         <Route path="/outdoorform" element={<OutdoorForm />} />
+        <Route path="/ImageGeneration" element={<ImageGeneration />}/>
 
         {/* Catch-all fallback for debugging */}
         <Route path="*" element={<div>404 - Page Not Found</div>} />
