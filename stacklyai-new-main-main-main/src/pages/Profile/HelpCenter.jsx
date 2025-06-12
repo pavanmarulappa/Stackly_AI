@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "../../assets/profile/banner.jpg";
 import Pimage from "../../assets/profile/pimage.png";
 import Img from "../../assets/profile/msg.png";
 import Eye from "../../assets/profile/eye.png";
 import { Link } from "react-router-dom";
 import { px } from "framer-motion";
+import axios from 'axios';
 
 
 export default function HelpCenter() {
@@ -14,6 +15,16 @@ export default function HelpCenter() {
   const [loading, setLoading] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
+  const [error, setError] = useState("");
+  
+  const [profileData, setProfileData] = useState({
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone_number: '',
+      profile_pic: null,
+      previewImage: Pimage
+    });
 
   const handleSubmit = async () => {
     setLoading(true);
@@ -47,6 +58,73 @@ export default function HelpCenter() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
+
+        if (!token) throw new Error('No authentication token found');
+        if (!userId) throw new Error('No user ID found');
+
+        // Fetch profile data
+        const profileResponse = await axios.get('http://localhost:8000/profile', {
+          params: { userid: userId },
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const profilePicUrl = profileResponse.data.profile_pic
+          ? (profileResponse.data.profile_pic.startsWith('/media/profile_pics')
+            ? `http://localhost:8000${profileResponse.data.profile_pic}`
+            : profileResponse.data.profile_pic)
+          : Pimage;
+
+        setProfileData(prev => ({
+          ...prev,
+          first_name: profileResponse.data.first_name || '',
+          last_name: profileResponse.data.last_name || '',
+          email: profileResponse.data.email || '',
+          phone_number: profileResponse.data.phone_number || '',
+          profile_pic: profileResponse.data.profile_pic,
+          previewImage: profilePicUrl
+        }));
+
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err.response?.data?.detail || 'Failed to load data');
+        toast.error(err.response?.data?.detail || 'Failed to load profile data');
+
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        Loading data...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center text-red-500">
+        Error: {error}
+      </div>
+    );
+  }
+
   return (
     <div>
       <section className="w-full h-auto p-[50px] flex flex-col justify-start items-center gap-[15px]">
@@ -63,42 +141,45 @@ export default function HelpCenter() {
         {/* profiles  */}
 
         <div className="w-[1280px] h-[869px] flex justify-center items-start gap-[20px] mt-[-100px]">
-          {/* profile1  */}
-
-          <div className="w-[373px] h-[859px] rounded-[12px] bg-[#FFFFFFCC] backdrop-blur-[3px] shadow-[0_1px_4px_0] shadow-[#00000040]">
-            <div className="w-[100%] h-[97px] rounded-[12px] bg-[#00B0BA33]">
-              <div className="text-center flex flex-col justify-center items-center gap-[20px] pt-[40px]">
-                <img src={Pimage} alt="profile-pic" className="" />
-                <div className="w-[112px] h-[29px] font-medium text-[24px] leading-[100%] text-[#2A2A2A]">
-                  John Paul
-                </div>
-                <div className="w-[100%] h-[2px] bg-[#E0E4E7]"></div>
-
-                {/* basic-info  */}
-
-                <div className="w-[100%] h-auto p-[20px] flex flex-col gap-[20px]">
-                  <div className="w-[89px] h-[22px] font-medium text-[18px] leading-[100%] text-[#00B0BA]">
-                    Basic info:
+                  {/* Left Profile Card */}
+                  <div className="w-[373px] h-[859px] rounded-[12px] bg-[#FFFFFFCC] backdrop-blur-[3px] shadow-[0_1px_4px_0] shadow-[#00000040]">
+                    <div className="w-[100%] h-[97px] rounded-[12px] bg-[#00B0BA33]">
+                      <div className="text-center flex flex-col justify-center items-center gap-[20px] pt-[40px]">
+                        <img
+                          src={profileData.previewImage}
+                          alt="profile-pic"
+                          className="w-24 h-24 rounded-full object-cover"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = Pimage;
+                          }}
+                        />
+                        <div className="w-[112px] h-[29px] font-medium text-[24px] leading-[100%] text-[#2A2A2A]">
+                          {profileData.first_name} {profileData.last_name}
+                        </div>
+                        <div className="w-[100%] h-[2px] bg-[#E0E4E7]"></div>
+        
+                        <div className="w-[100%] h-auto p-[20px] flex flex-col gap-[20px]">
+                          <div className="w-[89px] h-[22px] font-medium text-[18px] leading-[100%] text-[#00B0BA]">
+                            Basic info:
+                          </div>
+        
+                          <div className="w-[147px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
+                            First name : <span className="text-[#B0B0B0]">{profileData.first_name}</span>
+                          </div>
+                          <div className="w-[147px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
+                            Last name : <span className="text-[#B0B0B0]">{profileData.last_name}</span>
+                          </div>
+                          <div className="w-[247px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
+                            Email : <span className="text-[#B0B0B0]">{profileData.email}</span>
+                          </div>
+                          <div className="w-[270px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
+                            Contact number : <span className="text-[#B0B0B0]">{profileData.phone_number}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  <div className="w-[147px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                    First name : <span className="text-[#B0B0B0]">John</span>
-                  </div>
-                  <div className="w-[147px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                    Last name : <span className="text-[#B0B0B0]">Paul</span>
-                  </div>
-                  <div className="w-[247px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                    Email :{" "}
-                    <span className="text-[#B0B0B0]">johnpaul@gamil.com</span>
-                  </div>
-                  <div className="w-[270px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                    Contact number :{" "}
-                    <span className="text-[#B0B0B0]">+91 1234567890</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* profile 2  */}
 

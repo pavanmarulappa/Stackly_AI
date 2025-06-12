@@ -266,6 +266,7 @@ import Eye from "../../assets/profile/eye.png";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Camera } from "lucide-react";
 
 export default function HeroProfile() {
   const [userData, setUserData] = useState({
@@ -311,7 +312,10 @@ export default function HeroProfile() {
           last_name: response.data.last_name || '',
           email: response.data.email || '',
           phone_number: response.data.phone_number || '',
-          previewImage: response.data.profile_pic || Pimage
+          //previewImage: response.data.profile_pic || Pimage
+          previewImage: response.data.profile_pic
+            ? `http://localhost:8000${response.data.profile_pic}`
+            : Pimage
         }));
 
       } catch (error) {
@@ -527,13 +531,101 @@ export default function HeroProfile() {
             {/* Profile Edit Form */}
             <div className="w-[807px] h-[771px] py-[30px] px-[40px] flex flex-col gap-[30px] justify-start items-start">
               {/* Profile Image Section */}
-              <div className="w-[100%] h-[109px] flex flex-col justify-center items-center gap-[12px]">
-                <img
-                  src={userData.previewImage}
-                  alt="logo"
-                  className="w-24 h-24 rounded-full object-cover border-2 border-solid border-[#007B82]"
-                />
-                <label className="w-[111px] h-[17px] font-[400] leading-[100%] text-center text-[14px] text-[#007B82] cursor-pointer">
+              {/* Profile Image Section - Centered */}
+              {/* <div className="flex flex-col items-center justify-center w-full gap-3">
+                <div className="relative group mx-auto"> 
+                  <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-solid border-[#007B82] shadow-md mx-auto">
+                    <img
+                      src={userData.previewImage}
+                      alt="Profile"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                  </div>
+                  <div className="absolute inset-0 rounded-full bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+                    <label className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer flex items-center justify-center w-full h-full">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-8 w-8 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
+                <label className="text-[#007BFF] text-sm font-medium cursor-pointer hover:underline transition-all text-center block w-full">
+                  Change image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                </label>
+              </div> */}
+              {/* Profile Image Section - Centered with Bottom-Right Camera Icon */}
+              <div className="flex flex-col items-center w-full gap-3">
+                <div className="relative group">
+                  {/* Circular Profile Image */}
+                  <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-[#007B82] shadow-lg transition-transform duration-300 group-hover:shadow-xl">
+                    <img
+                      src={userData.previewImage}
+                      alt="Profile"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+
+                  {/* Bottom-Right Camera Icon Button */}
+                  <label className="absolute bottom-0 right-0 bg-[#007B82] w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border-2 border-white shadow-md hover:bg-[#005f6b] transition-colors duration-300">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={2}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+
+                {/* Optional: Change image link below the picture */}
+                <label className="text-sm text-[#007B82] font-medium cursor-pointer hover:underline transition duration-200">
                   Change image
                   <input
                     type="file"

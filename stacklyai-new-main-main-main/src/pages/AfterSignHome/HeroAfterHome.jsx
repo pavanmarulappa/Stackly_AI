@@ -1,5 +1,5 @@
 //HeroAfterHome.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Form, Link } from "react-router-dom";
 import G1 from "../../assets/afterHome/g1.png"
 import G2 from "../../assets/afterHome/g2.png";
@@ -32,17 +32,21 @@ export default function HeroAfterHome() {
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const formAfterRef = useRef(null);
+
+  const scrollToForm = () => {
+    formAfterRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) =>
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
-    }, 4000); 
+    }, 4000);
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [images.length]);
-
 
   return (
     <div>
@@ -69,11 +73,12 @@ export default function HeroAfterHome() {
               Where imagination evolves into excellence
             </div>
           </div>
-          <Link>
-            <div className="w-[260px] h-[56px] flex justify-center items-center gap-[74px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] drop-shadow-[0_3px_4px_#2A2A2A29] rounded-[12px] text-white font-medium text-[20px] leading-[35px] text-center ">
+          {/* Button that scrolls down */}
+          <div onClick={scrollToForm}>
+            <div className="w-[260px] h-[56px] flex justify-center items-center gap-[74px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] drop-shadow-[0_3px_4px_#2A2A2A29] rounded-[12px] text-white font-medium text-[20px] leading-[35px] text-center cursor-pointer">
               Start a New Design
             </div>
-          </Link>
+          </div>
         </div>
       </section>
 
@@ -216,17 +221,19 @@ export default function HeroAfterHome() {
 
       {/* section-6  */}
 
-      <FormAfter />
+      <div ref={formAfterRef}>
+        <FormAfter />
+      </div>
 
 
       {/* section-7  */}
 
-       <AfterFaq />
+      <AfterFaq />
 
-       {/* <ExteriorForm />
+      {/* <ExteriorForm />
 
        <OutdoorForm /> */}
-      
+
 
     </div>
   );

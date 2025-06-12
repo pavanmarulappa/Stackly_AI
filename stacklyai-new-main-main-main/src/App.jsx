@@ -204,6 +204,7 @@ import Otp from "./pages/forgetPage/Otp";
 import ResetPassword from "./pages/forgetPage/ResetPassword";
 import ResetPopup from "./pages/forgetPage/ResetPopup";
 import Form from "./pages/Home/Form";
+import SignUpPopUp from "./pages/forgetPage/SignUpPopUp";
 
 // Authenticated Pages
 import AfterHome from "./pages/AfterSignHome/AfterHome";
@@ -217,6 +218,7 @@ import AfterUiPlans from "./pages/AfterPricing/AfterUiPlans";
 import AfterPay from "./pages/AfterPricing/AfterPay";
 import AfterConformationPage from "./pages/AfterPricing/AfterConformationPage";
 import FormAfter from "./pages/AfterSignHome/FormAfter";
+
 
 // Profile Pages
 import Profile from "./pages/Profile/Profile";
@@ -262,6 +264,7 @@ export default function App() {
         <Route path="/otp" element={<Otp />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/resetpopup" element={<ResetPopup />} />
+        <Route path="/SignUpPopUp" element={<SignUpPopUp />} />
 
         {/* After Payment Pages */}
         <Route path="/afterbilling" element={<AfterBilling />} />

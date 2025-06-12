@@ -60,7 +60,7 @@ export default function SignupOtp() {
       localStorage.removeItem('signupPassword');
 
       setOtp(['', '', '', '', '', '']);
-      navigate('/Sign-in');
+      navigate('/SignUpPopUp');
     } catch (err) {
       setError(err.response?.data?.detail || 'Invalid OTP');
     }

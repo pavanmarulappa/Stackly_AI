@@ -576,7 +576,7 @@ async def update_profile(
                     f.write(await profile_pic.read())
 
                 # Update DB path
-                current_user.profile_pic = f"/media/profile_pics/{filename}"
+                current_user.profile_pic = f"/profile_pics/{filename}"
 
             except Exception as e:
                 traceback.print_exc()
