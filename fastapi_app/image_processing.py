@@ -53,6 +53,8 @@ if not STABILITY_API_KEY:
 
 STABILITY_API_URL = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/image-to-image"
 
+#https://api.stability.ai/v1/generation/esrgan-v1-x2plus/image-to-image/upscale for 4k
+
 HEADERS = {
     "Accept": "application/json",
     "Authorization": f"Bearer {STABILITY_API_KEY}",
@@ -493,7 +495,7 @@ async def generate_design(
                 with transaction.atomic():
                     # Step 1: Delete old entries if user already has 30 or more
                     existing_entries = UserDesignHistory.objects.filter(user=user).order_by('created_at')
-                    excess = existing_entries.count() + len(generated_filenames) - 30
+                    excess = existing_entries.count() + len(generated_filenames) - 10
 
                     if excess > 0:
                         for old_entry in existing_entries[:excess]:
@@ -572,7 +574,6 @@ async def generate_more_designs(
         from datetime import date
         from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
 
-        # Validate inputs
         if category not in {"interiors", "exteriors", "outdoors"}:
             raise HTTPException(status_code=400, detail="Invalid category. Must be 'interiors', 'exteriors', or 'outdoors'")
 
@@ -584,7 +585,6 @@ async def generate_more_designs(
         uploads_path.mkdir(parents=True, exist_ok=True)
         generated_path.mkdir(parents=True, exist_ok=True)
 
-        # Step 1: User & Subscription
         try:
             user = await sync_to_async(UserData.objects.get)(id=user_id)
             subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)()
@@ -593,7 +593,6 @@ async def generate_more_designs(
         except UserData.DoesNotExist:
             raise HTTPException(status_code=404, detail="User not found")
 
-        # Step 2: Credit Check
         remaining_credits = subscription.total_credits - subscription.used_credits
         if remaining_credits < num_images:
             raise HTTPException(
@@ -602,11 +601,9 @@ async def generate_more_designs(
                     "message": "Not enough credits",
                     "available": remaining_credits,
                     "required": num_images
-        }
-        )
-    
+                }
+            )
 
-        # Step 3: Process Uploaded Image
         file_ext = os.path.splitext(uploaded_image.filename)[1].lower()
         if file_ext not in ['.jpg', '.jpeg', '.png']:
             raise HTTPException(status_code=400, detail="Only JPG and PNG images are allowed")
@@ -620,7 +617,6 @@ async def generate_more_designs(
 
             image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
 
-            # Generate prompt
             if category == "interiors":
                 if style not in STYLE_CONFIGS:
                     raise HTTPException(status_code=400, detail="Invalid style for interior design")
@@ -679,10 +675,22 @@ async def generate_more_designs(
 
                 generated_filenames.append(filename)
 
-            # Step 4: Update Database
             @sync_to_async
             def save_to_db():
                 with transaction.atomic():
+                    existing_entries = UserDesignHistory.objects.filter(user=user).order_by('created_at')
+                    excess = existing_entries.count() + len(generated_filenames) - 10
+                    if excess > 0:
+                        for old_entry in existing_entries[:excess]:
+                            old_uploaded_path = BASE_DIR / "fastapi_app" / "uploads" / os.path.basename(old_entry.uploaded_image.name)
+                            old_generated_path = BASE_DIR / "fastapi_app" / "generated" / os.path.basename(old_entry.generated_image.name)
+
+                            if old_uploaded_path.exists():
+                                os.remove(old_uploaded_path)
+                            if old_generated_path.exists():
+                                os.remove(old_generated_path)
+                            old_entry.delete()
+
                     for fname in generated_filenames:
                         UserDesignHistory.objects.create(
                             user=user,
@@ -1196,6 +1204,24 @@ async def generate_exterior_design(
             @sync_to_async
             def save_db_changes():
                 with transaction.atomic():
+                    # Step 1: Delete old entries if user already has 30 or more
+                    existing_entries = UserDesignHistory.objects.filter(user=user).order_by('created_at')
+                    excess = existing_entries.count() + len(generated_filenames) - 10
+
+                    if excess > 0:
+                        for old_entry in existing_entries[:excess]:
+                            # Correct paths based on your project folder structure
+                            old_uploaded_path = BASE_DIR / "fastapi_app" / "uploads" / os.path.basename(old_entry.uploaded_image.name)
+                            old_generated_path = BASE_DIR / "fastapi_app" / "generated" / os.path.basename(old_entry.generated_image.name)
+
+                            if old_uploaded_path.exists():
+                                os.remove(old_uploaded_path)
+                            if old_generated_path.exists():
+                                os.remove(old_generated_path)
+
+                            old_entry.delete()
+
+                    # Step 2: Add new generated records
                     for filename in generated_filenames:
                         UserDesignHistory.objects.create(
                             user=user,
@@ -1594,6 +1620,24 @@ async def generate_outdoor_design(
             @sync_to_async
             def save_db_changes():
                 with transaction.atomic():
+                    # Step 1: Delete old entries if user already has 30 or more
+                    existing_entries = UserDesignHistory.objects.filter(user=user).order_by('created_at')
+                    excess = existing_entries.count() + len(generated_filenames) - 10
+
+                    if excess > 0:
+                        for old_entry in existing_entries[:excess]:
+                            # Correct paths based on your project folder structure
+                            old_uploaded_path = BASE_DIR / "fastapi_app" / "uploads" / os.path.basename(old_entry.uploaded_image.name)
+                            old_generated_path = BASE_DIR / "fastapi_app" / "generated" / os.path.basename(old_entry.generated_image.name)
+
+                            if old_uploaded_path.exists():
+                                os.remove(old_uploaded_path)
+                            if old_generated_path.exists():
+                                os.remove(old_generated_path)
+
+                            old_entry.delete()
+
+                    # Step 2: Add new generated records
                     for filename in generated_filenames:
                         UserDesignHistory.objects.create(
                             user=user,

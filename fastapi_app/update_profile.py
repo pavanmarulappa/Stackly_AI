@@ -340,17 +340,18 @@ async def update_profile(
 
 #Update_profile.py
 from fastapi import APIRouter, Form, Query, UploadFile, File, HTTPException, Depends
-from fastapi.responses import JSONResponse
-from appln.models import UserData, UserSubscription
+from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
+from appln.models import UserData, UserSubscription, UserDesignHistory
 from asgiref.sync import sync_to_async
 from django.contrib.auth.hashers import make_password, check_password
 from typing import Optional
-import os
+import io, os, traceback
 import traceback
 from fastapi_app.auth import get_current_user  # Assuming you have an auth system
 from asgiref.sync import sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from PIL import Image
 
 
 router = APIRouter()
@@ -600,6 +601,59 @@ async def update_profile(
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@router.get("/download", tags=["Download"])
+async def download_image(
+    image_id: int,
+    image_type: str = Query(..., regex="^(uploaded|generated)$", description="Type of image: uploaded or generated"),
+    quality: str = Query(..., regex="^(low|good)$", description="Quality: low or good"),
+    current_user: UserData = Depends(get_current_user)
+):
+    """
+    Download uploaded/generated image in low or good quality for the current user.
+    """
+    try:
+        # Fetch image for current user
+        design = await sync_to_async(UserDesignHistory.objects.filter(id=image_id, user=current_user).first)()
+        if not design:
+            raise HTTPException(status_code=404, detail="Image not found for current user")
+
+        # Determine path based on type
+        if image_type == "uploaded":
+            image_field = design.uploaded_image
+        else:
+            image_field = design.generated_image
+
+        image_path = os.path.join("fastapi_app", image_field.name)
+
+        if not os.path.exists(image_path):
+            raise HTTPException(status_code=404, detail="Image file does not exist")
+
+        # Good quality: return as-is
+        if quality == "good":
+            return FileResponse(image_path, media_type="image/jpeg", filename=os.path.basename(image_path))
+
+        # Low quality: compress and return
+        try:
+            image = Image.open(image_path)
+            buf = io.BytesIO()
+            image.convert("RGB").save(buf, format="JPEG", quality=30)  # Force JPEG format, low quality
+            buf.seek(0)
+
+            return StreamingResponse(
+                buf,
+                media_type="image/jpeg",
+                headers={"Content-Disposition": f"attachment; filename=low_{os.path.basename(image_path)}"}
+            )
+        except Exception as e:
+            traceback.print_exc()
+            raise HTTPException(status_code=500, detail=f"Failed to compress image: {str(e)}")
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 
 
