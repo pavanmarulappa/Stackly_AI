@@ -1,3 +1,4 @@
+//Header.jsx
 import React, { useContext, useState } from "react";
 import logoImg from "../assets/Logo.png";
 import {
@@ -266,7 +267,7 @@ export default function Header() {
 
         <NavLink
           className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82] NavLink visited:font-bold"
-          to="/Contact"
+          to="/contact"
           onClick={() => {
             setShowSideBar(false);
           }}

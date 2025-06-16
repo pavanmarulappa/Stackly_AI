@@ -14,6 +14,7 @@ import AfterPay from "./AfterPay";
 import { Link } from "react-router-dom";
 
 export default function AfterHeroPricing() {
+
   const features = [
     "Unlimited Designs",
     "High-Resolution 4K Images",

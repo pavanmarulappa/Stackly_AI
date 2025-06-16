@@ -113,7 +113,7 @@ export default function AfterHeroApi() {
 
       {/* section-3  */}
 
-      {/* <Keys /> */}
+      <AfterKeys />
 
       {/* section 4  */}
 
@@ -121,15 +121,15 @@ export default function AfterHeroApi() {
 
       {/* section-5  */}
 
-      {/* <Plan /> */}
+      <AfterPlan />
 
       {/* section-6  */}
 
-      {/* <ApiAccess /> */}
+      <AfterApiAccess />
 
       {/* section-7  */}
 
-      {/* <HowItWorks /> */}
+      <AfterHowItWorks />
 
       {/* section-8  */}
 
@@ -137,67 +137,104 @@ export default function AfterHeroApi() {
 
       {/* section-9  */}
 
-      {/* <div className='w-full flex justify-center'>
- <div className='w-[1280px] h-[1049px] rounded-[40px] bg-[white] shadow-[#00000040] shadow-[0_0_4px_0] flex flex-col justify-center items-center'>
-      <h2 className="w-full max-w-[743px] min-h-[64px] text-[44px] leading-[64px] font-bold text-center">
-        Ready to <span className="text-[#009A98]">Create Something Great?</span>
-      </h2>
-      <p className=" w-full max-w-[770px] min-h-[56px] text-[18px] font-[400] leading-[28px] text-center text-[#2A2A2A] my-8">
-        We offer flexible API plans tailored to your needs.<br />
-        Let’s build the right setup—just for you.
-      </p>
+      <div className='w-full flex justify-center mt-[-120px] mb-[80px]'>
+  <div className='w-[1280px] h-[1049px] rounded-[40px] bg-[white] shadow-[#00000040] shadow-[0_0_4px_0] flex flex-col justify-center items-center'>
+    <h2 className="w-full max-w-[743px] min-h-[64px] text-[44px] leading-[64px] font-bold text-center">
+      Ready to <span className="text-[#009A98]">Create Something Great?</span>
+    </h2>
+    <p className=" w-full max-w-[770px] min-h-[56px] text-[18px] font-[400] leading-[28px] text-center text-[#2A2A2A] my-8">
+      We offer flexible API plans tailored to your needs.<br />
+      Let’s build the right setup—just for you.
+    </p>
+
     <div className="w-[730px] h-[721px] rounded-[10px] border-[1px] border-[#007B8214] border-solid p-[50px] gap-[10px] bg-[#ffffff] shadow-[#ABB2BB40] shadow-[0_0_12px_0] flex justify-center items-center">
-      <form className="space-y-8">
+      <form className="space-y-6 w-full">
+
         <div className="flex flex-col md:flex-row gap-4">
-          <input
-            type="text"
-            placeholder="Ram"
-            className="flex-1 border-[1px] border-solid border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
-          <input
-            type="email"
-            placeholder="ramprakash@example.com"
-            className="flex-1 border-[1px] border-solid border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
-        </div>
-        <div className="flex flex-col md:flex-row gap-4">
-          <input
-            type="tel"
-            placeholder="+9 0123456789"
-            className="flex-1 border-[1px] border-solid border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
-          <div className="flex-1 flex items-center border-[1px] border-solid border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 ">
-            <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="" />
-            <span className="text-gray-500"></span>
+          <div className="flex-1 flex flex-col">
+            <label className="text-sm font-bold text-[#2A2A2A] mb-1">First Name<span className="text-red-500"> *</span></label>
+            <input
+              name="fullName"
+              type="text"
+              placeholder="Ram"
+              required
+              className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+          </div>
+
+          <div className="flex-1 flex flex-col">
+            <label className="text-sm font-bold text-[#2A2A2A] mb-1">Email<span className="text-red-500"> *</span></label>
+            <input
+              type="email"
+              placeholder="ramprakash@example.com"
+              required
+              className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
           </div>
         </div>
-        <input
-          type="text"
-          placeholder="Companyexample"
-          className="w-full border-[1px] border-solid border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-        />
-        <input
-          type="text"
-          placeholder="Address*"
-          className="w-full border-[1px] border-solid border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-        />
-        <textarea
-          placeholder="Your message..."
-          rows="4"
-          className="w-full border-[1px] border-solid border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-        />
+
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex-1 flex flex-col">
+            <label className="text-sm font-bold text-[#2A2A2A] mb-1">Contact number<span className="text-red-500"> *</span></label>
+            <input
+              type="tel"
+              placeholder="+91 0123456789"
+              required
+              className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            />
+          </div>
+
+          {/* <div className="flex-1 flex flex-col">
+            <label className="text-sm font-bold text-[#2A2A2A] mb-1">Country</label>
+            <div className="flex items-center border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 h-[42px]">
+              <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="mr-2" />
+              <span className="text-gray-500">India</span>
+            </div>
+          </div> */}
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm font-bold text-[#2A2A2A] mb-1">Company Name<span className="text-red-500"> *</span></label>
+          <input
+            type="text"
+            placeholder="Companyexample"
+            required
+            className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm font-bold text-[#2A2A2A] mb-1">Address<span className="text-red-500"> *</span></label>
+          <input
+            type="text"
+            placeholder="Address*"
+            required
+            className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
+
+        <div className="flex flex-col">
+          <label className="text-sm font-bold text-[#2A2A2A] mb-1">Message<span className="text-red-500"> *</span></label>
+          <textarea
+            placeholder="Your message..."
+            rows="4"
+            required
+            className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          />
+        </div>
+            <div className="flex justify-center">
         <button
           type="submit"
-          className="w-full bg-gradient-to-r from-teal-600 to-teal-500 text-white py-2 rounded hover:opacity-90 transition"
+          className="w-[465px] h-[45px] bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white py-2 rounded hover:opacity-90 transition"
         >
           Let's Connect!
         </button>
+        </div>
       </form>
     </div>
-  
   </div>
+</div>
 
- </div> */}
 
       {/* {section-10} */}
       {/* <section className="w-full py-16 px-4 flex flex-col justify-center items-center mt-20">
@@ -211,15 +248,15 @@ export default function AfterHeroApi() {
         </h2>
       </section> */}
 
-      <div className="relative w-full h-[709px] flex items-center justify-center bg-[white]">
-        {/* Background API Image */}
+      {/* <div className="relative w-full h-[709px] flex items-center justify-center bg-[white]">
+        //Background API Image 
         <img
           src={apiBackground}
           alt="API Background"
           className="absolute w-[1150.91px] h-[848px] p-[34px] opacity-60"
         />
 
-        {/* Text Content */}
+        //Text Content 
         <div className="relative z-10 w-[1172px] h-[242px] flex flex-col items-center justify-center text-black text-center -mt-40">
           <h2 className="w-[816px] h-[64px] font-semibold text-[48px] leading-[64px]">
             Ready to{" "}
@@ -237,7 +274,7 @@ export default function AfterHeroApi() {
             </button>
           </Link>
         </div>
-      </div>
+      </div> */}
 
       {/* section-11  */}
 

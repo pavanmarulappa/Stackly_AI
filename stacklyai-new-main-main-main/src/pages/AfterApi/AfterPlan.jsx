@@ -23,7 +23,7 @@ const plans = [
 
 const AfterPlan = () => {
   return (
-    <div className="w-full  flex flex-col items-center px-4 py-10 bg-white">
+    <div className="w-full  flex flex-col items-center px-4 py-10 pb-[100px] bg-white">
       {/* Heading */}
       <h2 className="text-[44px] h-[64px] font-bold text-center leading-[64px] py-[20px]">
         <span className="text-[#00c6be]">API</span> Access Based on Your Plan
@@ -34,38 +34,37 @@ const AfterPlan = () => {
         <table className="w-[1280px] h-[433px] text-center text-sm md:text-base text-[#2A2A2A] border-collapse outline-none  rounded-bl-[20px] rounded-br-[20px]">
           <thead className="w-[1280px] min-h-[83px] rounded-tl-[20px] rounded-tr-[20px] bg-[#00B0BA1F]  ">
             <tr>
-              <th className="px-6 py-4 font-medium border-r border-[#E0E0E0]">
+              <th className="px-6 py-4  border-r border-[#E0E0E0] text-[24px] font-bold">
                 Plan
               </th>
-              <th className="px-6 py-4 font-medium border-r border-[#E0E0E0]">
+              <th className="px-6 py-4 text-[24px] font-bold border-r border-[#E0E0E0]">
                 API Keys Included
               </th>
-              <th className="px-6 py-4 font-medium border-r border-[#E0E0E0]">
+              <th className="px-6 py-4 text-[24px] font-bold  border-r border-[#E0E0E0]">
                 Monthly Credits
               </th>
-              <th className="px-6 py-4 font-medium">Usage Scenario</th>
+              <th className="px-6 py-4 text-[24px] font-bold  border-r border-[#E0E0E0]">Usage Scenario</th>
             </tr>
           </thead>
           <tbody className="gradient-bg">
             {plans.map((plan, idx) => (
-              <tr key={idx} className="border-t border-[#E0E0E0]">
-                <td className="px-6 py-4 border-b border-[#E0E0E0] ">
+              // <tr key={idx} className="border-t border-[#E0E0E0]">
+               <tr key={idx} className="border-t" style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)", }}>
+                <td className="px-6 py-4 text-[24px] ">
                   {plan.name}
                 </td>
-                <td className="px-6 py-4 border-b border-[#E0E0E0]">
+                <td className="px-6 py-4 text-[24px]">
                   {plan.keys}
                 </td>
-                <td className="px-6 py-4 border-b border-[#E0E0E0]">
+                <td className="px-6 py-4 text-[24px] font-bold">
                   {plan.credits}
                 </td>
-                <td className="px-6 py-4">{plan.usage}</td>
+                <td className="px-6 py-4 text-[24px] font-bold">{plan.usage}</td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
-
-     
+      </div> 
     </div>
   );
 };

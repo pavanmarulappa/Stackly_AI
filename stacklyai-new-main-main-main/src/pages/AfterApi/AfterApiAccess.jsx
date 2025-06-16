@@ -3,7 +3,7 @@ import Close from "../../assets/api/close.png"
 
 const AfterApiAccess = () => {
   return (
-    <div className="w-full flex justify-center items-center px-4 py-10 bg-white">
+    <div className="w-full flex justify-center items-center px-4 py-6 bg-white ">
       <div className=" w-full max-w-[1280px] min-h-[809px] rounded-[30px] border border-[#FCFCFC] px-6 py-12 bg-[#FCFCFC] shadow-[0_0_4px_0] shadow-[#00000040] relative">
         {/* Heading */}
         <h2 className="h-[64px] text-center text-[44px] font-bold leading-[64px]">
