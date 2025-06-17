@@ -13,7 +13,7 @@ export default function AfterConformationPage() {
         className="w-full h-[736px] p-[50px] flex flex-col justify-start items-start] bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url("/PricingPg/CPage.png")' }}
       >
-        <Link to="/AfterPay">
+        <Link to="/AfterHeroPricing#afteruiplans">
           <div className="w-[52px] h-[52px] rounded-[48px] px-[17px] py-[8px] bg-[#FFFFFF1A] flex justify-center items-center fill-[#007B82] text-[#007B82]">
             <img src={LArrow} alt="" />
           </div>

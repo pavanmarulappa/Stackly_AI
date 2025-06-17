@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import { CheckCircle2 } from "lucide-react";
 import Banner1 from "../../assets/pricing-pg/banner1.png";
 import Banner2 from "../../assets/pricing-pg/banner2.png";
@@ -11,9 +12,21 @@ import AfterPayment from "./AfterPayment";
 import AfterUiPlans from "./AfterUiPlans";
 import AfterConformationPage from "./AfterConformationPage";
 import AfterPay from "./AfterPay";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export default function AfterHeroPricing() {
+  const location = useLocation();
+  useEffect(() => {
+    if (location.hash === "#afteruiplans") {
+      const el = document.getElementById("afteruiplans");
+      if (el) {
+        // Delay scroll to make sure DOM is ready
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  }, [location]);
 
   const features = [
     "Unlimited Designs",
@@ -59,8 +72,8 @@ export default function AfterHeroPricing() {
       <AfterCreditStats />
 
       {/* section-3  */}
-
       <AfterGraph />
+
 
       {/* section-4  */}
 
@@ -81,12 +94,12 @@ export default function AfterHeroPricing() {
           </button>
         </Link>
 
-        
-      </section>
 
-      {/* section-5  */}
+      </section>
       {/* <AfterPricingTable /> */}
-      <AfterUiPlans />
+      {/* section-5  */}
+      <div id="afteruiplans"><AfterUiPlans /></div>
+
 
       {/* section-6  */}
 

@@ -34,7 +34,7 @@ export default function AfterPricingTable() {
                   Perfect for personal or casual users who want a simple idea of
                   interior design.
                 </div>
-                <Link to="/AfterBilling">
+                <Link to="">
                   <div className="w-[373px] h-[46px] rounded-[5px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center">
                     Get Started
                   </div>
@@ -145,7 +145,7 @@ export default function AfterPricingTable() {
                       </div>
                     </div>
                   </div>
-                  <Link to="/AfterBilling">
+                  <Link to="/AfterConformationPage">
                     {" "}
                     <div className="w-[373px] h-[46px] rounded-[5px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center">
                       Get Started
@@ -263,7 +263,7 @@ export default function AfterPricingTable() {
                       </div>
                     </div>
                   </div>
-                  <Link to="/AfterBilling">
+                  <Link to="/AfterConformationPage1">
                     <div className="w-[373px] h-[46px] rounded-[5px] border-[1px] border-solid border-[#007B82] text-[white] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] flex justify-center items-center">
                       Get Started
                     </div>

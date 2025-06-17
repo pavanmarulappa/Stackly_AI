@@ -1126,6 +1126,11 @@ async def verify_payment(session_id: str = Query(..., description="Stripe Checko
 @router.post("/create-checkout-session/")
 async def create_checkout_session(subscription_data: SubscriptionData):
     try:
+        #user = await sync_to_async(UserData.objects.get)(id=user_id)
+        user = await sync_to_async(UserData.objects.filter(id=subscription_data.userid).first)()
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found with this ID")
+        
         price = get_price_for_plan(subscription_data.plan, subscription_data.duration)
         if subscription_data.coupon_code:
             discount = get_discount_for_coupon(subscription_data.coupon_code, price)

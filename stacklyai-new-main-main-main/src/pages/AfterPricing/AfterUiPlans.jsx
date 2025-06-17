@@ -802,7 +802,7 @@ export default function AfterUiPlans() {
                     /per month
                   </span>
                 </div>
-                <Link to="/AfterBilling">
+                <Link to="">
                   <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white">
                     Get Started
                   </div>
@@ -909,7 +909,7 @@ export default function AfterUiPlans() {
                       </div>
                     </div>
                   </div>
-                  <Link to="/AfterBilling">
+                  <Link to="/AfterConformationPage">
                     {" "}
                     <div className="w-[373px] h-[46px] rounded-[5px] border-[1px] border-solid border-[#007B82] hover:text-[white] text-[#007B82] bg-white flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
                       Get Started
@@ -1065,7 +1065,7 @@ export default function AfterUiPlans() {
                       </div>
                     </div>
                   </div>
-                  <Link to="/AfterBilling">
+                  <Link to="/AfterConformationPage1">
                     <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:text-[white] hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
                       Get Started
                     </div>

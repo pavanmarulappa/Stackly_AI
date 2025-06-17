@@ -147,7 +147,7 @@ export default function AfterPay() {
 
             {/* button  */}
 
-            <Link to="/AfterConformationPage">
+            <Link to="">
               <div className="w-[590px] h-[49px] rounded-[8px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] flex justify-center items-center text-white font-semibold text-[20px]">
                 Pay Now
               </div>
