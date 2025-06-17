@@ -67,21 +67,21 @@ export default function AfterHeroPricing() {
       <section className="bg-[#001E20] text-white text-center py-16 px-4 mb-[120px]">
         {/* Heading */}
         <h2 className="text-[44px] font-semibold leading-[140%] text-center mb-6">
-          Ready to Experience the Power?
+          There’s a <span className="text-[#007B82]">Plan</span> for Creator
         </h2>
-
+        {/* Subtext */}
+        <p className="mt-6 text-[18px] leading-[28px] font-[400] text-[#f5f5f5] ">
+          From casual users to design pros, we’ve got you covered.
+        </p>
         {/* CTA Button */}
-        <Link to="/FormAfter">
+        <Link to="/">
           {" "}
-          <button className="bg-gradient-to-r from-[#00B0BA] via-[black] to-[#007B82] hover:from-cyan-600  text-white font-bold py-3 px-8 rounded-md text-[20px] transition-all duration-300">
-            Get Started for Free
+          <button className="bg-gradient-to-r from-[#00B0BA] via-[black] to-[#007B82] hover:from-cyan-600  text-white font-bold py-3 w-[406px] rounded-md text-[20px] transition-all duration-300">
+            GET STARTED!
           </button>
         </Link>
 
-        {/* Subtext */}
-        <p className="mt-6 text-[16px] leading-[28px] font-[400] text-[#f5f5f5] ">
-          No credit card needed. Sign up and explore your free credits today.
-        </p>
+        
       </section>
 
       {/* section-5  */}

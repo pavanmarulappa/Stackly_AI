@@ -1,5 +1,5 @@
 import React from "react";
-import bgImage from "../../assets/api/apibg.png";
+import bgImage from "../../assets/api/bgColour1.png";
 
 const integrationData = [
   {
@@ -19,7 +19,7 @@ const integrationData = [
   },
   {
     title: "E-Commerce & Furniture Brands",
-    description:
+    description: 
       "Display furniture in realistic settings using AI-generated room mockups.",
   },
   {
@@ -39,11 +39,11 @@ const AfterApiIntegration = () => {
     <div
       className="w-full h-[959px] flex flex-col items-center justify-center gap-12 px-4 bg-black"
       style={{
-        //backgroundImage: `url(${bgImage})`,
+        backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        backgroundColor: "rgba(1, 18, 19, 1)",
+        //backgroundColor: "rgba(1, 18, 19, 1)",
       }}
     >
       {/* Heading */}
