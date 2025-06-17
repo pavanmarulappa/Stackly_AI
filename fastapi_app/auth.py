@@ -276,7 +276,7 @@ from asgiref.sync import sync_to_async
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from django.core.exceptions import ObjectDoesNotExist
-from fastapi_app.config import SECRET_KEY, ALGORITHM
+# from fastapi_app.config import SECRET_KEY, ALGORITHM
 from fastapi_app.django_setup import django_setup
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
@@ -310,6 +310,8 @@ SMTP_PORT = os.getenv("SMTP_PORT")
 SMTP_USER = os.getenv("SMTP_USER")  # Add to .env
 SMTP_PASS = os.getenv("SMTP_PASS")  # Add to .env
 EMAIL_FROM = os.getenv("EMAIL_FROM")    # Add to .env
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
 
 
 router = APIRouter()

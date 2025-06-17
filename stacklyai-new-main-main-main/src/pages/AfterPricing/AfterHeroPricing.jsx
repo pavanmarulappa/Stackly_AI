@@ -70,7 +70,7 @@ export default function AfterHeroPricing() {
           There’s a <span className="text-[#007B82]">Plan</span> for Creator
         </h2>
         {/* Subtext */}
-        <p className="mt-6 text-[18px] leading-[28px] font-[400] text-[#f5f5f5] ">
+        <p className="mt-6 mb-6 text-[18px] leading-[28px] font-[400] text-[#f5f5f5] ">
           From casual users to design pros, we’ve got you covered.
         </p>
         {/* CTA Button */}
