@@ -374,6 +374,7 @@ export default function AfterBilling() {
         payment_success: false,
         billing_info: {
           full_name: formData.full_name,
+          email: formData.email,
           phone_number: formData.phone_number,
           street_address: formData.street_address,
           city: formData.city,

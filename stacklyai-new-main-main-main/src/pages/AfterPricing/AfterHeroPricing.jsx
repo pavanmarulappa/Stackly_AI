@@ -41,7 +41,7 @@ export default function AfterHeroPricing() {
     <div>
       {/* section-1  */}
 
-      <section className="relative w-full h-[600px] md:h-[700px] flex items-center justify-center bg-black overflow-hidden">
+      {/* <section className="relative w-full h-[600px] md:h-[700px] flex items-center justify-center bg-black overflow-hidden">
         <div className="absolute inset-0 z-0 rotate-[45deg] scale-[2] origin-center">
           <img
             src={Banner1}
@@ -65,11 +65,102 @@ export default function AfterHeroPricing() {
             live usage stats and see how our community is growing every day.
           </p>
         </div>
+      </section> */}
+      <section className="w-full min-h-screen bg-white py-10 px-4 flex flex-col items-center">
+        {/* Heading */}
+        <h1
+          className="font-bold mb-[60px] text-center"
+          style={{ fontSize: '60px' }}
+        >
+          Your <span className="text-[#00B1A7]">Active</span> Plan!
+        </h1>
+
+        {/* Top Info Boxes - 4 in 1 row */}
+        <div className="flex justify-center gap-4 mb-12 w-full max-w-[1100px]">
+          {[
+            { label: "Current Plan:", value: "Battle" },
+            { label: "Pricing:", value: "90 / month" },
+            { label: "Start Date:", value: "1 April 2025" },
+            { label: "Receive on:", value: "30 April 2025" },
+          ].map((item, index) => (
+            <div
+              key={index}
+              style={{
+                width: '256px',
+                height: '112px',
+                border: '1px solid #00B1A7',
+                borderRadius: '20.92px',
+              }}
+              className="px-6 py-4 text-center bg-white shadow-sm flex items-center justify-center"
+            >
+              <span className="font-bold text-black">{item.label}</span>
+              <span className="text-[#00B1A7] font-bold ml-1">{item.value}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Spacing */}
+        <div className="h-8 w-full"></div>
+
+        {/* Credit Boxes - 3 in 1 row */}
+        <div className="flex flex-wrap justify-center gap-8 w-full max-w-[1440px]">
+          {/* Monthly Credits */}
+          <div
+            style={{
+              width: '413px',
+              height: '400px',
+              border: '1px solid #00B1A7',
+              borderRadius: '40px',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.1)',
+            }}
+            className="p-8 text-center bg-white flex-col justify-center"
+          >
+            <h3 className="text-[28px] font-bold text-black mb-auto">Monthly Design Credits</h3>
+            <p className="text-[58px] font-bold text-black mt-[70px]">30</p>
+            <p className="text-[18px] font-bold text-black ">Thirty</p>
+            <p className="text-[13px] font-bold text-black mt-[90px]">Total credits allocated this month.</p>
+          </div>
+
+          {/* Credits Left */}
+          <div
+            style={{
+              width: '413px',
+              height: '400px',
+              border: '1px solid #00B1A7',
+              borderRadius: '40px',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.1)',
+            }}
+            className="p-8 text-center bg-white  flex-col justify-center"
+          >
+            <h3 className="text-[28px] font-bold text-[#00B1A7] mb-auto">Design Credits Left</h3>
+            <p className="text-[58px] font-bold text-black mt-[70px]">1</p>
+            <p className="text-[18px] font-bold text-black">TWENTY FIVE</p>
+            <p className="text-[13px] font-bold text-black mt-[90px]">Stay updated on your remaining balance.</p>
+          </div>
+
+          {/* Used Credits */}
+          <div
+            style={{
+              width: '413px',
+              height: '400px',
+              border: '1px solid #00B1A7',
+              borderRadius: '40px',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.1)',
+            }}
+            className="p-8 text-center bg-white  flex-col justify-center"
+          >
+            <h3 className="text-[28px] font-bold text-black mb-auto">Used Design Credits</h3>
+            <p className="text-[58px] font-bold text-black mt-[70px]">5</p>
+            <p className="text-[18px] font-bold text-black">Thirty</p>
+            <p className="text-[13px] font-bold text-black mt-[90px]">Credits you've used so far.</p>
+          </div>
+        </div>
       </section>
+
 
       {/* section-2  */}
 
-      <AfterCreditStats />
+      {/* <AfterCreditStats /> */}
 
       {/* section-3  */}
       <AfterGraph />
