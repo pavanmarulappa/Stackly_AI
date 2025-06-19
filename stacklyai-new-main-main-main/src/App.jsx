@@ -188,6 +188,7 @@ import { UserContext } from "./context/UserContext";
 // Common Components
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
 
 // Public Pages
 import Home from "./pages/Home/Home";
@@ -214,6 +215,7 @@ import AfterApi from "./pages/AfterApi/AfterApi";
 import AfterContact from "./pages/AfterContactPage/AfterContact";
 import AfterBilling from "./pages/AfterPricing/AfterBilling";
 import AfterPayment from "./pages/AfterPricing/AfterPayment";
+import AfterPaymentProcessing from "./pages/AfterPricing/AfterPaymentProcessing";
 import AfterUiPlans from "./pages/AfterPricing/AfterUiPlans";
 import AfterPay from "./pages/AfterPricing/AfterPay";
 import AfterConformationPage from "./pages/AfterPricing/AfterConformationPage";
@@ -240,6 +242,9 @@ export default function App() {
   if (loading) return <div className="text-center p-8">Loading...</div>;
 
   return (
+
+    <>
+      <ScrollToTop />  {/* used for redirect all pages show top  */}
     <div className="overflow-x-hidden">
       <Header />
 
@@ -272,6 +277,8 @@ export default function App() {
         <Route path="/afteruiplans" element={<AfterUiPlans />} />
         <Route path="/afterpay" element={<AfterPay />} />
         <Route path="/afterpayment" element={<AfterPayment />} />
+        <Route path="/afterpaymentprocessing" element={<AfterPaymentProcessing />} />
+
         <Route path="/afterconformationpage" element={<AfterConformationPage />} />
         <Route path="/afterconformationpage1" element={<AfterConformationPage1 />} />
         <Route path="/afterheropricing" element={<AfterHeroPricing />} />
@@ -297,6 +304,7 @@ export default function App() {
 
       <Footer />
     </div>
+ </>
   );
 }
 

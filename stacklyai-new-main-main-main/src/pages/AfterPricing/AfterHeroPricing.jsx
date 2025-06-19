@@ -168,19 +168,22 @@ export default function AfterHeroPricing() {
 
       {/* section-4  */}
 
-      <section className="bg-[#001E20] text-white text-center py-16 px-4 mb-[120px]">
+      <section className="bg-[#00B0BA14] text-white text-center py-16 px-4 ">
         {/* Heading */}
-        <h2 className="text-[44px] font-semibold leading-[140%] text-center mb-6">
+        <h2 className="text-[44px] font-semibold leading-[140%] text-black text-center mb-6">
           There’s a <span className="text-[#007B82]">Plan</span> for Creator
         </h2>
         {/* Subtext */}
-        <p className="mt-6 mb-6 text-[18px] leading-[28px] font-[400] text-[#f5f5f5] ">
+        <p className="mt-6 mb-6 text-[18px] leading-[28px] text-black font-[400] text-[#f5f5f5] ">
           From casual users to design pros, we’ve got you covered.
         </p>
         {/* CTA Button */}
         <Link to="/">
-          {" "}
-          <button className="bg-gradient-to-r from-[#00B0BA] via-[black] to-[#007B82] hover:from-cyan-600  text-white font-bold py-3 w-[406px] rounded-md text-[20px] transition-all duration-300">
+          <button
+            className="bg-gradient-to-r from-[#00B0BA] via-black to-[#007B82] 
+               text-white font-bold py-3 w-[406px] rounded-md text-[20px] 
+               transition-all duration-300 hover:brightness-110 hover:shadow-lg"
+          >
             GET STARTED!
           </button>
         </Link>
@@ -194,23 +197,26 @@ export default function AfterHeroPricing() {
 
       {/* section-6  */}
 
-      <div className="bg-[#001E20] text-white py-12 px-4 md:px-16 text-center mt-[120px]">
-        <h2 className="text-[48px] font-bold leading-[64px] text-center text-[white]">
-          Why Upgrade to Premium?
+      <div className="w-full max-w-[1440px] mx-auto py-12 px-4 md:px-16 text-center">
+        {/* Heading */}
+        <h2 className="text-[48px] font-bold leading-[64px] text-black mt-[60px]">
+          Why Go Premium?
         </h2>
 
+        {/* Badge */}
         <div className="inline-block mb-8">
           <span className="bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-[22px] leading-[44px] text-center text-white text-sm font-semibold px-[30px] py-[10px] rounded-[50px] relative top-[55px]">
             Features of Paid Plans
           </span>
         </div>
 
-        <div className="border-[1px] border-solid border-teal-700 rounded-[30px] px-[60px] py-[80px] max-w-[1200px] mx-auto">
+        {/* Features Container */}
+        <div className="border-[1px] border-solid border-teal-700 rounded-[30px] px-[20px] sm:px-[40px] md:px-[60px] py-[80px] max-w-[1200px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
             {features.map((feature, idx) => (
-              <div key={idx} className="flex items-start gap-2">
-                <CheckCircle2 className="text-teal-400 w-5 h-5 mt-1" />
-                <span className="text-[20px] leading-[44px] text-center font-medium">
+              <div key={idx} className="flex items-center gap-2">
+                <CheckCircle2 className="text-teal-400 w-5 h-5 " />
+                <span className="text-[20px] leading-[44px] text-center font-medium ">
                   {feature}
                 </span>
               </div>
@@ -218,6 +224,7 @@ export default function AfterHeroPricing() {
           </div>
         </div>
       </div>
+
 
       {/* section-7  */}
 

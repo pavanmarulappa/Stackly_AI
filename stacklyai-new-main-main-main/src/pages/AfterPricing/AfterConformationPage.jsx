@@ -130,7 +130,7 @@ export default function AfterConformationPage() {
           </div>
         </div>
 
-        <Link to="/AfterPayment">
+        <Link to="/AfterBilling">
           {" "}
           <div className="text-white w-[590px] h-[62px] rounded-[8px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] flex justify-center items-center font-semibold text-[20px] text-center ml-[150px]">
             Confirm Payment

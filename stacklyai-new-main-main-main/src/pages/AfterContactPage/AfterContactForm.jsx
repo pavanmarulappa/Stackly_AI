@@ -194,10 +194,11 @@ const AfterContactForm = () => {
             <div className="flex gap-4">
               <div className="w-1/2">
                 <label className="block text-sm font-medium  font-bold">
-                  First name<span className="text-red-500">*</span>
+                  First name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
+                  required
                   name="first_name"
                   placeholder="Ram"
                   value={formData.first_name}
@@ -207,11 +208,12 @@ const AfterContactForm = () => {
               </div>
               <div className="w-1/2">
                 <label className="block text-sm font-medium  font-bold">
-                  Last Name
+                  Last Name <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
                   name="last_name"
+                  required
                   placeholder="Prakash"
                   className="mt-1 w-full border rounded-md px-4 py-3 bg-gray-100"
                   value={formData.last_name}
@@ -223,11 +225,12 @@ const AfterContactForm = () => {
             {/* Email */}
             <div>
               <label className="block text-sm font-medium  font-bold">
-                Email<span className="text-red-500">*</span>
+                Email <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
                 name="email"
+                required
                 placeholder="ramprakash@example.com"
                 className="mt-1 w-full border rounded-md px-4 py-3 bg-gray-100"
                 value={formData.email}
@@ -237,12 +240,13 @@ const AfterContactForm = () => {
 
             {/* Contact Number */}
             <div>
-              <label className="block text-sm font-medium  font-bold">
-                Contact Number<span className="text-red-500">*</span>
+              <label className="block text-sm font-medium  ">
+                Contact Number <span className="text-red-500">*</span>
               </label>
               <input
                 type="tel"
                 name="contact_number"
+                required
                 placeholder="+91 0123456789"
                 className="mt-1 w-full border rounded-md px-4 py-3 bg-gray-100"
                 value={formData.contact_number}
@@ -252,23 +256,24 @@ const AfterContactForm = () => {
 
             {/* Subject Dropdown */}
             <div>
-              <label className="block text-sm font-bold">
-                Select Subject<span className="text-red-500">*</span>
+              <label className="block text-sm font-medium">
+                Select Subject <span className="text-red-500">*</span>
               </label>
               <div className="relative mt-1">
                 <select
                   name="subject"
+                  required
                   value={formData.subject}
                   onChange={handleChange}
-                  className="w-full border rounded-md pl-5 pr-10 py-3 bg-gray-100 appearance-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                  className={`w-full border rounded-md pl-5 pr-10 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${formData.subject === "" ? "text-gray-400 bg-gray-100" : "text-black bg-white"
+                    }`}
                 >
-                  <option value="" disabled selected className="text-gray-400">
+                  <option value="" disabled hidden>
                     Select a Subject
                   </option>
-
-                  <option value="Support">Support</option>
-                  <option value="Sales">Sales</option>
-                  <option value="Other">Other</option>
+                  <option value="Support" className="text-black">Support</option>
+                  <option value="Sales" className="text-black">Sales</option>
+                  <option value="Other" className="text-black">Other</option>
                 </select>
 
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -283,8 +288,12 @@ const AfterContactForm = () => {
               </div>
             </div>
 
+
             {/* Message */}
             <div>
+              <label className="block text-sm font-medium  ">
+                Message <span className="text-red-500">*</span>
+              </label>
               <textarea
                 placeholder="Your Message (Max 500 Characters)"
                 maxLength={500}
@@ -292,6 +301,7 @@ const AfterContactForm = () => {
                 name="message"
                 className="mt-1 w-full border rounded-md px-4 py-3 bg-gray-100"
                 value={formData.message}
+                required
                 onChange={handleChange}
               />
             </div>

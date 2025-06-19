@@ -13,10 +13,6 @@ import L3 from "../../assets/afterHome/l3.png";
 import L4 from "../../assets/afterHome/l4.png";
 import Line from "../../assets/afterHome/line.png";
 import DraggableAfter from "../../pages/AfterSignHome/DraggableAfter"
-
-
-
-
 import FormAfter from "../../pages/AfterSignHome/FormAfter"
 import AfterFaq from "../../pages/AfterSignHome/AfterFaq"
 import ExteriorForm from "./ExteriorForm";
@@ -43,7 +39,7 @@ export default function HeroAfterHome() {
       setCurrentIndex((prevIndex) =>
         prevIndex === images.length - 1 ? 0 : prevIndex + 1
       );
-    }, 4000);
+    }, 2000); //every 2 second section 1 background image will be change.
 
     return () => clearInterval(interval); // Cleanup on unmount
   }, [images.length]);

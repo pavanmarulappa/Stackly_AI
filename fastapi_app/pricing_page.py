@@ -1364,7 +1364,7 @@ async def update_subscription(session_id: str):
             # Step 6: Generate invoice PDF
             invoice_path = generate_invoice_pdf({
                 "customer_name": billing_info.full_name,
-                "email": user_email,
+                "email": billing_info.email,
                 "invoice_id": invoice_id,
                 "paid_on": billing.paid_on.strftime("%d-%m-%Y"),
                 "renews_on": subscription.renews_on.strftime("%d-%m-%Y"),

@@ -752,6 +752,7 @@ import Page from "../../assets/pricing-pg/page.png";
 import Gold from "../../assets/pricing-pg/grpGold.png";
 import DarkPg from "../../assets/pricing-pg/darkPg.png";
 import Rarrow from "../../assets/pricing-pg/Rarrow.png";
+import BgImage from "../../assets/pricing-pg/bg-plan.png";
 import { Link } from "react-router-dom";
 
 export default function AfterUiPlans() {
@@ -768,7 +769,10 @@ export default function AfterUiPlans() {
 
   return (
     <div>
-      <section className="w-full h-[1600px] flex justify-center items-center bg-[#021314]">
+      <section
+        className="w-full h-[1600px] flex justify-center items-center bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${BgImage})` }}
+      >
         <div className="w-[1325px] h-[1201px] flex flex-col justify-start items-center gap-[116px]">
           <div className="w-[1018px] h-[414px] flex flex-col justify-start items-center gap-[61px]">
             <div className="w-[743px] h-[128px] font-medium text-[48px] leading-[64px] text-center text-white">
@@ -802,11 +806,11 @@ export default function AfterUiPlans() {
                     /per month
                   </span>
                 </div>
-                <Link to="">
+                {/* <Link to="">
                   <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white">
                     Get Started
                   </div>
-                </Link>
+                </Link> */}
               </div>
 
               <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E] text-[white]"></div>
@@ -867,9 +871,8 @@ export default function AfterUiPlans() {
             {/* plan-2  */}
 
             <div
-              className={`w-[413px] min-w-[340px] ${
-                showSilverMore ? "h-[1010px]" : "h-[810px]"
-              } rounded-[12px] px-[20px] py-[40px] bg-gradient-to-b from-[#00B0BA] via-[#FFFFFF1A] to-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px] transition-all duration-300`}
+              className={`w-[413px] min-w-[340px] ${showSilverMore ? "h-[1010px]" : "h-[810px]"
+                } rounded-[12px] px-[20px] py-[40px] bg-gradient-to-b from-[#00B0BA] via-[#FFFFFF1A] to-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px] transition-all duration-300`}
             >
               <div className="w-[373px] min-h-[349px] flex flex-col justify-start items-start">
                 <div className="w-[373px] min-h-[349px] flex flex-col justify-start items-start gap-[34px]">
@@ -1006,9 +1009,8 @@ export default function AfterUiPlans() {
                     <img
                       src={Rarrow}
                       alt="tik"
-                      className={`w-[15px] h-[20px] flex items-center justify-center transition-transform ${
-                        showSilverMore ? "transform rotate-90" : ""
-                      }`}
+                      className={`w-[15px] h-[20px] flex items-center justify-center transition-transform ${showSilverMore ? "transform rotate-90" : ""
+                        }`}
                     />
                     <div className="font-medium text-lg leading-lg text-[white]">
                       {showSilverMore ? "Show less" : "See 4 more"}
@@ -1020,9 +1022,8 @@ export default function AfterUiPlans() {
 
             {/* plan-3  */}
             <div
-              className={`w-[413px] min-w-[340px] ${
-                showGoldMore ? "h-[1050px]" : "h-[810px]"
-              } rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px] transition-all duration-300`}
+              className={`w-[413px] min-w-[340px] ${showGoldMore ? "h-[1050px]" : "h-[810px]"
+                } rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px] transition-all duration-300`}
             >
               <div className="w-[374px] min-h-[364px] flex flex-col justify-start items-start">
                 <div className="w-[374px] min-h-[364px] flex flex-col justify-start items-start gap-[34px]">
@@ -1162,9 +1163,8 @@ export default function AfterUiPlans() {
                     <img
                       src={Rarrow}
                       alt="tik"
-                      className={`w-[15px] h-[20px] flex items-center justify-center transition-transform ${
-                        showGoldMore ? "transform rotate-90" : ""
-                      }`}
+                      className={`w-[15px] h-[20px] flex items-center justify-center transition-transform ${showGoldMore ? "transform rotate-90" : ""
+                        }`}
                     />
                     <div className="font-medium text-lg leading-lg text-[white]">
                       {showGoldMore ? "Show less" : "See 4 more"}

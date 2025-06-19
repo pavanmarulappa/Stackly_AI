@@ -3,12 +3,19 @@ import Tik from "../../assets/pricing-pg/tik.png";
 import Silver from "../../assets/pricing-pg/silver.png";
 import Page from "../../assets/pricing-pg/page.png";
 import Gold from "../../assets/pricing-pg/grpGold.png";
+import BgImage from "../../assets/pricing-pg/bg-plan.png";
 import { Link } from "react-router-dom";
 
 export default function AfterPricingTable() {
   return (
     <div>
-      <section className="w-full min-h-[1080px] flex flex-col justify-center items-center gap-[40px] py-[50px] px-[50px]">
+      <section
+  className="w-full min-h-[1080px] flex flex-col justify-center items-center gap-[40px] py-[50px] px-[50px] bg-cover bg-no-repeat bg-center bg-fixed"
+  style={{ 
+    backgroundImage: `url(${BgImage})`,
+    backgroundColor: 'gray' // fallback
+  }}
+>
         <div className="max-w-[922px] min-h-[64px] text-[48px] text-[black] font-bold ">
           Find the Perfect Plan for You
         </div>
