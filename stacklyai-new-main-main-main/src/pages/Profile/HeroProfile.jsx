@@ -470,32 +470,32 @@ export default function HeroProfile() {
                   alt="profile-pic"
                   className="w-24 h-24 rounded-full object-cover border-2 border-white"
                 />
-                <div className="w-[112px] h-[29px] font-medium text-[24px] leading-[100%] text-[#2A2A2A]">
+                <div className="w-[full] h-[29px] font-bold text-[24px] leading-[100%] text-[#2A2A2A]">
                   {userData.first_name} {userData.last_name}
                 </div>
                 <div className="w-[100%] h-[2px] bg-[#E0E4E7]"></div>
 
                 {/* Basic Info Section */}
                 <div className="w-[100%] h-auto p-[20px] flex flex-col gap-[20px]">
-                  <div className="w-[89px] h-[22px] font-medium text-[18px] leading-[100%] text-[#00B0BA]">
+                  <div className="w-[89px] h-[22px] font-bold text-[18px] leading-[100%] text-[#00B0BA]">
                     Basic info:
                   </div>
 
-                  <div className="w-full flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
+                  <div className="w-full flex justify-between font-bold text-[16px] text-[#2A2A2A]">
                     <span>First name:</span>
-                    <span className="text-[#B0B0B0]">{userData.first_name || 'Not set'}</span>
+                    <span className="text-black font-medium">{userData.first_name || 'Not set'}</span>
                   </div>
-                  <div className="w-full flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
+                  <div className="w-full flex justify-between font-bold text-[16px] text-[#2A2A2A]">
                     <span>Last name:</span>
-                    <span className="text-[#B0B0B0]">{userData.last_name || 'Not set'}</span>
+                    <span className="text-black font-medium">{userData.last_name || 'Not set'}</span>
                   </div>
-                  <div className="w-full flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
+                  <div className="w-full flex justify-between font-bold text-[16px] text-[#2A2A2A]">
                     <span>Email:</span>
-                    <span className="text-[#B0B0B0]">{userData.email || 'Not set'}</span>
+                    <span className="text-black font-medium">{userData.email || 'Not set'}</span>
                   </div>
-                  <div className="w-full flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
+                  <div className="w-full flex justify-between font-bold text-[16px] text-[#2A2A2A]">
                     <span>Contact number:</span>
-                    <span className="text-[#B0B0B0]">{userData.phone_number || 'Not set'}</span>
+                    <span className="text-black font-medium">{userData.phone_number || 'Not set'}</span>
                   </div>
                 </div>
               </div>

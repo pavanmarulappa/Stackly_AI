@@ -220,13 +220,13 @@
 //                     placeholder="Enter Coupen Code"
 //                   />
 
-                  
+
 //                     <div 
 //                     onClick={handleContinue}
 //                     className="w-[716px] h-[49px] rounded-[8px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] text-[white] text-[16px] text-bold leading-[35px] tracking-[0px] text-center flex justify-center items-center">
 //                       Continue
 //                     </div>
-                  
+
 //                 </div>
 //               </div>
 
@@ -301,7 +301,7 @@
 //   );
 // }
 
-
+//AfterBilling
 import React, { useState } from "react";
 import SideArrow from "../../assets/pricing-pg/sideArrow.png";
 import Tick from "../../assets/pricing-pg/tick.png";
@@ -312,7 +312,7 @@ import axios from "axios";
 
 export default function AfterBilling() {
   const navigate = useNavigate();
-  
+
   // Form state
   const [formData, setFormData] = useState({
     plan: "Silver",
@@ -356,7 +356,7 @@ export default function AfterBilling() {
   // Handle form submission
   const handleContinue = async (e) => {
     e.preventDefault();
-    
+
     const userId = localStorage.getItem("userId");
     if (!userId) {
       alert("User ID not found");
@@ -385,6 +385,10 @@ export default function AfterBilling() {
       });
 
       if (response.data.checkout_url) {
+        //this to localstorage is used for send payment failed mail
+        localStorage.setItem("billing_email", formData.email);
+        localStorage.setItem("billing_name", formData.full_name);
+
         window.location.href = response.data.checkout_url;
       }
     } catch (error) {
@@ -451,7 +455,7 @@ export default function AfterBilling() {
                   {/* Plan Selection */}
                   <div className="w-[716px] h-[42px] flex justify-between items-center gap-[16px]">
                     {["Basic", "Silver", "Gold"].map((plan) => (
-                      <div 
+                      <div
                         key={plan}
                         className={`w-[228px] h-[40px] rounded-[8px] border-[1px] border-solid border-[#007B82] bg-[white] flex justify-between items-center px-[16px] py-[10px] cursor-pointer ${formData.plan === plan ? 'bg-[#007B8210]' : ''}`}
                         onClick={() => handlePlanSelect(plan)}
@@ -464,7 +468,7 @@ export default function AfterBilling() {
                           className="accent-[#007B82]"
                           name="premium"
                           checked={formData.plan === plan}
-                          onChange={() => {}}
+                          onChange={() => { }}
                         />
                       </div>
                     ))}
@@ -473,7 +477,7 @@ export default function AfterBilling() {
                   {/* Duration Selection */}
                   <div className="w-[472px] h-[42px] flex justify-between items-center gap-[16px]">
                     {["Monthly", "Yearly"].map((duration) => (
-                      <div 
+                      <div
                         key={duration}
                         className={`w-[228px] h-[40px] rounded-[8px] border-[1px] border-solid border-[#007B82] bg-[white] flex justify-between items-center px-[16px] py-[10px] cursor-pointer ${formData.duration === duration ? 'bg-[#007B8210]' : ''}`}
                         onClick={() => handleDurationSelect(duration)}
@@ -486,7 +490,7 @@ export default function AfterBilling() {
                           className="accent-[#007B82]"
                           name="Durations"
                           checked={formData.duration === duration}
-                          onChange={() => {}}
+                          onChange={() => { }}
                         />
                       </div>
                     ))}
@@ -562,7 +566,7 @@ export default function AfterBilling() {
                       placeholder="Zip/Postal Code"
                       required
                     />
-                    <div className="w-[228px] bg-white h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] flex justify-between items-center overflow-hidden px-[20px] cursor-pointer">
+                    <div className="w-[228px] bg-white h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] flex justify-between items-center  px-[20px] cursor-pointer">
                       <select
                         name="country"
                         value={formData.country}
@@ -615,7 +619,7 @@ export default function AfterBilling() {
                         Price
                       </div>
                       <div className="w-[50%] h-[32px] flex justify-start items-center text-white font-semibold">
-                        {formData.plan === "Basic" 
+                        {formData.plan === "Basic"
                           ? formData.duration === "Monthly" ? "$9.00" : "$90.00"
                           : formData.plan === "Silver"
                             ? formData.duration === "Monthly" ? "$29.00" : "$290.00"
@@ -648,7 +652,7 @@ export default function AfterBilling() {
                         Grand Total
                       </div>
                       <div className="font-[600] text-[25px] leading-[100%] text-[white]">
-                        {formData.plan === "Basic" 
+                        {formData.plan === "Basic"
                           ? formData.duration === "Monthly" ? "$9.00" : "$90.00"
                           : formData.plan === "Silver"
                             ? formData.duration === "Monthly" ? "$29.00" : "$290.00"

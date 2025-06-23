@@ -996,7 +996,7 @@ from dateutil.relativedelta import relativedelta
 from appln.models import UserData, UserSubscription, BillingHistory, BillingInfo, APIKeyManager
 from asgiref.sync import sync_to_async
 import random
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from fastapi_app.invoice_generator import generate_invoice_pdf
 import smtplib
 import os
@@ -1015,6 +1015,7 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 FRONTEND_SUCCESS_URL = os.getenv("FRONTEND_SUCCESS_URL")
 FRONTEND_CANCEL_URL = os.getenv("FRONTEND_CANCEL_URL")
 STRIPE_WEBHOOK_SECRET = os.getenv("STRIPE_WEBHOOK_SECRET")
+FRONTEND_PRICING_URL = os.getenv("FRONTEND_PRICING_URL")
 
 stripe.api_key = STRIPE_SECRET_KEY
 
@@ -1082,6 +1083,10 @@ class SubscriptionData(BaseModel):
     payment_method: str
     billing_info: BillingInfoModel
     payment_success: bool = True
+    
+class FailedPaymentEmailModel(BaseModel):
+    email: EmailStr
+    name: str
 
 def send_invoice_email(to_email, customer_name, invoice_path):
     try:
@@ -1397,6 +1402,46 @@ async def update_subscription(session_id: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    
+def send_payment_failure_email(to_email: str, name: str):
+    try:
+        msg = EmailMessage()
+        msg["Subject"] = "Payment Failed - Action Required"
+        msg["From"] = os.getenv("SMTP_SENDER_EMAIL")
+        msg["To"] = to_email
+
+        msg.set_content(f"""
+Hi {name},
+
+Unfortunately, your recent payment attempt was unsuccessful.
+
+Please try again to complete your subscription. If you continue to face issues, feel free to reach out to our support team.
+
+Retry your payment here: {os.getenv("FRONTEND_PRICING_URL")}
+
+Best regards,  
+Your Support Team
+""")
+
+
+        with smtplib.SMTP(os.getenv("SMTP_HOST"), int(os.getenv("SMTP_PORT"))) as server:
+            server.starttls()
+            server.login(os.getenv("SMTP_USER"), os.getenv("SMTP_PASS"))
+            server.send_message(msg)
+    except Exception as e:
+        print(f"Failed to send failure email: {e}")
+        raise
+
+# -------------------------------
+# 🔁 API Endpoint
+# -------------------------------
+@router.post("/send-payment-failed-email")
+async def send_payment_failed_email(data: FailedPaymentEmailModel):
+    try:
+        send_payment_failure_email(data.email, data.name)
+        return {"message": "Failure email sent successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error sending failure email: {str(e)}")
 
 
 

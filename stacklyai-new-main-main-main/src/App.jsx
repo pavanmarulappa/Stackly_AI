@@ -221,6 +221,7 @@ import AfterPay from "./pages/AfterPricing/AfterPay";
 import AfterConformationPage from "./pages/AfterPricing/AfterConformationPage";
 import AfterConformationPage1 from "./pages/AfterPricing/AfterConformationPage1";
 import AfterHeroPricing from "./pages/AfterPricing/AfterHeroPricing";
+import Cancel from "./pages/AfterPricing/Cancel";
 import FormAfter from "./pages/AfterSignHome/FormAfter";
 
 // Profile Pages
@@ -277,6 +278,7 @@ export default function App() {
         <Route path="/afteruiplans" element={<AfterUiPlans />} />
         <Route path="/afterpay" element={<AfterPay />} />
         <Route path="/afterpayment" element={<AfterPayment />} />
+        <Route path="/cancel" element={<Cancel />} />
         <Route path="/afterpaymentprocessing" element={<AfterPaymentProcessing />} />
 
         <Route path="/afterconformationpage" element={<AfterConformationPage />} />

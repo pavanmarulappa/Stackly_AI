@@ -234,71 +234,71 @@ export default function Myplan() {
 
   useEffect(() => {
     const fetchData = async () => {
-  try {
-    const userId = localStorage.getItem('userId');
-    const token = localStorage.getItem('token');
+      try {
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
 
-    if (!token) throw new Error('No authentication token found');
-    if (!userId) throw new Error('No user ID found');
+        if (!token) throw new Error('No authentication token found');
+        if (!userId) throw new Error('No user ID found');
 
-    // Fetch profile data
-    const profileResponse = await axios.get('http://localhost:8000/profile', {
-      params: { userid: userId },
-      headers: {
-        Authorization: `Bearer ${token}`
+        // Fetch profile data
+        const profileResponse = await axios.get('http://localhost:8000/profile', {
+          params: { userid: userId },
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const profilePicUrl = profileResponse.data.profile_pic
+          ? (profileResponse.data.profile_pic.startsWith('/media/profile_pics')
+            ? `http://localhost:8000${profileResponse.data.profile_pic}`
+            : profileResponse.data.profile_pic)
+          : Pimage;
+
+        setProfileData(prev => ({
+          ...prev,
+          first_name: profileResponse.data.first_name || '',
+          last_name: profileResponse.data.last_name || '',
+          email: profileResponse.data.email || '',
+          phone_number: profileResponse.data.phone_number || '',
+          profile_pic: profileResponse.data.profile_pic,
+          previewImage: profilePicUrl
+        }));
+
+        // Fetch subscription data
+        const subscriptionResponse = await axios.get('http://localhost:8000/subscription', {
+          params: { userid: userId },
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const subData = subscriptionResponse.data;
+
+        setSubscriptionData({
+          current_plan: subData.current_plan || 'Basic',
+          duration: subData.duration || 'Monthly',
+          original_price: subData.original_price || 0,
+          discount_price: subData.discount_price || null,
+          total_credits: subData.total_credits || 0,
+          used_credits: subData.used_credits || 0,
+          balance_credits: (subData.total_credits || 0) - (subData.used_credits || 0),
+          renews_on: subData.renews_on || null,
+        });
+
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError(err.response?.data?.detail || 'Failed to load data');
+        toast.error(err.response?.data?.detail || 'Failed to load profile data');
+
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        }
+      } finally {
+        setLoading(false);
       }
-    });
-
-    const profilePicUrl = profileResponse.data.profile_pic
-      ? (profileResponse.data.profile_pic.startsWith('/media/profile_pics')
-        ? `http://localhost:8000${profileResponse.data.profile_pic}`
-        : profileResponse.data.profile_pic)
-      : Pimage;
-
-    setProfileData(prev => ({
-      ...prev,
-      first_name: profileResponse.data.first_name || '',
-      last_name: profileResponse.data.last_name || '',
-      email: profileResponse.data.email || '',
-      phone_number: profileResponse.data.phone_number || '',
-      profile_pic: profileResponse.data.profile_pic,
-      previewImage: profilePicUrl
-    }));
-
-    // Fetch subscription data
-    const subscriptionResponse = await axios.get('http://localhost:8000/subscription', {
-      params: { userid: userId },
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    const subData = subscriptionResponse.data;
-
-    setSubscriptionData({
-      current_plan: subData.current_plan || 'Basic',
-      duration: subData.duration || 'Monthly',
-      original_price: subData.original_price || 0,
-      discount_price: subData.discount_price || null,
-      total_credits: subData.total_credits || 0,
-      used_credits: subData.used_credits || 0,
-      balance_credits: (subData.total_credits || 0) - (subData.used_credits || 0),
-      renews_on: subData.renews_on || null,
-    });
-
-  } catch (err) {
-    console.error('Error fetching data:', err);
-    setError(err.response?.data?.detail || 'Failed to load data');
-    toast.error(err.response?.data?.detail || 'Failed to load profile data');
-
-    if (err.response?.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
-  } finally {
-    setLoading(false);
-  }
-};
+    };
 
     fetchData();
   }, []);
@@ -318,7 +318,7 @@ export default function Myplan() {
       </div>
     );
   }
-
+  
   return (
     <div>
       <section className="w-full h-auto p-[50px] flex flex-col justify-start items-center gap-[15px]">
@@ -346,27 +346,27 @@ export default function Myplan() {
                     e.target.src = Pimage;
                   }}
                 />
-                <div className="w-[112px] h-[29px] font-medium text-[24px] leading-[100%] text-[#2A2A2A]">
+                <div className="w-[100%] h-[29px] font-bold text-[24px] leading-[100%] text-[#2A2A2A] whitespace-nowrap overflow-hidden text-ellipsis">
                   {profileData.first_name} {profileData.last_name}
                 </div>
                 <div className="w-[100%] h-[2px] bg-[#E0E4E7]"></div>
 
                 <div className="w-[100%] h-auto p-[20px] flex flex-col gap-[20px]">
-                  <div className="w-[89px] h-[22px] font-medium text-[18px] leading-[100%] text-[#00B0BA]">
+                  <div className="w-[89px] h-[22px] font-bold text-[18px] leading-[100%] text-[#00B0BA]">
                     Basic info:
                   </div>
 
-                  <div className="w-[147px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                    First name : <span className="text-[#B0B0B0]">{profileData.first_name}</span>
+                  <div className="w-[147px] h-[19px] flex justify-between font-bold text-[16px] text-[#2A2A2A]">
+                    First name : <span className="text-black font-medium">{profileData.first_name}</span>
                   </div>
-                  <div className="w-[147px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                    Last name : <span className="text-[#B0B0B0]">{profileData.last_name}</span>
+                  <div className="w-[147px] h-[19px] flex justify-between font-bold  text-[16px] text-[#2A2A2A]">
+                    Last name : <span className="text-black font-medium">{profileData.last_name}</span>
                   </div>
-                  <div className="w-[247px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                    Email : <span className="text-[#B0B0B0]">{profileData.email}</span>
+                  <div className="w-[247px] h-[19px] flex justify-between font-bold text-[16px] text-[#2A2A2A]">
+                    Email : <span className="text-black font-medium">{profileData.email}</span>
                   </div>
-                  <div className="w-[270px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                    Contact number : <span className="text-[#B0B0B0]">{profileData.phone_number}</span>
+                  <div className="w-[270px] h-[19px] flex justify-between font-bold text-[16px] text-[#2A2A2A]">
+                    Contact number : <span className="text-black font-medium">{profileData.phone_number}</span>
                   </div>
                 </div>
               </div>
@@ -404,7 +404,7 @@ export default function Myplan() {
               <div className="w-[767px] h-[451px] flex flex-col justify-start items-center gap-[32px]">
                 <div className="w-[100%] h-[24px] flex justify-center items-center">
                   <div className="font-semibold text-[20px] leading-[100%] text-center text-black tracking-[2px]">
-                    Your<span className="text-[#00B0BA]">Active</span>Plan!
+                    Your <span className="text-[#00B0BA]">Active</span> Plan!
                   </div>
                 </div>
 
@@ -413,13 +413,18 @@ export default function Myplan() {
                 <div className="w-[687px] h-[363px] flex flex-col gap-[32px]">
                   <div className="w-[100%] h-[57px] flex justify-between items-center">
                     <div className="w-[171px] h-[57px] rounded-[12px] p-[20px] bg-white shadow-[0_6.54px_12.2px_0] shadow-[#ABB2BB40] flex justify-center items-center font-medium text-[14px] text-center text-black">
-                      Current Plan : <span className="text-[#00B0BA]">{subscriptionData.current_plan}</span>
+                      Current Plan :&nbsp;
+                      <span className="text-[#00B0BA]">
+                        {subscriptionData.current_plan.charAt(0).toUpperCase() + subscriptionData.current_plan.slice(1)}
+                      </span>
                     </div>
                     <div className="w-[210px] h-[57px] rounded-[12px] p-[20px] bg-white shadow-[0_6.54px_12.2px_0] shadow-[#ABB2BB40] flex justify-center items-center font-medium text-[14px] text-center text-black">
-                      Duration period : <span className="text-[#00B0BA]">{subscriptionData.duration}</span>
+                      Duration period : &nbsp;<span className="text-[#00B0BA]">
+                        {subscriptionData.duration.charAt(0).toUpperCase() + subscriptionData.duration.slice(1)}</span>
                     </div>
-                    <div className="w-[172px] h-[57px] rounded-[12px] p-[20px] bg-white shadow-[0_6.54px_12.2px_0] shadow-[#ABB2BB40] flex justify-center items-center font-medium text-[14px] text-center text-black">
-                      Pricing : <span className="text-[#00B0BA]">
+                    <div className="w-[172px] h-[57px] rounded-[12px] px-[10px] bg-white shadow-[0_6.54px_12.2px_0] shadow-[#ABB2BB40] flex justify-center items-center font-medium text-[14px] text-black whitespace-nowrap overflow-hidden text-ellipsis">
+                      Pricing :&nbsp;
+                      <span className="text-[#00B0BA]">
                         ${subscriptionData.discount_price || subscriptionData.original_price} / month
                       </span>
                     </div>
@@ -430,7 +435,7 @@ export default function Myplan() {
                       <div className="w-[100%] h-[19px] font-[400] text-[16px] text-[#6E6E6E]">
                         Monthly Design Credits
                       </div>
-                      <div className="w-[328px] h-[44px] rounded-[10px] border-[1px] border-solid border-[#00B0BA] bg-[white] flex justify-center items-center gap-[10px] p-[20px]">
+                      <div className="w-[328px] h-[44px] rounded-[10px] border-[1px] border-solid border-[#00B0BA] bg-[white] flex  items-center gap-[10px] p-[20px]">
                         {subscriptionData.total_credits}
                       </div>
                     </div>
@@ -438,7 +443,7 @@ export default function Myplan() {
                       <div className="w-[100%] h-[19px] font-[400] text-[16px] text-[#6E6E6E]">
                         Used Design Credits
                       </div>
-                      <div className="w-[328px] h-[44px] rounded-[10px] border-[1px] border-solid border-[#00B0BA] bg-[white] flex justify-center items-center gap-[10px] p-[20px]">
+                      <div className="w-[328px] h-[44px] rounded-[10px] border-[1px] border-solid border-[#00B0BA] bg-[white] flex  items-center gap-[10px] p-[20px]">
                         {subscriptionData.used_credits}
                       </div>
                     </div>

@@ -33,7 +33,7 @@ export default function AfterPayment() {
 
                 <div className="w-[94px] h-[76px] flex flex-col justify-center items-center px-[7px] gap-[9px]">
                   <img src={Tick} alt="tick" className="w-[40px] h-[40px] " />
-                  <div className=" w-[156px] ml-[30px] font-semibold text-[16px] leading-[200%] text-[#B0B0B0]">
+                  <div className=" w-[156px] ml-[30px] font-semibold text-[16px] leading-[200%] text-[#007B82]">
                     Payment Method
                   </div>
                 </div>
@@ -42,7 +42,7 @@ export default function AfterPayment() {
 
                 <div className="w-[94px] h-[76px] flex flex-col justify-center items-center px-[7px] gap-[9px]">
                   <img src={Tick} alt="tick" className="w-[40px] h-[40px] " />
-                  <div className="font-semibold text-[16px] leading-[56%] text-[#B0B0B0]">
+                  <div className="font-semibold text-[16px] leading-[56%] text-[#007B82]">
                     Success
                   </div>
                 </div>

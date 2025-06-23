@@ -266,6 +266,9 @@ app.mount("/media", StaticFiles(directory="fastapi_app/media"), name="media")
 app.mount("/static_uploads", StaticFiles(directory=uploads_path), name="static_uploads")
 app.mount("/static_generated", StaticFiles(directory=generated_path), name="static_generated")
 
+invoices_path = os.path.join("fastapi_app", "generated_invoices")
+app.mount("/generated_invoices", StaticFiles(directory=invoices_path), name="invoices")
+
 
 # Routes
 @app.get("/")

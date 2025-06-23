@@ -154,27 +154,27 @@ export default function HelpCenter() {
                             e.target.src = Pimage;
                           }}
                         />
-                        <div className="w-[112px] h-[29px] font-medium text-[24px] leading-[100%] text-[#2A2A2A]">
+                        <div className="w-[full] h-[29px] font-bold text-[24px] leading-[100%] text-[#2A2A2A]">
                           {profileData.first_name} {profileData.last_name}
                         </div>
                         <div className="w-[100%] h-[2px] bg-[#E0E4E7]"></div>
         
                         <div className="w-[100%] h-auto p-[20px] flex flex-col gap-[20px]">
-                          <div className="w-[89px] h-[22px] font-medium text-[18px] leading-[100%] text-[#00B0BA]">
+                          <div className="w-[89px] h-[22px] font-bold text-[18px] leading-[100%] text-[#00B0BA]">
                             Basic info:
                           </div>
         
-                          <div className="w-[147px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                            First name : <span className="text-[#B0B0B0]">{profileData.first_name}</span>
+                          <div className="w-[147px] h-[19px] flex justify-between font-bold text-[16px] text-[#2A2A2A]">
+                            First name : <span className="text-black font-medium">{profileData.first_name}</span>
                           </div>
-                          <div className="w-[147px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                            Last name : <span className="text-[#B0B0B0]">{profileData.last_name}</span>
+                          <div className="w-[147px] h-[19px] flex justify-between font-bold text-[16px] text-[#2A2A2A]">
+                            Last name : <span className="text-black font-medium">{profileData.last_name}</span>
                           </div>
-                          <div className="w-[247px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                            Email : <span className="text-[#B0B0B0]">{profileData.email}</span>
+                          <div className="w-[247px] h-[19px] flex justify-between font-bold text-[16px] text-[#2A2A2A]">
+                            Email : <span className="text-black font-medium">{profileData.email}</span>
                           </div>
-                          <div className="w-[270px] h-[19px] flex justify-between font-[400] text-[16px] text-[#2A2A2A]">
-                            Contact number : <span className="text-[#B0B0B0]">{profileData.phone_number}</span>
+                          <div className="w-[270px] h-[19px] flex justify-between font-bold text-[16px] text-[#2A2A2A]">
+                            Contact number : <span className="text-black font-medium">{profileData.phone_number}</span>
                           </div>
                         </div>
                       </div>
@@ -272,3 +272,4 @@ export default function HelpCenter() {
     </div>
   );
 }
+

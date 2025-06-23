@@ -339,23 +339,39 @@ async def update_profile(
     return {"message": "Profile updated successfully"}"""
 
 #Update_profile.py
-from fastapi import APIRouter, Form, Query, UploadFile, File, HTTPException, Depends
+from fastapi import APIRouter, Form, Query, UploadFile, File, HTTPException, Depends, FastAPI
 from fastapi.responses import FileResponse, StreamingResponse, JSONResponse
-from appln.models import UserData, UserSubscription, UserDesignHistory
+from appln.models import UserData, UserSubscription, UserDesignHistory, BillingHistory
 from asgiref.sync import sync_to_async
 from django.contrib.auth.hashers import make_password, check_password
-from typing import Optional
+from typing import Optional, List
 import io, os, traceback
 import traceback
+from pydantic import BaseModel
 from fastapi_app.auth import get_current_user  # Assuming you have an auth system
 from asgiref.sync import sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from PIL import Image
-
+from fastapi.staticfiles import StaticFiles
+import os
 
 router = APIRouter()
+app = FastAPI()
 
+invoices_path = os.path.join("fastapi_app", "generated_invoices")
+app.mount("/generated_invoices", StaticFiles(directory=invoices_path), name="invoices")
+
+class BillingHistoryItem(BaseModel):
+    date: str
+    amount: str
+    payment_method: str
+    status: str
+    invoice_url: Optional[str]
+
+class BillingHistoryResponse(BaseModel):
+    billing_history: List[BillingHistoryItem]
+    
 @sync_to_async
 def get_user_by_email_db(email: str):
     """Fetches a user by their email address."""
@@ -506,6 +522,7 @@ async def get_user_subscription(
             "renews_on": subscription.renews_on,
             "plan_expiring_date": subscription.plan_expiring_date,
             "total_members": subscription.total_members,
+            "start_date" : subscription.start_date,
             "user": {
                 "name": subscription.name,
                 "email": subscription.email,
@@ -516,6 +533,32 @@ async def get_user_subscription(
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+    
+    
+@router.get("/billing/history", response_model=BillingHistoryResponse, tags=["Billing"])
+async def get_user_billing_history(user=Depends(get_current_user)):
+    try:
+        # Get latest 3 billing entries
+        history = await sync_to_async(
+            lambda: list(BillingHistory.objects.filter(user=user).order_by('-paid_on')[:3])
+        )()
+
+        data = [
+            BillingHistoryItem(
+                date=entry.paid_on.strftime('%Y-%m-%d'),  # formatted date
+                amount=str(entry.amount),
+                payment_method=entry.payment_method,
+                status=entry.status.capitalize(),
+                invoice_url=f"http://localhost:8000/generated_invoices/{os.path.basename(entry.invoice)}"
+                if entry.invoice else None
+            )
+            for entry in history
+        ]
+
+        return {"billing_history": data}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
     
 @router.post("/update_profile")
 async def update_profile(

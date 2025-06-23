@@ -770,8 +770,13 @@ export default function AfterUiPlans() {
   return (
     <div>
       <section
-        className="w-full h-[1600px] flex justify-center items-center bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${BgImage})` }}
+        className="w-full min-h-[1600px] flex justify-center items-center bg-fixed bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url(${BgImage})`,
+          backgroundAttachment: 'fixed',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
       >
         <div className="w-[1325px] h-[1201px] flex flex-col justify-start items-center gap-[116px]">
           <div className="w-[1018px] h-[414px] flex flex-col justify-start items-center gap-[61px]">

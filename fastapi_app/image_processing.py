@@ -23,7 +23,7 @@ import math
 from pathlib import Path
 import logging
 from typing import Literal
-from PIL import UnidentifiedImageError
+from PIL import UnidentifiedImageError, Image, ImageDraw, ImageFont
 from asgiref.sync import sync_to_async
 from django.db import transaction
 load_dotenv()
@@ -167,6 +167,32 @@ ALLOWED_DIMENSIONS = [
 
 executor = ThreadPoolExecutor(max_workers=8)
 
+def add_watermark_to_image(image_path: str, watermark_text="STACKLYAI") -> None:
+    """Add a watermark to the bottom-right corner of an image in-place."""
+    with Image.open(image_path).convert("RGBA") as base:
+        width, height = base.size
+        watermark = Image.new("RGBA", base.size, (255, 255, 255, 0))
+        draw = ImageDraw.Draw(watermark)
+
+        font_size = max(15, width // 40)  # smaller font size
+        try:
+            font = ImageFont.truetype("arial.ttf", font_size)
+        except IOError:
+            font = ImageFont.load_default()
+
+        # Use textbbox instead of textsize (Pillow 10+)
+        bbox = draw.textbbox((0, 0), watermark_text, font=font)
+        textwidth = bbox[2] - bbox[0]
+        textheight = bbox[3] - bbox[1]
+
+        x = width - textwidth - 10
+        y = height - textheight - 20
+
+        draw.text((x, y), watermark_text, fill=(255, 255, 255, 180), font=font)
+
+        watermarked = Image.alpha_composite(base, watermark)
+        watermarked.convert("RGB").save(image_path, "PNG")
+
 async def resize_to_allowed_dimensions(image_path: str):
     try:
         with Image.open(image_path) as img:
@@ -259,147 +285,7 @@ async def generate_design_variation(
 
     return await _generate()
 
-#updated db interior
-"""@router.post("/generate-interior-design/")
-async def generate_design(
-    user_id: str = Form(...),
-    image: UploadFile = File(...),
-    building_type: str = Form(...),
-    room_type: str = Form(...),
-    design_style: str = Form(...),
-    ai_strength: str = Form("medium"),
-    num_designs: int = Form(1, ge=1, le=6)
-):
-    try:
-        from django.utils import timezone
-        from datetime import date
-        from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
 
-        uploads_path.mkdir(parents=True, exist_ok=True)
-        generated_path.mkdir(parents=True, exist_ok=True)
-
-        # Step 1: User & Subscription
-        try:
-            user = await sync_to_async(UserData.objects.get)(id=user_id)
-            subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)()
-            if not subscription:
-                raise HTTPException(status_code=404, detail="Subscription not found")
-        except UserData.DoesNotExist:
-            raise HTTPException(status_code=404, detail="User not found")
-
-        # Step 2: Credit Check
-        remaining_credits = subscription.total_credits - subscription.used_credits
-        if remaining_credits < num_designs:
-            raise HTTPException(
-                status_code=402,
-                detail={
-                    "message": "Not enough credits",
-                    "available": remaining_credits,
-                    "required": num_designs
-        }
-        )
-        # Step 3: Process Original Image
-        try:
-            file_ext = os.path.splitext(image.filename)[1].lower()
-            if file_ext not in ['.jpg', '.jpeg', '.png']:
-                raise HTTPException(status_code=400, detail="Only JPG, JPEG, and PNG files are allowed")
-
-            original_filename = f"original_{uuid.uuid4().hex}{file_ext}"
-            original_path = uploads_path / original_filename
-            await sync_to_async(lambda: shutil.copyfileobj(image.file, open(original_path, "wb")))()
-
-            image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
-        except Exception as e:
-            if 'original_path' in locals() and original_path.exists():
-                await sync_to_async(os.remove)(original_path)
-            raise HTTPException(status_code=400, detail=f"Image processing failed: {str(e)}")
-
-        # Step 4: Generate Designs
-        try:
-            design_config = {
-                "style": design_style.lower(),
-                "room_type": room_type.lower(),
-                "building_type": building_type.lower(),
-            }
-
-            tasks = [
-                generate_design_variation(image_bytes, design_config, ai_strength.lower())
-                for _ in range(num_designs)
-            ]
-            results = await asyncio.gather(*tasks)
-        except Exception as e:
-            if original_path.exists():
-                await sync_to_async(os.remove)(original_path)
-            raise HTTPException(status_code=500, detail=f"Design generation failed: {str(e)}")
-
-        # Step 5: Save Generated Images (file system only, not DB yet)
-        generated_filenames = []
-        try:
-            for result in results:
-                filename = f"generated_{uuid.uuid4().hex}.png"
-                filepath = generated_path / filename
-                await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
-                generated_filenames.append(filename)
-        except Exception as e:
-            for fname in generated_filenames:
-                await sync_to_async(os.remove)(generated_path / fname)
-            if original_path.exists():
-                await sync_to_async(os.remove)(original_path)
-            raise HTTPException(status_code=500, detail=f"Image saving failed: {str(e)}")
-
-        # Step 6: Safe DB Update Using transaction.atomic()
-        try:
-            @sync_to_async
-            def save_db_changes():
-                with transaction.atomic():
-                    for filename in generated_filenames:
-                        UserDesignHistory.objects.create(
-                            user=user,
-                            uploaded_image=f"uploads/{original_filename}",
-                            generated_image=f"generated/{filename}"
-                        )
-
-                    subscription.used_credits += num_designs
-                    subscription.total_credits_used_all_time += num_designs
-                    subscription.save()
-
-                    today = date.today()
-                    credit_entry, created = CreditUsage.objects.get_or_create(
-                        user=user,
-                        date=today,
-                        defaults={"credits_used": num_designs}
-                    )
-                    if not created:
-                        credit_entry.credits_used += num_designs
-                        credit_entry.save()
-
-            await save_db_changes()
-
-        except Exception as e:
-            # Rollback image files if DB save failed
-            for fname in generated_filenames:
-                await sync_to_async(os.remove)(generated_path / fname)
-            if original_path.exists():
-                await sync_to_async(os.remove)(original_path)
-            raise HTTPException(status_code=500, detail=f"Database update failed: {str(e)}")
-
-        # Step 7: Success Response
-        return {
-            "success": True,
-            "original_image": f"/static_uploads/{original_filename}",
-            "designs": [f"/static_generated/{f}" for f in generated_filenames],
-            "credits": {
-                "remaining": subscription.balance_credits,
-                "used": subscription.used_credits,
-                "total": subscription.total_credits
-            },
-            "message": "Designs generated successfully"
-        }
-
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")"""
 
 @router.post("/generate-interior-design/")
 async def generate_design(
@@ -480,6 +366,9 @@ async def generate_design(
                 filename = f"generated_{uuid.uuid4().hex}.png"
                 filepath = generated_path / filename
                 await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
+                #Water mark for basic user
+                if subscription.current_plan == "basic":
+                    await sync_to_async(add_watermark_to_image)(str(filepath))
                 generated_filenames.append(filename)
         except Exception as e:
             for fname in generated_filenames:
@@ -672,6 +561,10 @@ async def generate_more_designs(
 
                 with open(out_path, "wb") as f:
                     f.write(base64.b64decode(artifact["base64"]))
+                    
+                # ✅ Watermark only for basic users
+                if subscription.current_plan == "basic":
+                    add_watermark_to_image(str(out_path))
 
                 generated_filenames.append(filename)
 
@@ -736,6 +629,148 @@ async def generate_more_designs(
             status_code=500,
             detail=f"Unexpected error generating more designs: {str(e)}"
         )
+        
+#updated db interior
+"""@router.post("/generate-interior-design/")
+async def generate_design(
+    user_id: str = Form(...),
+    image: UploadFile = File(...),
+    building_type: str = Form(...),
+    room_type: str = Form(...),
+    design_style: str = Form(...),
+    ai_strength: str = Form("medium"),
+    num_designs: int = Form(1, ge=1, le=6)
+):
+    try:
+        from django.utils import timezone
+        from datetime import date
+        from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
+
+        uploads_path.mkdir(parents=True, exist_ok=True)
+        generated_path.mkdir(parents=True, exist_ok=True)
+
+        # Step 1: User & Subscription
+        try:
+            user = await sync_to_async(UserData.objects.get)(id=user_id)
+            subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)()
+            if not subscription:
+                raise HTTPException(status_code=404, detail="Subscription not found")
+        except UserData.DoesNotExist:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Step 2: Credit Check
+        remaining_credits = subscription.total_credits - subscription.used_credits
+        if remaining_credits < num_designs:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "message": "Not enough credits",
+                    "available": remaining_credits,
+                    "required": num_designs
+        }
+        )
+        # Step 3: Process Original Image
+        try:
+            file_ext = os.path.splitext(image.filename)[1].lower()
+            if file_ext not in ['.jpg', '.jpeg', '.png']:
+                raise HTTPException(status_code=400, detail="Only JPG, JPEG, and PNG files are allowed")
+
+            original_filename = f"original_{uuid.uuid4().hex}{file_ext}"
+            original_path = uploads_path / original_filename
+            await sync_to_async(lambda: shutil.copyfileobj(image.file, open(original_path, "wb")))()
+
+            image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
+        except Exception as e:
+            if 'original_path' in locals() and original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=400, detail=f"Image processing failed: {str(e)}")
+
+        # Step 4: Generate Designs
+        try:
+            design_config = {
+                "style": design_style.lower(),
+                "room_type": room_type.lower(),
+                "building_type": building_type.lower(),
+            }
+
+            tasks = [
+                generate_design_variation(image_bytes, design_config, ai_strength.lower())
+                for _ in range(num_designs)
+            ]
+            results = await asyncio.gather(*tasks)
+        except Exception as e:
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Design generation failed: {str(e)}")
+
+        # Step 5: Save Generated Images (file system only, not DB yet)
+        generated_filenames = []
+        try:
+            for result in results:
+                filename = f"generated_{uuid.uuid4().hex}.png"
+                filepath = generated_path / filename
+                await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
+                generated_filenames.append(filename)
+        except Exception as e:
+            for fname in generated_filenames:
+                await sync_to_async(os.remove)(generated_path / fname)
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Image saving failed: {str(e)}")
+
+        # Step 6: Safe DB Update Using transaction.atomic()
+        try:
+            @sync_to_async
+            def save_db_changes():
+                with transaction.atomic():
+                    for filename in generated_filenames:
+                        UserDesignHistory.objects.create(
+                            user=user,
+                            uploaded_image=f"uploads/{original_filename}",
+                            generated_image=f"generated/{filename}"
+                        )
+
+                    subscription.used_credits += num_designs
+                    subscription.total_credits_used_all_time += num_designs
+                    subscription.save()
+
+                    today = date.today()
+                    credit_entry, created = CreditUsage.objects.get_or_create(
+                        user=user,
+                        date=today,
+                        defaults={"credits_used": num_designs}
+                    )
+                    if not created:
+                        credit_entry.credits_used += num_designs
+                        credit_entry.save()
+
+            await save_db_changes()
+
+        except Exception as e:
+            # Rollback image files if DB save failed
+            for fname in generated_filenames:
+                await sync_to_async(os.remove)(generated_path / fname)
+            if original_path.exists():
+                await sync_to_async(os.remove)(original_path)
+            raise HTTPException(status_code=500, detail=f"Database update failed: {str(e)}")
+
+        # Step 7: Success Response
+        return {
+            "success": True,
+            "original_image": f"/static_uploads/{original_filename}",
+            "designs": [f"/static_generated/{f}" for f in generated_filenames],
+            "credits": {
+                "remaining": subscription.balance_credits,
+                "used": subscription.used_credits,
+                "total": subscription.total_credits
+            },
+            "message": "Designs generated successfully"
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")"""
     
 """@router.post("/generate-interior-design/")
 async def generate_design(
@@ -1190,6 +1225,9 @@ async def generate_exterior_design(
                 filename = f"generated_{uuid.uuid4().hex}.png"
                 filepath = generated_dir / filename
                 await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
+                #Water mark for basic user
+                if subscription.current_plan == "basic":
+                    await sync_to_async(add_watermark_to_image)(str(filepath))
                 generated_filenames.append(filename)
 
         except Exception as e:
@@ -1607,6 +1645,9 @@ async def generate_outdoor_design(
                 filename = f"generated_{uuid.uuid4().hex}.png"
                 filepath = generated_path / filename
                 await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
+                #Water mark for basic user
+                if subscription.current_plan == "basic":
+                    await sync_to_async(add_watermark_to_image)(str(filepath))
                 generated_filenames.append(filename)
         except Exception as e:
             for fname in generated_filenames:
