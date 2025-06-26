@@ -769,4 +769,3 @@ def get_me(user=Depends(get_current_user)):
         #"firstName": user.first_name,
         #"lastName": user.last_name,
     }
-

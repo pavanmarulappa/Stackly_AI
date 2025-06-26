@@ -27,7 +27,6 @@ export default function UserContextProvider({ children }) {
   const [userInfo, setUserInfoState] = useState({
     userId: null,
     email: "",
-    //userName: "",
     token: "",
   });
 
@@ -45,17 +44,28 @@ export default function UserContextProvider({ children }) {
 
   const fetchCurrentUser = async () => {
     try {
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        clearUserInfo();
+        return;
+      }
+
       const response = await fetch("http://localhost:8000/me", {
         method: "GET",
-        credentials: "include",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        credentials: "include"
       });
+
       if (response.ok) {
         const data = await response.json();
         const userData = {
           userId: data.id || null,
           email: data.email || "",
-          //userName: "", // add if needed
-          token: "",    // optional
+          token: token || ""
         };
         setUserInfoState(userData);
         localStorage.setItem("userInfo", JSON.stringify(userData));
@@ -70,15 +80,33 @@ export default function UserContextProvider({ children }) {
     }
   };
 
-  const setUserInfo = (userData) => {
-    setUserInfoState(userData);
-    localStorage.setItem("userInfo", JSON.stringify(userData));
+  const clearUserInfo = () => {
+    setUserInfoState({
+      userId: null,
+      email: "",
+      token: "",
+    });
+    localStorage.removeItem("userInfo");
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userEmail");
   };
 
+  const setUserInfo = (userData) => {
+    const fullUserData = {
+      ...userData,
+      token: userData.token || localStorage.getItem("token") || ""
+    };
+    setUserInfoState(fullUserData);
+    localStorage.setItem("userInfo", JSON.stringify(fullUserData));
+    if (userData.token) {
+      localStorage.setItem("token", userData.token);
+    }
+  };
 
   return (
     <UserContext.Provider
-      value={{ userInfo, setUserInfo,  loading }}
+      value={{ userInfo, setUserInfo, loading, clearUserInfo }}
     >
       {children}
     </UserContext.Provider>

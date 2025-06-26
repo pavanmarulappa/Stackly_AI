@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import apiBackground from "../../assets/api/back.png";
 import AfterKeys from "./AfterKeys";
 import AfterApiIntegrate from "./AfterApiIntegrate";
@@ -14,6 +14,7 @@ import sec14Img5 from "../../assets/home/sec14/m3.jpg";
 import AfterApiFaq from "./AfterApiFaq";
 import keyImage from "../../assets/api/key.png";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 export default function AfterHeroApi() {
   const faqs = [
@@ -48,7 +49,58 @@ export default function AfterHeroApi() {
         "You can reach out to Stackly AI through our support page, via email at support@stackly.ai, or use the chat feature on our website for instant assistance.",
     },
   ];
+  const [formData, setFormData] = useState({
+    full_name: "",
+    email: "",
+    contact_number: "",
+    company_name: "",
+    address: "",
+    message: "",
+  });
 
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const userId = localStorage.getItem("userId"); // FIXED: use the correct key
+    const token = localStorage.getItem("token");
+
+    if (!userId || !token) {
+      alert("Login required to submit the form.");
+      return;
+    }
+
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/submit-api-access",
+        {
+          user_id: parseInt(userId),
+          ...formData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // add token if backend requires auth
+          },
+        }
+      );
+
+      alert(res.data.message);
+      setFormData({
+        full_name: "",
+        email: "",
+        contact_number: "",
+        company_name: "",
+        address: "",
+        message: "",
+      });
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      alert("Submission failed. Please try again.");
+    }
+  };
   return (
     <div>
       {/* section1 */}
@@ -68,12 +120,14 @@ export default function AfterHeroApi() {
             Get Instant API Access for your AI Design Platform
           </span>
         </p>
-        <Link to="#">
-          {" "}
-          <button className="w-[306px] h-[45px] mt-8 rounded-[6px] border-[1px] border-solid border-transparent bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white font-semibold text-[18px] leading-[100%]">
-            Let’s Connect!
-          </button>
-        </Link>
+        <button
+          onClick={() => {
+            document.getElementById('connect-form')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="w-[306px] h-[45px] mt-8 rounded-[6px] border-[1px] border-solid border-transparent bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white font-semibold text-[18px] leading-[100%]"
+        >
+          Let’s Connect!
+        </button>
         {/* Positioned Illustration at Bottom Left */}
         <img
           src={keyImage}
@@ -137,103 +191,120 @@ export default function AfterHeroApi() {
 
       {/* section-9  */}
 
-      <div className='w-full flex justify-center mt-[-120px] mb-[80px]'>
-  <div className='w-[1280px] h-[1049px] rounded-[40px] bg-[white] shadow-[#00000040] shadow-[0_0_4px_0] flex flex-col justify-center items-center'>
-    <h2 className="w-full max-w-[743px] min-h-[64px] text-[44px] leading-[64px] font-bold text-center">
-      Ready to <span className="text-[#009A98]">Create Something Great?</span>
-    </h2>
-    <p className=" w-full max-w-[770px] min-h-[56px] text-[18px] font-[400] leading-[28px] text-center text-[#2A2A2A] my-8">
-      We offer flexible API plans tailored to your needs.<br />
-      Let’s build the right setup—just for you.
-    </p>
+      <div id="connect-form" className='w-full flex justify-center mt-[-120px] mb-[80px]'>
+        <div className='w-[1280px] h-[1049px] rounded-[40px] bg-[white] shadow-[#00000040] shadow-[0_0_4px_0] flex flex-col justify-center items-center'>
+          <h2 className="w-full max-w-[743px] min-h-[64px] text-[44px] leading-[64px] font-bold text-center">
+            Ready to <span className="text-[#009A98]">Create Something Great?</span>
+          </h2>
+          <p className=" w-full max-w-[770px] min-h-[56px] text-[18px] font-[400] leading-[28px] text-center text-[#2A2A2A] my-8">
+            We offer flexible API plans tailored to your needs.<br />
+            Let’s build the right setup—just for you.
+          </p>
 
-    <div className="w-[730px] h-[721px] rounded-[10px] border-[1px] border-[#007B8214] border-solid p-[50px] gap-[10px] bg-[#ffffff] shadow-[#ABB2BB40] shadow-[0_0_12px_0] flex justify-center items-center">
-      <form className="space-y-6 w-full">
+          <div className="w-[730px] h-[721px] rounded-[10px] border-[1px] border-[#007B8214] border-solid p-[50px] gap-[10px] bg-[#ffffff] shadow-[#ABB2BB40] shadow-[0_0_12px_0] flex justify-center items-center">
+            <form className="space-y-6 w-full" onSubmit={handleSubmit}>
 
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 flex flex-col">
-            <label className="text-sm font-bold text-[#2A2A2A] mb-1">First Name<span className="text-red-500"> *</span></label>
-            <input
-              name="fullName"
-              type="text"
-              placeholder="Ram"
-              required
-              className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            />
-          </div>
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 flex flex-col">
+                  <label className="text-sm font-bold text-[#2A2A2A] mb-1">First Name<span className="text-red-500"> *</span></label>
+                  <input
+                    name="full_name"
+                    type="text"
+                    placeholder="Ram"
+                    value={formData.full_name}
+                    onChange={handleChange}
+                    required
+                    className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
+                <div className="flex-1 flex flex-col">
+                  <label className="text-sm font-bold text-[#2A2A2A] mb-1">Email<span className="text-red-500"> *</span></label>
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder="ramprakash@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
+              </div>
 
-          <div className="flex-1 flex flex-col">
-            <label className="text-sm font-bold text-[#2A2A2A] mb-1">Email<span className="text-red-500"> *</span></label>
-            <input
-              type="email"
-              placeholder="ramprakash@example.com"
-              required
-              className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            />
-          </div>
-        </div>
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 flex flex-col">
+                  <label className="text-sm font-bold text-[#2A2A2A] mb-1">Contact number<span className="text-red-500"> *</span></label>
+                  <input
+                    name="contact_number"
+                    type="tel"
+                    placeholder="+91 0123456789"
+                    value={formData.contact_number}
+                    onChange={handleChange}
+                    required
+                    className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  />
+                </div>
 
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="flex-1 flex flex-col">
-            <label className="text-sm font-bold text-[#2A2A2A] mb-1">Contact number<span className="text-red-500"> *</span></label>
-            <input
-              type="tel"
-              placeholder="+91 0123456789"
-              required
-              className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            />
-          </div>
-
-          {/* <div className="flex-1 flex flex-col">
+                {/* <div className="flex-1 flex flex-col">
             <label className="text-sm font-bold text-[#2A2A2A] mb-1">Country</label>
             <div className="flex items-center border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 h-[42px]">
               <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="mr-2" />
               <span className="text-gray-500">India</span>
             </div>
           </div> */}
-        </div>
+              </div>
 
-        <div className="flex flex-col">
-          <label className="text-sm font-bold text-[#2A2A2A] mb-1">Company Name<span className="text-red-500"> *</span></label>
-          <input
-            type="text"
-            placeholder="Companyexample"
-            required
-            className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
-        </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-bold text-[#2A2A2A] mb-1">Company Name<span className="text-red-500"> *</span></label>
+                <input
+                  name="company_name"
+                  type="text"
+                  placeholder="Companyexample"
+                  value={formData.company_name}
+                  onChange={handleChange}
+                  required
+                  className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
 
-        <div className="flex flex-col">
-          <label className="text-sm font-bold text-[#2A2A2A] mb-1">Address<span className="text-red-500"> *</span></label>
-          <input
-            type="text"
-            placeholder="Address*"
-            required
-            className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
-        </div>
+              <div className="flex flex-col">
+                <label className="text-sm font-bold text-[#2A2A2A] mb-1">Address<span className="text-red-500"> *</span></label>
+                <input
+                  name="address"
+                  type="text"
+                  placeholder="Address*"
+                  value={formData.address}
+                  onChange={handleChange}
+                  required
+                  className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
 
-        <div className="flex flex-col">
-          <label className="text-sm font-bold text-[#2A2A2A] mb-1">Message<span className="text-red-500"> *</span></label>
-          <textarea
-            placeholder="Your message..."
-            rows="4"
-            required
-            className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
-          />
+              <div className="flex flex-col">
+                <label className="text-sm font-bold text-[#2A2A2A] mb-1">Message<span className="text-red-500"> *</span></label>
+                <textarea
+                  name="message"
+                  placeholder="Your message..."
+                  rows="4"
+                  maxLength={500}
+                  value={formData.message}
+                  onChange={handleChange}
+                  required
+                  className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  className="w-[465px] h-[45px] bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white py-2 rounded hover:opacity-90 transition"
+                >
+                  Let's Connect!
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-            <div className="flex justify-center">
-        <button
-          type="submit"
-          className="w-[465px] h-[45px] bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white py-2 rounded hover:opacity-90 transition"
-        >
-          Let's Connect!
-        </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+      </div>
 
 
       {/* {section-10} */}

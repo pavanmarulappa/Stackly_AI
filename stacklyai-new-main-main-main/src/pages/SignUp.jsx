@@ -338,11 +338,19 @@ export default function SignUp({ setUser }) {
               you'll unlock endless possibilities to remaining & Transform Any
               home using AI.
             </p>
-            <button className="w-full max-w-[435px] min-h-[55px] rounded-[12px] border cursor-pointer font-medium text-base text-white bg-[#0000004d] mt-[50px] pt-[10px] pr-[20px] pb-[10px] pl-[20px] border-solid border-white flex justify-center items-center gap-[10px]">
+            <Link
+              to="/sign-in"
+              className="w-full max-w-[435px] min-h-[55px] rounded-[12px] border cursor-pointer font-medium text-base text-white bg-[#0000004d] mt-[50px] px-5 py-2.5 border-solid border-white flex justify-center items-center gap-[10px]
+            hover:bg-[#00000080] hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(0,184,212,0.5)]
+            transition-all duration-300 ease-in-out
+            max-[440px]:w-[360px] max-[440px]:h-[44px] max-[440px]:rounded-[8px] max-[440px]:border-[1px] max-[440px]:px-5 max-[440px]:py-2.5 max-[440px]:gap-[10px]"
+              role="button"
+              aria-label="Start Free Trial"
+            >
               <span className="font-bold max-w-[150px] min-h-[35px] text-[18px] leading-[35px] tracking-[1px]">
                 Start Free Trial
               </span>
-            </button>
+            </Link>
 
             <p className="font-medium text-[16px] w-full max-w-[596px] min-h-[19px] leading-[100%] min-[500px]:text-base pt-5 text-white text-center">
               Get started with 10 free outputs – No credit card needed!

@@ -199,7 +199,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
 from fastapi_app.django_setup import django_setup
 from fastapi_app.auth import router as auth_router
-from fastapi_app import image_processing, auth
+from fastapi_app import image_processing, auth, api
 from fastapi_app.update_profile import router as profile_router
 from asgiref.sync import sync_to_async
 from django.conf import settings
@@ -248,6 +248,7 @@ app.include_router(profile_router)
 app.include_router(contact_router)
 app.include_router(help_center.router)
 app.include_router(forgot_password_router)
+app.include_router(api.router)
 
 BASE_DIR = Path(__file__).parent.parent  # Goes up one level from fastapi_app/
 

@@ -124,16 +124,33 @@ def get_api_keys(user: UserData = Depends(get_current_user)):
         "updated_at": manager.updated_at,
     }
 """
-
+#api.py
 from fastapi import APIRouter, HTTPException, Depends
 from datetime import datetime, timedelta
 from django.utils import timezone
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from appln.models import APIKeyManager, UserData, ApiAccessRequest
 import secrets
+from pydantic import BaseModel,constr
+from typing import Optional
+import smtplib
+from email.mime.text import MIMEText
+import os
+from fastapi_app.django_setup import django_setup
+
+django_setup()
 
 router = APIRouter()
 
+class ApiAccessRequestSchema(BaseModel):
+    user_id: int
+    full_name: str
+    email: str
+    contact_number: str
+    company_name: Optional[str] = ""
+    address: Optional[str] = ""
+    message: constr(max_length=500) = "Requesting access to API"
+    
 # Helper: Get credits for a plan
 def get_credit_limit(plan: str) -> int:
     return {
@@ -205,28 +222,62 @@ def use_api(user_id: int):
 
 # 3. Store API Access Request Form Submission
 @router.post("/submit-api-access")
-def submit_api_request(
-    user_id: int,
-    full_name: str,
-    email: str,
-    contact_number: str,
-    company_name: str = "",
-    address: str = "",
-    message: str = "Requesting access to API"
-):
+def submit_api_request(data: ApiAccessRequestSchema):
     try:
-        user = UserData.objects.get(id=user_id)
+        user = UserData.objects.get(id=data.user_id)
     except UserData.DoesNotExist:
         raise HTTPException(status_code=404, detail="User not found.")
 
-    ApiAccessRequest.objects.create(
-        user=user,
-        full_name=full_name,
-        email=email,
-        contact_number=contact_number,
-        company_name=company_name,
-        address=address,
-        message=message
-    )
+    try:
+        with transaction.atomic():  # ✅ Correct usage
+            ApiAccessRequest.objects.create(
+                user=user,
+                full_name=data.full_name,
+                email=data.email,
+                contact_number=data.contact_number,
+                company_name=data.company_name,
+                address=data.address,
+                message=data.message,
+            )
+ 
+            # ✅ Move inside the transaction
+            #send_api_request_confirmation(data.email, data.full_name)
 
-    return {"message": "API access request submitted successfully."}
+        return {"message": "API access request submitted successfully."}
+
+    except Exception:
+        raise HTTPException(status_code=500, detail="Something went wrong. Please try again later.")
+
+def send_api_request_confirmation(to_email, full_name):
+    subject = "StacklyAI API Access Request Received"
+    body = f"""
+Hi {full_name},
+
+Thank you for requesting access to the StacklyAI API.
+
+We've received your request and our team will review it shortly.
+You’ll be notified by email once it's approved and your API key is issued.
+
+If you have any questions, contact us at support@stackly.ai.
+
+– StacklyAI Team
+"""
+
+    # Construct MIME email
+    msg = MIMEText(body)
+    msg["Subject"] = subject
+    msg["From"] = os.getenv("EMAIL_FROM")          
+    msg["To"] = to_email
+
+    try:
+        smtp_host = os.getenv("SMTP_HOST")          
+        smtp_port = int(os.getenv("SMTP_PORT", 587))
+        smtp_user = os.getenv("SMTP_USER")
+        smtp_pass = os.getenv("SMTP_PASS")
+
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.send_message(msg)
+    except Exception:
+        pass

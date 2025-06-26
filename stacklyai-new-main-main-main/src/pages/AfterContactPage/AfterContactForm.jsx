@@ -265,15 +265,15 @@ const AfterContactForm = () => {
                   required
                   value={formData.subject}
                   onChange={handleChange}
-                  className={`w-full border rounded-md pl-5 pr-10 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${formData.subject === "" ? "text-gray-400 bg-gray-100" : "text-black bg-white"
+                  className={`w-full border rounded-md pl-5 pr-10 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${formData.subject === "" ? "text-gray-400 bg-gray-100" : "text-black bg-[#e8f0fe]"
                     }`}
                 >
                   <option value="" disabled hidden>
                     Select a Subject
                   </option>
-                  <option value="Support" className="text-black">Support</option>
-                  <option value="Sales" className="text-black">Sales</option>
-                  <option value="Other" className="text-black">Other</option>
+                  <option value="Support">Support</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Other">Other</option>
                 </select>
 
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -299,7 +299,7 @@ const AfterContactForm = () => {
                 maxLength={500}
                 rows={5}
                 name="message"
-                className="mt-1 w-full border rounded-md px-4 py-3 bg-gray-100"
+                className="mt-1 w-full rounded-md px-4 py-3 bg-gray-100"
                 value={formData.message}
                 required
                 onChange={handleChange}

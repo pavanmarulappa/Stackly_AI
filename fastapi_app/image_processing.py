@@ -3,7 +3,7 @@ import shutil
 import requests
 import base64
 import random
-import time
+import time, math
 import asyncio
 import uuid
 from fastapi import FastAPI, APIRouter, UploadFile, File, HTTPException, Form
@@ -167,31 +167,48 @@ ALLOWED_DIMENSIONS = [
 
 executor = ThreadPoolExecutor(max_workers=8)
 
-def add_watermark_to_image(image_path: str, watermark_text="STACKLYAI") -> None:
-    """Add a watermark to the bottom-right corner of an image in-place."""
+def add_watermark_to_image(image_path: str, watermark_text="Stackly.AI") -> None:
+    """Add bottom-right watermark and a neatly centered horizontal watermark using same font size."""
     with Image.open(image_path).convert("RGBA") as base:
         width, height = base.size
+
+        # Create transparent watermark layer
         watermark = Image.new("RGBA", base.size, (255, 255, 255, 0))
         draw = ImageDraw.Draw(watermark)
 
-        font_size = max(15, width // 40)  # smaller font size
+        # Shared font setup
+        font_size = max(15, width // 40)
         try:
             font = ImageFont.truetype("arial.ttf", font_size)
         except IOError:
             font = ImageFont.load_default()
 
-        # Use textbbox instead of textsize (Pillow 10+)
+        # --- Bottom-right watermark ---
         bbox = draw.textbbox((0, 0), watermark_text, font=font)
         textwidth = bbox[2] - bbox[0]
         textheight = bbox[3] - bbox[1]
+        x1 = width - textwidth - 10
+        y1 = height - textheight - 20
 
-        x = width - textwidth - 10
-        y = height - textheight - 20
+        draw.text((x1 + 1, y1 + 1), watermark_text, fill=(0, 0, 0, 120), font=font)  # Shadow
+        draw.text((x1, y1), watermark_text, fill=(255, 255, 255, 200), font=font)    # Main
 
-        draw.text((x, y), watermark_text, fill=(255, 255, 255, 180), font=font)
+        # --- Center repeated watermark ---
+        space_width = draw.textlength(" ", font=font)
+        word_width = draw.textlength(watermark_text, font=font)
+        total_word_width = word_width + space_width
 
-        watermarked = Image.alpha_composite(base, watermark)
-        watermarked.convert("RGB").save(image_path, "PNG")
+        repeat_count = math.ceil(width / total_word_width) + 2  # Ensure overflow to clip evenly
+        repeated_text = (watermark_text + " ") * repeat_count
+
+        center_y = (height - textheight) // 2
+
+        draw.text((2, center_y + 2), repeated_text, fill=(0, 0, 0, 120), font=font)   # Shadow
+        draw.text((0, center_y), repeated_text, fill=(255, 255, 255, 160), font=font)  # Main
+
+        # Merge layers and save
+        final = Image.alpha_composite(base, watermark)
+        final.convert("RGB").save(image_path, "PNG")
 
 async def resize_to_allowed_dimensions(image_path: str):
     try:
@@ -205,13 +222,10 @@ async def resize_to_allowed_dimensions(image_path: str):
                 ALLOWED_DIMENSIONS,
                 key=lambda dim: abs((dim[0] / dim[1]) - original_aspect)
             )
-
             resized_img = img.resize(closest_dim, Image.LANCZOS)
-
             img_bytes = io.BytesIO()
             resized_img.save(img_bytes, format="PNG", optimize=True, quality=90)
             return img_bytes.getvalue(), closest_dim
-
     except UnidentifiedImageError:
         raise HTTPException(400, detail="Invalid or unsupported image format.")
     except Exception as e:

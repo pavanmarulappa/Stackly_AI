@@ -215,7 +215,7 @@ class ApiAccessRequest(models.Model):
     contact_number = models.CharField(max_length=15)
     company_name = models.CharField(max_length=150, blank=True)
     address = models.TextField(blank=True)
-    message = models.TextField()
+    message = models.TextField(max_length=500)
     requested_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

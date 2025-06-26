@@ -1,25 +1,50 @@
 //Header.jsx
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
+import { useLocation, useNavigate, NavLink } from "react-router-dom";
+
 import logoImg from "../assets/Logo.png";
-import {
-  NavLink,
-  useLocation,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from "react-router-dom";
 import { UserContext } from "../context/UserContext";
+
 export default function Header() {
   const navigate = useNavigate();
   const [showSideBar, setShowSideBar] = useState(false);
-
-  const { userInfo, setUserInfo } = useContext(UserContext);
   const location = useLocation();
-  const endpoint = location.pathname.split("/").filter(Boolean).pop();
+  const { userInfo, setUserInfo, clearUserInfo } = useContext(UserContext);
 
+  // ✅ Track screen size
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 441);
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 441);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // ✅ Route check
+  const hiddenPages = [
+    "/sign-up",
+    "/sign-in",
+    "/otp",
+    "/forgetpg",
+    "/signupotp",
+    "/resetpassword",
+    "/resetpopup",
+    "/signuppopup",
+    "/heroforgetpg",
+  ];
+  const isHiddenPage = hiddenPages.includes(location.pathname.toLowerCase());
+
+  // ✅ Optional: route endpoint check for JSX condition
+  const endpoint = location.pathname.split("/").filter(Boolean).pop()?.toLowerCase();
+
+  // ✅ Hide header for small screens on specific pages
+  if (isSmallScreen && isHiddenPage) {
+    return null;
+  }
   return (
     <div>
-      <header className="w-full  h-[70px] sm:h-[90px] bg-white flex justify-between items-center backdrop-blur-[6px] xl:px-20 xl:py-[25px] md:p-[20px] p-[15px] relative z-10 gap-0 shadow-sm">
+      <header className="w-full h-[70px] sm:h-[90px] bg-white flex justify-between items-center backdrop-blur-[6px] xl:px-20 xl:py-[25px] md:p-[20px] p-[15px] relative z-10 gap-0 shadow-sm">
         <img
           className="cursor-pointer max-[400px]:w-[50%]"
           onClick={() => {
@@ -164,15 +189,9 @@ export default function Header() {
                 <p className="w-full h-[1px] bg-gray-600 my-1"></p>
                 <NavLink
                   onClick={() => {
-                    // Clear user info from context
-                    setUserInfo({});
-                    // Clear any authentication tokens from storage
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    // Redirect to login
+                    clearUserInfo();
                     navigate("/sign-in");
-                    // Force refresh if needed (optional)
-                    window.location.reload();
+                    window.location.reload(); // optional
                   }}
                 >
                   Logout

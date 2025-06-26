@@ -144,3 +144,9 @@ a.active{
 .bg-header-teal {
   background-color: #00B0BA1F;
 }
+
+@media only screen and (max-width: 441px) {
+  footer {
+    display: none !important;
+  }
+}
