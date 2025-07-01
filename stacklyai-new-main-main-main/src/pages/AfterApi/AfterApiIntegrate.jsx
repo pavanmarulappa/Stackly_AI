@@ -19,7 +19,7 @@ const integrationData = [
   },
   {
     title: "E-Commerce & Furniture Brands",
-    description: 
+    description:
       "Display furniture in realistic settings using AI-generated room mockups.",
   },
   {
@@ -37,36 +37,35 @@ const integrationData = [
 const AfterApiIntegration = () => {
   return (
     <div
-      className="w-full h-[959px] flex flex-col items-center justify-center gap-12 px-4 bg-black"
+      className="w-full py-16 px-4 md:px-8 lg:px-16 flex flex-col items-center gap-10 bg-black"
       style={{
         backgroundImage: `url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        //backgroundColor: "rgba(1, 18, 19, 1)",
       }}
     >
       {/* Heading */}
-      <div className="w-[791px] h-[58px] text-[48px] font-bold leading-[100%] text-white text-center">
+      <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-center text-white max-w-4xl">
         Who Can <span className="text-[#00D9D0]">Integrate</span> StacklyAI API?
-      </div>
+      </h2>
 
       {/* Paragraph */}
-      <p className="w-[672px] h-[56px] text-[18px] font-[400] leading-[28px] text-center text-white">
+      <p className="text-base sm:text-lg text-white text-center max-w-2xl leading-relaxed">
         Our API is designed for platforms and businesses that want to bring visual intelligence into their own systems.
       </p>
 
       {/* Boxes */}
-      <div className="w-[1440px] h-[484px] grid grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-7xl">
         {integrationData.map((item, index) => (
           <div
             key={index}
-            className="w-[413px] h-[240px] p-[40px] bg-white rounded-[40px] drop-shadow-[4px_4px_12px_#007B8229] shadow-[inset_2px_2px_16px_#FFFFFF14] flex flex-col gap-[20px]"
+            className="p-6 sm:p-8 bg-white rounded-[30px] shadow-md shadow-[#007B8229] flex flex-col gap-4"
           >
-            <h3 className="w-[333px] h-[68px] text-[#2a2a2a] text-[28px] font-bold leading-[100%]">
+            <h3 className="text-xl sm:text-2xl font-bold text-[#2a2a2a]">
               {item.title}
             </h3>
-            <p className="w-[333px] h-[72px] text-[#707070] text-[17px] font-[400] leading-[24px]">
+            <p className="text-sm sm:text-base text-[#707070] leading-relaxed">
               {item.description}
             </p>
           </div>
@@ -74,7 +73,7 @@ const AfterApiIntegration = () => {
       </div>
     </div>
   );
-  };
+};
 
 export default AfterApiIntegration;
 

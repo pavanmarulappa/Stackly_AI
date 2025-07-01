@@ -248,7 +248,7 @@ const AfterContactForm = () => {
                 name="contact_number"
                 required
                 placeholder="+91 0123456789"
-                className="mt-1 w-full border rounded-md px-4 py-3 bg-gray-100"
+                className="mt-1 w-full border rounded-md px-4 py-3 bg-[#e8f0fe]"
                 value={formData.contact_number}
                 onChange={handleChange}
               />
@@ -299,7 +299,7 @@ const AfterContactForm = () => {
                 maxLength={500}
                 rows={5}
                 name="message"
-                className="mt-1 w-full rounded-md px-4 py-3 bg-gray-100"
+                className="mt-1 w-full rounded-md px-4 py-3 bg-[#e8f0fe]"
                 value={formData.message}
                 required
                 onChange={handleChange}

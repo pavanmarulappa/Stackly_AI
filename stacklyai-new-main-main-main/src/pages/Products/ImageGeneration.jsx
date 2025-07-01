@@ -1186,14 +1186,297 @@
 // }
 
 
+// import React, { useState, useEffect } from "react";
+// import { useNavigate, Link, useLocation } from "react-router-dom";
+// import { PacmanLoader } from "react-spinners";
+// import Interior from "../../assets/product-pg/Vector.png";
+// import Home from "../../assets/product-pg/home.png";
+// import Tree from "../../assets/product-pg/tree.png";
+// import SideArrow from "../../assets/pricing-pg/sideArrow.png";
+// import Report from "../../assets/product-pg/report.png";
+// import More from "../../assets/product-pg/more.png";
+// import Download from "../../assets/product-pg/do.png";
+// import Share from "../../assets/product-pg/share.png";
+// import axios from "axios";
+
+// export default function ImageGeneration() {
+//   const location = useLocation();
+//   const navigate = useNavigate();
+
+//   const [originalImage, setOriginalImage] = useState(null);
+//   const [generatedImages, setGeneratedImages] = useState([]);
+//   const [selectedStyle, setSelectedStyle] = useState("interior");
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [showMoreOptions, setShowMoreOptions] = useState(false);
+
+//   const backendBaseUrl = "http://localhost:8000";
+
+//   const [formData, setFormData] = useState(null);
+//   const [uploadedFile, setUploadedFile] = useState(null);
+
+//   useEffect(() => {
+//     if (location.state) {
+//       setFormData(location.state.formData);
+//       setUploadedFile(location.state.uploadedFile);
+//       // Handle original image
+//       if (location.state.originalImage) {
+//         let fileObj = location.state.originalImage;
+//         if (typeof fileObj === "string") {
+//           setOriginalImage({
+//             url: fileObj,
+//             id: "original",
+//             label: "Original Image",
+//             isOriginal: true,
+//           });
+//         } else {
+//           const blobUrl = URL.createObjectURL(fileObj);
+//           setOriginalImage({
+//             url: blobUrl,
+//             id: "original",
+//             label: "Original Image",
+//             isOriginal: true,
+//           });
+//           setUploadedFile(fileObj);
+//         }
+//       }
+
+//       // Set form data
+//       if (location.state.formData) {
+//         setFormData(location.state.formData);
+//       }
+
+//       // Handle generated images
+//       if (location.state.generatedImages) {
+//         const processed = location.state.generatedImages.map((img, index) => {
+//           let url = typeof img === "string" ? img : img.url || "";
+//           if (url && !url.startsWith("http") && !url.startsWith("blob:")) {
+//             url = backendBaseUrl + url;
+//           }
+//           return {
+//             url,
+//             id: img.id || `design-${index}-${Date.now()}`,
+//             label: `Design ${index + 1}`,
+//           };
+//         });
+//         setGeneratedImages(processed);
+//       }
+//     }
+//   }, [location.state]);
+
+//   useEffect(() => {
+//     return () => {
+//       if (originalImage?.url?.startsWith("blob:")) {
+//         URL.revokeObjectURL(originalImage.url);
+//       }
+//       generatedImages.forEach((img) => {
+//         if (img.url?.startsWith("blob:")) {
+//           URL.revokeObjectURL(img.url);
+//         }
+//       });
+//     };
+//   }, [originalImage, generatedImages]);
+
+//   const generateMoreImages = async () => {
+//     if (!formData || !uploadedFile) return;
+
+//     setIsLoading(true);
+//     try {
+//       const formDataToSend = new FormData();
+//       formDataToSend.append('user_id', formData.userId); // Replace with actual user ID
+//       formDataToSend.append('category', formData.category);
+//       formDataToSend.append('type_detail', formData.typeDetail);
+//       formDataToSend.append('style', formData.style);
+//       formDataToSend.append('ai_strength', formData.aiStrength);
+//       formDataToSend.append('uploaded_image', uploadedFile);
+//       //formData.append('user_id', userId); 
+
+//       const response = await axios.post(
+//         `${backendBaseUrl}/api/generate/more-designs`,
+//         formDataToSend,
+//         {
+//           headers: {
+//             'Content-Type': 'multipart/form-data'
+//           }
+//         }
+//       );
+
+//       if (response.data.success === true) {
+//         const newImages = response.data.designs.map((url, index) => ({
+//           url: backendBaseUrl + url,
+//           id: `more-design-${index}-${Date.now()}`,
+//           label: `Additional Design ${generatedImages.length + index + 1}`
+//         }));
+//         setGeneratedImages([...generatedImages, ...newImages]);
+//       }
+//     } catch (error) {
+//       console.error("Error generating more designs:", error);
+//       alert("Failed to generate more designs. Please try again.");
+//     } finally {
+//       setIsLoading(false);
+//     }
+//   };
+
+//   const handleDownload = (imageUrl, label) => {
+//     if (!imageUrl) return;
+//     const link = document.createElement("a");
+//     link.href = imageUrl;
+//     link.download = `${label.replace(" ", "-")}-${Date.now()}.jpg`;
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//   };
+
+//   const handleDownloadAll = () => {
+//     if (originalImage) handleDownload(originalImage.url, originalImage.label);
+//     generatedImages.forEach((img) => handleDownload(img.url, img.label));
+//   };
+
+//   const getImagePairs = () => {
+//     const pairs = [];
+
+//     // First row: Original + first generated image
+//     if (originalImage && generatedImages.length > 0) {
+//       pairs.push([originalImage, generatedImages[0]]);
+//     } else if (originalImage) {
+//       pairs.push([originalImage, null]);
+//     } else if (generatedImages.length > 0) {
+//       pairs.push([generatedImages[0], generatedImages[1] || null]);
+//     }
+
+//     // Remaining rows: next pairs of generated images
+//     let startIndex = originalImage ? 1 : 2;
+
+//     for (let i = startIndex; i < generatedImages.length; i += 2) {
+//       const first = generatedImages[i];
+//       const second = generatedImages[i + 1] || null;
+//       pairs.push([first, second]);
+//     }
+
+//     return pairs;
+//   };
+
+//   return (
+//     // <div className="bg-[#002628] min-h-screen">
+//     <div className="bg-white min-h-screen">
+
+//       {/* Header */}
+//       <div className="w-full h-[161px] bg-[linear-gradient(180deg,_#00646A_0%,_#002628_99.99%,_#00B0BA_100%)] rounded-t-xl flex items-center justify-center text-center">
+//         <h1 className="text-[38px] font-bold text-white">
+//           Generated Image
+//         </h1>
+//       </div>
+//       <div className="max-w-6xl mx-auto">
+
+
+
+//         {/* Main Content */}
+//         <div className="bg-white rounded-b-xl shadow-lg p-6">
+//           {/* Action Bar */}
+//           <div className="flex justify-between items-center mb-8">
+//             <Link to="/" className="flex items-center text-gray-800 hover:text-[#00B0BA]">
+//               <img src={SideArrow} alt="Back" className="w-6 h-6 mr-2" />
+//               <span>Back</span>
+//             </Link>
+
+//             <div className="flex space-x-6">
+//               <button
+//                 onClick={handleDownloadAll}
+//                 className="flex items-center text-gray-800 hover:text-[#00B0BA]"
+//               >
+//                 <img src={Download} alt="Download" className="w-6 h-6 mr-2" />
+//                 <span>Download All</span>
+//               </button>
+//               <button className="flex items-center text-gray-800 hover:text-[#00B0BA]">
+//                 <img src={Share} alt="Share" className="w-6 h-6 mr-2" />
+//                 <span>Share</span>
+//               </button>
+//               <button
+//                 onClick={() => setShowMoreOptions(!showMoreOptions)}
+//                 className="flex items-center text-gray-800 hover:text-[#00B0BA]"
+//               >
+//                 <img src={More} alt="More" className="w-6 h-6" />
+//               </button>
+//             </div>
+//           </div>
+
+//           {showMoreOptions && (
+//             <div className="absolute right-8 bg-white shadow-lg rounded-md p-2 z-10 border border-gray-200">
+//               <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+//                 Save to favorites
+//               </button>
+//               <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+//                 Duplicate design
+//               </button>
+//               <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500">
+//                 Delete design
+//               </button>
+//             </div>
+//           )}
+
+//           {/* Image Grid */}
+//           {isLoading ? (
+//             <div className="flex justify-center items-center h-96">
+//               <PacmanLoader color="#00B0BA" size={25} />
+//               <span className="ml-4 text-gray-700">Generating designs...</span>
+//             </div>
+//           ) : (
+//             <div className="space-y-8">
+//               {getImagePairs().map((pair, rowIndex) => (
+//                 <div key={`row-${rowIndex}`} className="flex space-x-8">
+//                   {pair.map((image, colIndex) => (
+//                     <div key={image?.id || `empty-${rowIndex}-${colIndex}`} className="flex-1">
+//                       {image ? (
+//                         <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+//                           <div className="relative">
+//                             <img
+//                               src={image.url}
+//                               alt={image.label}
+//                               className="w-full h-auto max-h-96 object-contain"
+//                             />
+//                             <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white py-2 text-center">
+//                               {image.label}
+//                             </div>
+//                             <button
+//                               onClick={() => handleDownload(image.url, image.label)}
+//                               className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md hover:bg-gray-100"
+//                             >
+//                               <img src={Download} alt="Download" className="w-4 h-4" />
+//                             </button>
+//                           </div>
+//                         </div>
+//                       ) : (
+//                         <div className="border-2 border-dashed border-gray-300 rounded-lg h-96 flex items-center justify-center">
+//                           <span className="text-gray-400">Empty Slot</span>
+//                         </div>
+//                       )}
+//                     </div>
+//                   ))}
+//                 </div>
+//               ))}
+//             </div>
+//           )}
+
+//           {/* Generate More Button */}
+//           <div className="mt-12 text-center">
+//             <button
+//               onClick={generateMoreImages}
+//               disabled={isLoading}
+//               className="bg-[#00B0BA] text-white font-semibold py-3 px-8 rounded-lg hover:bg-[#00858C] transition-colors disabled:opacity-50"
+//             >
+//               {isLoading ? "Generating..." : "Generate 2 More Designs"}
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { PacmanLoader } from "react-spinners";
-import Interior from "../../assets/product-pg/Vector.png";
-import Home from "../../assets/product-pg/home.png";
-import Tree from "../../assets/product-pg/tree.png";
 import SideArrow from "../../assets/pricing-pg/sideArrow.png";
-import Report from "../../assets/product-pg/report.png";
 import More from "../../assets/product-pg/more.png";
 import Download from "../../assets/product-pg/do.png";
 import Share from "../../assets/product-pg/share.png";
@@ -1205,49 +1488,70 @@ export default function ImageGeneration() {
 
   const [originalImage, setOriginalImage] = useState(null);
   const [generatedImages, setGeneratedImages] = useState([]);
-  const [selectedStyle, setSelectedStyle] = useState("interior");
   const [isLoading, setIsLoading] = useState(false);
   const [showMoreOptions, setShowMoreOptions] = useState(false);
-
-  const backendBaseUrl = "http://localhost:8000";
-
   const [formData, setFormData] = useState(null);
   const [uploadedFile, setUploadedFile] = useState(null);
 
+  const backendBaseUrl = "http://localhost:8000";
+
+  // Track if this is an initial load
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+
+  // Save state to localStorage whenever it changes
   useEffect(() => {
-    if (location.state) {
-      setFormData(location.state.formData);
-      setUploadedFile(location.state.uploadedFile);
-      // Handle original image
-      if (location.state.originalImage) {
-        let fileObj = location.state.originalImage;
-        if (typeof fileObj === "string") {
-          setOriginalImage({
-            url: fileObj,
-            id: "original",
-            label: "Original Image",
-            isOriginal: true,
-          });
-        } else {
-          const blobUrl = URL.createObjectURL(fileObj);
-          setOriginalImage({
-            url: blobUrl,
-            id: "original",
-            label: "Original Image",
-            isOriginal: true,
-          });
-          setUploadedFile(fileObj);
-        }
+    if (originalImage || generatedImages.length > 0 || formData || uploadedFile) {
+      const stateToSave = {
+        originalImage,
+        generatedImages,
+        formData,
+        uploadedFile: uploadedFile ? {
+          name: uploadedFile.name,
+          type: uploadedFile.type,
+          size: uploadedFile.size,
+          lastModified: uploadedFile.lastModified
+        } : null
+      };
+      localStorage.setItem("imageGenState", JSON.stringify(stateToSave));
+    }
+  }, [originalImage, generatedImages, formData, uploadedFile]);
+
+  // Load state from location.state or localStorage
+  useEffect(() => {
+    let state = location.state;
+
+    if (!state) {
+      const saved = localStorage.getItem("imageGenState");
+      if (saved) {
+        state = JSON.parse(saved);
+      }
+    }
+
+    if (state) {
+      setFormData(state.formData || null);
+
+      if (state.originalImage) {
+        const fileObj = state.originalImage;
+        const url = typeof fileObj === "string" ? fileObj : fileObj.url || "";
+        setOriginalImage({
+          url,
+          id: "original",
+          label: "Original Image",
+          isOriginal: true,
+        });
       }
 
-      // Set form data
-      if (location.state.formData) {
-        setFormData(location.state.formData);
+      if (state.uploadedFile) {
+        // Create a dummy file object with metadata
+        const file = new File([""], state.uploadedFile.name, {
+          type: state.uploadedFile.type,
+          lastModified: state.uploadedFile.lastModified
+        });
+        setUploadedFile(file);
       }
 
-      // Handle generated images
-      if (location.state.generatedImages) {
-        const processed = location.state.generatedImages.map((img, index) => {
+      if (state.generatedImages) {
+        const processed = state.generatedImages.map((img, index) => {
           let url = typeof img === "string" ? img : img.url || "";
           if (url && !url.startsWith("http") && !url.startsWith("blob:")) {
             url = backendBaseUrl + url;
@@ -1261,8 +1565,10 @@ export default function ImageGeneration() {
         setGeneratedImages(processed);
       }
     }
+    setIsInitialLoad(false);
   }, [location.state]);
 
+  // Clean up blob URLs when images change or component unmounts
   useEffect(() => {
     return () => {
       if (originalImage?.url?.startsWith("blob:")) {
@@ -1276,35 +1582,95 @@ export default function ImageGeneration() {
     };
   }, [originalImage, generatedImages]);
 
+  // Clear localStorage only when tab is closed or navigating back to home
+  useEffect(() => {
+    let isInternalNavigation = false;
+
+    const handleBeforeUnload = (e) => {
+      // Only clear if not an internal navigation
+      if (!isInternalNavigation) {
+        localStorage.removeItem("imageGenState");
+      }
+    };
+
+    const handlePopState = (e) => {
+      // Check if we're navigating back to home
+      if (window.location.pathname === "/") {
+        localStorage.removeItem("imageGenState");
+      }
+    };
+
+    // Track link clicks to detect internal navigation
+    const handleClick = (e) => {
+      const target = e.target.closest('a[href]');
+      if (target && target.getAttribute('href') !== '/') {
+        isInternalNavigation = true;
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('popstate', handlePopState);
+    document.addEventListener('click', handleClick, true);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      window.removeEventListener('popstate', handlePopState);
+      document.removeEventListener('click', handleClick, true);
+    };
+  }, []);
+
+  const fetchOriginalFile = async () => {
+    try {
+      const response = await fetch(originalImage.url);
+      const blob = await response.blob();
+      return new File([blob], uploadedFile.name, { type: uploadedFile.type });
+    } catch (error) {
+      console.error("Error fetching original file:", error);
+      return null;
+    }
+  };
+
   const generateMoreImages = async () => {
-    if (!formData || !uploadedFile) return;
+    if (!formData) return;
+
+    if (!uploadedFile) {
+      alert("Image file lost after reload. Please go back and upload again.");
+      return;
+    }
 
     setIsLoading(true);
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append('user_id', formData.userId); // Replace with actual user ID
-      formDataToSend.append('category', formData.category);
-      formDataToSend.append('type_detail', formData.typeDetail);
-      formDataToSend.append('style', formData.style);
-      formDataToSend.append('ai_strength', formData.aiStrength);
-      formDataToSend.append('uploaded_image', uploadedFile);
-      //formData.append('user_id', userId); 
+      formDataToSend.append("user_id", formData.userId);
+      formDataToSend.append("category", formData.category);
+      formDataToSend.append("type_detail", formData.typeDetail);
+      formDataToSend.append("style", formData.style);
+      formDataToSend.append("ai_strength", formData.aiStrength);
+
+      // Check if we have the actual file or just metadata
+      let fileToUpload = uploadedFile;
+      if (uploadedFile.size === 0) {
+        // If we only have metadata, fetch the original file from the server
+        fileToUpload = await fetchOriginalFile();
+        if (!fileToUpload) {
+          throw new Error("Could not retrieve original image");
+        }
+      }
+      formDataToSend.append("uploaded_image", fileToUpload);
 
       const response = await axios.post(
         `${backendBaseUrl}/api/generate/more-designs`,
         formDataToSend,
         {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
 
       if (response.data.success === true) {
         const newImages = response.data.designs.map((url, index) => ({
           url: backendBaseUrl + url,
-          id: `more-design-${index }-${Date.now()}`,
-          label: `Additional Design ${generatedImages.length + index + 1}`
+          id: `more-design-${index}-${Date.now()}`,
+          label: `Additional Design ${generatedImages.length + index + 1}`,
         }));
         setGeneratedImages([...generatedImages, ...newImages]);
       }
@@ -1316,25 +1682,112 @@ export default function ImageGeneration() {
     }
   };
 
-  const handleDownload = (imageUrl, label) => {
-    if (!imageUrl) return;
+  const handleDownload = async (imageUrl, label) => {
+  if (!imageUrl) return;
+
+  try {
+    let blobUrl;
+
+    if (imageUrl.startsWith('data:image')) {
+      // ✅ base64 image: convert to blob directly
+      const res = await fetch(imageUrl);
+      const blob = await res.blob();
+      blobUrl = URL.createObjectURL(blob);
+    } else {
+      // ✅ normal image URL (server or blob:)
+      let downloadUrl = imageUrl;
+      if (!downloadUrl.startsWith('http') && !downloadUrl.startsWith('blob:')) {
+        downloadUrl = `${backendBaseUrl}${downloadUrl}`;
+      }
+
+      const response = await fetch(downloadUrl);
+      if (!response.ok) throw new Error('Failed to fetch image');
+      const blob = await response.blob();
+      blobUrl = URL.createObjectURL(blob);
+    }
+
+    // Create and trigger download link
     const link = document.createElement("a");
-    link.href = imageUrl;
-    link.download = `${label.replace(" ", "-")}-${Date.now()}.jpg`;
+    link.href = blobUrl;
+    link.download = `${label.replace(/\s+/g, "-")}-${Date.now()}.jpg`;
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
-  };
+
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    }, 100);
+  } catch (error) {
+    console.error("Error downloading image:", error);
+    alert("Failed to download the image. Please try again.");
+  }
+};
 
   const handleDownloadAll = () => {
-    if (originalImage) handleDownload(originalImage.url, originalImage.label);
-    generatedImages.forEach((img) => handleDownload(img.url, img.label));
+    const allImages = [];
+
+    if (originalImage) {
+      allImages.push({
+        url: originalImage.url,
+        label: originalImage.label
+      });
+    }
+
+    generatedImages.forEach((img) => {
+      // Ensure the URL is absolute by adding backendBaseUrl if needed
+      let imageUrl = img.url;
+      if (!imageUrl.startsWith('http') && !imageUrl.startsWith('blob:')) {
+        imageUrl = `${backendBaseUrl}${imageUrl}`;
+      }
+      allImages.push({
+        url: imageUrl,
+        label: img.label
+      });
+    });
+
+    // Download images sequentially with proper delays
+    const downloadSequentially = async () => {
+      for (let i = 0; i < allImages.length; i++) {
+        const image = allImages[i];
+        try {
+          // Fetch the image first to ensure it's accessible
+          const response = await fetch(image.url);
+          if (!response.ok) throw new Error('Failed to fetch image');
+
+          const blob = await response.blob();
+          const blobUrl = URL.createObjectURL(blob);
+
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = `${image.label.replace(/\s+/g, '-')}-${Date.now()}.jpg`;
+          document.body.appendChild(link);
+          link.click();
+
+          // Clean up
+          setTimeout(() => {
+            document.body.removeChild(link);
+            URL.revokeObjectURL(blobUrl);
+          }, 100);
+
+          // Add delay between downloads except for the last one
+          if (i < allImages.length - 1) {
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        } catch (error) {
+          console.error(`Error downloading ${image.label}:`, error);
+          // Continue with next image even if one fails
+        }
+      }
+    };
+
+    downloadSequentially().catch(error => {
+      console.error('Download process failed:', error);
+      alert('Some images failed to download. Please try again.');
+    });
   };
 
   const getImagePairs = () => {
     const pairs = [];
-
-    // First row: Original + first generated image
     if (originalImage && generatedImages.length > 0) {
       pairs.push([originalImage, generatedImages[0]]);
     } else if (originalImage) {
@@ -1343,73 +1796,33 @@ export default function ImageGeneration() {
       pairs.push([generatedImages[0], generatedImages[1] || null]);
     }
 
-    // Remaining rows: next pairs of generated images
     let startIndex = originalImage ? 1 : 2;
-
     for (let i = startIndex; i < generatedImages.length; i += 2) {
-      const first = generatedImages[i];
-      const second = generatedImages[i + 1] || null;
-      pairs.push([first, second]);
+      pairs.push([generatedImages[i], generatedImages[i + 1] || null]);
     }
 
     return pairs;
   };
 
   return (
-    <div className="bg-[#002628] min-h-screen">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="bg-gradient-to-t from-[#002628] to-[#00646A] via-[#00B0BA] rounded-t-xl p-8 text-center">
-          <h1 className="text-4xl font-bold text-white mb-6">
-            YOUR GENERATED DESIGNS
-          </h1>
-          <div className="flex justify-center space-x-12">
-            {["interior", "exteriors", "outdoors"].map((style) => (
-              <div
-                key={style}
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => setSelectedStyle(style)}
-              >
-                <div
-                  className={`w-16 h-16 rounded-full flex items-center justify-center mb-2 ${selectedStyle === style
-                      ? "bg-gradient-to-l from-[#00B0BA] via-black to-[#007B82] border-2 border-white"
-                      : "bg-white bg-opacity-10"
-                    }`}
-                >
-                  <img
-                    src={
-                      style === "interior"
-                        ? Interior
-                        : style === "exteriors"
-                          ? Home
-                          : Tree
-                    }
-                    alt={style}
-                    className="w-8 h-8"
-                  />
-                </div>
-                <span className="text-white font-medium">
-                  {style.charAt(0).toUpperCase() + style.slice(1)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="bg-white min-h-screen">
+      <div className="w-full h-[161px] bg-[linear-gradient(180deg,_#00646A_0%,_#002628_99.99%,_#00B0BA_100%)] rounded-t-xl flex items-center justify-center text-center">
+        <h1 className="text-[38px] font-bold text-white">Generated Image</h1>
+      </div>
 
-        {/* Main Content */}
+      <div className="max-w-6xl mx-auto">
         <div className="bg-white rounded-b-xl shadow-lg p-6">
-          {/* Action Bar */}
           <div className="flex justify-between items-center mb-8">
-            <Link to="/" className="flex items-center text-gray-800 hover:text-[#00B0BA]">
+            <Link
+              to="/"
+              className="flex items-center text-gray-800 hover:text-[#00B0BA]"
+              onClick={() => localStorage.removeItem("imageGenState")}
+            >
               <img src={SideArrow} alt="Back" className="w-6 h-6 mr-2" />
               <span>Back</span>
             </Link>
-
             <div className="flex space-x-6">
-              <button
-                onClick={handleDownloadAll}
-                className="flex items-center text-gray-800 hover:text-[#00B0BA]"
-              >
+              <button onClick={handleDownloadAll} className="flex items-center text-gray-800 hover:text-[#00B0BA]">
                 <img src={Download} alt="Download" className="w-6 h-6 mr-2" />
                 <span>Download All</span>
               </button>
@@ -1417,30 +1830,24 @@ export default function ImageGeneration() {
                 <img src={Share} alt="Share" className="w-6 h-6 mr-2" />
                 <span>Share</span>
               </button>
-              <button
-                onClick={() => setShowMoreOptions(!showMoreOptions)}
-                className="flex items-center text-gray-800 hover:text-[#00B0BA]"
-              >
+              {/* <button onClick={() => setShowMoreOptions(!showMoreOptions)} className="flex items-center text-gray-800 hover:text-[#00B0BA]">
                 <img src={More} alt="More" className="w-6 h-6" />
+              </button> */}
+              <button className="flex items-center text-gray-800 hover:text-[#00B0BA]">
+                <img src={Share} alt="Share" className="w-6 h-6 mr-2" />
+                <span>Report</span>
               </button>
             </div>
           </div>
 
-          {showMoreOptions && (
+          {/* {showMoreOptions && (
             <div className="absolute right-8 bg-white shadow-lg rounded-md p-2 z-10 border border-gray-200">
-              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                Save to favorites
-              </button>
-              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
-                Duplicate design
-              </button>
-              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500">
-                Delete design
-              </button>
+              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">Save to favorites</button>
+              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">Duplicate design</button>
+              <button className="block w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500">Delete design</button>
             </div>
-          )}
+          )} */}
 
-          {/* Image Grid */}
           {isLoading ? (
             <div className="flex justify-center items-center h-96">
               <PacmanLoader color="#00B0BA" size={25} />
@@ -1455,11 +1862,7 @@ export default function ImageGeneration() {
                       {image ? (
                         <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
                           <div className="relative">
-                            <img
-                              src={image.url}
-                              alt={image.label}
-                              className="w-full h-auto max-h-96 object-contain"
-                            />
+                            <img src={image.url} alt={image.label} className="w-full h-auto max-h-96 object-contain" />
                             <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white py-2 text-center">
                               {image.label}
                             </div>
@@ -1483,7 +1886,6 @@ export default function ImageGeneration() {
             </div>
           )}
 
-          {/* Generate More Button */}
           <div className="mt-12 text-center">
             <button
               onClick={generateMoreImages}

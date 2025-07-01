@@ -270,13 +270,10 @@ app.mount("/static_generated", StaticFiles(directory=generated_path), name="stat
 invoices_path = os.path.join("fastapi_app", "generated_invoices")
 app.mount("/generated_invoices", StaticFiles(directory=invoices_path), name="invoices")
 
-
 # Routes
 @app.get("/")
 async def serve_index():
     return FileResponse(os.path.join("fastapi_app", "frontend", "index.html"))
-
-
 
 @app.get("/login")
 async def serve_login():
@@ -376,9 +373,6 @@ async def get_profile_by_userid(userid: str = Query(...)):
         "profile_pic": profile_pic_url,
     })
 
-
-
 @app.get("/")
 async def root():
     return {"message": "Welcome to the Image Generation API!"}
-

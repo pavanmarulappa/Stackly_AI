@@ -385,7 +385,7 @@ import Lock from "../../assets/product-pg/lock.png";
 import Galley from "../../assets/product-pg/gallery.png";
 import I from "../../assets/product-pg/i.png";
 import Magic from "../../assets/product-pg/magic.png";
-import axios from "axios"; //For connect fastapi 
+import axios from "axios";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { FormDataContext } from "../../context/FormDataContext";
@@ -401,12 +401,10 @@ export default function Form() {
   const [progress, setProgress] = useState(0);
   const [activeTab, setActiveTab] = useState("Interiors");
   const [imgFile, setImgFile] = useState(null);
-  const [generatedImages, setGeneratedImages] = useState([]); // To store generated image URLs
+  const [generatedImages, setGeneratedImages] = useState([]);
   const [originalImageUrl, setOriginalImageUrl] = useState(null);
   const backendBaseUrl = "http://localhost:8000";
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-
-
 
   const [formData, setFormData] = useState({
     buildingType: "",
@@ -424,89 +422,40 @@ export default function Form() {
     { name: "Interiors", icon: Interior },
     { name: "Exteriors", icon: Home },
     { name: "Outdoors", icon: Tree },
-    // { name: "Upgrade to Unlock", icon: Lock },
   ];
 
-  // Updated options for each tab
   const roomTypes = {
     Interiors: [
-      "Living room",
-      "Bedroom",
-      "Kitchen",
-      "Home office",
-      "Dining room",
-      "Study room",
-      "Family room",
-      "Kid room",
-      "Balcony",
+      "Living room", "Bedroom", "Kitchen", "Home office", "Dining room",
+      "Study room", "Family room", "Kid room", "Balcony",
     ],
-    Exteriors: [
-      "Front side",
-      "Back side",
-      "Left side",
-      "Right side",
-    ],
+    Exteriors: ["Front side", "Back side", "Left side", "Right side"],
     Outdoors: [
-      "Front Yard",
-      "Backyard",
-      "Balcony",
-      "Terrace/Rooftop",
-      "Driveway/Parking Area",
-      "Walkway/Path",
-      "Lounge",
-      "Porch",
-      "Fence",
-      "Garden",
+      "Front Yard", "Backyard", "Balcony", "Terrace/Rooftop",
+      "Driveway/Parking Area", "Walkway/Path", "Lounge", "Porch",
+      "Fence", "Garden",
     ],
   };
 
   const styles = {
     Interiors: [
-      "classic",
-      "modern",
-      "minimal",
-      "scandinavian",
-      "contemporary",
-      "industrial",
-      "japandi",
-      "bohemian", // Changed from "Bohemian (Boho)"
-      "coastal",
-      "modern luxury",
-      "tropical resort",
-      "japanese zen",
+      "classic", "modern", "minimal", "scandinavian", "contemporary",
+      "industrial", "japandi", "bohemian", "coastal", "modern luxury",
+      "tropical resort", "japanese zen",
     ],
     Exteriors: [
-      "classic",
-      "modern",
-      "bohemian", // Changed from "Bohemian (Boho)"
-      "coastal",
-      "international",
-      "elephant",
-      "stone clad",
-      "glass house",
-      "red brick",
-      "painted brick",
-      "wood accents",
-      "industrial",
+      "classic", "modern", "bohemian", "coastal", "international",
+      "elephant", "stone clad", "glass house", "red brick",
+      "painted brick", "wood accents", "industrial",
     ],
     Outdoors: [
-      "modern",
-      "contemporary",
-      "traditional",
-      "rustic",
-      "scandinavian",
-      "classic garden",
-      "coastal outdoor",
-      "farmhouse",
-      "cottage garden",
-      "industrial",
-      "beach",
+      "modern", "contemporary", "traditional", "rustic",
+      "scandinavian", "classic garden", "coastal outdoor",
+      "farmhouse", "cottage garden", "industrial", "beach",
     ],
   };
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
+  const handleDragOver = (e) => e.preventDefault();
 
   const changeImage = (e) => {
     const file = e.target.files[0];
@@ -531,18 +480,10 @@ export default function Form() {
     }
   };
 
-  // const handleChange = (value, key) => {
-  //   setFormData((prev) => {
-  //     return { ...prev, [key]: value };
-  //   });
-  // };
-
   const handleChange = (value, key) => {
     if (key === "roomType" && activeTab === "Exteriors") {
-      // For exterior angles, preserve the original case
       setFormData(prev => ({ ...prev, [key]: value }));
     } else {
-      // For other fields, keep the lowercase conversion
       setFormData(prev => ({ ...prev, [key]: value.toLowerCase() }));
     }
   };
@@ -552,7 +493,6 @@ export default function Form() {
       alert("Please upgrade your account to access this feature");
     } else {
       setActiveTab(tabName);
-      // Reset relevant form fields when switching tabs
       setFormData({
         buildingType: "",
         roomType: "",
@@ -565,12 +505,18 @@ export default function Form() {
     }
   };
 
+  const toBase64 = (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (err) => reject(err);
+  });
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setProgress(0);
 
-    // Simulate progress (this will be updated by the actual upload progress)
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 90) {
@@ -625,50 +571,48 @@ export default function Form() {
         formDataToSend,
         {
           onUploadProgress: (progressEvent) => {
-            // Only update progress based on upload (first 50%)
-            const uploadPercent = Math.round(
-              (progressEvent.loaded * 50) / progressEvent.total
-            );
+            const uploadPercent = Math.round((progressEvent.loaded * 50) / progressEvent.total);
             setProgress(uploadPercent);
           },
         }
       );
 
-      // After upload, simulate generation progress (50-100%)
       for (let i = 50; i <= 100; i += 10) {
         await new Promise(resolve => setTimeout(resolve, 500));
         setProgress(i);
       }
 
       if (response.data.success) {
-        navigate("/ImageGeneration", {
-          state: {
-            originalImage: imgURL,
-            uploadedFile: imgFile,
-            generatedImages: Array.isArray(response.data.designs)
-              ? response.data.designs.map(url => ({
-                url: url.startsWith("http")
-                  ? url
-                  : backendBaseUrl + url,
-                id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-              }))
-              : [],
-            formData: {
-              userId: userInfo.userId,
-              category: activeTab.toLowerCase(),
-              typeDetail: typeDetail,
-              style: formData.roomStyle,
-              aiStrength: formData.aiStrength,
-              numDesigns: formData.numDesigns
-            }
+        const designs = Array.isArray(response.data.designs)
+          ? response.data.designs.map(url => ({
+              url: url.startsWith("http") ? url : backendBaseUrl + url,
+              id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+            }))
+          : [];
+
+        const base64Image = await toBase64(imgFile);
+
+        const navState = {
+          originalImage: base64Image,
+          uploadedFile: imgFile,
+          generatedImages: designs,
+          formData: {
+            userId: userId,
+            category: activeTab.toLowerCase(),
+            typeDetail: typeDetail,
+            style: formData.roomStyle,
+            aiStrength: formData.aiStrength,
+            numDesigns: formData.numDesigns
           }
-        });
+        };
+
+        localStorage.setItem("imageGenState", JSON.stringify(navState));
+        navigate("/ImageGeneration", { state: navState });
       } else {
         throw new Error(response.data.message || "Design generation failed");
       }
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.message || "Failed to connect to server";
+      const errorMessage = error.response?.data?.message || error.message || "Failed to connect to server";
       alert(`Error: ${errorMessage}`);
     } finally {
       clearInterval(progressInterval);
