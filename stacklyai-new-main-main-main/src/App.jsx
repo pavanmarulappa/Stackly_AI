@@ -199,7 +199,7 @@ import Contact from "./pages/ContactPg/Contact";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import SignupOtp from "./pages/forgetPage/SignupOtp";
-import ForgetPg from "./pages/forgetPage/ForgetPg";
+// import ForgetPg from "./pages/forgetPage/ForgetPg";
 import HeroForgetPg from "./pages/forgetPage/HeroForgetPg";
 import Otp from "./pages/forgetPage/Otp";
 import ResetPassword from "./pages/forgetPage/ResetPassword";
@@ -266,7 +266,7 @@ export default function App() {
         <Route path="/SignupOtp" element={<SignupOtp />} />
 
         {/* Forget Password Flow */}
-        <Route path="/forgetpg" element={<ForgetPg />} />
+        {/* <Route path="/forgetpg" element={<ForgetPg />} /> */}
         <Route path="/heroforgetpg" element={<HeroForgetPg />} />
         <Route path="/otp" element={<Otp />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
