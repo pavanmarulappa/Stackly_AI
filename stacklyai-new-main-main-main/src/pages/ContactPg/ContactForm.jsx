@@ -130,56 +130,56 @@ const ContactForm = () => {
                 </div>
     
                 {/* Subject Dropdown */}
-                <div>
-                  <label className="block text-sm font-medium">
-                    Select Subject <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative mt-1">
-                    <select
-                      name="subject"
-                      required
-                      value={formData.subject}
-                      onChange={handleChange}
-                      className={`w-full border rounded-md pl-5 pr-10 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${formData.subject === "" ? "text-gray-400 bg-gray-100" : "text-black bg-white"
-                        }`}
-                    >
-                      <option value="" disabled hidden>
-                        Select a Subject
-                      </option>
-                      <option value="Support" className="text-black">Support</option>
-                      <option value="Sales" className="text-black">Sales</option>
-                      <option value="Other" className="text-black">Other</option>
-                    </select>
-    
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                      <svg
-                        className="fill-current h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                      </svg>
-                    </div>
-                  </div>
+            <div>
+              <label className="block text-sm font-medium">
+                Select Subject <span className="text-red-500">*</span>
+              </label>
+              <div className="relative mt-1">
+                <select
+                  name="subject"
+                  required
+                  value={formData.subject}
+                  onChange={handleChange}
+                  className={`w-full border rounded-md pl-5 pr-10 py-3 appearance-none focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent ${formData.subject === "" ? "text-gray-400 bg-gray-100" : "text-black bg-[#e8f0fe]"
+                    }`}
+                >
+                  <option value="" disabled hidden>
+                    Select a Subject
+                  </option>
+                  <option value="Support">Support</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Other">Other</option>
+                </select>
+
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
                 </div>
-    
-    
-                {/* Message */}
-                <div>
-                  <label className="block text-sm font-medium  ">
-                    Message <span className="text-red-500">*</span>
-                  </label>
-                  <textarea
-                    placeholder="Your Message (Max 500 Characters)"
-                    maxLength={500}
-                    rows={5}
-                    name="message"
-                    className="mt-1 w-full border rounded-md px-4 py-3 bg-gray-100"
-                    value={formData.message}
-                    required
-                    onChange={handleChange}
-                  />
-                </div>
+              </div>
+            </div>
+
+
+            {/* Message */}
+            <div>
+              <label className="block text-sm font-medium  ">
+                Message <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                placeholder="Your Message (Max 500 Characters)"
+                maxLength={500}
+                rows={5}
+                name="message"
+                className="mt-1 w-full rounded-md px-4 py-3 bg-[#e8f0fe]"
+                value={formData.message}
+                required
+                onChange={handleChange}
+              />
+            </div>
     
                 {/* Submit Button */}
                 <button

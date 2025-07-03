@@ -370,7 +370,6 @@ export default function Header() {
     <div>
     <header className="w-full h-[70px] sm:h-[90px] bg-white flex justify-between items-center backdrop-blur-[6px] xl:px-20 xl:py-[25px] md:p-[20px] p-[15px] relative z-10 gap-0 shadow-sm">
 
-
        <img
           className="cursor-pointer max-[400px]:w-[50%]"
           onClick={() => {
@@ -379,7 +378,8 @@ export default function Header() {
           src={logoImg}
           alt="Logo"
         />
-        {!["sign-in", "sign-up", "resetpopup", "signuppopup", "otp", "signupotp", "resetpassword", "heroforgetpg"].includes(endpoint) && (
+        {/* Want to hide the navbar -add the page name below */}
+        {![].includes(endpoint) && (
           <nav>
             <ul
               className={`hidden gap-12 md:gap-8 min-[900px]:flex`}

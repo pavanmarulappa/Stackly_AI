@@ -1,6 +1,7 @@
 //HeroAfterHome.jsx
 import React, { useEffect, useState, useRef } from "react";
-import { Form, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import Form from "../../pages/AfterSignHome/FormAfter"; // ✅ Import your actual form
 import G1 from "../../assets/afterHome/g1.png"
 import G2 from "../../assets/afterHome/g2.png";
 import G3 from "../../assets/afterHome/g3.png";
@@ -20,6 +21,7 @@ import OutdoorForm from "./OutdoorForm";
 
 
 export default function HeroAfterHome() {
+  const [selectedImage, setSelectedImage] = useState(null);
   const images = [
     "/AfterHome/ahome1.png",
     "/AfterHome/ahome2.png",
@@ -80,10 +82,10 @@ export default function HeroAfterHome() {
 
       {/* section2  */}
       <section
-        className="w-full min-h-[1000px] bg-cover bg-no-repeat bg-center p-[40px] flex flex-col justify-start items-center "
+        className="w-full min-h-[1000px] bg-cover bg-no-repeat bg-center p-[40px] flex flex-col justify-start items-center"
         style={{ backgroundImage: 'url("/AfterHome/sec2.png")' }}
       >
-        <div className="w-full h-[106px] flex flex-col justify-center items-center gap-[32px] ">
+        <div className="w-full h-[106px] flex flex-col justify-center items-center gap-[32px]">
           <div className="w-full h-[46px] font-medium text-[38px] leading-[100%] text-center text-[#007B82]">
             STACKLY AI
           </div>
@@ -94,42 +96,40 @@ export default function HeroAfterHome() {
 
         <div className="w-[80%] h-[850px] flex justify-center items-center">
           <div>
-            {" "}
             <img
               src={G1}
               alt="img-gallery"
-              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative top-8 left-3 "
+              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative top-8 left-3 transition-transform duration-300 transform hover:scale-[1.15] hover:z-10 will-change-transform"
             />
             <img
               src={G2}
               alt="img-gallery"
-              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative left-5"
+              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative left-5 transition-transform duration-300 transform hover:scale-[1.15] hover:z-10 will-change-transform"
             />
           </div>
           <div>
             <img
               src={G3}
               alt="img-gallery"
-              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative top-8"
+              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative top-8 transition-transform duration-300 transform hover:scale-[1.15] hover:z-10 will-change-transform"
             />
             <br />
             <img
               src={G4}
               alt="img-gallery"
-              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative left-4"
+              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative left-4 transition-transform duration-300 transform hover:scale-[1.15] hover:z-10 will-change-transform"
             />
           </div>
           <div>
-            {" "}
             <img
               src={G5}
               alt="img-gallery"
-              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative top-8 right-3"
+              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative top-8 right-3 transition-transform duration-300 transform hover:scale-[1.15] hover:z-10 will-change-transform"
             />
             <img
               src={G6}
               alt="img-gallery"
-              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative left-[-30px]"
+              className="w-[317.29px] h-[317.29px] rounded-[8.46px] relative left-[-30px] transition-transform duration-300 transform hover:scale-[1.15] hover:z-10 will-change-transform"
             />
           </div>
         </div>
@@ -185,8 +185,14 @@ export default function HeroAfterHome() {
 
       {/* section-4  */}
 
-      <DraggableAfter />
-
+      {/* <DraggableAfter formRef={formAfterRef} setSelectedImage={setSelectedImage} /> */}
+      <DraggableAfter
+        formRef={formAfterRef}
+        setSelectedImage={(img) => {
+          setSelectedImage(null); // Force reset
+          setTimeout(() => setSelectedImage(img), 10); // Then set actual image
+        }}
+      />
       {/* section-5  */}
 
       <section
@@ -218,7 +224,7 @@ export default function HeroAfterHome() {
       {/* section-6  */}
 
       <div ref={formAfterRef}>
-        <FormAfter />
+        <Form selectedImage={selectedImage} />
       </div>
 
 

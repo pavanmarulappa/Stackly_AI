@@ -375,7 +375,7 @@
 // }
 
 //Form.jsx
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useEffect} from "react";
 import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Interior from "../../assets/product-pg/Vector.png";
@@ -393,7 +393,8 @@ import { FormDataContext } from "../../context/FormDataContext";
 const CloseIcon =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E";
 
-export default function Form() {
+
+export default function Form({ selectedImage }) {
   const { userInfo } = useContext(UserContext);
   const navigate = useNavigate();
   const inpRef = useRef(null);
@@ -619,6 +620,18 @@ export default function Form() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+  if (selectedImage) {
+    setImgURL(selectedImage); // Display in upload box
+    fetch(selectedImage)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], "previous-image.png", { type: blob.type });
+        setImgFile(file); // Set as upload file
+      });
+  }
+}, [selectedImage]);
 
   return (
     <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
