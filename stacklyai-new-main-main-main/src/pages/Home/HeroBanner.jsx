@@ -115,7 +115,7 @@
 //   );
 // }
 import React, { useEffect, useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function HeroBanner() {
   const [changeText, setChangeText] = useState(0);
@@ -209,23 +209,26 @@ export default function HeroBanner() {
             >
 
 
-              
-                <p
+
+              <p
                 onClick={() => navigate("/sign-in")}
                 className="text-lg font-bold leading-[100%] text-center text-white
-      max-[440px]:w-[99px] max-[440px]:h-[35px] max-[440px]:text-[16px]
-      max-[440px]:leading-[35px] max-[440px]:font-bold max-[440px]:tracking-[0] max-[440px]:text-center"
-                  style={{
-                    fontFamily: "Inter",
-                    wordSpacing: "2px",
-                    color: "#ffffff",
-                    marginBottom: "0px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Design Now!
-                </p>
-              
+    max-[440px]:w-[99px] max-[440px]:h-[35px] max-[440px]:text-[16px]
+    max-[440px]:leading-[35px] max-[440px]:font-bold max-[440px]:tracking-[0] max-[440px]:text-center"
+                style={{
+                  fontFamily: "Inter",
+                  wordSpacing: "2px",
+                  color: "#ffffff",
+                  marginBottom: "0px",
+                  cursor: "pointer",
+                  backgroundImage:
+                    "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+                  WebkitBackgroundClip: "text",
+                }}
+              >
+                Design Now!
+              </p>
+
 
             </div>
 

@@ -375,7 +375,7 @@
 // }
 
 //Form.jsx
-import React, { useContext, useRef, useState, useEffect} from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Interior from "../../assets/product-pg/Vector.png";
@@ -586,9 +586,9 @@ export default function Form({ selectedImage }) {
       if (response.data.success) {
         const designs = Array.isArray(response.data.designs)
           ? response.data.designs.map(url => ({
-              url: url.startsWith("http") ? url : backendBaseUrl + url,
-              id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-            }))
+            url: url.startsWith("http") ? url : backendBaseUrl + url,
+            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+          }))
           : [];
 
         const base64Image = await toBase64(imgFile);
@@ -622,16 +622,16 @@ export default function Form({ selectedImage }) {
   };
 
   useEffect(() => {
-  if (selectedImage) {
-    setImgURL(selectedImage); // Display in upload box
-    fetch(selectedImage)
-      .then(res => res.blob())
-      .then(blob => {
-        const file = new File([blob], "previous-image.png", { type: blob.type });
-        setImgFile(file); // Set as upload file
-      });
-  }
-}, [selectedImage]);
+    if (selectedImage) {
+      setImgURL(selectedImage); // Display in upload box
+      fetch(selectedImage)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], "previous-image.png", { type: blob.type });
+          setImgFile(file); // Set as upload file
+        });
+    }
+  }, [selectedImage]);
 
   return (
     <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
@@ -675,106 +675,113 @@ export default function Form({ selectedImage }) {
 
 
       {/* Form Section */}
-      <div className="w-full max-w-7xl flex flex-col xl:flex-row gap-10 items-start justify-between">
+      <div className="w-full max-w-7xl  flex flex-col xl:flex-row gap-10 items-start justify-between">
         {/* Upload Box */}
         <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
           <div
-            className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer relative"
-            onClick={() => inpRef.current.click()}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
+            className="w-full aspect-[4/3] max-h-[70vh] rounded-xl bg-[#002D30] flex justify-center items-center cursor-pointer relative"
           >
-            {imgURL ? (
-              <>
-                {!isImageLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-[#FFFFFF1A] rounded-xl">
-                    <p className="text-[#FFFFFFB2]">Loading image...</p>
+            <div
+              className="w-full h-full border-2 border-dashed border-white rounded-xl flex justify-center items-center relative"
+              onClick={() => inpRef.current.click()}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              {imgURL ? (
+                <>
+                  {!isImageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#FFFFFF1A] rounded-xl">
+                      <p className="text-[#FFFFFFB2]">Loading image...</p>
+                    </div>
+                  )}
+                  <div className="cursor-default relative h-full w-full flex justify-center items-center rounded-xl p-4">
+                    <div className="relative h-full w-full flex justify-center items-center rounded-xl overflow-hidden">
+                      <img
+                        src={imgURL}
+                        alt="Preview"
+                        className={`max-w-[calc(100%-8px)] max-h-[calc(100%-8px)] object-contain ${isImageLoaded ? "block" : "hidden"}`}
+                        onLoad={() => setIsImageLoaded(true)}
+                        onError={() => setIsImageLoaded(false)}
+                      />
+                    </div>
+
+                    {/* Close button */}
+                    <svg
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setImgURL(null);
+                        setIsImageLoaded(false);
+                      }}
+                      className="absolute p-1 w-7 h-7 rounded-full bg-black/70 fill-white top-3 right-3 cursor-pointer hover:bg-black/90 transition-colors"
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="24px"
+                      viewBox="0 -960 960 960"
+                      width="24px"
+                    >
+                      <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
+                    </svg>
                   </div>
-                )}
-                <div className="cursor-default relative h-full w-full flex justify-center items-center rounded-xl p-4"> {/* Added p-4 for padding */}
-                  <div className="relative h-full w-full flex justify-center items-center rounded-xl overflow-hidden">
+                  {isLoading && (
+                    <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center rounded-xl">
+                      <div className="relative w-24 h-24 mb-4">
+                        <svg className="w-full h-full" viewBox="0 0 100 100">
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="#FFFFFF20"
+                            strokeWidth="8"
+                          />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="#ffffff"
+                            strokeWidth="8"
+                            strokeLinecap="round"
+                            strokeDasharray="283"
+                            strokeDashoffset={283 - (283 * progress) / 100}
+                            transform="rotate(-90 50 50)"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-white text-xl font-bold">{progress}%</span>
+                        </div>
+                      </div>
+                      <p className="text-white text-lg text-center">
+                        {progress < 100 ? "Rendering..." : "Finalizing designs..."}
+                      </p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
+                  <div className="w-[70px] h-[70px] rounded-full bg-white/10 shadow-md flex justify-center items-center">
                     <img
-                      src={imgURL}
-                      alt="Preview"
-                      className={`max-w-[calc(100%-8px)] max-h-[calc(100%-8px)] object-contain ${isImageLoaded ? "block" : "hidden"}`}
-                      onLoad={() => setIsImageLoaded(true)}
-                      onError={() => setIsImageLoaded(false)}
+                      src={Galley}
+                      alt="gallery"
+                      className="w-[38px] h-[38px] object-contain"
                     />
                   </div>
-
-                  {/* Close button */}
-                  <svg
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setImgURL(null);
-                      setIsImageLoaded(false);
-                    }}
-                    className="absolute p-1 w-7 h-7 rounded-full bg-black/70 fill-white top-3 right-3 cursor-pointer hover:bg-black/90 transition-colors"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="24px"
-                    viewBox="0 -960 960 960"
-                    width="24px"
-                  >
-                    <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
-                  </svg>
+                  <p className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug">
+                    Drag & drop or click to upload a photo
+                  </p>
                 </div>
-                {isLoading && (
-                  <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center rounded-xl">
-                    <div className="relative w-24 h-24 mb-4">
-                      <svg className="w-full h-full" viewBox="0 0 100 100">
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          fill="none"
-                          stroke="#FFFFFF20"
-                          strokeWidth="8"
-                        />
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          fill="none"
-                          stroke="#ffffff"
-                          strokeWidth="8"
-                          strokeLinecap="round"
-                          strokeDasharray="283"
-                          strokeDashoffset={283 - (283 * progress) / 100}
-                          transform="rotate(-90 50 50)"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-white text-xl font-bold">
-                          {progress}%
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-white text-lg text-center">
-                      {progress < 100 ? "Rendering..." : "Finalizing designs..."}
-                    </p>
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
-                <div className="w-[clamp(40px,5vw,70px)] aspect-square rounded-full p-2 bg-[#FFFFFF1A] flex justify-center items-center">
-                  <img src={Galley} alt="gallery" className="w-full h-auto" />
-                </div>
-                <p className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug">
-                  Drag & drop or click to upload a photo
-                </p>
-              </div>
-            )}
-            <input
-              type="file"
-              name="image"
-              ref={inpRef}
-              onChange={changeImage}
-              accept="image/*"
-              className="hidden"
-            />
+              )}
+              <input
+                type="file"
+                name="image"
+                ref={inpRef}
+                onChange={changeImage}
+                accept="image/*"
+                className="hidden"
+              />
+            </div>
           </div>
 
+          {/* Photo Guide */}
           <div className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] flex justify-around items-center cursor-pointer hover:bg-white/10 transition-colors">
             <div className="w-[24px] h-[24px]">
               <img src={I} alt="i" />
@@ -784,7 +791,6 @@ export default function Form({ selectedImage }) {
             </div>
           </div>
         </div>
-
         {/* Form Controls */}
         <form
           onSubmit={handleSubmit}
@@ -817,7 +823,7 @@ export default function Form({ selectedImage }) {
           )}
 
           {/* Room Type (dynamic label based on tab) */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <label className="text-white text-lg">
               {activeTab === "Interiors"
                 ? "Select Room Type"
@@ -839,10 +845,10 @@ export default function Form({ selectedImage }) {
                 </option>
               ))}
             </select>
-          </div>
+          </div> */}
 
           {/* Style Selection */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <label className="text-white text-lg">Select Style</label>
             <select
               name="roomStyle"
@@ -858,10 +864,10 @@ export default function Form({ selectedImage }) {
                 </option>
               ))}
             </select>
-          </div>
+        </div> */}
 
-          {/* Number of designs */}
-          <div className="space-y-2">
+      {/* Number of designs */}
+      {/* <div className="space-y-2">
             <label className="text-white text-lg">Number of Designs</label>
             <select
               name="numDesigns"
@@ -875,50 +881,132 @@ export default function Form({ selectedImage }) {
                 </option>
               ))}
             </select>
+          </div> */}
+      {/* Room Type Dropdown */}
+      <div className="space-y-2 relative">
+        <label className="text-white text-lg">
+          {activeTab === "Interiors"
+            ? "Select Room Type"
+            : activeTab === "Exteriors"
+              ? "Select House Angle"
+              : "Select Space"}
+        </label>
+        <div className="relative">
+          <select
+            name="roomType"
+            value={formData.roomType}
+            onChange={(e) => handleChange(e.target.value, "roomType")}
+            className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
+            required
+          >
+            <option value="">Select an option</option>
+            {roomTypes[activeTab].map((room) => (
+              <option key={room} value={room.toLowerCase()}>
+                {room}
+              </option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
           </div>
-
-          {/* AI Strength */}
-          <div className="space-y-2">
-            <label className="text-white text-lg">AI Styling Strength</label>
-            <div className="flex flex-wrap gap-3">
-              {["Very Low", "Low", "Medium", "High"].map((level) => (
-                <div
-                  key={level}
-                  className={`flex-1 min-w-[120px] px-4 py-2 rounded-md cursor-pointer text-center ${formData.aiStrength === level.toLowerCase()
-                    ? "bg-white text-[#007B82]"
-                    : "bg-[#00000033] text-[#FFFFFF80]"
-                    }`}
-                  onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
-                >
-                  {level}
-                </div>
-              ))}
-            </div>
-          </div>
-        </form>
+        </div>
       </div>
 
-      {/* Generate Button */}
+      {/* Style Selection Dropdown */}
+      <div className="space-y-2 relative">
+        <label className="text-white text-lg">Select Style</label>
+        <div className="relative">
+          <select
+            name="roomStyle"
+            value={formData.roomStyle}
+            onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
+            className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
+            required
+          >
+            <option value="">Select a style</option>
+            {styles[activeTab].map((style) => (
+              <option key={style} value={style.toLowerCase()}>
+                {style.charAt(0).toUpperCase() + style.slice(1)}
+              </option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </div>
+        </div>
+      </div>
 
-      <div
-        className="w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
-        }}
+      {/* Number of designs Dropdown */}
+      <div className="space-y-2 relative">
+        <label className="text-white text-lg">Number of Designs</label>
+        <div className="relative">
+          <select
+            name="numDesigns"
+            value={formData.numDesigns}
+            onChange={(e) => handleChange(e.target.value, "numDesigns")}
+            className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
+          >
+            {[...Array(12).keys()].map((num) => (
+              <option key={num + 1} value={num + 1}>
+                {num + 1}
+              </option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      {/* AI Strength */}
+      <div className="space-y-2">
+        <label className="text-white text-lg">AI Styling Strength</label>
+        <div className="flex flex-wrap gap-3">
+          {["Very Low", "Low", "Medium", "High"].map((level) => (
+            <div
+              key={level}
+              className={`flex-1 min-w-[120px] px-4 py-2 rounded-md cursor-pointer text-center ${formData.aiStrength === level.toLowerCase()
+                ? "bg-white text-[#007B82]"
+                : "bg-[#00000033] text-[#FFFFFF80]"
+                }`}
+              onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
+            >
+              {level}
+            </div>
+          ))}
+        </div>
+      </div>
+    </form>
+      </div >
+
+    {/* Generate Button */ }
+
+    < div
+  className = "w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
+  style = {{
+    backgroundImage:
+    "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+        }
+}
 
       >
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
-        >
-          <span>
-            <img src={Magic} alt="magic" />
-          </span>
-          Generate Design
-        </button>
-      </div>
+  <button
+    type="submit"
+    onClick={handleSubmit}
+    className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
+  >
+    <span>
+      <img src={Magic} alt="magic" />
+    </span>
+    Generate Design
+  </button>
+      </div >
     </section >
   );
 }

@@ -561,7 +561,7 @@ export default function Header() {
 
       <section
         className={`fixed top-0 ${showSideBar ? "right-0" : "right-[-200%]"
-          } transition-all w-[70vw] sm:w-[50%] bg-white shadow-2xl min-h-[120vh] flex flex-col min-[900px]:hidden gap-7 justify-start items-start p-[40px] z-10`}
+          } transition-all w-[70vw] sm:w-[50%] bg-white shadow-2xl min-h-[120vh] flex flex-col min-[900px]:hidden gap-7 justify-start items-start p-[40px] z-50`}
         style={{ listStyle: "none" }}
       >
         <svg

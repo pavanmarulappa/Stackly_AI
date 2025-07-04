@@ -248,8 +248,8 @@
 // }
 
 //DraggableAfter.jsx
-import React, { useEffect, useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import Drag from "../../assets/afterHome/drag.png";
 import Download from "../../assets/afterHome/download.png";
@@ -264,9 +264,10 @@ import dragImg1_2 from "../../assets/home/draggableImgSection/drag1(2).png";
 import DraggableImages from "../../components/DraggableImages";
 
 export default function DraggableAfter({ formRef, setSelectedImage }) {
-
-  const navigate = useNavigate();
   const [popupImage, setPopupImage] = useState(null);
+  const [showDraggable, setShowDraggable] = useState(false);
+  const [dragData, setDragData] = useState({ left: "", right: "" });
+  const [visibleActions, setVisibleActions] = useState({}); // key = index, value = boolean
 
   const handleDownload = (imageSrc) => {
     const link = document.createElement("a");
@@ -284,12 +285,15 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
     formRef?.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleShowImage = (imageSrc) => {
-    setPopupImage(imageSrc);
+  const toggleActions = (index) => {
+    setVisibleActions((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
   };
 
   const designs = [
-    { left: dragImg1_2, right: dragImg1_1, date: "MM/DD" }, // ← Swapped
+    { left: dragImg1_2, right: dragImg1_1, date: "MM/DD" },
     { left: dragImg1_2, right: dragImg1_1, date: "MM/DD" },
     { left: dragImg1_2, right: dragImg1_1, date: "MM/DD" },
     { left: dragImg1_2, right: dragImg1_1, date: "MM/DD" },
@@ -297,7 +301,6 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
 
   return (
     <div>
-      {/* Background */}
       <div
         className="max-w-[100vw] h-auto bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: 'url("/AfterHome/sec4.png")' }}
@@ -312,7 +315,7 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
           </div>
         </div>
 
-        {/* Design Cards Grid */}
+        {/* Design Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-5 sm:p-10">
           {designs.map((design, index) => (
             <div key={index} className="max-w-[522px] m-auto w-full flex flex-col gap-2">
@@ -320,47 +323,83 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
                 <div className="text-[16px] font-semibold text-[#007B82]">
                   {design.date}
                 </div>
-                <img src={Drag} className="w-[28px] h-[28px]" alt="drag" />
+                <img
+                  src={Drag}
+                  className="w-[28px] h-[28px] cursor-pointer"
+                  alt="drag"
+                  onClick={() => {
+                    setPopupImage(design.left);
+                    setShowDraggable(false);
+                  }}
+                />
               </div>
+
               <div className="rounded-[4px]">
                 <DraggableImages imageRight={design.right} imageLeft={design.left} />
               </div>
+
               <div className="flex justify-between items-center mt-2">
-                <div onClick={() => handleShowImage(design.left)} className="cursor-pointer flex flex-col items-center">
+                {/* Show */}
+                <div
+                  onClick={() => {
+                    setDragData({ left: design.left, right: design.right });
+                    setShowDraggable(true);
+                    setPopupImage(null);
+                  }}
+                  className={`cursor-pointer flex flex-col items-center transition-opacity duration-300 ${
+                    visibleActions[index] ? "opacity-100" : "opacity-0 pointer-events-none"
+                  }`}
+                >
                   <img src={Search} alt="show" />
                   <span className="text-[12px] text-[#2A2A2A]">Show</span>
                 </div>
+
+                {/* Input */}
                 <div
                   onClick={() => {
-                    setSelectedImage(design.right); // ✅ always use prop
+                    setSelectedImage(design.right);
                     handleScrollToForm();
                   }}
-                  className="cursor-pointer flex flex-col items-center"
+                  className={`cursor-pointer flex flex-col items-center transition-opacity duration-300 ${
+                    visibleActions[index] ? "opacity-100" : "opacity-0 pointer-events-none"
+                  }`}
                 >
                   <img src={Input} alt="input" />
                   <span className="text-[12px] text-[#2A2A2A]">Input</span>
                 </div>
-                <div onClick={() => handleDownload(design.right)} className="cursor-pointer flex flex-col items-center">
+
+                {/* Download */}
+                <div
+                  onClick={() => handleDownload(design.right)}
+                  className={`cursor-pointer flex flex-col items-center transition-opacity duration-300 ${
+                    visibleActions[index] ? "opacity-100" : "opacity-0 pointer-events-none"
+                  }`}
+                >
                   <img src={Download} alt="download" />
                   <span className="text-[12px] text-[#2A2A2A]">Download</span>
                 </div>
-                <div onClick={() => handleCopyLink(design.right)} className="cursor-pointer flex flex-col items-center">
+
+                {/* Share */}
+                <div
+                  onClick={() => handleCopyLink(design.right)}
+                  className={`cursor-pointer flex flex-col items-center transition-opacity duration-300 ${
+                    visibleActions[index] ? "opacity-100" : "opacity-0 pointer-events-none"
+                  }`}
+                >
                   <img src={Share} alt="share" />
                   <span className="text-[12px] text-[#2A2A2A]">Share</span>
                 </div>
-                <div className="flex flex-col items-center">
+
+                {/* More (always visible) */}
+                <div
+                  className="flex flex-col items-center cursor-pointer"
+                  onClick={() => toggleActions(index)}
+                >
                   <img src={More} alt="more" />
                 </div>
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Filters */}
-        <div className="w-[146px] h-[38px] rounded-[8px] border-[1px] border-[#007B82] px-[12px] py-[8px] flex justify-center items-center gap-[8px] relative top-[-960px] right-[-1350px]">
-          <select className="text-[#007B82] cursor-pointer w-full">
-            <option>Filters</option>
-          </select>
         </div>
       </div>
 
@@ -371,8 +410,8 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
         </div>
       </Link>
 
-      {/* Modal Popup for Show */}
-      {popupImage && (
+      {/* Popup for Right Image */}
+      {popupImage && !showDraggable && (
         <div
           className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-60 z-50 flex justify-center items-center"
           onClick={() => setPopupImage(null)}
@@ -380,10 +419,31 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
           <img
             src={popupImage}
             alt="popup"
-            className="max-w-[90%] max-h-[90%] rounded-xl shadow-lg"
+            className="max-w-[800px] max-h-[100vh] rounded-xl shadow-lg"
           />
+        </div>
+      )}
+
+      {/* Draggable Popup from "Show" */}
+      {showDraggable && (
+        <div
+          className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 z-50 flex justify-center items-center"
+          onClick={() => setShowDraggable(false)}
+        >
+          <div
+            className="relative w-full max-w-[800px] max-h-[100vh] overflow-hidden rounded-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <DraggableImages
+              imageRight={dragData.right}
+              imageLeft={dragData.left}
+            />
+          </div>
         </div>
       )}
     </div>
   );
 }
+
+
+

@@ -1620,9 +1620,10 @@ export default function Home() {
           <Link to="/sign-up">
             <div
               className="max-w-[406px] w-[406px] min-h-[60px] flex justify-center items-center gap-2.5 
-                 text-xl font-bold leading-[35px] text-center text-white cursor-pointer rounded-xl"
+                 text-xl font-bold leading-[35px] text-center text-white  rounded-xl"
               style={{
-                background: "linear-gradient(to right, #00B0BA 0%, #000000 50%, #007B82 100%)",
+                backgroundImage:
+                  "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
                 wordSpacing: "8px",
               }}
             >
@@ -1875,14 +1876,18 @@ export default function Home() {
 
         <Link
           to="/Sign-in"
-          className="max-w-[406px] min-h-[60px] rounded-[5px] bg-gradient-to-r from-[#00B0BA] via-[#000000] to-[#007B82] 
-               text-white font-bold py-5 px-16 rounded-md hover:opacity-50 transition 
-               max-[440px]:w-[170px] max-[440px]:h-[45px] max-[440px]:rounded-[4px] 
-               max-[440px]:py-0 max-[440px]:px-0 flex justify-center items-center"
+          className="max-w-[406px] min-h-[60px] rounded-[5px] text-white font-bold px-16 py-5 rounded-md 
+               flex justify-center items-center 
+             max-[440px]:w-[170px] max-[440px]:h-[45px] max-[440px]:rounded-[4px] 
+             max-[440px]:py-0 max-[440px]:px-0"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+          }}
         >
           <span
             className="max-[440px]:w-[116px] max-[440px]:h-[20px] max-[440px]:text-[16px] 
-                   max-[440px]:font-[700] max-[440px]:leading-[19.7px] max-[440px]:text-center"
+               max-[440px]:font-[700] max-[440px]:leading-[19.7px] max-[440px]:text-center"
           >
             Start Free Trial
           </span>
