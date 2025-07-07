@@ -22,6 +22,24 @@ export default function AfterHeroPricing() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+        // Check if we need to scroll to afteruiplans
+        if (sessionStorage.getItem("scrollToAfterUiPlans") === "true") {
+            sessionStorage.removeItem("scrollToAfterUiPlans");
+            
+            // Use setTimeout to ensure DOM is ready
+            setTimeout(() => {
+                const element = document.getElementById('afteruiplans');
+                if (element) {
+                    element.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }, 100);
+        }
+    }, []);
+
+  useEffect(() => {
     const fetchSubscriptionData = async () => {
       try {
         const userId = localStorage.getItem('userId');
@@ -51,21 +69,22 @@ export default function AfterHeroPricing() {
   }, []);
 
   useEffect(() => {
-  if (!loading && subscriptionData) {
-    const hash = location.hash;
-    if (hash) {
-      const id = hash.replace("#", "");
-      const el = document.getElementById(id);
+    if (!loading && subscriptionData) {
+      const hash = location.hash;
+      if (hash) {
+        const id = hash.replace("#", "");
+        const el = document.getElementById(id);
 
-      if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100); // Small delay for layout to settle
+        if (el) {
+          setTimeout(() => {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 100); // Small delay for layout to settle
+        }
       }
     }
-  }
-}, [loading, subscriptionData, location]);
+  }, [loading, subscriptionData, location]);
 
+  
   const features = [
     "Unlimited Designs",
     "High-Resolution 4K Images",
@@ -131,6 +150,7 @@ export default function AfterHeroPricing() {
     return tens[Math.floor(num / 10)] + (digit ? ' ' + units[digit] : '');
   };
 
+  
   return (
     <div>
       <section className="w-full min-h-screen bg-white py-10 px-4 flex flex-col items-center">
@@ -287,9 +307,12 @@ export default function AfterHeroPricing() {
         {/* CTA Button */}
         <Link to="/">
           <button
-            className="bg-gradient-to-r from-[#00B0BA] via-black to-[#007B82] 
-               text-white font-bold py-3 w-[406px] rounded-md text-[20px] 
+            className="text-white font-bold py-3 w-[406px] rounded-md text-[20px] 
                transition-all duration-300 hover:brightness-110 hover:shadow-lg"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+            }}
           >
             GET STARTED!
           </button>

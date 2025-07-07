@@ -969,42 +969,42 @@ export default function Home() {
 
       <HeroBanner />
 
-      {/* section 2 */}
+       {/* section 2 */}
 
-      <section className="max-w-[100vw] w-full min-h-[552px] flex flex-col justify-center items-center gap-5 p-[30px] 
+     <section className="max-w-[100vw] w-full min-h-[552px] flex flex-col justify-center items-center gap-5 p-[30px] 
                     bg-gradient-to-l from-[#00B0BA14] to-[#00B0BA00]
                     max-[440px]:h-[248px] max-[440px]:min-h-0 max-[440px]:pt-[60px] max-[440px]:pr-[20px] 
                     max-[440px]:pb-[60px] max-[440px]:pl-[20px] max-[440px]:gap-[20px]">
 
 
-        <h1 className="max-w-[220px] w-full min-h-[46px] text-[40px] font-black leading-[100%] text-[#2a2a2a] text-center 
+<h1 className="max-w-[220px] w-full min-h-[46px] text-[40px] font-black leading-[100%] text-[#2a2a2a] text-center 
                max-[440px]:w-[409px] max-[440px]:h-[22px] max-[440px]:text-[18px] max-[440px]:font-[700] 
                max-[440px]:leading-[100%] max-[440px]:tracking-[0] max-[440px]:text-center 
                max-[440px]:text-[#000000] font-inter max-[440px]:mt-[55px]">
-          STACKLY AI
-        </h1>
+  STACKLY AI
+</h1>
 
 
 
-        <h2 className="max-w-[979px] w-full min-h-[63px] text-[52px] font-bold leading-[100%] text-center text-[#007B82] 
+<h2 className="max-w-[979px] w-full min-h-[63px] text-[52px] font-bold leading-[100%] text-center text-[#007B82] 
                flex gap-[10px] 
                max-[440px]:w-[375px] max-[440px]:h-[22px] max-[440px]:gap-[4px] max-[440px]:mt-[-19px]">
-          <img
-            src={Stars}
-            alt="stars"
-            className="w-[50px] h-[50px] max-[440px]:w-[22px] max-[440px]:h-[22px] max-[440px]:ml-[16px]"
-          />
+ <img
+  src={Stars}
+  alt="stars"
+  className="w-[50px] h-[50px] max-[440px]:w-[22px] max-[440px]:h-[22px] max-[440px]:ml-[16px]"
+/>
 
 
-          <span
-            className="max-[440px]:w-[348px] max-[440px]:h-[24px] max-[440px]:text-[20px] max-[440px]:leading-[100%] 
+  <span
+  className="max-[440px]:w-[348px] max-[440px]:h-[24px] max-[440px]:text-[20px] max-[440px]:leading-[100%] 
              max-[440px]:font-bold max-[440px]:tracking-[0] max-[440px]:text-center 
              max-[440px]:text-[#007B82] font-inter whitespace-nowrap overflow-hidden text-ellipsis">
-            Smarter. Faster. Built for Excellence
-          </span>
+  Smarter. Faster. Built for Excellence
+</span>
 
 
-        </h2>
+</h2>
 
 
 
@@ -1013,35 +1013,38 @@ export default function Home() {
               max-[440px]:w-[409px] max-[440px]:h-[44px] max-[440px]:text-[14px] max-[440px]:leading-[160%] 
               max-[440px]:font-[400] max-[440px]:tracking-[0] max-[440px]:text-center font-inter 
               max-[440px]:-mt-[35px]">
-          Experience rapid, photo-realistic designs powered by advanced AI—trusted by professionals and homeowners alike.
-        </p>
+  Experience rapid, photo-realistic designs powered by advanced AI—trusted by professionals and homeowners alike.
+</p>
 
       </section>
-      <div className="max-[440px]:block hidden fixed inset-0 flex justify-center items-center pointer-events-none">
-        <div className="relative">
-          <img
-            src={Star}
-            alt=""
-            className="absolute top-[200.03px] left-[9px] w-[19.64px] h-[20.86px]"
-          />
-          <img
-            src={Star}
-            alt=""
-            className="absolute top-[215.2px] left-[21.25px] w-[11.22px] h-[11.38px]"
-          />
-        </div>
-
-        {/* MOBILE */}
-        {/* <div className="max-[440px]:block hidden">
+ <div className="max-[440px]:block hidden pointer-events-none">
+     <div className="relative">
   <img
     src={Star}
     alt=""
-    className="fixed top-[200.03px] left-[9px] w-[19.64px] h-[20.86px]"
+    className="absolute top-[-40px] left-[9px] w-[19.64px] h-[20.86px]" // reduced from 200px
   />
   <img
     src={Star}
     alt=""
-    className="fixed top-[215.2px] left-[21.25px] w-[11.22px] h-[11.38px]"
+    className="absolute top-[-25px] left-[21.25px] w-[11.22px] h-[11.38px]" // reduced from 215px
+  />
+</div>
+
+
+        {/* MOBILE */}
+ {/* <div className="max-[440px]:block hidden">
+  <img
+    src={Star}
+    alt="Star 1"
+    className="fixed !top-4 !right-[401.53px] w-[19.25px] h-[18.86px]"
+    style={{ position: 'fixed !important' }} // Force fixed
+  />
+  <img
+    src={Star}
+    alt="Star 2"
+    className="fixed !top-[29.71px] !right-[413.53px] w-[11px] h-[10.29px]"
+    style={{ position: 'fixed !important' }} // Force fixed
   />
 </div> */}
         {/* <img src={Star} alt="" className='relative top-[-570px] left-[1000px]' /> */}
@@ -1053,8 +1056,6 @@ export default function Home() {
              max-[440px]:absolute max-[440px]:top-[-230px] max-[440px]:left-[13.73px] 
              max-[440px]:w-[22.4px] max-[440px]:h-[22.4px]"
         />
-
-
 
         {/* <img src={Reacts} alt="" className='relative top-[-370px] left-[1100px]' /> */}
       </div>
@@ -1765,7 +1766,7 @@ export default function Home() {
         </h1>
 
         <p
-          className="max-w-[736px] w-full min-h-[72px] text-lg font-semibold leading-[200%] text-center
+          className="max-w-[880px] w-full min-h-[72px] text-[28px] font-medium leading-[150%] text-center
              max-[440px]:w-[400px] max-[440px]:h-[40px] max-[440px]:text-[14px]
              max-[440px]:leading-[140%] max-[440px]:font-[400] max-[440px]:text-center max-[440px]:mx-auto"
         >
@@ -1854,14 +1855,6 @@ export default function Home() {
 
 
       </section>
-
-      {/* {section:11} */}
-
-      <ImageSlider />
-
-      {/* Section: Community Showcase */}
-
-      {/* {section-12} */}
       <section
         className="w-full min-h-[200px] py-10 px-4 bg-[#007B8212] flex flex-col md:flex-row justify-center items-center flex-wrap gap-6
              max-[440px]:flex-col max-[440px]:w-[440px] max-[440px]:h-auto max-[440px]:py-[20px] max-[440px]:px-[20px] max-[440px]:gap-[20px]"
@@ -1894,15 +1887,24 @@ export default function Home() {
         </Link>
       </section>
 
+      {/* {section:11} */}
+
+      <ImageSlider />
+
+      {/* Section: Community Showcase */}
+
+      {/* {section-12} */}
+      
+
       {/* {section-13} */}
-      <section className="w-full py-16 px-4 flex flex-col justify-center items-center mt-20 max-[440px]:hidden">
+      {/* <section className="w-full py-16 px-4 flex flex-col justify-center items-center mt-20 max-[440px]:hidden">
         <h2 className="text-[48px] md:text-5xl font-semibold text-center text-gray-800 leading-[140%]">
           Discover Our <span className="text-[#007B82]">Advanced AI Interior Tools</span> and Redesign
         </h2>
         <h2 className="text-[48px] md:text-5xl font-semibold text-center text-black mt-3">
           Your Space Instantly
         </h2>
-      </section>
+      </section> */}
 
 
       {/* {section-14} */}

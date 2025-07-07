@@ -1,5 +1,6 @@
-import React from "react";
-import { Link } from "react-router-dom";
+
+import { React, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import SideArrow from "../../assets/pricing-pg/sideArrow.png";
 import Tik from "../../assets/pricing-pg/tik.png";
 import Rarrow from "../../assets/pricing-pg/Rarrow.png";
@@ -7,17 +8,41 @@ import Paper from "../../assets/pricing-pg/paper.png";
 import LArrow from "../../assets/pricing-pg/Larrow.png";
 
 export default function AfterConformationPage() {
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (sessionStorage.getItem("scrollToTopOnLoad") === "true") {
+            setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                sessionStorage.removeItem("scrollToTopOnLoad");
+            }, 50); // Give browser time to restore scroll first
+        }
+    }, []);
+
+    const handleBackToUiPlans = () => {
+        // Set flag to indicate we want to scroll to afteruiplans
+        sessionStorage.setItem("scrollToAfterUiPlans", "true");
+
+        // Disable browser's automatic scroll restoration
+        if (window.history && window.history.scrollRestoration) {
+            window.history.scrollRestoration = 'manual';
+        }
+
+        navigate(-1);
+    };
+
     return (
         <div>
             <section
                 className="w-full h-[736px] p-[50px] flex flex-col justify-start items-start] bg-cover bg-center bg-no-repeat"
                 style={{ backgroundImage: 'url("/PricingPg/CPage.png")' }}
             >
-                <Link to="/AfterHeroPricing#afteruiplans">
-                    <div className="w-[52px] h-[52px] rounded-[48px] px-[17px] py-[8px] bg-[#FFFFFF1A] flex justify-center items-center fill-[#007B82] text-[#007B82]">
-                        <img src={LArrow} alt="" />
-                    </div>
-                </Link>
+
+                <div className="w-[52px] h-[52px] rounded-[48px] px-[17px] py-[8px] bg-[#FFFFFF1A] flex justify-center items-center fill-[#007B82] text-[#007B82]"
+                    onClick={handleBackToUiPlans}
+                >
+                    <img src={LArrow} alt="" />
+                </div>
+
 
                 <div className="w-full h-[600px] flex  justify-center items-center gap-[52px]">
                     <div className="w-[497px] h-[374px] flex flex-col justify-start items-start gap-[52px]">
@@ -141,8 +166,13 @@ export default function AfterConformationPage() {
                 </div>
 
                 <Link to="/AfterBilling">
-                    {" "}
-                    <div className="text-white w-[590px] h-[62px] rounded-[8px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] flex justify-center items-center font-semibold text-[20px] text-center ml-[150px]">
+                    <div
+                        className="text-white w-[590px] h-[62px] rounded-[8px] flex justify-center items-center font-semibold text-[20px] text-center ml-[150px]"
+                        style={{
+                            backgroundImage:
+                                "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+                        }}
+                    >
                         Confirm Payment
                     </div>
                 </Link>

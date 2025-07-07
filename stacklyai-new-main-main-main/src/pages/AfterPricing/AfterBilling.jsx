@@ -312,6 +312,14 @@ import axios from "axios";
 
 export default function AfterBilling() {
   const navigate = useNavigate();
+  const handleGoBackToPreviousPageAndScrollTop = () => {
+  sessionStorage.setItem("scrollToTopOnLoad", "true");
+
+  // delay slightly to let sessionStorage persist
+  setTimeout(() => {
+    navigate(-1);
+  }, 10); // 10ms is enough
+};
 
   // Form state
   const [formData, setFormData] = useState({
@@ -405,14 +413,16 @@ export default function AfterBilling() {
       >
         <div className="w-[1280px] min-h-[720px] rounded-[16px] border-[1px] border-solid border-[#E8EBF1] drop-shadow-[0_0_12px_0] shadow-[#E3EBFB80] bg-blur-[100px] blur-[100px] backdrop-blur-[20px] flex flex-col justify-start items-start px-[50px] py-[30px]">
           <div className="w-full min-h-[50px] flex justify-start">
-            <Link to="/AfterUiPlans">
-              <div className="w-[70px] flex justify-center items-center">
-                <img src={SideArrow} alt="Arrow" className="w-[24px] h-[24px]" />
-                <div className="font-medium text-[20px] leading-[156%] text-[#2A2A2A]">
-                  Back
-                </div>
+            <div
+              className="w-[70px] flex justify-center items-center cursor-pointer"
+              // onClick={() => navigate(-1)} // Go back to previous page
+               onClick={handleGoBackToPreviousPageAndScrollTop}
+            >
+              <img src={SideArrow} alt="Arrow" className="w-[24px] h-[24px]" />
+              <div className="font-medium text-[20px] leading-[156%] text-[#2A2A2A]">
+                Back
               </div>
-            </Link>
+            </div>
           </div>
 
           <div className="w-[1160px] h-[636px] flex flex-col justify-start items-start gap-[16px]">

@@ -124,7 +124,11 @@ export default function AfterHeroApi() {
           onClick={() => {
             document.getElementById('connect-form')?.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="w-[306px] h-[45px] mt-8 rounded-[6px] border-[1px] border-solid border-transparent bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white font-semibold text-[18px] leading-[100%]"
+          className="w-[306px] h-[45px] mt-8 rounded-[6px] border-[1px] border-solid border-transparent text-white font-semibold text-[18px] leading-[100%]"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+          }}
         >
           Let’s Connect!
         </button>
@@ -296,7 +300,11 @@ export default function AfterHeroApi() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-[465px] h-[45px] bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white py-2 rounded hover:opacity-90 transition"
+                  className="w-[465px] h-[45px] text-white py-2 rounded hover:opacity-90 transition"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+                  }}
                 >
                   Let's Connect!
                 </button>

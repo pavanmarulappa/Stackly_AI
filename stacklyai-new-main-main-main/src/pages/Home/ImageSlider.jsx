@@ -195,6 +195,7 @@ export default function ImageSlider() {
 
   return (
    <section
+   
   className="w-full min-h-[600px] py-16 px-4 flex flex-col justify-center items-center gap-10
              max-[440px]:w-[440px] max-[440px]:min-h-[447px] 
              max-[440px]:pt-[40px] max-[440px]:pr-[20px] 
@@ -203,13 +204,13 @@ export default function ImageSlider() {
 >
 
      <h2
-  className="text-black text-center text-3xl md:text-4xl font-medium max-w-[900px] leading-snug 
+  className="text-black text-center text-3xl md:text-4xl font-medium max-w-[1000px] leading-relaxed
              max-[440px]:w-[400px] max-[440px]:h-[66px] max-[440px]:text-[16px] 
              max-[440px]:leading-[140%] max-[440px]:font-[400] max-[440px]:text-center"
 >
   Explore our community's creations for{" "}
-  <span className="text-[#007B82] font-[500]">inspiration</span>, then craft your{" "}
-  <span className="text-[#007B82] font-[500]">own project</span> and share amazing
+  <span className="text-[#007B82] font-semibold">inspiration</span>, then craft your{" "}
+  <span className="text-[#007B82] font-semibold">own project</span> and share amazing
   images with the world.
 </h2>
 

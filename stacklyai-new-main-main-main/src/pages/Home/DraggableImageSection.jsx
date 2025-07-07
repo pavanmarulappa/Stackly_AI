@@ -85,8 +85,8 @@
 //         </div>
 //       </div>
 
-      
-      
+
+
 //     </section>
 //   );
 // }
@@ -117,12 +117,24 @@ export default function DraggableImageSection() {
 
 
   return (
-    <section className="w-full bg-[#011213] text-white py-16 px-4 flex flex-col items-center">
+    <section className="w-[full] bg-[#011213] text-white py-16 px-16 flex flex-col items-center">
       {/* Heading - Only shows below 440px */}
-      <div className="text-center mb-16 max-[440px]:block hidden">
+      {/* ✅ Desktop Only (≥ 441px) */}
+      <div className="text-center mb-16 hidden min-[441px]:block">
+        <div className="w-[1007px] h-[112px] mx-auto">
+          <h2 className="font-inter font-normal text-[40px] leading-[56px] tracking-[0%] text-white text-center">
+            Discover Our <span className="text-cyan-400">Advanced AI Interior Tools</span>
+            <br />
+            and Redesign Your Space Instantly
+          </h2>
+        </div>
+      </div>
+
+      {/* ✅ Mobile Only (≤ 440px) */}
+      <div className="text-center mb-8 block max-[440px]:block min-[441px]:hidden">
         <div className="w-[400px] h-[56px] mx-auto">
-          <h2 className="font-inter font-semibold text-[20px] leading-[28px] tracking-[0%] text-white">
-            Discover Our <span className="text-[#007B82]">Advanced AI Interior Tools</span>
+          <h2 className="font-inter font-semibold text-[20px] leading-[28px] tracking-[0%] text-white text-center">
+            Discover Our <span className="text-cyan-400">Advanced AI Interior Tools</span>
             <br />
             and Redesign Your Space Instantly
           </h2>
@@ -135,12 +147,12 @@ export default function DraggableImageSection() {
         {/* Feature 1 */}
         <div className="flex flex-col md:flex-row items-center gap-8 max-[440px]:hidden">
           {/* Text */}
-          <div className="flex-1">
+          <div className="flex-1 w-[500px] h-[236px]">
             <h3 className="text-[34px] font-semibold leading-[140%] mb-4">
               <span className="text-cyan-400">Gorgeous Makeovers</span> and
               Stylish Transformations
             </h3>
-            <p className="leading-[200%] text-[18px] font-medium text-[#f5f5f5]">
+            <p className="w-[500px] leading-[200%] text-[18px] font-medium text-[#f5f5f5]">
               Want to give your home a stunning new look inside and out? Our
               AI-powered makeover feature lets you explore various styles to
               elevate your space. Redesign any interior, exterior, or outdoor
@@ -157,11 +169,11 @@ export default function DraggableImageSection() {
         <div className="flex flex-col md:flex-row items-center gap-8 max-[440px]:hidden">
           {/* Text */}
           <div className="flex-1">
-            <h3 className="text-[34px] font-semibold leading-[140%] mb-4">
+            <h3 className="w-[500px] text-[34px] font-semibold leading-[140%] mb-4">
               <span className="text-cyan-400">Transform Empty Spaces</span> with
               Stylish Furniture
             </h3>
-            <p className="leading-[200%] text-[18px] font-medium text-[#f5f5f5]">
+            <p className="w-[500px] leading-[200%] text-[18px] font-medium text-[#f5f5f5]">
               Curious how your room would look fully furnished? Our AI-powered
               tool fills any room type with furniture and décor. Perfect for
               empty or under-construction spaces—bring your vision to life with
@@ -178,11 +190,11 @@ export default function DraggableImageSection() {
         <div className="flex flex-col md:flex-row items-center gap-8 max-[440px]:hidden">
           {/* Text */}
           <div className="flex-1">
-            <h3 className="text-[34px] font-semibold leading-[140%] mb-4">
+            <h3 className="w-[500px] text-[34px] font-semibold leading-[140%] mb-4">
               Artistic Makeover for{" "}
               <span className="text-cyan-400">Interiors and Exteriors</span>
             </h3>
-            <p className="leading-[200%] text-[18px] font-medium text-[#f5f5f5]">
+            <p className="w-[500px] leading-[200%] text-[18px] font-medium text-[#f5f5f5]">
               Unleash the power of AI with Artistic Makeover. From stylish
               furniture arrangements to a complete exterior refresh, let AI
               transform your space with a fresh, creative vision.
@@ -363,7 +375,13 @@ export default function DraggableImageSection() {
           </div>
           <div className="flex justify-center mt-[20px]">
             <Link to="/sign-in">
-              <button className="w-[400px] h-[45px] bg-[#007B82] rounded-[8px] flex items-center justify-center">
+              <button
+                className="w-[400px] h-[45px] rounded-[8px] flex items-center justify-center"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+                }}
+              >
                 <span className="text-white font-['Inter'] font-bold text-[16px] leading-[35px] tracking-[0%]">
                   Access Now !
                 </span>

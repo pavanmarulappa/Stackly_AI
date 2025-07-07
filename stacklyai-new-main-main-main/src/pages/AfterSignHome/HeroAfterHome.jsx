@@ -73,7 +73,15 @@ export default function HeroAfterHome() {
           </div>
           {/* Button that scrolls down */}
           <div onClick={scrollToForm}>
-            <div className="w-[260px] h-[56px] flex justify-center items-center gap-[74px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] drop-shadow-[0_3px_4px_#2A2A2A29] rounded-[12px] text-white font-medium text-[20px] leading-[35px] text-center cursor-pointer">
+            <div
+              className="w-[260px] h-[56px] flex justify-center items-center gap-[74px] 
+               drop-shadow-[0_3px_4px_#2A2A2A29] rounded-[12px] text-white 
+               font-medium text-[20px] leading-[35px] text-center cursor-pointer"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+              }}
+            >
               Start a New Design
             </div>
           </div>
@@ -212,8 +220,14 @@ export default function HeroAfterHome() {
               </div>
             </div>
             <Link to="">
-              {" "}
-              <div className="w-[406px] h-[60px] flex justify-center items-center gap-[10px] rounded-[5px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] font-medium text-[18px] text-center text-white">
+              <div
+                className="w-[406px] h-[60px] flex justify-center items-center gap-[10px] rounded-[5px] 
+               font-medium text-[18px] text-center text-white"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+                }}
+              >
                 Unlock Unlimited with <span className="text-[Gold]">Gold</span>
               </div>
             </Link>
