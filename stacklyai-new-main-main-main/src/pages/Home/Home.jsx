@@ -913,19 +913,19 @@ export default function Home() {
   const faqs = [
     {
       question: "What is Stackly AI?",
-      answer: "Stackly AI is an intelligent platform..."
+      answer: "Stackly AI is an intelligent platform designed to streamline your tasks using automation and smart tools. It helps enhance productivity by offering tailored solutions based on your needs."
     },
     {
       question: "How does Stackly AI work?",
-      answer: "Stackly AI works by analyzing..."
+      answer: "Stackly AI works by analyzing your input and tasks, then offering automated suggestions, integrations, and tools to make your workflow more efficient and seamless."
     },
     {
       question: "Is Stackly AI free to use?",
-      answer: "Stackly AI offers both free..."
+      answer: "Stackly AI offers both free and premium plans. The free plan includes essential features, while premium plans unlock advanced capabilities and integrations."
     },
     {
       question: "How do I contact Stackly AI?",
-      answer: "You can reach out to Stackly AI..."
+      answer: "You can reach out to Stackly AI by sending an email to support@stackly.ai or by filling out the contact form on our website's Contact Us page. We're here to help with any questions, feedback, or support you may need."
     }
   ]; // <-- Closing bracket for faqs array was missing
 

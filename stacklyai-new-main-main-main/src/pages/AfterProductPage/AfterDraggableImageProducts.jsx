@@ -408,33 +408,37 @@ export default function AfterDraggableImagesProducts() {
       )}
 
       {/* Page Content */}
-      <div className="max-w-[100vw] min-h-[720px] flex flex-col items-center justify-center gap-5 bg-gradient-to-l from-[#007B8214] to-[white]">
-        <h1 className="w-full max-w-[1064px] text-center font-bold text-[70px] leading-[78px] mt-[150px]">
-          <span className="text-[#009A98]">Stackly.AI</span> Interior Designer
-        </h1>
-        <p className="max-w-[1064px] text-[22px] text-center font-[400] text-[#0F0F0F]">
-          You can now effortlessly bring your design dreams to life using the
-          power of AI. Simply take a photo using your camera and watch as our
-          advanced AI algorithms work their magic.
-        </p>
-        <div className="text-[18px] font-semibold text-center text-[#007B82]">
-          Best quality, lightning fast used by homeowners and professionals
+      <div className="w-full min-h-[720px] flex flex-col items-center justify-center gap-5 bg-gradient-to-l from-[#007B8214] to-[white] relative pb-[150px]">
+        {/* Content Container */}
+        <div className="w-full max-w-[1064px] flex flex-col items-center justify-center gap-5 px-4 z-10 mt-[150px]">
+          <h1 className="text-center font-bold text-[70px] leading-[78px]">
+            <span className="text-[#009A98]">Stackly.AI</span> Interior Designer
+          </h1>
+          <p className="text-[22px] text-center font-[400] text-[#0F0F0F]">
+            You can now effortlessly bring your design dreams to life using the
+            power of AI. Simply take a photo using your camera and watch as our
+            advanced AI algorithms work their magic.
+          </p>
+          <div className="text-[18px] font-semibold text-center text-[#007B82]">
+            Best quality, lightning fast used by homeowners and professionals
+          </div>
         </div>
-        <div className="absolute">
-          <img src={Banner} alt="banner1" className="absolute left-[-60px] top-[70px]" />
-          <img src={Banner1} alt="banner2" className="" />
+
+        {/* Banner Images - Absolute positioned */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <img src={Banner} alt="banner1" className="absolute left-0 top-[70px]" />
+          <img src={Banner1} alt="banner2" className="relative" />
         </div>
-        <div className="w-[52.38px] h-[50px] relative top-[-300px] left-[-650px]">
-          <img src={Star} alt="star" />
+
+        {/* Decorative Stars */}
+        <div className="absolute left-0 top-[20%]">
+          <img src={Star} alt="star" className="w-[52.38px] h-[50px] mt-[-30px] ml-[30px]" />
+          <img src={Star} alt="star" className="w-[30px] h-[28.64px] mt-[-20px] ml-[70px]" />
         </div>
-        <div className="w-[30px] h-[28.64px] relative top-[-330px] left-[-630px]">
-          <img src={Star} alt="star" />
-        </div>
-        <div className="w-[52.38px] h-[50px] relative top-[50px] left-[550px]">
-          <img src={Star} alt="star" />
-        </div>
-        <div className="w-[30px] h-[28.64px] relative top-[20px] left-[580px]">
-          <img src={Star} alt="star" />
+
+        <div className="absolute right-0 top-[60%]">
+          <img src={Star} alt="star" className="w-[52.38px] h-[50px] mt-[110px] mr-[50px]" />
+          <img src={Star} alt="star" className="w-[30px] h-[28.64px] mt-[-15px] ml-[-15px]" />
         </div>
       </div>
 

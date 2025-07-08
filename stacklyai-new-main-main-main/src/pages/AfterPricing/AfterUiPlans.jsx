@@ -1426,6 +1426,7 @@ export default function AfterUiPlans() {
   const [showSilverMore, setShowSilverMore] = useState(false);
   const [showGoldMore, setShowGoldMore] = useState(false);
   const [currentPlanIndex, setCurrentPlanIndex] = useState(0);
+  const [copied, setCopied] = useState(false);
 
   const toggleSilverMore = () => setShowSilverMore(!showSilverMore);
   const toggleGoldMore = () => setShowGoldMore(!showGoldMore);
@@ -1459,6 +1460,12 @@ export default function AfterUiPlans() {
       </div>
     </div>
   );
+  const handleCopyCoupon = () => {
+    navigator.clipboard.writeText("STACKLY20").then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000); // Reset copied status after 2s
+    });
+  };
 
   const SilverPlan = ({ mobile = false }) => (
     <div className={`${mobile ? 'w-[340px]' : 'w-full'} rounded-[12px] p-5 bg-gradient-to-b from-[#00B0BA] via-[#FFFFFF1A] to-[#FFFFFF1A] border-[1px] border-solid border-white shadow-[0_2px_12px_#007B8229] flex flex-col gap-6`}>
@@ -1476,8 +1483,16 @@ export default function AfterUiPlans() {
         <div className="bg-[#FFFFFF1A] p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229]">
           <p className="text-xs font-medium">Use code (Get 10%OFF)</p>
           <div className="flex items-center justify-center gap-2 mt-1">
-            <img src={DarkPg} alt="page" className="w-4 h-4" />
-            <span className="font-bold text-lg text-[#00b0ba]">STACKLY10</span>
+            <img
+              src={DarkPg}
+              alt="page"
+              className="w-4 h-4 cursor-pointer"
+              onClick={handleCopyCoupon}
+              title="Click to copy coupon"
+            />
+            <span className="font-bold text-lg text-[#00b0ba]">
+              STACKLY20 {copied && <span className="text-xs text-[#00b0ba] ml-1">(Copied!)</span>}
+            </span>
           </div>
         </div>
         <Link to="/AfterConformationPage">
@@ -1525,8 +1540,16 @@ export default function AfterUiPlans() {
         <div className="bg-[#FFFFFF1A] p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229]">
           <p className="text-xs font-medium">Use code (Get 10%OFF)</p>
           <div className="flex items-center justify-center gap-2 mt-1">
-            <img src={DarkPg} alt="page" className="w-4 h-4" />
-            <span className="font-bold text-lg text-[#00b0ba]">STACKLY20</span>
+            <img
+              src={DarkPg}
+              alt="page"
+              className="w-4 h-4 cursor-pointer"
+              onClick={handleCopyCoupon}
+              title="Click to copy coupon"
+            />
+            <span className="font-bold text-lg text-[#00b0ba]">
+              STACKLY20 {copied && <span className="text-xs text-[#00b0ba] ml-1">(Copied!)</span>}
+            </span>
           </div>
         </div>
         <Link to="/AfterConformationPage1">

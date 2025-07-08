@@ -307,19 +307,17 @@ import SideArrow from "../../assets/pricing-pg/sideArrow.png";
 import Tick from "../../assets/pricing-pg/tick.png";
 import Tick1 from "../../assets/pricing-pg/tick1.png";
 import Paper from "../../assets/pricing-pg/paper.png";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function AfterBilling() {
   const navigate = useNavigate();
   const handleGoBackToPreviousPageAndScrollTop = () => {
-  sessionStorage.setItem("scrollToTopOnLoad", "true");
-
-  // delay slightly to let sessionStorage persist
-  setTimeout(() => {
-    navigate(-1);
-  }, 10); // 10ms is enough
-};
+    sessionStorage.setItem("scrollToTopOnLoad", "true");
+    setTimeout(() => {
+      navigate(-1);
+    }, 10);
+  };
 
   // Form state
   const [formData, setFormData] = useState({
@@ -393,10 +391,8 @@ export default function AfterBilling() {
       });
 
       if (response.data.checkout_url) {
-        //this to localstorage is used for send payment failed mail
         localStorage.setItem("billing_email", formData.email);
         localStorage.setItem("billing_name", formData.full_name);
-
         window.location.href = response.data.checkout_url;
       }
     } catch (error) {
@@ -415,8 +411,7 @@ export default function AfterBilling() {
           <div className="w-full min-h-[50px] flex justify-start">
             <div
               className="w-[70px] flex justify-center items-center cursor-pointer"
-              // onClick={() => navigate(-1)} // Go back to previous page
-               onClick={handleGoBackToPreviousPageAndScrollTop}
+              onClick={handleGoBackToPreviousPageAndScrollTop}
             >
               <img src={SideArrow} alt="Arrow" className="w-[24px] h-[24px]" />
               <div className="font-medium text-[20px] leading-[156%] text-[#2A2A2A]">
@@ -461,13 +456,14 @@ export default function AfterBilling() {
                   Billing Information
                 </div>
 
-                <div className="w-[716px] h-[477px] flex flex-col justify-start items-start gap-[12px]">
+                <form onSubmit={handleContinue} className="w-[716px] h-[477px] flex flex-col justify-start items-start gap-[12px]">
                   {/* Plan Selection */}
                   <div className="w-[716px] h-[42px] flex justify-between items-center gap-[16px]">
                     {["Basic", "Silver", "Gold"].map((plan) => (
                       <div
                         key={plan}
-                        className={`w-[228px] h-[40px] rounded-[8px] border-[1px] border-solid border-[#007B82] bg-[white] flex justify-between items-center px-[16px] py-[10px] cursor-pointer ${formData.plan === plan ? 'bg-[#007B8210]' : ''}`}
+                        className={`w-[228px] h-[40px] rounded-[8px] border-[1px] border-solid border-[#007B82] flex justify-between items-center px-[16px] py-[10px] cursor-pointer ${formData.plan === plan ? 'bg-[#E8F0FE]' : 'bg-white'}`}
+                        required
                         onClick={() => handlePlanSelect(plan)}
                       >
                         <div className="font-[400] text-[14px] leading-[140%] text-[#007B82]">
@@ -476,6 +472,7 @@ export default function AfterBilling() {
                         <input
                           type="radio"
                           className="accent-[#007B82]"
+                          required
                           name="premium"
                           checked={formData.plan === plan}
                           onChange={() => { }}
@@ -489,7 +486,7 @@ export default function AfterBilling() {
                     {["Monthly", "Yearly"].map((duration) => (
                       <div
                         key={duration}
-                        className={`w-[228px] h-[40px] rounded-[8px] border-[1px] border-solid border-[#007B82] bg-[white] flex justify-between items-center px-[16px] py-[10px] cursor-pointer ${formData.duration === duration ? 'bg-[#007B8210]' : ''}`}
+                        className={`w-[228px] h-[40px] rounded-[8px] border-[1px] border-solid border-[#007B82] flex justify-between items-center px-[16px] py-[10px] cursor-pointer ${formData.duration === duration ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                         onClick={() => handleDurationSelect(duration)}
                       >
                         <div className="font-[400] text-[14px] leading-[140%] text-[#007B82]">
@@ -505,14 +502,18 @@ export default function AfterBilling() {
                       </div>
                     ))}
                   </div>
-
                   {/* Form Fields */}
                   <input
                     type="text"
                     name="full_name"
                     value={formData.full_name}
-                    onChange={handleChange}
-                    className="w-[716px] h-[52px] placeholder:text-[#2A2A2A] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] text-[14px] leading-[24px] tracking-[0.3px] font-[400] text-[#2A2A2A] bg-white"
+                    onChange={(e) => {
+                      // Only allow letters and spaces
+                      if (/^[A-Za-z\s]*$/.test(e.target.value)) {
+                        handleChange(e);
+                      }
+                    }}
+                    className={`w-[716px] h-[52px] placeholder:text-[#2A2A2A] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] text-[14px] leading-[24px] tracking-[0.3px] font-[400] text-[#2A2A2A] ${formData.full_name ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                     placeholder="Full Name"
                     required
                   />
@@ -522,9 +523,11 @@ export default function AfterBilling() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-[716px] h-[52px] placeholder:text-[#2A2A2A] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] text-[14px] leading-[24px] tracking-[0.3px] font-[400] text-[#2A2A2A] bg-white"
+                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                    className={`w-[716px] h-[52px] placeholder:text-[#2A2A2A] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] text-[14px] leading-[24px] tracking-[0.3px] font-[400] text-[#2A2A2A] ${formData.email ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                     placeholder="Email"
                     required
+                    title="Please enter a valid email address (e.g., user@example.com)"
                   />
 
                   <div className="w-[716px] h-[52px] flex justify-between items-start gap-[16px]">
@@ -533,7 +536,7 @@ export default function AfterBilling() {
                       name="street_address"
                       value={formData.street_address}
                       onChange={handleChange}
-                      className="w-[228px] placeholder:text-[#2A2A2A] bg-white h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px]"
+                      className={`w-[228px] placeholder:text-[#2A2A2A] h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] ${formData.street_address ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                       placeholder="Address"
                       required
                     />
@@ -541,8 +544,14 @@ export default function AfterBilling() {
                       type="tel"
                       name="phone_number"
                       value={formData.phone_number}
-                      onChange={handleChange}
-                      className="w-[228px] placeholder:text-[#2A2A2A] bg-white h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px]"
+                      onChange={(e) => {
+                        // Only allow numbers and common phone characters
+                        if (/^[0-9+()-]*$/.test(e.target.value)) {
+                          handleChange(e);
+                        }
+                      }}
+                      pattern="[0-9+()-]{10,15}"
+                      className={`w-[228px] placeholder:text-[#2A2A2A] h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] ${formData.phone_number ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                       placeholder="Phone Number"
                       required
                     />
@@ -551,7 +560,7 @@ export default function AfterBilling() {
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
-                      className="w-[228px] placeholder:text-[#2A2A2A] bg-white h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px]"
+                      className={`w-[228px] placeholder:text-[#2A2A2A] h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] ${formData.city ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                       placeholder="City"
                       required
                     />
@@ -563,7 +572,7 @@ export default function AfterBilling() {
                       name="state"
                       value={formData.state}
                       onChange={handleChange}
-                      className="w-[228px] placeholder:text-[#2A2A2A] bg-white h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px]"
+                      className={`w-[228px] placeholder:text-[#2A2A2A] h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] ${formData.state ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                       placeholder="State/Province"
                       required
                     />
@@ -571,19 +580,25 @@ export default function AfterBilling() {
                       type="text"
                       name="pincode"
                       value={formData.pincode}
-                      onChange={handleChange}
-                      className="w-[228px] placeholder:text-[#2A2A2A] bg-white h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px]"
+                      onChange={(e) => {
+                        // Only allow numbers for postal code
+                        if (/^[0-9]*$/.test(e.target.value)) {
+                          handleChange(e);
+                        }
+                      }}
+                      className={`w-[228px] placeholder:text-[#2A2A2A] h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] ${formData.pincode ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                       placeholder="Zip/Postal Code"
                       required
                     />
-                    <div className="w-[228px] bg-white h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] flex justify-between items-center  px-[20px] cursor-pointer">
+                    <div className={`w-[228px] h-[52px] rounded-[12px] border-[1px] border-solid border-[#007B82] flex justify-between items-center px-[20px] cursor-pointer ${formData.country ? 'bg-[#E8F0FE]' : 'bg-white'}`}>
                       <select
                         name="country"
                         value={formData.country}
                         onChange={handleChange}
-                        className="w-[208px] cursor-pointer bg-white"
+                        className="w-[208px] cursor-pointer bg-transparent"
                         required
                       >
+                        <option value="">Select Country</option>
                         <option value="IND">India</option>
                         <option value="USA">United States</option>
                       </select>
@@ -595,17 +610,20 @@ export default function AfterBilling() {
                     name="coupon_code"
                     value={formData.coupon_code}
                     onChange={handleChange}
-                    className="w-[716px] h-[52px] placeholder:text-[#2A2A2A] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] text-[14px] leading-[24px] tracking-[0.3px] font-[400] text-[#2A2A2A] bg-white"
+                    className={`w-[716px] h-[52px] placeholder:text-[#2A2A2A] rounded-[12px] border-[1px] border-solid border-[#007B82] px-[20px] py-[14px] text-[14px] leading-[24px] tracking-[0.3px] font-[400] text-[#2A2A2A] ${formData.coupon_code ? 'bg-[#E8F0FE]' : 'bg-white'}`}
                     placeholder="Enter Coupon Code (optional)"
                   />
 
                   <button
-                    onClick={handleContinue}
-                    className="w-[716px] h-[49px] rounded-[8px] bg-gradient-to-l from-[#00B0BA] via-[black] to-[#007B82] text-[white] text-[16px] text-bold leading-[35px] tracking-[0px] text-center flex justify-center items-center"
+                    type="submit"
+                    className="w-[716px] h-[49px] rounded-[8px] text-white text-[16px] font-bold leading-[35px] tracking-[0px] text-center flex justify-center items-center"
+                    style={{
+                      background: `linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)`,
+                    }}
                   >
                     Continue
                   </button>
-                </div>
+                </form>
               </div>
 
               {/* Right side - Plan Details */}
@@ -677,7 +695,7 @@ export default function AfterBilling() {
                 </div>
                 <div className="w-[50px] h-[50px] rounded-[50px] bg-white absolute top-[480px] right-[450px]"></div>
                 <div className="w-[50px] h-[50px] rounded-[50px] bg-white absolute top-[480px] right-[70px]"></div>
-                <div className="w-[60%] border-[2px] border-dashed border-white absolute top-[505px]"></div>
+                <div className="w-[27%] border-[2px] border-dashed border-white absolute top-[505px] right-[8%]"></div>
               </div>
             </div>
           </div>
