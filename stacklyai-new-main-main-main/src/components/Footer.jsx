@@ -156,7 +156,7 @@ export default function Footer() {
     return null; // Hide on all screen sizes
   }
   return (
-    <footer className="w-full h-auto flex justify-center items-center flex-col mt-20 shadow-lg bg-[rgba(0,123,130,0.04)]">
+    <footer className="w-full h-auto flex justify-center items-center flex-col mt-0 shadow-lg bg-[rgba(0,123,130,0.04)]">
       {/* <div className="w-full h-[2px] border-black bg-[#2a2a2a] rounded-[2px] mb-14"></div> */}
       <div className="max-w-full mx-auto grid lg:grid-cols-4 md:grid-cols-2 lg:mx-20 md:mx-12 sm:mx-10 sm:mx-0 gap-10 mt-10 
   max-[440px]:flex max-[440px]:flex-col max-[440px]:w-[400px] max-[440px]:min-h-[427px] max-[440px]:gap-[24px]">

@@ -213,6 +213,9 @@
 
 import React from "react";
 import Upload from "../../assets/home/upload.png";
+import UploadIcon from "../../assets/home/Vector.png"
+import Group from "../../assets/home/Group.png"
+
 import I from "../../assets/home/i.png";
 import { Link } from "react-router-dom";
 
@@ -220,9 +223,9 @@ export default function BasicForm() {
   return (
     <div>
       <section
-        className="w-full h-[914px] px-[40px] py-[80px] bg-center bg-cover bg-no-repeat flex flex-col justify-center items-center 
-             max-[440px]:h-[580px] max-[440px]:py-[24px] max-[440px]:justify-between"
-        style={{ backgroundImage: 'url(\"/home/BasicForm/Back.png\")' }}
+        className="w-full h-[580px] px-[40px] py-[80px] bg-top bg-cover bg-no-repeat flex flex-col justify-center items-center 
+             max-[440px]:h-[649px] max-[440px]:w-[440px] max-[440px]:py-[24px]  max-[440px]:bg-[length:100%_100%] max-[440px]:bg-no-repeat max-[440px]:bg-top max-[440px]:justify-between"
+        style={{ backgroundImage: 'url("/home/BasicForm/Back.png")' }}
       >
 
 
@@ -232,7 +235,7 @@ export default function BasicForm() {
         >
 
 
-          <div className="w-[984px] h-[278.33px] flex flex-col justify-start items-center gap-[32px]">
+          <div className="w-[984px] h-[278.33px] max-[440px]:mt-[40px] flex flex-col justify-start items-center gap-[15px]">
             <img
               src={Upload}
               alt="upload"
@@ -244,24 +247,25 @@ export default function BasicForm() {
              max-[440px]:w-[400px] max-[440px]:h-auto max-[440px]:gap-[32px]"
             >
 
-              <div className="w-[100%] h-[39px] font-[400] text-[32px] text-center text-white
+              <div className="w-[100%] h-[39px] font-[400] text-[24px] text-center text-white
                 max-[440px]:w-[400px] max-[440px]:h-[22px]
                 max-[440px]:text-[18px] max-[440px]:leading-[100%]
                 max-[440px]:font-inter max-[440px]:text-center">
                 Upload an image
               </div>
 
-              <div className="w-[100%] h-[29px] font-[400] text-[24px] text-center text-white
+              <div className="w-[100%] h-[29px] font-[400] text-[18px] text-center text-white
                 max-[440px]:w-[400px] max-[440px]:h-[17px]
                 max-[440px]:text-[14px] max-[440px]:leading-[100%]
                 max-[440px]:font-inter max-[440px]:text-center">
                 Drag & drop or click to upload your image.
               </div>
 
-              <div className="w-[100%] h-[29px] font-[400] text-center text-[24px] text-white
+              <div className="w-[100%] h-[29px] mt-[-20px] mb-7 font-[400] text-center text-[16px] text-white
                 max-[440px]:w-[400px] max-[440px]:h-[34px]
                 max-[440px]:text-[14px] max-[440px]:leading-[100%]
-                max-[440px]:font-inter max-[440px]:text-center">
+                max-[440px]:font-inter max-[440px]:text-center"
+                style={{ color: "rgba(255, 255, 255, 0.6)" }}>
                 Allowed formats: PNG, JPEG, JPG (Max size: 25MB)
               </div>
 
@@ -272,29 +276,47 @@ export default function BasicForm() {
 
               <Link to="/Sign-in">
                 <div
-                  className="w-[542px] h-[79px] rounded-[8px] px-[12px] py-[20px] flex justify-center items-center gap-[10px]
-      text-white text-center font-semibold text-[32px]
-      max-[440px]:w-[248px] max-[440px]:h-[42px] max-[440px]:text-[18px] max-[440px]:leading-[42px] max-[440px]:px-[0] max-[440px]:py-[0] max-[440px]:rounded-[8px]"
-                  style={{backgroundImage:
-                    "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
-                }}
+                  className="w-[490px] h-[52px] rounded-[8px] px-[12px] py-[20px] flex justify-center items-center gap-[10px]
+    text-white text-center font-semibold text-[18px]
+    max-[440px]:w-[248px] max-[440px]:h-[42px] max-[440px]:text-[18px] max-[440px]:leading-[42px] 
+    max-[440px]:px-[0] max-[440px]:py-[0] max-[440px]:rounded-[8px]"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+                  }}
                 >
+                  <img
+                    src={UploadIcon}
+                    alt="upload"
+                    className="w-[24px] h-[24px] object-contain
+      max-[440px]:w-[18px] max-[440px]:h-[18px]"
+                  />
                   Upload image
                 </div>
               </Link>
             </div>
 
-            <div className="w-full h-[20px] font-[400] text-[16px] text-center text-white
-  max-[440px]:flex max-[440px]:flex-row max-[440px]:w-[400px] max-[440px]:h-auto
-  max-[440px]:px-[12px] max-[440px]:gap-[8px] max-[440px]:justify-center max-[440px]:items-center">
+            <div className="w-full h-auto text-[16px] mt-[30px] text-white text-center font-[400]
+  flex justify-center items-center px-4
+  max-[440px]:w-full max-[440px]:px-[16px] max-[440px]:py-[8px] max-[440px]:text-[14px] max-[440px]:leading-[20px]">
 
-              <p className="max-[440px]:w-[331px] max-[440px]:h-[51px] max-[440px]:text-[14px] max-[440px]:leading-[14px] max-[440px]:font-[400] max-[440px]:text-center">
-                Our AI may not preserve watermarks on uploaded images. For best
-                results, we recommend using images without watermarks
+              <p className="flex items-center justify-center gap-[8px] flex-nowrap text-center max-[440px]:max-w-[331px] max-[440px]:text-left max-[440px]:items-start">
+                <img
+                  src={Group}
+                  alt="upload"
+                  className="w-[24px] h-[24px] object-contain max-[440px]:w-[20px] max-[440px]:h-[20px] max-[440px]:mt-[2px]"
+                />
+                <span
+                  className="text-left max-[440px]:text-[14px] max-[440px]:leading-[20px] max-[440px]:whitespace-normal"
+                  style={{ color: "rgba(255, 255, 255, 0.6)" }}
+                >
+                  Our AI may not preserve watermarks on uploaded images. For best results, we recommend using images without watermarks.
+                </span>
               </p>
             </div>
 
-            <div className="hidden max-[440px]:flex w-[143px] h-[36px] rounded-[8px] border-[1.5px] border-solid border-[#007B82] px-[10px] py-[8px] justify-center items-center gap-[10px]">
+            <div className="flex w-[143px] h-[36px] rounded-[8px] border-[1.5px] border-solid border-[#007B82] px-[10px] py-[8px] justify-center items-center gap-[10px]
+  max-[440px]:w-[143px] max-[440px]:h-[36px] max-[440px]:px-[10px] max-[440px]:py-[8px]">
               <img src={I} alt="info" />
               <div className="font-medium text-[16px] text-center text-white">
                 Photo guide

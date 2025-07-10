@@ -128,8 +128,8 @@
 // }
 import React from "react";
 import { CheckCircle2 } from "lucide-react";
-import Banner1 from "../../assets/pricing-pg/banner1.png";
-import Banner2 from "../../assets/pricing-pg/banner2.png";
+import Banner1 from "../../assets/pricing-pg/Collagephoto1.png";
+import Banner2 from "../../assets/pricing-pg/Collagephoto.png";
 import CreditStats from "./CreditStats";
 import Graph from "./Graph";
 import PricingTable from "./PricingTable";
@@ -161,7 +161,7 @@ export default function HeroPricing() {
       {/* section-1  */}
 
       <section
-        className="relative w-full h-[600px] md:h-[700px] flex items-center justify-center bg-black overflow-hidden
+        className="relative w-full h-[400px] md:h-[400px] flex items-center justify-center bg-[#000000] overflow-hidden
              max-[440px]:flex max-[440px]:flex-col
              max-[440px]:w-[440px] max-[440px]:h-[300px]
              max-[440px]:pt-[60px] max-[440px]:pr-[40px] max-[440px]:pb-[60px] max-[440px]:pl-[40px]"
@@ -191,7 +191,7 @@ export default function HeroPricing() {
              max-[440px]:gap-[28px]"
         >
           <h2
-            className="text-[50px] font-bold leading-[100%] text-center
+            className="text-[32px] font-medium leading-[100%] text-center
    max-[440px]:w-[336px] max-[440px]:h-[46px]
    max-[440px]:text-[20px] max-[440px]:leading-[100%]
    max-[440px]:font-['Inter'] max-[440px]:font-bold max-[440px]:text-center
@@ -201,7 +201,7 @@ export default function HeroPricing() {
           </h2>
 
           <p
-            className="mt-8 text-[22px] max-w-[937px] mx-auto text-white font-medium text-center
+            className="mt-8 text-[20px] max-w-[937px] mx-auto text-white font-medium text-center
              max-[440px]:w-[336px] max-[440px]:h-[60px]
              max-[440px]:text-[14px] max-[440px]:leading-[140%]
              max-[440px]:font-['Inter'] max-[440px]:font-medium max-[440px]:text-center"

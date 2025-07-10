@@ -363,15 +363,16 @@ export default function Header() {
 
   // ✅ Hide header for small screens on specific pages
   if (isSmallScreen && isHiddenPage) {
-  return null;
-}
+    return null;
+  }
 
   return (
     <div>
-    <header className="w-full h-[70px] sm:h-[90px] bg-white flex justify-between items-center backdrop-blur-[6px] xl:px-20 xl:py-[25px] md:p-[20px] p-[15px] relative z-10 gap-0 shadow-sm">
-
-       <img
-          className="cursor-pointer max-[400px]:w-[50%]"
+      <header
+        className="w-full h-[90px] sm:h-[90px] flex justify-between items-center backdrop-blur-[6px] xl:px-20 xl:py-[25px] md:p-[20px] p-[15px] relative z-10 gap-0 shadow-sm bg-[rgba(0,176,186,0.08)]"
+      >
+        <img
+          className="w-[137px] h-[40px] cursor-pointer max-[400px]:w-[50%]"
           onClick={() => {
             navigate("/");
           }}
@@ -382,58 +383,39 @@ export default function Header() {
         {![].includes(endpoint) && (
           <nav>
             <ul
-              className={`hidden gap-12 md:gap-8 min-[900px]:flex`}
-              style={{ listStyle: "none" }}
+              className="hidden min-[900px]:flex  justify-between"
+              style={{
+                width: "657px",
+                height: "46px",
+                gap: "12px",
+                opacity: 1,
+                listStyle: "none",
+              }}
             >
-              <li>
-                <NavLink
-                  className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82] NavLink visited:font-bold"
-                  to="/"
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/products"
-                  onClick={() => {
-                    setShowSideBar(false);
-                  }}
-                  className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82]"
-                >
-                  Products
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82] NavLink visited:font-bold"
-                  to="/pricing"
-                  onClick={() => {
-                    setShowSideBar(false);
-                  }}
-                >
-                  Pricing
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  onClick={() => {
-                    setShowSideBar(false);
-                  }}
-                  className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82] NavLink visited:font-bold"
-                  to="/api"
-                >
-                  API
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  className="text-[20px] font-bold text-[#2a2a2a] cursor-pointer no-underline leading-[100%] hover:text-[#007b82] NavLink visited:font-bold"
-                  to="/contact"
-                >
-                  Contact Us
-                </NavLink>
-              </li>
+              {[
+                { to: "/", label: "Home" },
+                { to: "/products", label: "Products" },
+                { to: "/pricing", label: "Pricing" },
+                { to: "/api", label: "API" },
+                { to: "/contact", label: "Contact Us" },
+              ].map(({ to, label }) => (
+                <li key={label}>
+                  <NavLink
+                    to={to}
+                    onClick={() => setShowSideBar(false)}
+                    className={({ isActive }) =>
+                      `flex items-center justify-center no-underline font-bold text-[18px] leading-[100%] 
+              w-[124px] h-[46px] px-[8px] py-[12px] rounded-[40px] transition-all duration-200 
+              ${isActive
+                        ? "text-white bg-[#007B82]"
+                        : "text-[#007B82]"
+                      }`
+                    }
+                  >
+                    {label}
+                  </NavLink>
+                </li>
+              ))}
             </ul>
           </nav>
         )}
@@ -491,7 +473,6 @@ export default function Header() {
                   </filter>
                 </defs>
               </svg>
-
               <svg
                 className="group-hover:rotate-180 transition-all"
                 xmlns="http://www.w3.org/2000/svg"
@@ -531,16 +512,16 @@ export default function Header() {
               </div>
             </div>
           ) : (
-            <div className="min-[900px]:flex hidden  gap-[24px]">
+            <div className="w-[265px] h-[42px] min-[900px]:flex hidden gap-[24px]">
               <NavLink
                 to={"/sign-in"}
-                className="w-[107px] h-[39px] text-[20px] font-semibold leading-[100%] border bg-white text-[#007b82] cursor-pointer flex justify-center items-center no-underline rounded-[5px] border-solid border-[#007b82]  active:bg-[#007b82] active:text-white"
+                className="w-[113px] h-[42px] text-[18px] font-semibold leading-[100%] border-[1px] text-[#007b82] cursor-pointer flex justify-center items-center no-underline rounded-[5px] border-solid border-[#007b82]  active:bg-[#007b82] active:text-white"
               >
                 Log In
               </NavLink>
               <NavLink
                 to={"/sign-up"}
-                className="w-[107px] h-[39px] text-[20px] font-semibold leading-[100%] border bg-[#007b82] text-white cursor-pointer flex justify-center items-center no-underline rounded-[5px] border-solid border-white active:bg-white active:text-[white] focus:text-white"
+                className="w-[113px] h-[42px] text-[18px] font-semibold leading-[100%] border-[1px] bg-[#007b82] text-white cursor-pointer flex justify-center items-center no-underline rounded-[5px] border-solid border-white active:bg-white active:text-[white] focus:text-white"
               >
                 <div className="text-[white]">Sign Up</div>
               </NavLink>
