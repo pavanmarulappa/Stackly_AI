@@ -13,6 +13,14 @@
   src: url("./assets/fonts/Inter_18pt-Light.ttf");
 }
 
+@font-face {
+  font-family: 'Aptos Serif';
+  src: url('/path/to/aptos-serif.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
 a.active{
   color: #007b82;
 }

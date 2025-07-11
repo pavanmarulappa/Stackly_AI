@@ -288,9 +288,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DragSize from "./../../assets/product-pg/dragsize.png";
-import Search from "./../../assets/product-pg/search.png";
-import Input from "./../../assets/product-pg/input.png";
-import Download from "./../../assets/product-pg/download.png";
+import Search from "./../../assets/product-pg/icons_search.png";
+import Input from "./../../assets/product-pg/icons_input.png";
+import Download from "./../../assets/product-pg/icons_download.png";
 
 import dragImg1_1 from "../../assets/home/draggableImgSection/drag1(1).png";
 import dragImg1_2 from "../../assets/home/draggableImgSection/drag1(2).png";
@@ -308,15 +308,15 @@ export default function DraggableImagesProducts() {
 
   const [selectedArea, setSelectedArea] = useState("");
 
-const handleAreaChange = (e) => {
-  const value = e.target.value;
-  setSelectedArea(value);
-  if (value) {
-    navigate("/sign-in", { 
-      state: { selectedArea: value } 
-    });
-  }
-};
+  const handleAreaChange = (e) => {
+    const value = e.target.value;
+    setSelectedArea(value);
+    if (value) {
+      navigate("/sign-in", {
+        state: { selectedArea: value }
+      });
+    }
+  };
 
   const navigate = useNavigate();
   const [fullscreenImage, setFullscreenImage] = useState(null);
@@ -364,14 +364,14 @@ const handleAreaChange = (e) => {
 
   const RoomCard = ({ roomName, originalImage, transformedImage, roomKey }) => (
     <div className="max-w-[522px] m-auto w-full h-auto sm:min-h-auto flex flex-col gap-2 max-[440px]:w-[188px] max-[440px]:h-[188.02px] max-[440px]:gap-[7.51px]">
-       <div className="max-w-[520px] min-h-[35px] flex justify-between max-[440px]:w-[188px] max-[440px]:h-[20px] max-[440px]:justify-between">
-          <div className="text-[24px] font-semibold leading-[35px] spacing-[8px] text-center text-[#2A2A2A] max-[440px]:w-[81px] max-[440px]:h-[13px] max-[440px]:font-[400] max-[440px]:text-[14px] max-[440px]:leading-[12.23px] max-[440px]:tracking-[0] max-[440px]:text-center">
+      <div className="max-w-[520px] min-h-[35px] flex justify-between max-[440px]:w-[188px] max-[440px]:h-[20px] max-[440px]:justify-between">
+        <div className="text-[18px] font-semibold leading-[35px] spacing-[8px] text-center text-[#2A2A2A] max-[440px]:w-[91px] max-[440px]:h-[13px] max-[440px]:mt-3 max-[440px]:font-[400] max-[440px]:text-[14px] max-[440px]:leading-[12.23px] max-[440px]:tracking-[0] max-[440px]:text-center">
           {roomName}
         </div>
-       <div
-  className="w-[28px] h-[28px] max-[440px]:w-[19.99px] max-[440px]:h-[19.99px] max-[440px]:top-[0px] cursor-pointer hover:opacity-80"
-  onClick={() => handleFullscreenn(transformedImage)}
->
+        <div
+          className="w-[21px] h-[21px] max-[440px]:w-[19.99px] max-[440px]:h-[19.99px] max-[440px]:top-[0px] cursor-pointer hover:opacity-80"
+          onClick={() => handleFullscreenn(transformedImage)}
+        >
           <Link to="/Sign-in">
             {" "}
             <img src={DragSize} alt="Fullscreen" title="View fullscreen" />
@@ -386,21 +386,26 @@ const handleAreaChange = (e) => {
       </div>
       <div className="max-w-[520px] min-h-[57px] flex justify-between items-center max-[440px]:w-[188px] max-[440px]:h-[45px]">
 
-       <div
-  className="max-w-[40px] min-h-[57px] flex flex-col justify-center items-center cursor-pointer hover:opacity-80
+        <div
+          className="max-w-[40px] min-h-[57px] flex flex-col justify-center items-center cursor-pointer hover:opacity-80
              max-[440px]:w-[38px] max-[440px]:h-[45px] max-[440px]:gap-[4px]"
-  onClick={() => toggleOriginalImagee(roomKey, originalImage)}
->
+          onClick={() => toggleOriginalImagee(roomKey, originalImage)}
+        >
           <Link to="/Sign-in">
-         <img 
-  src={Search} 
-  alt="Toggle original" 
-  title="View original image"
-  className="max-[440px]:w-[24px] max-[440px]:h-[24px] max-[440px]:rounded-[30px] max-[440px]:border max-[440px]:border-[0.47px] max-[440px]:p-[4px]"
-/>
-            {" "}
-            <div className="max-w-[40px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]
-             max-[440px]:w-[38px] max-[440px]:h-[17px]">
+            <div
+              className="w-[38px] h-[38px] rounded-[44.65px] bg-[#00B0BA14] border-[1.12px] border-[#007B82] flex items-center justify-center
+                 max-[440px]:w-[24px] max-[440px]:h-[24px] max-[440px]:rounded-[30px] max-[440px]:border max-[440px]:border-[#007B82]"
+            >
+              <img
+                src={Search}
+                alt="Toggle original"
+                title="View original image"
+                className="w-[38px] h-[38px] object-contain"
+              />
+            </div>
+
+            <div className="mt-3 max-w-[40px] min-h-[17px] text-[14px] leading-[140%] text-center font-[400] text-[#2A2A2A]
+                    max-[440px]:w-[38px] max-[440px]:h-[17px] max-[440px]:text-[12px]">
               Show
             </div>
           </Link>
@@ -411,48 +416,56 @@ const handleAreaChange = (e) => {
           onClick={() => handleInputRedirectt(roomName, originalImage)}
         >
           <Link to="/Sign-in">
-            <img
-              src={Input}
-              alt="Input"
-              title="Go to input form"
-              className="max-[440px]:w-[24px] max-[440px]:h-[24px] max-[440px]:rounded-[30px] max-[440px]:border max-[440px]:border-[0.47px] max-[440px]:p-[4px]"
-            />
-            {" "}
+            {/* ✅ WRAP image in styled div */}
             <div
-              className="max-w-[40px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]
-             max-[440px]:w-[34px] max-[440px]:h-[17px] max-[440px]:text-[12px] max-[440px]:leading-[140%] max-[440px]:font-[400] max-[440px]:text-center max-[440px]:font-['Inter']"
+              className="w-[38px] h-[38px] rounded-[45px] bg-[#00B0BA14] border-[1.12px] border-[#007B82] flex items-center justify-center
+             max-[440px]:w-[24px] max-[440px]:h-[24px] max-[440px]:rounded-[30px] max-[440px]:border max-[440px]:border-[#007B82] max-[440px]:p-[4px]"
+            >
+              <img
+                src={Input}
+                alt="Input"
+                title="Go to input form"
+                className="w-[38px] h-[38px] object-contain"
+              />
+            </div>
+
+            <div
+              className="mt-3 max-w-[40px] min-h-[17px] text-[14px] leading-[140%] text-center font-[400] text-[#2A2A2A]
+                 max-[440px]:w-[34px] max-[440px]:h-[17px] max-[440px]:text-[12px] max-[440px]:font-[400] 
+                 max-[440px]:text-center max-[440px]:font-['Inter']"
             >
               Input
             </div>
-
           </Link>
         </div>
-       <div
-          className="max-w-[40px] min-h-[57px] flex flex-col justify-center items-center cursor-pointer hover:opacity-80
-             max-[440px]:flex-col max-[440px]:w-[67px] max-[440px]:h-[45px] max-[440px]:gap-[4px]"
-          onClick={() => handleDownloadd(transformedImage)}
-        >
 
-          <Link to="/sign-in">
-          <img
-  src={Download}
-  alt="Download"
-  title="Download image"
-  className="max-[440px]:flex max-[440px]:flex-row max-[440px]:w-[24px] max-[440px]:h-[24px] 
-             max-[440px]:rounded-[30px] max-[440px]:border max-[440px]:border-[0.47px] 
-             max-[440px]:p-[4px]"
-/>
-
-           <div
-  className="max-w-[57px] min-h-[17px] text-[12px] leading-[140%] text-center font-[400] text-[#2A2A2A]
-             max-[440px]:w-[67px] max-[440px]:h-[17px] max-[440px]:text-[12px] max-[440px]:leading-[140%]
-             max-[440px]:font-[400] max-[440px]:text-center max-[440px]:font-['Inter']"
+        <div
+  className="max-w-[40px] min-h-[57px] flex flex-col justify-center items-center cursor-pointer hover:opacity-80
+             max-[440px]:w-[67px] max-[440px]:h-[45px] max-[440px]:gap-[4px]"
+  onClick={() => handleDownloadd(transformedImage)}
 >
-  Download
+  <Link to="/sign-in" className="flex flex-col items-center justify-center gap-[4px]">
+    <div
+      className="w-[38px] h-[38px] rounded-full bg-[#00B0BA14] border border-[#007B82] flex items-center justify-center
+        max-[440px]:w-[24px] max-[440px]:h-[24px] max-[440px]:rounded-[30px] max-[440px]:border max-[440px]:p-[4px]"
+    >
+      <img
+        src={Download}
+        alt="Download"
+        title="Download image"
+        className="w-[36px] h-[36px] object-contain"
+      />
+    </div>
+
+    <div
+      className="mt-1 text-[14px] text-[#2A2A2A] text-center font-[400]
+        max-[440px]:text-[12px] max-[440px]:leading-[140%] max-[440px]:w-[67px] max-[440px]:font-['Inter']"
+    >
+      Download
+    </div>
+  </Link>
 </div>
 
-          </Link>
-        </div>
       </div>
     </div>
   );
@@ -491,7 +504,7 @@ const handleAreaChange = (e) => {
               className="absolute top-4 right-4 text-white text-2xl bg-black bg-opacity-50 rounded-full w-10 h-10 flex items-center justify-center"
               onClick={() => setPopupImagee(null)}
             >
-              ×
+              
             </button>
             <div className="absolute bottom-4 left-0 right-0 text-center text-white text-lg">
               Original Image - Click outside to close
@@ -501,35 +514,32 @@ const handleAreaChange = (e) => {
       )}
 
       {/* DraggableImages Section */}
-      <div className="mt-[30px]">
-        <div className="max-w-[100vw] h-auto
+      <div className="mt-[20px]">
+        <div className="w-[1440px] h-[994px]
   max-[440px]:flex max-[440px]:flex-col 
   max-[440px]:w-[440px] max-[440px]:h-[643.38px] 
   max-[440px]:pt-[2px] max-[440px]:pr-[20px] 
   max-[440px]:pb-[40px] max-[440px]:pl-[20px] 
-  max-[440px]:gap-[32px]">
+  max-[440px]:gap-[22px]">
 
-       <div className="w-full min-h-[158px] flex flex-col justify-center items-center gap-[24px]
+          <div className="w-full min-h-[158px] flex flex-col justify-center items-center gap-[0px]
   max-[440px]:w-[400px] max-[440px]:h-[76px] max-[440px]:flex-col max-[440px]:gap-[0px]">
 
-            <div className="w-[1026px] min-h-[78px] font-bold text-[48px] leading-[78px] text-center font-inter 
+            <div className="w-[1026px] min-h-[78px] font-bold text-[32px] leading-[78px] text-center font-inter 
   max-[440px]:w-[400px] max-[440px]:h-[30px] max-[440px]:font-[700] max-[440px]:text-[18px] max-[440px]:leading-[78px] max-[440px]:tracking-[0] max-[440px]:text-center 
-  text-[#001A1C] max-[440px]:bg-gradient-to-r max-[440px]:from-[#001A1C] max-[440px]:to-[#007B82] max-[440px]:bg-clip-text max-[440px]:text-transparent">
-  Spaces That Inspire You
-</div>
+  bg-gradient-to-r from-[#007B82] to-[#001A1C] bg-clip-text text-transparent max-[440px]:bg-gradient-to-r max-[440px]:from-[#001A1C] max-[440px]:to-[#007B82] max-[440px]:bg-clip-text max-[440px]:text-transparent">
+              Spaces That Inspire You
+            </div>
 
 
-            <div className="w-[1026px] min-h-[56px] text-[400] text-[24px] leading-[28px] text-center text-[#000000]
+            <div className="w-[1026px] min-h-[56px] text-[400] text-semibold text-[20px] leading-[28px] text-center text-[#000000]
               max-[440px]:w-[400px] max-[440px]:h-[34px] max-[440px]:font-[400] max-[440px]:text-[12px] max-[440px]:leading-[140%] max-[440px]:tracking-[0] max-[440px]:text-center font-inter">
               Explore handpicked collections for every corner of your home —
               from cozy balconies to focused work zones.
             </div>
           </div>
 
-<div className="grid grid-cols-1 md:grid-cols-3 gap-10 sm:gap-15 mt-10 p-5 sm:p-10 max-[440px]:hidden">
-
-
-
+          <div className="w-[1280px] h-[853px] ml-[30px] grid grid-cols-1 md:grid-cols-3  gap-y-1 gap-10 sm:gap-15 mt-[-20px] p-5 sm:p-10 max-[440px]:hidden">
             <RoomCard
               roomName="Living Room"
               originalImage={dragImg1_1}
@@ -574,69 +584,70 @@ const handleAreaChange = (e) => {
           </div>
 
           {/* MOBILE CARDS */}
-      {/* MOBILE CARDS - HORIZONTAL SCROLL */}
-{/* MOBILE CARDS - 2x2 Grid for screens < md */}
-{/* MOBILE CONTAINER - relative wrapper */}
-<div className="relative w-full px-4 py-4 md:hidden">
+          {/* MOBILE CARDS - HORIZONTAL SCROLL */}
+          {/* MOBILE CARDS - 2x2 Grid for screens < md */}
+          {/* MOBILE CONTAINER - relative wrapper */}
+          <div className="relative w-full px-4 py-4 md:hidden">
 
-  {/* CHOOSE AREA - top right for <441px */}
- <div className="hidden max-[440px]:flex absolute top-[-34px] right-0 z-10">
-  <div className="w-[107px] h-[30px] rounded-[8px] border border-[#007B82] border-solid p-[8px] flex items-center gap-[8px] bg-white">
-     <select
-            value={selectedArea}
-            onChange={handleAreaChange}
-            className="w-full text-[#007B82] cursor-pointer text-[14px] font-medium outline-none bg-transparent"
-          >
-            <option value="" disabled>Choose Area</option>
-            <option value="floor">Floor</option>
-            <option value="office">Office</option>
-            <option value="gym">Gym</option>
-            <option value="balcony">Balcony</option>
-          </select>
-    
-    {/* Custom dropdown arrow */}
-    <svg 
-      className="w-[14px] h-[14px] text-[#007B82] pointer-events-none"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-    >
-      <path 
-        fillRule="evenodd" 
-        d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.936a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z" 
-        clipRule="evenodd" 
-      />
-    </svg>
-  </div>
-</div>
+            {/* CHOOSE AREA - top right for <441px */}
+            <div className="hidden max-[440px]:flex absolute top-[-34px] right-0 z-10">
+              <div className="w-[107px] h-[30px] rounded-[8px] border border-[#007B82] border-solid p-[8px] flex items-center gap-[8px] bg-white">
+                <select
+                  value={selectedArea}
+                  onChange={handleAreaChange}
+                  className="w-full text-[#007B82] cursor-pointer text-[14px] font-medium outline-none bg-transparent"
+                >
+                  <option value="" disabled>Choose Area</option>
+                  <option value="floor">Floor</option>
+                  <option value="office">Office</option>
+                  <option value="gym">Gym</option>
+                  <option value="balcony">Balcony</option>
+                </select>
 
-  {/* 2x2 MOBILE CARD GRID */}
-  <div className="grid grid-cols-2 gap-8 w-full">
-    <RoomCard
-      roomName="Living Room"
-      originalImage={dragImg1_1}
-      transformedImage={dragImg1_2}
-      roomKey="livingRoom"
-    />
-    <RoomCard
-      roomName="Kitchen"
-      originalImage={dragImg2_1}
-      transformedImage={dragImg2_2}
-      roomKey="kitchen"
-    />
-    <RoomCard
-      roomName="Kids Room"
-      originalImage={dragImg3_1}
-      transformedImage={dragImg3_2}
-      roomKey="kidsRoom"
-    />
-    <RoomCard
-      roomName="Dining Room"
-      originalImage={dragImg1_2}
-      transformedImage={dragImg1_1}
-      roomKey="diningRoom"
-    />
-  </div>
-</div>
+                {/* Custom dropdown arrow */}
+                <svg
+                  className="w-[14px] h-[14px] text-[#007B82] pointer-events-none"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.936a.75.75 0 111.08 1.04l-4.24 4.5a.75.75 0 01-1.08 0l-4.24-4.5a.75.75 0 01.02-1.06z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* 2x2 MOBILE CARD GRID */}
+            <div className="grid grid-cols-2 gap-8 w-full">
+              <RoomCard
+                roomName="Living Room"
+                originalImage={dragImg1_1}
+                transformedImage={dragImg1_2}
+                roomKey="livingRoom"
+              />
+              <RoomCard
+                roomName="Kitchen"
+                originalImage={dragImg2_1}
+                transformedImage={dragImg2_2}
+                roomKey="kitchen"
+              />
+              <RoomCard
+                roomName="Dining Room"
+                originalImage={dragImg1_2}
+                transformedImage={dragImg1_1}
+                roomKey="diningRoom"
+              />
+              <RoomCard
+                roomName="Kids Room"
+                originalImage={dragImg3_1}
+                transformedImage={dragImg3_2}
+                roomKey="kidsRoom"
+              />
+              
+            </div>
+          </div>
           <div className="w-[146px] h-[38px] rounded-[8px] border-[1px] border-solid border-[#007B82] px-[12px] py-[8px] flex justify-center items-center gap-[8px] relative top-[-860px] right-[-1350px]">
             <select name="" id="" className="text-[#007B82] cursor-pointer">
               <option value="" disabled>Choose Area</option> // ✅ remove selected

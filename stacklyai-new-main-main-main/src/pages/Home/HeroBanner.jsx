@@ -170,73 +170,76 @@ export default function HeroBanner() {
 
         <div className="w-full h-[600px] flex justify-center items-center px-[5%] gap-[20px]
   max-[1000px]:flex-col max-[1000px]:items-center max-[1000px]:gap-[30px] max-[1000px]:py-[30px]">
-  {/* Left Text Section */}
-  <div
-    className="w-[633px] h-[304px] flex flex-col justify-center gap-10 items-start max-[1000px]:w-full max-[1000px]:items-center"
-    style={{ flexShrink: 0 }}
-  >
-    <h3 className="text-5xl font-semibold leading-[100%] text-white max-[500px]:text-4xl text-left max-[1000px]:text-center">
-      Design Your{" "}
-      <span className="text-[#FFD700]">
-        {["“Interiors”", "“Kitchen”", "“Balcony”", "“Living Room”"][changeText]}
-      </span>
-      <br />
-      Space With AI
-    </h3>
-    <p
-      className="text-[16px] font-medium leading-[150%] text-neutral-100 max-w-[524px] max-[500px]:text-sm max-[1000px]:text-center"
-      style={{ wordSpacing: "3px", fontFamily: "Inter" }}
-    >
-      Easy to Use, Zero Learning, AI Powered Design Tool to generate
-      Your Own Space Photo-like images in 25 Seconds
-    </p>
+          {/* Left Text Section */}
+          <div
+            className="w-[633px] h-[304px] flex flex-col justify-center gap-10 items-start max-[1000px]:w-full max-[1000px]:items-center"
+            style={{ flexShrink: 0 }}
+          >
+            <h3
+              style={{ fontFamily: "'Aptos Serif', serif" }}
+              className="text-5xl font-semibold leading-[100%] text-white max-[4400px]:text-[28px] text-left max-[1000px]:text-center"
+            >
+              Design Your{" "}
+              <span className="text-[#FFD700]">
+                {["“Interiors”", "“Kitchen”", "“Balcony”", "“Living Room”"][changeText]}
+              </span>
+              <br />
+              Space With AI
+            </h3>
+            <p
+              className="text-[16px] font-medium leading-[150%] text-neutral-100 max-w-[524px] max-[500px]:text-sm max-[1000px]:text-center"
+              style={{ wordSpacing: "3px", fontFamily: "Inter" }}
+            >
+              Easy to Use, Zero Learning, AI Powered Design Tool to generate
+              Your Own Space Photo-like images in 25 Seconds
+            </p>
 
-    <div
-      className="w-[440px] h-[46px] flex justify-center items-center text-white shadow-md cursor-pointer rounded-[5px] hover:bg-[#2e9ea4] hover:text-white max-[500px]:w-[305px] max-[500px]:h-[45px]"
-      style={{
-        background: "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
-      }}
-      onClick={() => navigate("/sign-in")}
-    >
-      <div className="flex items-center justify-center gap-2">
-        <p className="text-lg font-bold text-white font-['Inter']">
-          Design Now!
-        </p>
-        <img src={Frame} alt="upload" className="w-[24px] h-[24px] object-contain" />
-      </div>
-    </div>
-  </div>
+            <div
+              className="w-[440px] h-[46px] flex justify-center items-center text-white shadow-md cursor-pointer rounded-[5px] hover:bg-[#2e9ea4] hover:text-white max-[500px]:w-[305px] max-[500px]:h-[45px]"
+              style={{
+                background: "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+              }}
+              onClick={() => navigate("/sign-in")}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <p className="text-lg font-bold text-white font-['Inter']">
+                  Design Now!
+                </p>
+                <img src={Frame} alt="upload" className="w-[24px] h-[24px] object-contain" />
+              </div>
+            </div>
+          </div>
 
-  {/* Right Before/After Image */}
-  <div
-    className="relative w-[552px] h-[330px] overflow-hidden rounded-lg shrink-0 max-[1000px]:w-[90%] max-[1000px]:h-[312px]"
-  >
-    <div
-      className={`absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${showAfterImage ? "opacity-0" : "opacity-100"
-        }`}
-      style={{ backgroundImage: "url('/home/sec1/banner-home.png')" }}
-    >
-      <div className="flex flex-col justify-start items-start gap-[5px] pl-[25px] pt-2.5">
-        <div className="w-[149px] h-[34px] rounded bg-[#00000066] flex justify-center items-center px-2.5 py-1.5">
-          <p className="text-base font-medium text-white z-[1]">ORIGINAL ROOM</p>
+          {/* Right Before/After Image */}
+          <div
+            className="relative w-[552px] h-[330px] overflow-hidden rounded-lg shrink-0 max-[1000px]:w-[90%] max-[1000px]:h-[312px]"
+          >
+            <div
+              className={`absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${showAfterImage ? "opacity-0" : "opacity-100"
+                }`}
+              style={{ backgroundImage: "url('/home/sec1/banner-home.png')" }}
+            >
+              <div className="flex flex-col justify-start items-start gap-[5px] pl-[25px] pt-2.5">
+                <div className="w-[149px] h-[34px] rounded bg-[#00000066] flex justify-center items-center px-2.5 py-1.5">
+                  <p className="text-base font-medium text-white z-[1]">ORIGINAL ROOM</p>
+                </div>
+                <p className="text-sm font-medium text-white z-[1] pl-[5px]">Before</p>
+              </div>
+            </div>
+            <div
+              className={`absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${showAfterImage ? "opacity-100" : "opacity-0"
+                }`}
+              style={{ backgroundImage: "url('/home/sec1/afterImg.png')" }}
+            >
+              <div className="flex flex-col justify-start items-start gap-[5px] pl-[25px] pt-2.5">
+                <div className="w-[149px] h-[34px] rounded bg-[#00000066] flex justify-center items-center px-2.5 py-1.5">
+                  <p className="text-base font-medium text-white z-[1]">STACKLYAI</p>
+                </div>
+                <p className="text-sm font-medium text-white z-[1] pl-[5px]">After</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <p className="text-sm font-medium text-white z-[1] pl-[5px]">Before</p>
-      </div>
-    </div>
-    <div
-      className={`absolute top-0 left-0 w-full h-full bg-cover bg-center bg-no-repeat transition-opacity duration-500 ${showAfterImage ? "opacity-100" : "opacity-0"
-        }`}
-      style={{ backgroundImage: "url('/home/sec1/afterImg.png')" }}
-    >
-      <div className="flex flex-col justify-start items-start gap-[5px] pl-[25px] pt-2.5">
-        <div className="w-[149px] h-[34px] rounded bg-[#00000066] flex justify-center items-center px-2.5 py-1.5">
-          <p className="text-base font-medium text-white z-[1]">STACKLYAI</p>
-        </div>
-        <p className="text-sm font-medium text-white z-[1] pl-[5px]">After</p>
-      </div>
-    </div>
-  </div>
-</div>
       </div>
     </section>
   );

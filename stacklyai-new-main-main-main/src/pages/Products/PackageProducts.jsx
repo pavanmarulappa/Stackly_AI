@@ -165,119 +165,107 @@
 //     </div>
 //   </div>
 // </div>
-      
+
 //       </div>
 
-  
+
 //   );
 // }
 import React from "react";
 import { Link } from "react-router-dom";
-import Frame from "../../assets/home/Frame.png";
-
+import Coins from "../../assets/product-pg/Coins.png";
+import Coin1 from "../../assets/product-pg/Coin1.png";
+import bg from "../../assets/product-pg/bg.png";
 export default function SignUpBanner() {
   return (
     <section
-      className="relative w-full min-h-[612px] flex justify-center items-center px-6 py-16
+      className="relative w-full min-h-[606px] flex justify-center items-center px-6 py-16
         bg-center bg-cover bg-no-repeat
         max-sm:min-h-[330px] max-sm:px-5 max-sm:py-10"
-      style={{ backgroundImage: "url('/home/sec8/Bg.png')" }}
+      style={{ backgroundImage: `url(${bg})` }}
     >
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-[#000000cc] z-0" />
+      {/* Coins - visible on both desktop and mobile */}
+      <img
+        src={Coin1}
+        alt="Coin1"
+        className="absolute top-[466px] left-[1250px] w-[66px] h-[56px] object-contain z-10 max-sm:top-[150px] max-sm:left-[80%] max-sm:w-[40px] max-sm:h-[34px]"
+      />
+      <img
+        src={Coin1}
+        alt="Coin1"
+        className="absolute top-[500px] left-[1220px] w-[66px] h-[43px] object-contain z-10 max-sm:top-[180px] max-sm:left-[75%] max-sm:w-[35px] max-sm:h-[23px]"
+      />
+      <img
+        src={Coin1}
+        alt="Coin1"
+        className="absolute top-[429px] left-[231px] w-[104px] h-[87px] object-contain z-0 max-sm:top-[100px] max-sm:left-[10%] max-sm:w-[60px] max-sm:h-[50px]"
+      />
 
-      {/* Desktop Version */}
+      {/* Desktop Version (unchanged) */}
       <div
-        className="relative z-10 w-full max-w-[836px] h-[264px] flex flex-col justify-center items-center gap-6 px-[30px] py-10 rounded-[20px] max-sm:hidden"
+        className="relative z-10 w-full max-w-[778px] h-[340px] flex flex-col justify-center items-center gap-6 px-[30px] py-10 rounded-[20px] max-sm:hidden"
         style={{
-          background: "rgba(255, 255, 255, 0.12)",
+          background: "linear-gradient(98.48deg, #FCBD18 6.37%, #FBEFD0 50.02%, #FCBD18 93.66%)",
           backdropFilter: "blur(2px)",
           border: "1px solid transparent",
           borderRadius: "20px",
           overflow: "hidden",
         }}
       >
-        {/* Border Gradient */}
-        <div
-          className="absolute inset-0 rounded-[20px] pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(276.41deg, #FFFFFF -0.87%, #999999 97.94%)",
-            padding: "2px",
-            WebkitMask:
-              "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-            WebkitMaskComposite: "xor",
-            maskComposite: "exclude",
-          }}
-        ></div>
-
-        <h1 className="text-[32px] font-semibold leading-[140%] text-center text-white font-inter max-md:text-[28px]">
-          Sign Up Quickly! Get <span className="text-[#00d1dd]">25%</span> Offer
+        <h1 className="w-[530px] h-[100px] text-[36px] font-semibold leading-[140%] text-center text-[#2A2A2A] font-inter max-md:text-[28px]">
+          Step up to <span className="text-[#F3AE00]">GOLD</span> for all Premium Benefits!
         </h1>
-
-        <div className="flex justify-between items-center w-full max-w-[405px] gap-4 max-md:flex-col max-md:gap-3">
-          <p className="text-[#FFFFFF] text-[18px] font-medium leading-[140%] max-md:text-[16px]">
-            <span className="w-[8px] h-[8px] rounded-full bg-[#00B0BA] mr-3 inline-block"></span>
-            30 free outputs
-          </p>
-          <p className="text-[#FFFFFF] text-[18px] font-medium leading-[140%] max-md:text-[16px]">
-            <span className="w-[8px] h-[8px] rounded-full bg-[#00B0BA] mr-3 inline-block"></span>
-            No credit card required
-          </p>
-        </div>
 
         <Link to="/sign-up" className="w-full max-w-[406px]">
           <div
-            className="w-full h-[54px] flex justify-center items-center rounded-xl text-[18px] font-semibold text-[#FFFFFF] max-md:h-[48px] max-md:text-[16px]"
+            className="w-[406px] h-[60px] flex justify-center items-center rounded-xl text-[18px] font-semibold text-[#FFFFFF] max-md:h-[48px] max-md:text-[16px]"
             style={{
-              backgroundImage:
-                "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+              background: "linear-gradient(177.23deg, #FFAB18 -146.36%, #99670E 331.21%)",
             }}
           >
-            <span className="mr-[6px]">Start Free Trial</span>
-            <img
-              src={Frame}
-              alt="upload"
-              className="w-[24px] h-[24px] object-contain"
-            />
+            GET STARTED!
           </div>
         </Link>
+
+        <img
+          src={Coins}
+          alt="Coins"
+          className="absolute bottom-[15px] right-[15px] w-[100px] h-auto object-contain"
+        />
       </div>
 
-      {/* Mobile Version */}
+      {/* Updated Mobile Version - matches desktop styling */}
       <div
-        className="relative z-10 w-full max-w-[371px] min-h-[250px] sm:hidden flex flex-col justify-center items-center gap-3 p-6 rounded-[12px]"
+        className="relative z-10 w-full max-w-[90%] h-[280px] sm:hidden flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-[20px]"
         style={{
-          background: "rgba(0, 0, 0, 0.6)",
+          background: "linear-gradient(98.48deg, #FCBD18 6.37%, #FBEFD0 50.02%, #FCBD18 93.66%)",
           backdropFilter: "blur(2px)",
           border: "1px solid transparent",
           borderRadius: "20px",
+          overflow: "hidden",
         }}
       >
-        <h1 className="text-[18px] font-semibold leading-[140%] text-center text-white font-inter">
-          Sign Up Quickly! Get <span className="text-[#00d1dd]">25%</span> Offer
+        <h1 className="text-[24px] font-semibold leading-[140%] text-center text-[#2A2A2A] font-inter px-4">
+          Step up to <span className="text-[#F3AE00]">GOLD</span> for Premium!
         </h1>
 
-        <ul className="flex flex-col gap-3 w-full items-center">
-          <li className="text-white text-[13px] font-[500] leading-[140%] flex items-center before:content-[''] before:inline-block before:w-[6px] before:h-[6px] before:bg-[#007B82] before:rounded-full before:mr-2">
-            30 free outputs
-          </li>
-          <li className="text-white text-[13px] font-[500] leading-[140%] flex items-center before:content-[''] before:inline-block before:w-[6px] before:h-[6px] before:bg-[#007B82] before:rounded-full before:mr-2">
-            No credit card required
-          </li>
-        </ul>
-
-        <Link to="/sign-up" className="w-full max-w-[258px]">
+        <Link to="/sign-up" className="w-full max-w-[300px]">
           <div
-            className="w-full h-[45px] flex justify-center items-center rounded-[8px] border border-white text-[16px] font-[700] text-white px-5"
+            className="w-full h-[50px] flex justify-center items-center rounded-xl text-[16px] font-semibold text-[#FFFFFF]"
             style={{
-              background:
-                "linear-gradient(to right, #00B0BA 0%, #000000 50%, #007B82 100%)",
+              background: "linear-gradient(177.23deg, #FFAB18 -146.36%, #99670E 331.21%)",
             }}
           >
-            Signup
+            GET STARTED!
           </div>
         </Link>
+
+        {/* Coins in mobile version */}
+        <img
+          src={Coins}
+          alt="Coins"
+          className="absolute bottom-[10px] right-[10px] w-[70px] h-auto object-contain"
+        />
       </div>
     </section>
   );
