@@ -62,13 +62,13 @@ import GraphImage from "../../assets/pricing-pg/Graph.png";
 
 export default function Graph() {
   return (
-    <section className="w-full bg-white px-4 py-16 text-center">
+    <section className="bg-white px-4 py-16 text-center">
       {/* Heading */}
  <div
   className="max-[440px]:flex max-[440px]:flex-col max-[440px]:items-center max-[440px]:justify-center"
 >
   <h2
-    className="text-[52px] leading-[100%] text-center font-semibold
+    className="text-[32px] leading-[100%] text-center font-semibold
                max-[440px]:w-[288px] max-[440px]:h-[24px]
                max-[440px]:text-[20px] max-[440px]:leading-[100%]
                max-[440px]:font-['Inter'] max-[440px]:font-semibold max-[440px]:text-center"
@@ -87,7 +87,7 @@ export default function Graph() {
   </p>
 
   <p
-    className="mt-4 text-[16px] text-center font-[400] leading-[100%] text-[#B0B0B0]
+    className="mt-4 text-[18px] text-center font-[400] leading-[100%] text-[#B0B0B0]
                max-[440px]:w-[288px] max-[440px]:h-[33px]
                max-[440px]:text-[12px] max-[440px]:leading-[140%]
                max-[440px]:font-['Inter'] max-[440px]:font-[400] max-[440px]:text-center"

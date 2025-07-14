@@ -172,12 +172,12 @@ export default function HeroBanner() {
   max-[1000px]:flex-col max-[1000px]:items-center max-[1000px]:gap-[30px] max-[1000px]:py-[30px]">
           {/* Left Text Section */}
           <div
-            className="w-[633px] h-[304px] flex flex-col justify-center gap-10 items-start max-[1000px]:w-full max-[1000px]:items-center"
+            className="w-[633px] h-[304px] text-[48px] flex flex-col justify-center gap-10 items-start max-[1000px]:w-full max-[1000px]:items-center"
             style={{ flexShrink: 0 }}
           >
             <h3
-              style={{ fontFamily: "'Aptos Serif', serif" }}
-              className="text-5xl font-semibold leading-[100%] text-white max-[4400px]:text-[28px] text-left max-[1000px]:text-center"
+              // style={{ fontFamily: "'Aptos Serif', serif" }}
+              className="text-[48px] font-semibold leading-[100%] text-white max-[4400px]:text-[28px] text-left max-[1000px]:text-center"
             >
               Design Your{" "}
               <span className="text-[#FFD700]">

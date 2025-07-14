@@ -171,7 +171,7 @@ export default function HeroPricing() {
   <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
     {/* Banner 1 - Continuous Up and Down Motion */}
     <div
-      className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.25]"
+      className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]"
       style={{
         left: '1%',
         top: '-50%',
@@ -188,7 +188,7 @@ export default function HeroPricing() {
 
     {/* Banner 2 - Continuous Down and Up Motion */}
     <div
-      className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.25]"
+      className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]"
       style={{
         left: '44%',
         top: '-160%',
@@ -270,7 +270,7 @@ export default function HeroPricing() {
       {/* section-4  */}
 
       <section
-        className="bg-[#001E20] text-white text-center py-16 px-4 mb-[120px]
+        className="hidden bg-[#001E20] text-white text-center py-16 px-4 mb-[120px]
              max-[440px]:bg-[#00B0BA14] max-[440px]:flex max-[440px]:flex-col
              max-[440px]:w-[440px] max-[440px]:h-[245px] 
              max-[440px]:pt-[40px] max-[440px]:pr-[20px] max-[440px]:pb-[40px] max-[440px]:pl-[20px]
@@ -468,7 +468,7 @@ export default function HeroPricing() {
 
       {/* section-7  */}
 
-      <PricingFaq />
+      {/* <PricingFaq /> */}
 
       {/* section 8  */}
     </div>
