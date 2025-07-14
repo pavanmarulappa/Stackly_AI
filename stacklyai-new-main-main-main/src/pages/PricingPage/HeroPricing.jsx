@@ -458,18 +458,11 @@ export default function HeroPricing() {
                 </div>
               ))}
             </div>
-
-
-
-
           </div>
         </div>
       </div>
-
-      {/* section-7  */}
-
+      {/* section-7 */}
       {/* <PricingFaq /> */}
-
       {/* section 8  */}
     </div>
   );
