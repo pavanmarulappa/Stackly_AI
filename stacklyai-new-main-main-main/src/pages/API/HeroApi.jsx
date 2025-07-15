@@ -828,7 +828,7 @@ import sec14Img3 from "../../assets/home/sec14/m1.jpg";
 import sec14Img4 from "../../assets/home/sec14/m2.jpg";
 import sec14Img5 from "../../assets/home/sec14/m3.jpg";
 import ApiFaq from './ApiFaq';
-import keyImage from "../../assets/api/key.png";
+import keyImage from "../../assets/api/Group_key.png";
 import { Link } from 'react-router-dom';
 
 
@@ -928,7 +928,7 @@ export default function HeroApi() {
           <img
             src={keyImage}
             alt="API Key Illustration"
-            className="h-full max-h-[387px] w-auto object-contain 
+            className="h-[227px] max-h-[387px] w-auto object-contain 
                      max-[768px]:h-[180px] max-[768px]:mt-[-30px]"
           />
         </div>

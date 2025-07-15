@@ -229,7 +229,7 @@ const CustomAPIPlan = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="w-[648px] min-h-[64px] text-[44px] font-normal leading-[64px] text-center text-white whitespace-nowrap max-[440px]:w-[319px] max-[440px]:h-[42px] max-[440px]:font-bold max-[440px]:text-[20px] max-[440px]:leading-[100%] max-[440px]:mt-[40px]" 
+          className="w-[648px] min-h-[64px] text-[32px] font-normal leading-[64px] text-center text-white whitespace-nowrap max-[440px]:w-[319px] max-[440px]:h-[42px] max-[440px]:font-bold max-[440px]:text-[20px] max-[440px]:leading-[100%] max-[440px]:mt-[40px]" 
           style={{ fontFamily: "Aptos Serif", letterSpacing: "0%" }}
         >
           Why Choose a <span className="text-[#00B0BA]">Custom API Plan?</span>

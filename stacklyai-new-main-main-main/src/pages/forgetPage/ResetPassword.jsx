@@ -117,24 +117,41 @@ export default function ResetPassword() {
   const navigate = useNavigate();
 
   const handleResetPassword = async () => {
-    try {
-      const response = await axios.post(
-        'http://localhost:8000/forget-password/reset-password',
-        {
-          new_password: newPassword,
-          confirm_password: confirmPassword,
-        }
-      );
-      console.log(response.data);
-      navigate('/ResetPopup'); // redirect on success
-    } catch (err) {
-      if (err.response) {
-        setError(err.response.data.detail || 'Failed to reset password');
-      } else {
-        setError('Something went wrong');
+  if (!newPassword || !confirmPassword) {
+    setError("Please fill in both fields");
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      'http://localhost:8000/forget-password/reset-password',
+      {
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+        email: localStorage.getItem("resetEmail"), // include email
       }
+    );
+
+    console.log(response.data);
+
+    // ✅ Clear localStorage after success
+    localStorage.removeItem("resetEmail");
+
+    // ✅ Navigate to popup or success screen
+    navigate('/ResetPopup');
+  } catch (err) {
+    if (err.response) {
+      setError(err.response.data.detail || 'Failed to reset password');
+    } else {
+      setError('Something went wrong');
     }
-  };
+  }
+};
   return (
     <div>
       <section

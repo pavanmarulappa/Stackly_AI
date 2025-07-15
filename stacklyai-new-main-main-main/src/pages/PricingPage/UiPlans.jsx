@@ -1170,7 +1170,7 @@ export default function AfterUiPlans() {
 
   return (
     <section
-      className="w-full py-12 px-4 bg-cover bg-top bg-no-repeat max-[440px]:-mt-[118px]"
+      className="w-full py-12 px-4 bg-cover bg-top bg-no-repeat max-[440px]:-mt-[18px]"
       style={{
         backgroundImage: `url(${BG})`,
       }}

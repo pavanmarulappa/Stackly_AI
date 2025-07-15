@@ -200,7 +200,6 @@ export default function AfterHeroPricing() {
 
         {/* Spacing */}
         <div className="h-8 w-full"></div>
-
         {/* Credit Boxes - 3 in 1 row */}
         <div className="flex flex-wrap justify-center gap-8 w-full max-w-[1440px]">
           {/* Monthly Credits */}

@@ -188,17 +188,17 @@ export default function SignUpBanner() {
       <img
         src={Coin1}
         alt="Coin1"
-        className="absolute top-[466px] left-[1250px] w-[66px] h-[56px] object-contain z-10 max-sm:top-[150px] max-sm:left-[80%] max-sm:w-[40px] max-sm:h-[34px]"
+        className="absolute top-[466px] left-[1250px] w-[66px] h-[56px] object-contain z-10 max-sm:top-[280px] max-sm:left-[90%] max-sm:w-[40px] max-sm:h-[34px]"
       />
       <img
         src={Coin1}
         alt="Coin1"
-        className="absolute top-[500px] left-[1220px] w-[66px] h-[43px] object-contain z-10 max-sm:top-[180px] max-sm:left-[75%] max-sm:w-[35px] max-sm:h-[23px]"
+        className="absolute top-[500px] left-[1220px] w-[66px] h-[43px] object-contain z-10 max-sm:top-[300px] max-sm:left-[85%] max-sm:w-[35px] max-sm:h-[23px]"
       />
       <img
         src={Coin1}
         alt="Coin1"
-        className="absolute top-[429px] left-[231px] w-[104px] h-[87px] object-contain z-0 max-sm:top-[100px] max-sm:left-[10%] max-sm:w-[60px] max-sm:h-[50px]"
+        className="absolute top-[429px] left-[231px] w-[104px] h-[87px] object-contain z-0 max-sm:top-[230px] max-sm:left-[3%] max-sm:w-[60px] max-sm:h-[50px]"
       />
 
       {/* Desktop Version (unchanged) */}
@@ -236,7 +236,7 @@ export default function SignUpBanner() {
 
       {/* Updated Mobile Version - matches desktop styling */}
       <div
-        className="relative z-10 w-full max-w-[90%] h-[280px] sm:hidden flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-[20px]"
+        className="relative z-10 w-full max-w-[90%] h-[180px] sm:hidden flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-[20px]"
         style={{
           background: "linear-gradient(98.48deg, #FCBD18 6.37%, #FBEFD0 50.02%, #FCBD18 93.66%)",
           backdropFilter: "blur(2px)",
@@ -249,9 +249,9 @@ export default function SignUpBanner() {
           Step up to <span className="text-[#F3AE00]">GOLD</span> for Premium!
         </h1>
 
-        <Link to="/sign-up" className="w-full max-w-[300px]">
+        <Link to="/sign-up" className="w-full max-w-[250px]">
           <div
-            className="w-full h-[50px] flex justify-center items-center rounded-xl text-[16px] font-semibold text-[#FFFFFF]"
+            className="w-[250px] h-[40px] flex justify-center items-center rounded-xl text-[16px] font-semibold text-[#FFFFFF]"
             style={{
               background: "linear-gradient(177.23deg, #FFAB18 -146.36%, #99670E 331.21%)",
             }}
@@ -264,7 +264,7 @@ export default function SignUpBanner() {
         <img
           src={Coins}
           alt="Coins"
-          className="absolute bottom-[10px] right-[10px] w-[70px] h-auto object-contain"
+          className="absolute top-[120px] left-[300px] w-[70px] h-auto object-contain"
         />
       </div>
     </section>

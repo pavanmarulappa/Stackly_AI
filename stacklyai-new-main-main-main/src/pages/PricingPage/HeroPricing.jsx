@@ -161,48 +161,47 @@ export default function HeroPricing() {
 
     <div>
       {/* section-1 */}
-<section
-  className="relative w-full h-[400px] md:h-[400px] flex items-center justify-center bg-[#000000] overflow-hidden
+<section className="relative w-full h-[400px] md:h-[400px] flex items-center justify-center bg-[#000000] overflow-hidden
            max-[440px]:flex max-[440px]:flex-col
-           max-[440px]:w-[440px] max-[440px]:h-[300px]
-           max-[440px]:pt-[60px] max-[440px]:pr-[40px] max-[440px]:pb-[60px] max-[440px]:pl-[40px]"
->
+           max-[440px]:h-[300px] max-[440px]:py-[60px] max-[440px]:px-[40px]">
   {/* Animated Background Elements */}
   <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
-    {/* Banner 1 - Continuous Up and Down Motion */}
-    <div
-      className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]"
-      style={{
-        left: '1%',
-        top: '-50%',
-        transformOrigin: 'center center',
-        animation: 'bounceVertical 15s linear infinite'
-      }}
-    >
-      <img
-        src={Banner1}
-        alt="Diagonal Grid 1"
-        className="w-full h-full object-cover"
-      />
-    </div>
-
-    {/* Banner 2 - Continuous Down and Up Motion */}
-    <div
-      className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]"
-      style={{
-        left: '44%',
-        top: '-160%',
-        transformOrigin: 'center center',
-        animation: 'bounceVerticalReverse 15s linear infinite'
-      }}
-    >
-      <img
-        src={Banner2}
-        alt="Diagonal Grid 2"
-        className="w-full h-full object-cover"
-      />
-    </div>
+  {/* Banner 1 - Now using Tailwind for responsive positioning */}
+  <div
+    className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]
+              left-[1%] top-[-50%]
+              max-[440px]:w-[260px] max-[440px]:h-[800px]
+              max-[440px]:left-[-10%] max-[440px]:top-[-60%]"
+    style={{
+      transformOrigin: 'center center',
+      animation: 'bounceVertical 15s linear infinite'
+    }}
+  >
+    <img
+      src={Banner1}
+      alt="Diagonal Grid 1"
+      className="w-full h-full object-cover"
+    />
   </div>
+
+  {/* Banner 2 - Now using Tailwind for responsive positioning */}
+  <div
+    className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]
+              left-[44%] top-[-160%]
+              max-[440px]:w-[260px] max-[440px]:h-[800px]
+              max-[440px]:left-[40%] max-[440px]:top-[-120%]"
+    style={{
+      transformOrigin: 'center center',
+      animation: 'bounceVerticalReverse 15s linear infinite'
+    }}
+  >
+    <img
+      src={Banner2}
+      alt="Diagonal Grid 2"
+      className="w-full h-full object-cover"
+    />
+  </div>
+</div>
 
   {/* Content (unchanged) */}
   <div
@@ -271,6 +270,7 @@ export default function HeroPricing() {
 
       <section
         className="hidden bg-[#001E20] text-white text-center py-16 px-4 mb-[120px]
+            max-[440px]:hidden
              max-[440px]:bg-[#00B0BA14] max-[440px]:flex max-[440px]:flex-col
              max-[440px]:w-[440px] max-[440px]:h-[245px] 
              max-[440px]:pt-[40px] max-[440px]:pr-[20px] max-[440px]:pb-[40px] max-[440px]:pl-[20px]
@@ -282,7 +282,6 @@ export default function HeroPricing() {
           <h2 className="text-[44px] font-semibold leading-[140%] text-center mb-6">
             Ready to Experience the Power?
           </h2>
-
           <Link to="/Sign-in">
             <button
               className="text-white font-bold py-3 px-8 rounded-md text-[20px] transition-all duration-300 
@@ -295,12 +294,10 @@ export default function HeroPricing() {
               Get Started for Free
             </button>
           </Link>
-
           <p className="mt-6 text-[16px] leading-[28px] font-[400] text-[#f5f5f5]">
             No credit card needed. Sign up and explore your free credits today.
           </p>
         </div>
-
         {/* Mobile version: shown only on <441px */}
         <div className="hidden max-[440px]:block">
           <h2
@@ -309,14 +306,12 @@ export default function HeroPricing() {
           >
             There’s a <span className="text-[#007B82]">Plan </span>for Creator
           </h2>
-
           <p
             className="w-[400px] h-[17px] font-['Inter'] font-[400] text-[14px] leading-[100%]
                tracking-[0] text-center text-[#000000] mt-4"
           >
             From casual users to design pros, we’ve got you covered
           </p>
-
           {/* ✅ Center the button below */}
           <div className="flex justify-center mt-6">
             <Link to="/Sign-in">
@@ -334,9 +329,6 @@ export default function HeroPricing() {
             </Link>
           </div>
         </div>
-
-
-
       </section>
 
       {/* section-5  */}
@@ -417,7 +409,7 @@ export default function HeroPricing() {
         </div>
 
         {/* MOBILE */}
-        <div className="[@media(min-width:441px)]:hidden -mt-[40px]">
+        <div className="[@media(min-width:441px)]:hidden mt-[3px]">
 
           <h2 className="w-[400px] h-[28px] text-center font-inter font-bold text-[20px] leading-[140%] mx-auto mb-4">
             <span className="text-[#000000]">Why Go </span>
