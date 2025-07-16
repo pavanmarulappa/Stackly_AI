@@ -1,0 +1,347 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    :root {
+    --bg-color: #f8f9fa;
+    --text-color: #333;
+    --secondary-text-color: #666;
+    --link-color: #007B82;
+    --faq-question-bg: #f8f9fa;
+    --faq-question-hover-bg: #f1f1f1;
+    --faq-answer-bg: white;
+    --border-color: #eee;
+    --box-shadow-color: rgba(0, 0, 0, 0.1);
+    --breadcrumb-color: #666;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+    --bg-color: #121212;
+    --text-color: #fff;
+    --secondary-text-color: #ccc;
+    --link-color: #1e90ff;
+    --faq-question-bg: #1f1f1f;
+    --faq-question-hover-bg: #333;
+    --faq-answer-bg: #1a1a1a;
+    --border-color: #333;
+    --box-shadow-color: rgba(255, 255, 255, 0.05);
+    --breadcrumb-color: #ccc;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.help-center-container {
+     width: 1000px;
+            margin: 50px auto;
+    padding: 30px;
+    background: var(--faq-answer-bg);
+    border-radius: 10px;
+    box-shadow: 0 0 15px var(--box-shadow-color);
+}
+
+.help-title {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+.category-title {
+    margin-top: 40px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.category-icon {
+    margin-right: 10px;
+    color: var(--link-color);
+}
+
+.faq-item {
+    border-bottom: 1px solid var(--border-color);
+    padding: 20px 0;
+}
+
+.faq-question {
+    background: var(--faq-question-bg);
+    padding: 15px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.faq-question:hover {
+    background: var(--faq-question-hover-bg);
+}
+
+.faq-answer {
+    background: var(--faq-answer-bg);
+    padding: 15px 20px;
+    margin-top: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px var(--box-shadow-color);
+    color: var(--text-color);
+}
+
+.faq-answer p {
+    margin: 0;
+}
+
+button#darkModeToggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--link-color);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 999;
+}
+
+button#darkModeToggle:hover {
+    opacity: 0.9;
+}
+
+.breadcrumb {
+    background: none;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-item a {
+    color: var(--breadcrumb-color);
+    text-decoration: none;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--secondary-text-color);
+}
+
+/* Footer styling */
+.footer {
+    margin-top: 50px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--secondary-text-color);
+}
+
+.footer a {
+    color: var(--link-color);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+/* Rotate icon on open */
+.fa-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+.fa-chevron-down.rotated {
+    transform: rotate(180deg);
+}
+
+</style>
+
+<!-- Dark Mode Toggle Button -->
+<button id="darkModeToggle">Toggle Dark Mode</button>
+
+<div class="help-center-container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#">Help Centre</a></li>
+            <li class="breadcrumb-item active" aria-current="page">FAQs</li>
+        </ol>
+    </nav>
+
+    <h1 class="help-title">Frequently Asked Questions</h1>
+
+    <!-- Authentication & User Management -->
+    <h3 class="category-title">
+        <i class="fas fa-user-shield category-icon"></i>
+        Authentication & User Management
+    </h3>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq1">
+            How do I log into the admin panel?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq1" class="collapse faq-answer">
+            Use your registered username and password on the admin login page. If you encounter an invalid login message, verify your credentials.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq2">
+            What should I do if I forget my password?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq2" class="collapse faq-answer">
+            Currently, the system doesn't have a password reset link. Contact an administrator to reset your password manually.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq3">
+            Can I register a new admin user myself?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq3" class="collapse faq-answer">
+            No. New admin users are created via the signup page and verified through an OTP sent to your email.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq4">
+            What is an OTP and how is it used?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq4" class="collapse faq-answer">
+            OTP (One-Time Password) is a randomly generated 6-digit code sent to your email during signup for identity verification.
+        </div>
+    </div>
+
+    <!-- Plans & Subscription Management -->
+    <h3 class="category-title">
+        <i class="fas fa-file-alt category-icon"></i>
+        Plans & Subscription Management
+    </h3>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq5">
+            How do I create a new subscription plan?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq5" class="collapse faq-answer">
+            Go to the Manage Plans page, fill in the required details like name, price, API call limits, validity, and submit.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq6">
+            Can I edit an existing plan?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq6" class="collapse faq-answer">
+            Yes — click the edit option next to a plan in the Manage Plans page, modify the details, and save.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq7">
+            How do I deactivate or activate a plan?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq7" class="collapse faq-answer">
+            Use the Deactivate or Activate button next to each plan to toggle its status.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq8">
+            What happens when a plan expires?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq8" class="collapse faq-answer">
+            Expired plans are automatically marked inactive based on their expiry date but can be reactivated manually.
+        </div>
+    </div>
+
+    <!-- Coupon & Discount Management -->
+    <h3 class="category-title">
+        <i class="fas fa-tag category-icon"></i>
+        Coupon & Discount Management
+    </h3>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq9">
+            How do I create a new coupon code?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq9" class="collapse faq-answer">
+            Go to the Create Coupon page, enter a unique code, discount percentage, valid from and to dates, and submit.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq10">
+            Can I edit or delete an existing coupon?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq10" class="collapse faq-answer">
+            Yes — edit options are available next to each coupon. If a coupon is no longer needed, delete it from the list.
+        </div>
+    </div>
+
+    <!-- API Usage & Credit Management -->
+    <h3 class="category-title">
+        <i class="fas fa-database category-icon"></i>
+        API Usage & Credit Management
+    </h3>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq11">
+            How do I monitor API usage?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq11" class="collapse faq-answer">
+            Navigate to the API Usage page in your admin panel to view API call statistics, usage limits, and credit consumption.
+        </div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question" data-bs-toggle="collapse" data-bs-target="#faq12">
+            Can credits be adjusted manually?
+            <i class="fas fa-chevron-down"></i>
+        </div>
+        <div id="faq12" class="collapse faq-answer">
+            Yes — admins can manually update credit balances for any user under the Credit Management section.
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        &copy; 2025 <a href="#">Stackly</a>. All rights reserved.
+    </div>
+
+</div>
+
+<script>
+    // Dark mode toggle
+    document.getElementById('darkModeToggle').addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+    });
+
+    // Rotate chevron on collapse
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(question => {
+        question.addEventListener('click', () => {
+            const icon = question.querySelector('.fa-chevron-down');
+            icon.classList.toggle('rotated');
+        });
+    });
+</script>
+
+{% endblock %}

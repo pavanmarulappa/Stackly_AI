@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  .profile-container {
+    width: calc(100% - 60px);
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+  margin: 10px;
+  margin-left: 50px;
+  box-sizing: border-box;
+  overflow: hidden;
+  }
+
+  .profile-header {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+  }
+
+  .profile-picture {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #007B82;
+    margin: 0 auto 15px;
+  }
+
+  .edit-profile-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #007B82;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .profile-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+  }
+
+  .profile-subtitle {
+    font-size: 16px;
+    color: #666;
+  }
+
+  form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .form-group {
+    flex: 1 1 45%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-group.full-width {
+    flex: 1 1 100%;
+  }
+
+  .form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #888;
+    margin-bottom: 5px;
+  }
+
+  .form-group input,
+  .form-group textarea {
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  .form-group textarea {
+    resize: vertical;
+  }
+
+  .save-btn {
+    background: #007B82;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+  }
+
+  .social-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f0f8f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #007B82;
+    font-size: 18px;
+    transition: all 0.3s ease;
+  }
+
+  .social-icon:hover {
+    background-color: #007B82;
+    color: white;
+    transform: translateY(-3px);
+  }
+</style>
+
+<div class="profile-container">
+  <div class="profile-header">
+    <button type="button" class="edit-profile-btn" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+      <i class="fas fa-pencil-alt"></i> Edit
+    </button>
+
+    {% if profiles.image %}
+      <img src="{{ profiles.image.url }}" alt="Profile Picture" class="profile-picture">
+    {% else %}
+      <img src="{% static 'assets/img/default-user.png' %}" alt="Default Profile" class="profile-picture">
+    {% endif %}
+
+    <h1 class="profile-title">{{ profiles.name }}</h1>
+    <p class="profile-subtitle">Senior Developer</p>
+  </div>
+
+  <form>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" value="{{ profiles.name }}" readonly>
+    </div>
+
+    <div class="form-group">
+      <label>Mobile Number</label>
+      <input type="text" value="{{ profiles.mobile }}" readonly>
+    </div>
+
+    <div class="form-group">
+      <label>Email ID</label>
+      <input type="email" value="{{ profiles.email }}" readonly>
+    </div>
+
+    <!-- <div class="form-group full-width">
+      <label>Bio</label>
+      <textarea rows="3" readonly>{{ profiles.bio|default:"No bio available" }}</textarea>
+    </div> -->
+  </form>
+
+  <!-- <div class="social-links">
+    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+    <a href="#" class="social-icon"><i class="fas fa-globe"></i></a>
+  </div> -->
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius: 12px;">
+      <div class="modal-header" style="background: #007B82; color: white; border-top-left-radius: 12px; border-top-right-radius: 12px;">
+        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form method="POST" enctype="multipart/form-data" action="{% url 'update_profile' profiles.id %}">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Profile Image</label>
+            <input type="file" name="image" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="name" value="{{ profiles.name }}" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Mobile Number</label>
+            <input type="text" name="mobile" value="{{ profiles.mobile }}" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Email ID</label>
+            <input type="email" name="email" value="{{ profiles.email }}" class="form-control" required>
+          </div>
+          <!-- <div class="form-group">
+            <label>Bio</label>
+            <textarea name="bio" rows="3" class="form-control">{{ profiles.bio }}</textarea>
+          </div> -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn" style="background: #007B82; color: white;">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

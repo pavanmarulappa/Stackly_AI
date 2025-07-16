@@ -174,6 +174,141 @@ AUTHENTICATION_BACKENDS = (
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 """
+###################################################################################
+# from pathlib import Path
+# import os
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'my_project.settings') #profile page 
+# from dotenv import load_dotenv
+
+# # Load environment variables from .env file
+# load_dotenv()
+
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'your-production-domain.com']
+
+# # Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
+# # Secret key (keep it safe)
+# SECRET_KEY = os.getenv("SECRET_KEY")
+
+# # Debug settings (set to False in production)
+# DEBUG = True
+
+# # Application definition
+# INSTALLED_APPS = [
+#     'django.contrib.admin',
+#     'django.contrib.auth',
+#     'django.contrib.contenttypes',
+#     'django.contrib.sessions',
+#     'django.contrib.messages',
+#     'django.contrib.staticfiles',
+#     'appln',
+#     'rest_framework',
+#     'corsheaders',
+#     'social_django',
+#     'stackly_admin'
+# ]
+
+# MIDDLEWARE = [
+#     'django.middleware.security.SecurityMiddleware',
+#     'django.contrib.sessions.middleware.SessionMiddleware',
+#     'django.middleware.common.CommonMiddleware',
+#     'django.middleware.csrf.CsrfViewMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.contrib.messages.middleware.MessageMiddleware',
+#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+#     'corsheaders.middleware.CorsMiddleware',
+# ]
+
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db' 
+
+# CORS_ALLOW_ALL_ORIGINS = True
+
+# ROOT_URLCONF = 'my_project.urls'
+
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'DIRS': [os.path.join(BASE_DIR, 'appln', 'templates')],
+#         'APP_DIRS': True,
+#         'OPTIONS': {
+#             'context_processors': [
+#                 'django.template.context_processors.request',
+#                 'django.contrib.auth.context_processors.auth',
+#                 'django.contrib.messages.context_processors.messages',
+#             ],
+#         },
+#     },
+# ]
+
+# WSGI_APPLICATION = 'my_project.wsgi.application'
+
+# # Database (configure for production)
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# # Password validation
+# AUTH_PASSWORD_VALIDATORS = [
+#     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+#     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+#     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+#     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+# ]
+
+# LANGUAGE_CODE = 'en-us'
+# TIME_ZONE = 'UTC'
+# USE_I18N = True
+# USE_TZ = True
+
+# STATIC_URL = '/static/'
+# MEDIA_URL = '/media/' #used for profile pic
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# # Social Authentication Settings
+# AUTH0_CLIENT_ID = os.getenv("AUTH0_CLIENT_ID")
+# AUTH0_CLIENT_SECRET = os.getenv("AUTH0_CLIENT_SECRET")
+# AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
+# AUTH0_CALLBACK_URL = os.getenv("AUTH0_CALLBACK_URL")
+
+# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("GOOGLE_CLIENT_ID")
+# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+# SOCIAL_AUTH_FACEBOOK_KEY = os.getenv("FACEBOOK_APP_ID")
+# SOCIAL_AUTH_FACEBOOK_SECRET = os.getenv("FACEBOOK_APP_SECRET")
+
+# SOCIAL_AUTH_APPLE_ID = os.getenv("APPLE_CLIENT_ID")
+# SOCIAL_AUTH_APPLE_SECRET = os.getenv("APPLE_CLIENT_SECRET")
+
+# AUTHENTICATION_BACKENDS = (
+#     'social_core.backends.google.GoogleOAuth2',
+#     'social_core.backends.facebook.FacebookOAuth2',
+#     'social_core.backends.apple.AppleID',
+#     'django.contrib.auth.backends.ModelBackend',
+# )
+
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Only needed if you want email setup ready for production later
+
+"""from fastapi_app.config import settings
+
+if not settings.DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'  # Example for Gmail
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_HOST_USER = 'your_email@example.com'   # Will be set in .env later
+    EMAIL_HOST_PASSWORD = 'your_password'      # Will be set in .env later
+    DEFAULT_FROM_EMAIL = 'noreply@example.com'
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'"""
+ 
+ #########################################################################
+ 
 from pathlib import Path
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'my_project.settings') #profile page 
@@ -182,7 +317,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'your-production-domain.com']
+ALLOWED_HOSTS = ['*']
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -201,11 +336,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'appln',
     'rest_framework',
     'corsheaders',
     'social_django',
-    'stackly_admin'
+    'appln',
+    'stackly_admin',
+    'crispy_forms',
+    'crispy_bootstrap5',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -228,7 +366,10 @@ ROOT_URLCONF = 'my_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'appln', 'templates')],
+        'DIRS': [
+        BASE_DIR / 'templates'
+
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -241,6 +382,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'my_project.wsgi.application'
+ASGI_APPLICATION = 'my_project.asgi.application'
 
 # Database (configure for production)
 DATABASES = {
@@ -264,6 +406,10 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/' #used for profile pic
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -285,12 +431,35 @@ SOCIAL_AUTH_APPLE_SECRET = os.getenv("APPLE_CLIENT_SECRET")
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
-    'social_core.backends.apple.AppleID',
+    # 'social_core.backends.apple.AppleIdAuth',
     'django.contrib.auth.backends.ModelBackend',
 )
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+LOGIN_URL = 'admin_login'
+# settings.py
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Default session engine
+SESSION_COOKIE_AGE = 3600  # Set session expiry time (1 hour in seconds)
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keeps session alive after closing the browser
 
+# AUTH_USER_MODEL = 'stackly_admin.Register'
+AUTH_USER_MODEL = 'stackly_admin.CustomUser'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+handler403 = 'stackly_admin.views.permission_denied'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # or your mail server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'sravannaala@gmail.com'
+EMAIL_HOST_PASSWORD = 'ystt qbik esuu srsb' 
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER # use app password for Gmail
 # Only needed if you want email setup ready for production later
 
 """from fastapi_app.config import settings
@@ -306,4 +475,8 @@ if not settings.DEBUG:
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'"""
 
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.ngrok-free.app'
+]
 

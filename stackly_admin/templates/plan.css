@@ -1,0 +1,264 @@
+*{
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   
+}
+
+.stackly{
+    width: 278px;
+    height: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 400;
+    color: #A1A1A1;
+}
+.managePlans{
+    width: 1057px;
+    height: 863px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 40px;
+    margin: 20px;
+}
+.box{
+    width: 1057px;
+    height: 496px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 40px;
+}
+.innerbox{
+    width: 1057px;
+    height: 404px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 40px;
+}
+
+.heading{
+    width: 100%;
+    height: 24px;
+    text-align: start;
+}
+
+.form{
+    width: 1057px;
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 55px;
+}
+.plan{
+    width: 1057px;
+    height: 76px;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    gap: 40px;
+}
+.planname{
+    width: 508.5px;
+    height: 76px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 20px;
+}
+.pname{
+    width: 100%;
+    height: 22px;
+    font-size: 18px;
+    font-weight: 400;
+}
+.star{
+    font-size: 18px;
+    color: red;
+}
+.planInput{
+    width: 100%;
+    height: 34px;
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.apiCalls{
+    width: 100%;
+    height: 78px;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    gap: 40px;
+}
+.api{
+    width: 508.5px;
+    height: 78px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 20px;
+}
+.description{
+    width: 1057px;
+    height: 76px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 5px;
+}
+
+.input{
+    width: 100%;
+    height: 34px;
+
+}
+.btns{
+    width: 1057px;
+    height: 52px;
+    padding: 0 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 19px;
+}
+.submit{
+    width: 240px;
+    height: 52px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: linear-gradient(to left, #007B82, #001A1C );
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 1px 4px 0 #00000033;
+    font-weight: 400;
+    font-size: 18px;
+    color: white;
+}
+.reset{
+    width: 240px;
+    height: 52px;
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: #A1A1A1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 1px 4px 0 #00000033;
+    font-weight: 400;
+    font-size: 18px;
+    color: white;
+}
+
+.plandetials{
+    width: 1057px;
+    height: 327px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 40px;
+}
+
+.table{
+    width: 1057px;
+    height: 263px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    gap: 20px;
+}
+.firstbox{
+    width: 1057px;
+    height: 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.options{
+    width: 50%;
+    height: 36px;
+}
+.box2{
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+.box3{
+    width: 40px;
+    height: 30px;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+}
+.one,.two{
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.search{
+    width: 50%;
+    height: 36px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 0px;
+}
+.se{
+    border-bottom: 1px solid #2a2a2a;
+    width: 100%;
+    height: 36px;
+}
+
+.tablebox{
+    width: 1057px;
+    height: 207px;
+}
+.tabin{
+    width: 20px;
+}
+.tab{
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+}
+.tab>input{
+    width: 15px;
+    height: 20px;
+    background-color: #007B82;
+}
+
+.thead{
+    width: 1057px;
+    height: 58px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    background-color: #007B82;
+    padding: 20px 28px;
+    color: white;
+    text-align: center;
+}
+tr{
+    text-align: center;
+}
+table{
+    border-collapse:collapse ;
+}

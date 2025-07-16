@@ -62,9 +62,9 @@ HEADERS = {
         
 
 # Enums for frontend options
-class BuildingType(str, Enum):
-    COMMERCIAL = "commercial"
-    RESIDENTIAL = "residential"
+# class BuildingType(str, Enum):
+#     COMMERCIAL = "commercial"
+#     RESIDENTIAL = "residential"
 
 class RoomType(str, Enum):
     LIVING_ROOM = "living room"
@@ -100,7 +100,7 @@ class AIStylingStrength(str, Enum):
 
 
 # Style configurations for interior
-STYLE_CONFIGS = {
+"""STYLE_CONFIGS = {
     "classic": {
         "prompt": "Classic {room_type} in a {building_type} with traditional furniture, ornate details, rich fabrics, elegant lighting, {style} style",
         "negative_prompt": "modern, minimalist, industrial, futuristic"
@@ -149,8 +149,57 @@ STYLE_CONFIGS = {
         "prompt": "Japanese zen {room_type} in a {building_type} with tatami mats, shoji screens, minimal decor, peaceful atmosphere, {style} style",
         "negative_prompt": "western, cluttered, bright colors"
     }
+}"""
+STYLE_CONFIGS = {
+    "classic": {
+        "prompt": "Elegant {room_type} with traditional furniture, ornate details, rich fabrics, warm lighting, {style} aesthetic. High-quality materials, symmetrical composition, timeless elegance, sophisticated ambiance, professional interior photography",
+        "negative_prompt": "modern, minimalist, industrial, futuristic, cheap materials, poor lighting, asymmetrical"
+    },
+    "modern": {
+        "prompt": "Sleek {room_type} with clean architectural lines, contemporary furniture, neutral color palette, statement lighting, {style} aesthetic. High contrast, polished surfaces, designer pieces, 8K ultra HD, magazine-worthy interior",
+        "negative_prompt": "traditional, ornate, rustic, vintage, cluttered, outdated decor"
+    },
+    "minimal": {
+        "prompt": "Serene {room_type} with essential furniture only, monochromatic palette, negative space emphasized, {style} aesthetic. Airy atmosphere, perfect proportions, high-end finishes, architectural digest quality, natural light",
+        "negative_prompt": "cluttered, ornate, traditional, heavy furniture, dark colors, busy patterns"
+    },
+    "scandinavian": {
+        "prompt": "Light-filled {room_type} with pale wood tones, functional furniture, cozy textiles, {style} hygge aesthetic. Soft natural light, muted colors, organic shapes, minimalist yet warm, professional staging",
+        "negative_prompt": "ornate, dark colors, heavy furniture, cluttered, industrial"
+    },
+    "contemporary": {
+        "prompt": "Current {room_type} blending modern and traditional elements, curated furniture selection, {style} aesthetic. Mixed textures, balanced composition, designer lighting, high-resolution professional render",
+        "negative_prompt": "dated, mass-produced furniture, poor lighting, mismatched styles"
+    },
+    "industrial": {
+        "prompt": "Urban-chic {room_type} with exposed structural elements, metal accents, raw materials, {style} aesthetic. Open concept, loft-style lighting, high ceilings, professional architectural photography",
+        "negative_prompt": "traditional, floral, rustic, country, delicate, ornate"
+    },
+    "japandi": {
+        "prompt": "Harmonious {room_type} blending Japanese minimalism and Scandinavian functionality, {style} aesthetic. Natural materials, muted palette, handcrafted elements, zen atmosphere, premium interior design",
+        "negative_prompt": "cluttered, ornate, bright colors, western traditional, mass-produced"
+    },
+    "bohemian": {
+        "prompt": "Eclectic {room_type} with layered textiles, global influences, plants, {style} aesthetic. Warm lighting, curated collections, artistic vibe, professionally styled boho-chic interior",
+        "negative_prompt": "minimalist, sterile, modern, monochromatic, cold"
+    },
+    "coastal": {
+        "prompt": "Breezy {room_type} with washed wood finishes, nautical accents, soft blue tones, {style} aesthetic. Sun-drenched, airy curtains, beach-inspired decor, luxury vacation home quality",
+        "negative_prompt": "dark, heavy furniture, urban, industrial, closed-in"
+    },
+    "modern luxury": {
+        "prompt": "Opulent {room_type} with designer furniture, premium materials, custom lighting, {style} aesthetic. High-end finishes, spacious layout, architectural details, 8K professional interior photography",
+        "negative_prompt": "cheap materials, cluttered, outdated, poor lighting, small spaces"
+    },
+    "tropical resort": {
+        "prompt": "Lush {room_type} with natural materials, indoor plants, resort-style luxury, {style} aesthetic. Canopy elements, open-air feeling, vacation ambiance, professional hospitality photography",
+        "negative_prompt": "urban, industrial, minimalist, cold, sterile"
+    },
+    "japanese zen": {
+        "prompt": "Tranquil {room_type} with clean lines, natural materials, minimalist decor, {style} aesthetic. Tatami elements, shoji screens, balanced composition, meditative quality, professional interior design",
+        "negative_prompt": "western, cluttered, bright colors, ornate, heavy furniture"
+    }
 }
-
 
 # Optimized strength configuration
 STRENGTH_CONFIG = {
@@ -246,7 +295,7 @@ async def generate_design_variation(
             
             prompt = style_config["prompt"].format(
                 room_type=design_config["room_type"],
-                building_type=design_config["building_type"],
+                # building_type=design_config["building_type"],
                 style=design_config["style"]
             )
             
@@ -305,7 +354,7 @@ async def generate_design_variation(
 async def generate_design(
     user_id: str = Form(...),
     image: UploadFile = File(...),
-    building_type: str = Form(...),
+    # building_type: str = Form(...),
     room_type: str = Form(...),
     design_style: str = Form(...),
     ai_strength: str = Form("medium"),
@@ -360,7 +409,7 @@ async def generate_design(
             design_config = {
                 "style": design_style.lower(),
                 "room_type": room_type.lower(),
-                "building_type": building_type.lower(),
+                # "building_type": building_type.lower(),
             }
 
             tasks = [
@@ -527,7 +576,7 @@ async def generate_more_designs(
                 config = STYLE_CONFIGS[style]
                 prompt = config["prompt"].format(
                     room_type=type_detail,
-                    building_type="residential",
+                    # building_type="residential",
                     style=style
                 )
                 negative_prompt = config["negative_prompt"]

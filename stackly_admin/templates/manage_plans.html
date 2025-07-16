@@ -1,0 +1,1191 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  /* Reset & Base Styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .managePlans {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    margin-left: 20px;
+    /* Assuming sidebar is 250px + 10px margin */
+  }
+
+  .box,
+  .innerbox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .heading {
+    font-size: 24px;
+    font-weight: 600;
+  }
+
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  /* Plan section flexbox */
+  .plan,
+  .apiCalls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .planname,
+  .api {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .planInput {
+    height: 40px;
+    border: none;
+    border-bottom: 1px solid #2a2a2a;
+    background: transparent;
+    outline: none;
+  }
+
+  /* Description */
+  .description {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* Buttons section */
+  .btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  .submit,
+  .reset {
+    flex: 1 1 180px;
+    max-width: 250px;
+    height: 50px;
+    font-size: 16px;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .submit {
+    background: linear-gradient(to left, #007B82, #001A1C);
+  }
+
+  .reset {
+    background: #A1A1A1;
+  }
+
+  /* Table Styling */
+  #plansTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #plansTable thead {
+    background-color: #007B82;
+    color: #fff;
+  }
+
+  #plansTable th,
+  #plansTable td {
+    padding: 15px;
+    text-align: center;
+  }
+
+  #plansTable tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  table.dataTable thead th {
+    padding-right: 20px !important;
+  }
+
+  table.dataTable thead .sorting:after,
+  table.dataTable thead .sorting_asc:after,
+  table.dataTable thead .sorting_desc:after {
+    margin-left: 10px;
+  }
+
+  body.dark-mode input[type="text"],
+  body.dark-mode input[type="number"],
+  body.dark-mode input[type="date"] {
+    color: #e0e0e0;
+  }
+
+  .dark-mode #plansTable thead {
+    background-color: #004d4d;
+    color: #ccc;
+  }
+
+  .dark-mode #plansTable tbody tr {
+    background-color: #1e1e1e;
+    color: #ddd;
+  }
+
+  .dark-mode #plansTable tbody tr:nth-child(even) {
+    background-color: #2a2a2a;
+  }
+
+  .dark-mode .active-status {
+    color: #4bd637;
+  }
+
+  .dark-mode .expired-status {
+    color: #ff6b6b;
+  }
+
+  .dark-mode .action-icon {
+    background: #004d4d;
+  }
+
+  .dark-mode .action-icon:hover {
+    background: #003333;
+  }
+
+  body.dark-mode .active-status {
+    color: #4fd1c5;
+  }
+
+  body.dark-mode .expired-status {
+    color: #ff6f6f;
+  }
+
+  body.dark-mode .action-icon {
+    background: #004d4d;
+  }
+
+  body.dark-mode .action-icon:hover {
+    background: #003737;
+  }
+
+  .invalid-feedback {
+    display: block;
+    /* Bootstrap will show this only if input is invalid */
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+  }
+
+  /* You can keep your dark-mode colors if needed */
+
+  /* Optionally, mark invalid input border with red */
+  .form-control.is-invalid {
+    border-color: #dc3545;
+    /* Bootstrap red */
+    box-shadow: none;
+  }
+
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+    /* Hide initially */
+  }
+
+  .char-count {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  .was-validated .form-control:invalid~.error-message {
+    display: block;
+  }
+
+  .was-validated .form-control:valid~.error-message {
+    display: none;
+  }
+
+  /* Responsive Breakpoints */
+  @media (max-width: 992px) {
+    .managePlans {
+      margin-left: 0;
+      padding: 15px;
+    }
+  }
+
+  @media (max-width: 768px) {
+
+    .plan,
+    .apiCalls,
+    .btns {
+      flex-direction: column;
+    }
+
+    .planname,
+    .api {
+      flex: 1 1 100%;
+    }
+
+    .submit,
+    .reset {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .heading {
+      font-size: 20px;
+    }
+
+    #plansTable thead {
+      font-size: 14px;
+    }
+
+    #plansTable th,
+    #plansTable td {
+      padding: 8px;
+    }
+
+    .planInput {
+      height: 36px;
+    }
+  }
+
+  .features-section {
+    margin-bottom: 20px;
+  }
+
+  .feature-input {
+    position: relative;
+    margin-bottom: 10px;
+  }
+
+  .remove-feature {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #ff4c4c;
+  }
+
+  .add-feature-btn {
+    background-color: #007B82;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+  }
+
+  .add-feature-btn:hover {
+    background-color: #006266;
+  }
+
+  .features-list {
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .features-list li {
+    margin-bottom: 5px;
+  }
+
+  .default-badge {
+    background-color: #007B82;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-left: 5px;
+  }
+
+  .default-plan-toggle {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-right: 10px;
+  }
+
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+  }
+
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+  }
+
+  input:checked+.slider {
+    background-color: #007B82;
+  }
+
+  input:focus+.slider {
+    box-shadow: 0 0 1px #007B82;
+  }
+
+  input:checked+.slider:before {
+    transform: translateX(26px);
+  }
+
+  .slider.round {
+    border-radius: 24px;
+  }
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  .toggle-label {
+    font-size: 14px;
+    color: #555;
+  }
+
+  .feature-input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+  }
+
+  .feature-input {
+    flex: 1;
+    margin-right: 10px;
+  }
+
+  .feature-checkbox {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+  .feature-checkbox input {
+    margin-right: 5px;
+  }
+
+  .remove-feature-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0 5px;
+  }
+
+  .add-feature-btn {
+    margin-top: 5px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .features-container {
+    margin-bottom: 10px;
+  }
+
+  /* Validation Styles */
+  .is-invalid {
+    border-color: #dc3545;
+  }
+
+  .invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+  }
+
+  /* Modal Styles */
+  .modal-lg {
+    max-width: 800px;
+  }
+
+  .remove-feature-btn {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 0 5px;
+  }
+
+  .add-feature-btn {
+    margin-top: 5px;
+    background: #007B82;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .features-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .feature-checkbox-display {
+    margin-right: 8px;
+    width: 20px;
+    display: inline-block;
+    text-align: center;
+  }
+
+  .checked {
+    color: #28a745;
+  }
+
+  .unchecked {
+    color: #dc3545;
+  }
+
+  .is-invalid {
+    border-color: #dc3545;
+  }
+
+  .text-danger {
+    color: #dc3545;
+  }
+
+  /* Modal Header */
+  .modal-header {
+    background-color: #00b0ba;
+    color: #fff;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .modal-title {
+    font-weight: 600;
+    font-size: 20px;
+  }
+
+  .close {
+    color: #fff;
+    opacity: 1;
+    font-size: 26px;
+    background-color: #00b0ba;
+  }
+
+  /* Modal Body */
+  .modal-body {
+    padding: 20px;
+  }
+
+  /* Form Inputs */
+  .plan-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+  }
+
+  .plan-input:focus {
+    border-color: #00b0ba;
+    outline: none;
+  }
+
+  /* Labels */
+  .field-label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: #333;
+  }
+
+  .star {
+    color: red;
+    margin-left: 2px;
+  }
+
+  /* Features Section */
+  .features-section {
+    margin-top: 20px;
+  }
+
+  .feature-input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .feature-input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .feature-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .feature-checkbox input {
+    margin: 0;
+  }
+
+  .remove-feature-btn {
+    background-color: #ff4c4c;
+    border: none;
+    color: white;
+    font-size: 18px;
+    line-height: 1;
+    padding: 6px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .remove-feature-btn:hover {
+    background-color: #e63939;
+  }
+
+  .add-feature-btn {
+    margin-top: 10px;
+    background-color: #00b0ba;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .add-feature-btn:hover {
+    background-color: #0097a0;
+  }
+
+  /* Modal Footer Buttons */
+  .modal-footer .btn {
+    padding: 8px 16px;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+
+  .modal-footer .btn-primary {
+    background-color: #00b0ba;
+    border-color: #00b0ba;
+  }
+
+  .modal-footer .btn-primary:hover {
+    background-color: #0097a0;
+    border-color: #0097a0;
+  }
+
+  .modal-footer .btn-secondary {
+    background-color: #ccc;
+    border-color: #ccc;
+  }
+
+  .modal-footer .btn-secondary:hover {
+    background-color: #b3b3b3;
+    border-color: #b3b3b3;
+  }
+
+  /* Gradient & Solid Row Styling */
+  .edit-solid-row,
+  .edit-gradient-row {
+    margin-top: 10px;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  textarea.plan-input {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  /* Color Input Styling */
+  input[type="color"].plan-input {
+    padding: 0;
+    height: 38px;
+  }
+
+  /* Optional: Custom Checkmark */
+  .feature-checkbox .checkmark {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-right: 5px;
+  }
+
+  .feature-checkbox input:checked+.checkmark {
+    background-color: #00b0ba;
+    border-color: #00b0ba;
+  }
+</style>
+
+<div class="managePlans">
+  <div class="box">
+    <div class="innerbox">
+      <div class="heading">Manage Plans</div>
+      <form method="POST" id="planForm" novalidate enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form">
+          <!-- Plan Name & Subtitle -->
+          <div class="plan">
+            <div class="planname">
+              <label class="pname">Plan Name<span class="star">*</span></label>
+              <input type="text" id="planName" name="plan_name" placeholder="Enter Plan Name" class="planInput"
+                pattern="[A-Z][a-zA-Z0-9 ]*" required>
+              <div class="error-message" id="planNameError">Plan name must start with a capital letter</div>
+            </div>
+
+          </div>
+
+          <!-- Price & Validity -->
+          <div class="plan">
+            <div class="planname">
+              <label class="pname">Price ($)<span class="star">*</span></label>
+              <input type="number" id="planPrice" name="price" placeholder="0.00" class="planInput" min="0" step="0.01"
+                required>
+              <div class="error-message" id="planPriceError">Valid price required</div>
+            </div>
+
+            <div class="planname">
+              <label class="pname">Validity Days<span class="star">*</span></label>
+              <input type="number" id="validityDays" name="validity_days" placeholder="30" class="planInput" min="1"
+                required>
+              <div class="error-message" id="validityDaysError">Minimum 1 day</div>
+            </div>
+          </div>
+
+          <!-- API Calls & Background -->
+          <div class="plan">
+            <div class="planname">
+              <label class="pname">Max API Calls<span class="star">*</span></label>
+              <input type="number" id="apiCalls" name="max_api_calls" placeholder="1000" class="planInput" min="0"
+                required>
+              <div class="error-message" id="apiCallsError">Positive number required</div>
+            </div>
+          </div>
+
+          <!-- Features Section -->
+          <div class="features-section">
+            <label class="pname">Features<span class="star">*</span></label>
+            <div id="featuresContainer">
+              <div class="feature-input-group">
+                <input type="text" name="feature_text_1" placeholder="Feature description" class="feature-input"
+                  required>
+                <label class="feature-checkbox">
+                  <input type="checkbox" name="feature_status_1" checked>
+                  <span class="checkmark"></span>
+                  Enabled
+                </label>
+                <button type="button" class="remove-feature-btn">×</button>
+              </div>
+            </div>
+            <button type="button" id="addFeatureBtn" class="add-feature-btn">+ Add Feature</button>
+            <div class="error-message" id="featuresError">At least one feature required</div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="btns">
+            <button type="submit" class="submit">Submit</button>
+            <button type="reset" class="reset">Reset</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  
+
+  <!-- Plan Details Table -->
+  <div class="plan-details">
+    <div class="heading">Plan Details</div>
+    <div class="table-responsive">
+      <table id="plansTable" class="plans-table">
+        <thead>
+          <tr>
+            <th>S.no</th>
+            <th>Plan Name</th>
+            <th>Price($)</th>
+            <th>API Calls</th>
+            <th>Validity</th>
+            <th>Features</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for plan in plans %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ plan.name }}</td>
+            <td>${{ plan.price }}</td>
+            <td>{{ plan.max_api_calls }}</td>
+            <td>{{ plan.validity_days }} days</td>
+            <td>
+              <ul class="features-list">
+                {% for feature in plan.features %}
+                <li>
+                  <span class="feature-checkbox-display">
+                    {% if feature.enabled %}
+                    <span class="checked">✓</span>
+                    {% else %}
+                    <span class="unchecked">✗</span>
+                    {% endif %}
+                  </span>
+                  {{ feature.text }}
+                </li>
+                {% endfor %}
+              </ul>
+            </td>
+            <td class="actions">
+              <button class="action-btn edit-btn" data-toggle="modal" data-target="#editModal{{ plan.id }}">
+                <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="28.2941" height="28.2941" rx="14.1471" fill="#007B82" />
+                  <path
+                    d="M16.8696 9.00124L19.4293 11.5609M15.1632 20.9461H21.9889M8.33758 17.5333L7.48438 20.9461L10.8972 20.0929L20.7824 10.2077C21.1023 9.88767 21.2821 9.45372 21.2821 9.00124C21.2821 8.54876 21.1023 8.1148 20.7824 7.7948L20.6357 7.64805C20.3157 7.32815 19.8817 7.14844 19.4293 7.14844C18.9768 7.14844 18.5428 7.32815 18.2228 7.64805L8.33758 17.5333Z"
+                    stroke="white" stroke-width="1.57515" stroke-linecap="round" stroke-linejoin="round" />
+                </svg></i>
+              </button>
+              <button class="action-btn delete-btn" data-toggle="modal" data-target="#deleteModal{{ plan.id }}">
+                <svg width="29" height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="0.294922" y="0.292969" width="28.2941" height="28.2941" rx="14.1471" fill="#007B82" />
+                  <path
+                    d="M7.99034 9.33548L9.85472 20.5968C9.94 21.1123 10.2055 21.5808 10.604 21.9189C11.0025 22.2569 11.508 22.4425 12.0306 22.4426H14.9846M20.8945 9.33548L19.031 20.5968C18.9458 21.1123 18.6802 21.5808 18.2818 21.9189C17.8833 22.2569 17.3777 22.4425 16.8552 22.4426H13.9011M12.6976 13.6616V18.1165M16.1881 13.6616V18.1165M6.28125 9.33548H22.6045M16.8931 9.33548V7.76491C16.8931 7.4139 16.7537 7.07726 16.5055 6.82905C16.2573 6.58085 15.9206 6.44141 15.5696 6.44141H13.3161C12.9651 6.44141 12.6285 6.58085 12.3803 6.82905C12.1321 7.07726 11.9926 7.4139 11.9926 7.76491V9.33548H16.8931Z"
+                    stroke="white" stroke-width="1.32351" stroke-linecap="round" stroke-linejoin="round" />
+                </svg></i>
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- Edit Modal for Each Plan -->
+{% for plan in plans %}
+<div class="modal fade" id="editModal{{ plan.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form id="editPlanForm{{ plan.id }}" method="POST" enctype="multipart/form-data"
+        action="{% url 'edit_plan' plan.id %}">
+        {% csrf_token %}
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Plan - {{ plan.name }}</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body">
+
+          <!-- Plan Name & Subtitle -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Plan Name<span class="star">*</span></label>
+              <input type="text" name="plan_name" value="{{ plan.name }}" class="plan-input" required>
+            </div>
+          </div>
+
+          <!-- Price & Validity -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Price ($)<span class="star">*</span></label>
+              <input type="number" name="price" value="{{ plan.price }}" class="plan-input" min="0" step="0.01"
+                required>
+            </div>
+            <div class="form-group col-md-6">
+              <label>Validity Days<span class="star">*</span></label>
+              <input type="number" name="validity_days" value="{{ plan.validity_days }}" class="plan-input" min="1"
+                required>
+            </div>
+          </div>
+
+          <!-- API Calls & Background Style -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Max API Calls<span class="star">*</span></label>
+              <input type="number" name="max_api_calls" value="{{ plan.max_api_calls }}" class="plan-input" min="0"
+                required>
+            </div>
+          </div>
+
+          <!-- Features Section -->
+          <div class="features-section">
+            <label>Features<span class="star">*</span></label>
+            <div id="editFeaturesContainer{{ plan.id }}">
+  {% for feature in plan.features %}
+      <div class="feature-input-group mb-2">
+        <input type="text" name="feature_text_{{ forloop.counter }}" value="{{ feature.text }}"
+          class="feature-input" required>
+        <label class="feature-checkbox">
+          <input type="checkbox" name="feature_status_{{ forloop.counter }}" {% if feature.enabled %}checked{% endif %}>
+          <span class="checkmark"></span> Enabled
+        </label>
+        <button type="button" class="remove-feature-btn" onclick="this.parentElement.remove()">×</button>
+      </div>
+  {% endfor %}
+</div>
+            <button type="button" class="add-feature-btn"
+              onclick="addEditFeature('editFeaturesContainer{{ plan.id }}')">+ Add Feature</button>
+          </div>
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal{{ plan.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Plan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete this plan?
+      </div>
+      <div class="modal-footer">
+        <form method="POST" action="{% url 'delete_plan' plan.id %}">
+          {% csrf_token %}
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+<!-- Add this JavaScript -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Add feature row to main form
+    document.getElementById('addFeatureBtn').addEventListener('click', function () {
+      const container = document.getElementById('featuresContainer');
+      const featureCount = container.querySelectorAll('.feature-input-group').length + 1;
+
+      const div = document.createElement('div');
+      div.className = 'feature-input-group';
+      div.innerHTML = `
+      <input type="text" name="feature_text_${featureCount}" placeholder="Feature description" class="feature-input" required>
+      <label class="feature-checkbox">
+        <input type="checkbox" name="feature_status_${featureCount}" checked>
+        <span class="checkmark"></span>
+        Enabled
+      </label>
+      <button type="button" class="remove-feature-btn">×</button>
+    `;
+      container.appendChild(div);
+    });
+
+    // Handle form submission
+    document.getElementById('planForm').addEventListener('submit', function (e) {
+      const featureInputs = document.querySelectorAll('#featuresContainer .feature-input');
+      let hasFeatures = false;
+
+      featureInputs.forEach(input => {
+        if (input.value.trim() !== '') {
+          hasFeatures = true;
+        }
+      });
+
+      if (!hasFeatures) {
+        e.preventDefault();
+        document.getElementById('featuresError').style.display = 'block';
+        return false;
+      }
+
+      document.getElementById('featuresError').style.display = 'none';
+      return true;
+    });
+
+    // Handle remove feature buttons
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('remove-feature-btn')) {
+        const container = document.getElementById('featuresContainer');
+        if (container.querySelectorAll('.feature-input-group').length > 1) {
+          e.target.closest('.feature-input-group').remove();
+        } else {
+          alert('At least one feature is required');
+        }
+      }
+    });
+  });
+</script>
+
+
+<!-- Update your JavaScript validation -->
+<script>
+  document.getElementById('planForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    let isValid = true;
+
+    // Plan Name validation (must start with capital letter)
+    const planName = document.getElementById('planName');
+    const planNameError = document.getElementById('planNameError');
+    const namePattern = /^[A-Z][a-zA-Z0-9 ]*$/;
+
+    if (!planName.value.trim() || !namePattern.test(planName.value)) {
+      planNameError.style.display = 'block';
+      planName.classList.add('error-border');
+      isValid = false;
+    } else {
+      planNameError.style.display = 'none';
+      planName.classList.remove('error-border');
+    }
+
+    // Plan Price validation (positive number with 2 decimals)
+    const planPrice = document.getElementById('planPrice');
+    const planPriceError = document.getElementById('planPriceError');
+    const priceValue = parseFloat(planPrice.value);
+
+    if (isNaN(priceValue) || priceValue <= 0 || !/^\d+(\.\d{1,2})?$/.test(planPrice.value)) {
+      planPriceError.style.display = 'block';
+      planPrice.classList.add('error-border');
+      isValid = false;
+    } else {
+      planPriceError.style.display = 'none';
+      planPrice.classList.remove('error-border');
+    }
+
+    // Max API Calls validation (positive integer)
+    const apiCalls = document.getElementById('apiCalls');
+    const apiCallsError = document.getElementById('apiCallsError');
+    const apiValue = parseInt(apiCalls.value);
+
+    if (isNaN(apiValue) || apiValue < 1 || !Number.isInteger(apiValue)) {
+      apiCallsError.style.display = 'block';
+      apiCalls.classList.add('error-border');
+      isValid = false;
+    } else {
+      apiCallsError.style.display = 'none';
+      apiCalls.classList.remove('error-border');
+    }
+
+    // Validity Days validation (positive integer)
+    const validityDays = document.getElementById('validityDays');
+    const validityDaysError = document.getElementById('validityDaysError');
+    const daysValue = parseInt(validityDays.value);
+
+    if (isNaN(daysValue) || daysValue < 1 || !Number.isInteger(daysValue)) {
+      validityDaysError.style.display = 'block';
+      validityDays.classList.add('error-border');
+      isValid = false;
+    } else {
+      validityDaysError.style.display = 'none';
+      validityDays.classList.remove('error-border');
+    }
+
+    // Description validation (max 250 chars)
+    if (isValid) {
+      this.submit();
+    }
+  });
+
+  // Character counter for description
+  const descriptionInput = document.getElementById('planDescription');
+  const charCountDisplay = document.getElementById('charCount');
+
+  descriptionInput.addEventListener('input', () => {
+    const currentLength = descriptionInput.value.length;
+    charCountDisplay.textContent = `${currentLength}/250 characters`;
+
+    // Update error message if needed
+    if (currentLength > 250) {
+      document.getElementById('planDescriptionError').style.display = 'block';
+      descriptionInput.classList.add('error-border');
+    } else {
+      document.getElementById('planDescriptionError').style.display = 'none';
+      descriptionInput.classList.remove('error-border');
+    }
+  });
+
+  // Clear errors on reset
+  document.querySelector('.reset').addEventListener('click', function () {
+    document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.error-border').forEach(el => el.classList.remove('error-border'));
+    charCountDisplay.textContent = '0/250 characters';
+  });
+</script>
+
+
+<!-- For the edit modal, add similar validation -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Background style toggle
+
+    // Feature management
+    const addFeatureBtn = document.getElementById('addFeatureBtn');
+    if (addFeatureBtn) {
+      addFeatureBtn.addEventListener('click', function () {
+        const container = document.getElementById('featuresContainer');
+        const featureCount = container.querySelectorAll('.feature-input-group').length + 1;
+
+        const div = document.createElement('div');
+        div.className = 'feature-input-group';
+        div.innerHTML = `
+        <input type="text" name="feature_text_${featureCount}" placeholder="Feature description" class="feature-input" required>
+        <label class="feature-checkbox">
+          <input type="checkbox" name="feature_status_${featureCount}" checked>
+          <span class="checkmark"></span>
+          Enabled
+        </label>
+        <button type="button" class="remove-feature-btn">×</button>
+      `;
+        container.appendChild(div);
+      });
+    }
+
+    // Remove feature buttons
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('remove-feature-btn')) {
+        const container = e.target.closest('#featuresContainer, [id^="editFeaturesContainer"]');
+        if (container.querySelectorAll('.feature-input-group').length > 1) {
+          e.target.closest('.feature-input-group').remove();
+        } else {
+          alert('At least one feature is required');
+        }
+      }
+    });
+
+    // Character counter
+    const descriptionInput = document.getElementById('planDescription');
+    if (descriptionInput) {
+      descriptionInput.addEventListener('input', function () {
+        document.getElementById('charCount').textContent = this.value.length;
+      });
+    }
+  });
+
+  // Add feature to edit modal
+  function addEditFeature(containerId) {
+    const container = document.getElementById(containerId);
+    const featureCount = container.querySelectorAll('.feature-input-group').length + 1;
+
+    const div = document.createElement('div');
+    div.className = 'feature-input-group';
+    div.innerHTML = `
+    <input type="text" name="feature_text_${featureCount}" placeholder="Feature description" class="feature-input" required>
+    <label class="feature-checkbox">
+      <input type="checkbox" name="feature_status_${featureCount}" checked>
+      <span class="checkmark"></span>
+      Enabled
+    </label>
+    <button type="button" class="remove-feature-btn">×</button>
+  `;
+    container.appendChild(div);
+  }
+
+  // Form validation
+  document.querySelectorAll('#planForm, [id^="editPlanForm"]').forEach(form => {
+    form.addEventListener('submit', function (e) {
+      let isValid = true;
+
+      // Validate required fields
+      const requiredInputs = form.querySelectorAll('input[required], textarea[required]');
+      requiredInputs.forEach(input => {
+        if (!input.value.trim()) {
+          input.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          input.classList.remove('is-invalid');
+        }
+      });
+
+      // Validate features
+      const featureInputs = form.querySelectorAll('.feature-input');
+      let hasFeatures = false;
+      featureInputs.forEach(input => {
+        if (input.value.trim()) {
+          hasFeatures = true;
+        } else {
+          input.classList.add('is-invalid');
+          isValid = false;
+        }
+      });
+
+      if (!hasFeatures) {
+        const featuresError = form.querySelector('#featuresError');
+        if (featuresError) featuresError.style.display = 'block';
+        isValid = false;
+      }
+
+      if (!isValid) {
+        e.preventDefault();
+      }
+    });
+  });
+</script>
+
+{% endblock %}

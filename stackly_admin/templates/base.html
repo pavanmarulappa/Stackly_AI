@@ -1,0 +1,914 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stackly AI</title>
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .dashboard {
+      display: flex;
+      flex-direction: column;
+      min-height: 150vh;
+      background-color: #f8f9fa;
+    }
+
+    .header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 70px;
+      z-index: 1000;
+
+    }
+
+    .under {
+      display: flex;
+      flex: 1;
+      margin-top: 70px;
+      position: relative;
+    }
+
+    .navbar {
+      position: fixed;
+      width: 240px;
+      height: 100%;
+      background-color: #F2F2F2;
+      transition: all 0.3s ease;
+      left: 0;
+      top: 70px;
+      z-index: 99;
+      overflow-y: auto;
+      /* Allow scrolling if content overflows */
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .navbar.collapsed {
+      width: 70px;
+    }
+
+    .navbar-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .menu-items {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+      /* Adjust padding for better spacing */
+    }
+
+    .toggle-sidebar {
+      cursor: pointer;
+      padding: 10px 15px;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+
+    .navbar.collapsed .toggle-sidebar {
+      justify-content: center;
+      padding: 10px;
+      right: 0;
+    }
+
+    .navbar.collapsed .toggle-sidebar svg {
+      transform: rotate(180deg);
+    }
+
+    .Dash {
+      display: flex;
+      align-items: center;
+      padding: 10px 15px;
+      margin: 0 10px;
+      text-decoration: none;
+      color: #333;
+      gap: 15px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .Dash:first-child {
+      margin-top: 20px;
+    }
+
+
+    .Dash:hover {
+      background-color: #007B82;
+      color: white;
+      transform: translateX(2px);
+    }
+
+    .Dash.active {
+      background-color: #007B82;
+      color: white;
+    }
+
+    .Dash:hover img,
+    .Dash.active img {
+      filter: brightness(0) invert(1);
+    }
+
+    .Dash img {
+      width: 22px;
+      height: 22px;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .inName {
+      transition: opacity 0.3s ease, width 0.3s ease;
+      white-space: nowrap;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .navbar.collapsed .inName {
+      opacity: 0;
+      width: 0;
+      overflow: hidden;
+      position: absolute;
+    }
+
+    .dashboard-overview {
+      flex: 1;
+      padding: 25px;
+      margin-left: 200px;
+      /* Adjust margin to match navbar width */
+      transition: margin-left 0.3s ease;
+      min-height: calc(140vh - 70px);
+      background-color: #fff;
+      /* padding: 20px; */
+      overflow: visible;
+    }
+
+    .navbar.collapsed~.dashboard-overview {
+      margin-left: 70px;
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #121212;
+    }
+
+    body.dark-mode .header {
+      background-color: #1e1e1e;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .navbar {
+      background-color: c;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-mode .Dash {
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .Dash:hover,
+    body.dark-mode .Dash.active {
+      background-color: #007B82;
+      color: white;
+    }
+
+    body.dark-mode .dashboard-overview {
+      background-color: #1a1a1a;
+      color: #ffffff;
+    }
+
+    body.dark-mode .bottom {
+      border-top: 1px solid #444;
+    }
+
+    .nav-icons {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      position: relative;
+    }
+
+    .icon-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile_img {
+      width: 65px;
+      height: 65px;
+      border-radius: 100%;
+      overflow: hidden;
+      border: 2px solid #ddd;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile_img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .userDetails {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .userDetails .name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .userDetails .role {
+      font-size: 12px;
+      color: #888;
+    }
+
+    /* Dropdown styles */
+    .profile-dropdown {
+      position: absolute;
+      top: 55px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      display: none;
+      flex-direction: column;
+      min-width: 160px;
+      z-index: 10;
+    }
+
+    .icon-wrapper:hover .profile-dropdown {
+      display: flex;
+    }
+
+    .profile-menu {
+      padding: 10px 0;
+    }
+
+    .profile-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      color: #333;
+      text-decoration: none;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .profile-item i {
+      font-size: 16px;
+      margin-right: 10px;
+      transition: transform 0.3s ease, color 0.3s;
+    }
+
+    .profile-item:hover {
+      background-color: #007B82;
+      color: white;
+      transform: translateX(2px);
+    }
+
+    .profile-item:hover i {
+      transform: scale(1.2) rotate(10deg);
+      color: white;
+    }
+
+    .dropdown {
+      position: absolute;
+      top: 110%;
+      right: 0;
+      min-width: 200px;
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px;
+      display: none;
+      z-index: 200;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .icon-wrapper.show .dropdown {
+      display: block;
+    }
+
+    a {
+      text-decoration: none;
+      color: #121212;
+    }
+
+    .logo a {
+      color: #111;
+      /* default light mode color */
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    .logo a img {
+      height: 45px;
+      width: auto;
+      transition: filter 0.3s ease;
+    }
+
+    body.dark-mode .logo a {
+      color: #fff;
+
+    }
+
+    /* For tablets and smaller desktops */
+    @media (max-width: 991px) {
+      .navbar {
+        width: 200px;
+      }
+
+      .navbar.collapsed {
+        width: 60px;
+      }
+
+      .dashboard-overview {
+        margin-left: 250px;
+      }
+
+      .navbar.collapsed~.dashboard-overview {
+        margin-left: 60px;
+      }
+    }
+
+    /* For mobile screens */
+    @media (max-width: 767px) {
+      .navbar {
+        position: fixed;
+        top: 70px;
+        left: -250px;
+        width: 200px;
+        height: calc(100vh - 70px);
+        transition: all 0.3s ease;
+        z-index: 999;
+      }
+
+      .navbar.show {
+        left: 0;
+      }
+
+      .navbar.collapsed {
+        left: -60px;
+      }
+
+      .under {
+        flex-direction: column;
+      }
+
+      .dashboard-overview {
+        margin-left: 0;
+        padding: 15px;
+      }
+
+      .navbar.collapsed~.dashboard-overview {
+        margin-left: 0;
+      }
+
+      .toggle-sidebar {
+        position: fixed;
+        left: 10px;
+        top: 75px;
+        z-index: 1000;
+        background: #f8f9fa;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .header {
+        height: 60px;
+      }
+
+      .profile_img {
+        width: 50px;
+        height: 50px;
+      }
+
+      .logo a {
+        font-size: 20px;
+      }
+    }
+
+    /* For very small screens */
+    @media (max-width: 480px) {
+      .toggle-sidebar {
+        padding: 8px;
+      }
+
+      .Dash {
+        padding: 8px 12px;
+        gap: 10px;
+      }
+
+      .inName {
+        font-size: 14px;
+      }
+
+      .userDetails .name {
+        font-size: 13px;
+      }
+
+      .userDetails .role {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+    <div class="header">
+      <div class="logo">
+        <a href="{% url 'dashboard' %}">
+          <img id="logo-img" src="{% static '../../static/assets/img/logo-light.png' %}" alt="Logo">
+        </a>
+      </div>
+      <div class="component">
+        <div class="nav-icons">
+          <div class="icon-wrapper search-icon">
+            <!-- <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M24.5002 24.5002L19.4334 19.4334M19.4334 19.4334C20.3001 18.5667 20.9876 17.5378 21.4567 16.4054C21.9257 15.273 22.1671 14.0593 22.1671 12.8336C22.1671 11.6079 21.9257 10.3942 21.4567 9.26177C20.9876 8.12937 20.3001 7.10044 19.4334 6.23374C18.5667 5.36704 17.5378 4.67953 16.4054 4.21048C15.273 3.74142 14.0593 3.5 12.8336 3.5C11.6079 3.5 10.3942 3.74142 9.26177 4.21048C8.12937 4.67953 7.10044 5.36704 6.23374 6.23374C4.48336 7.98412 3.5 10.3582 3.5 12.8336C3.5 15.309 4.48336 17.683 6.23374 19.4334C7.98412 21.1838 10.3582 22.1671 12.8336 22.1671C15.309 22.1671 17.683 21.1838 19.4334 19.4334Z"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg> -->
+            <div class="dropdown search-dropdown">
+              <input type="text" placeholder="Search...">
+              <div class="search-results">
+                <div class="search-item">Recent searches</div>
+                <div class="search-item">User Management</div>
+                <div class="search-item">API Settings</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="icon-wrapper notification-icon">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <mask id="mask0_2833_5053" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="28" height="28">
+            <rect width="28" height="28" fill="#D9D9D9" />
+        </mask>
+        <g mask="url(#mask0_2833_5053)">
+            <path
+                d="M14.0033 25.6654C13.3616 25.6654 12.8123 25.4369 12.3553 24.9799C11.8984 24.523 11.6699 23.9737 11.6699 23.332H16.3366C16.3366 23.9737 16.1081 24.523 15.6512 24.9799C15.1942 25.4369 14.6449 25.6654 14.0033 25.6654ZM4.66992 22.1654V19.832H7.00326V11.6654C7.00326 10.0515 7.48937 8.61745 8.46159 7.36328C9.43381 6.10911 10.6977 5.28759 12.2533 4.8987V4.08203C12.2533 3.59592 12.4234 3.18273 12.7637 2.84245C13.104 2.50217 13.5171 2.33203 14.0033 2.33203C14.4894 2.33203 14.9026 2.50217 15.2428 2.84245C15.5831 3.18273 15.7533 3.59592 15.7533 4.08203V4.4612C15.5394 4.88898 15.3838 5.32648 15.2866 5.7737C15.1894 6.22092 15.1505 6.67787 15.1699 7.14453C14.9755 7.10564 14.7859 7.07161 14.6012 7.04245C14.4165 7.01328 14.2171 6.9987 14.0033 6.9987C12.7199 6.9987 11.6213 7.45564 10.7074 8.36953C9.79353 9.28342 9.33659 10.382 9.33659 11.6654V19.832H18.6699V12.3362C19.0199 12.4918 19.3942 12.6133 19.7928 12.7008C20.1915 12.7883 20.5949 12.832 21.0033 12.832V19.832H23.3366V22.1654H4.66992ZM21.0033 10.4987C20.031 10.4987 19.2046 10.1584 18.5241 9.47787C17.8435 8.79731 17.5033 7.97092 17.5033 6.9987C17.5033 6.02648 17.8435 5.20009 18.5241 4.51953C19.2046 3.83898 20.031 3.4987 21.0033 3.4987C21.9755 3.4987 22.8019 3.83898 23.4824 4.51953C24.163 5.20009 24.5033 6.02648 24.5033 6.9987C24.5033 7.97092 24.163 8.79731 23.4824 9.47787C22.8019 10.1584 21.9755 10.4987 21.0033 10.4987Z"
+                fill="currentColor" />
+        </g>
+    </svg>
+    {% if unread_count > 0 %}
+    <span class="bg-danger dots"></span>
+    {% endif %}
+    <div class="dropdown notification-dropdown">
+        <div class="notification-header">
+            <h4>Notifications</h4>
+            <div class="mark-read" id="mark-all-read">Mark all as read</div>
+        </div>
+        <div class="notification-list">
+            {% if notifications %}
+            {% for notification in notifications %}
+            <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+                <div class="notification-icon">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </div>
+                <div class="notification-content">
+                    <div class="notification-title">{{ notification.message }}</div>
+                    <div class="notification-time">{{ notification.created_at|timesince }} ago</div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="p-3 text-center">No notifications</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+          <div class="icon-wrapper theme-toggle" title="Toggle Dark Mode">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="mask0_2833_5056" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="28"
+                height="28">
+                <rect width="28" height="28" fill="#D9D9D9" />
+              </mask>
+              <g mask="url(#mask0_2833_5056)">
+                <path
+                  d="M12.8366 5.83463V1.16797H15.1699V5.83463H12.8366ZM20.5949 9.04297L18.9908 7.4388L22.2574 4.08464L23.8908 5.74713L20.5949 9.04297ZM22.1699 15.168V12.8346H26.8366V15.168H22.1699ZM12.8366 26.8346V22.168H15.1699V26.8346H12.8366ZM7.41159 8.98463L4.08659 5.74713L5.74909 4.1138L9.04492 7.40963L7.41159 8.98463ZM22.2283 23.918L18.9908 20.5638L20.5658 18.9888L23.8908 22.1971L22.2283 23.918ZM1.16992 15.168V12.8346H5.83659V15.168H1.16992ZM5.74909 23.918L4.11575 22.2555L7.38242 18.9888L8.22825 19.7763L9.07409 20.593L5.74909 23.918ZM14.0033 21.0013C12.0588 21.0013 10.406 20.3207 9.04492 18.9596C7.68381 17.5985 7.00325 15.9457 7.00325 14.0013C7.00325 12.0569 7.68381 10.4041 9.04492 9.04297C10.406 7.68186 12.0588 7.0013 14.0033 7.0013C15.9477 7.0013 17.6005 7.68186 18.9616 9.04297C20.3227 10.4041 21.0033 12.0569 21.0033 14.0013C21.0033 15.9457 20.3227 17.5985 18.9616 18.9596C17.6005 20.3207 15.9477 21.0013 14.0033 21.0013ZM14.0033 18.668C15.2866 18.668 16.3852 18.211 17.2991 17.2971C18.213 16.3832 18.6699 15.2846 18.6699 14.0013C18.6699 12.718 18.213 11.6194 17.2991 10.7055C16.3852 9.79158 15.2866 9.33463 14.0033 9.33463C12.7199 9.33463 11.6213 9.79158 10.7074 10.7055C9.79353 11.6194 9.33659 12.718 9.33659 14.0013C9.33659 15.2846 9.79353 16.3832 10.7074 17.2971C11.6213 18.211 12.7199 18.668 14.0033 18.668Z"
+                  fill="currentColor" />
+              </g>
+            </svg>
+          </div>
+
+          <div class="icon-wrapper fullscreen-toggle" title="Toggle Fullscreen">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M7.83008 10.1654V17.1654H5.49674V12.4987H0.830078V10.1654H7.83008ZM12.4967 0.832031V5.4987H17.1634V7.83203H10.1634V0.832031H12.4967Z"
+                fill="currentColor" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="icon-wrapper profile-icon">
+          {% if profiles %}
+          <div class="profile_img">
+            <img src="{{ profiles.image.url }}" alt="User" />
+          </div>
+          <div class="userDetails">
+            <div class="name">{{ profiles.name }}</div>
+            <div class="role">Founder</div>
+          </div>
+          {% else %}
+          <div class="profile_img">
+            <img src="{% static './assets/img/user.png' %}" alt="User" />
+          </div>
+          <div class="userDetails">
+            <div class="name">Guest</div>
+            <div class="role">Founder</div>
+          </div>
+          {% endif %}
+          <div class="dropdown profile-dropdown">
+            <div class="profile-menu">
+              {% if profiles %}
+              <a href="{% url 'view_profile' %}" class="profile-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+              </a>
+              {% else %}
+              <a href="{% url 'create_profile' %}" class="profile-item">
+                <i class="fas fa-user"></i>
+                <span>Create Profile</span>
+              </a>
+              {% endif %}
+              <a href="{% url 'admin_logout' %}" class="profile-item">
+                <i class="fas fa-power-off"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="under">
+      <div class="navbar">
+        <div class="navbar-content">
+          <div class="toggle-sidebar">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="28" height="28" rx="14" transform="matrix(-1 0 0 1 28 0)" fill="#007B82" />
+              <path d="M12.834 18.6654L8.16732 13.9987L12.834 9.33203M19.834 18.6654L15.1673 13.9987L19.834 9.33203"
+                stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+
+          <div class="menu-items">
+            <!-- Always visible for all roles -->
+            <a href="{% url 'dashboard' %}" class="Dash menu-item">
+              <i class="fa-solid fa-chart-line"></i>
+              <div class="inName">Dashboard</div>
+            </a>
+
+            <a href="{% url 'user_list' %}" class="Dash menu-item">
+              <i class="fa-solid fa-users"></i>
+              <div class="inName">User Management</div>
+            </a>
+
+            <a href="{% url 'api_usage_chart' %}" class="Dash menu-item">
+              <i class="fa-solid fa-key"></i>
+              <div class="inName">API Usage</div>
+            </a>
+
+            {% if user.role != 'Moderator' %}
+            <!-- Only for SuperAdmin and Admin -->
+            <a href="{% url 'manage_plans' %}" class="Dash menu-item">
+              <i class="fa-solid fa-layer-group"></i>
+              <div class="inName">Manage Plans</div>
+            </a>
+
+            <a href="{% url 'create_coupon' %}" class="Dash menu-item">
+              <i class="fa-solid fa-ticket"></i>
+              <div class="inName">Coupon</div>
+            </a>
+
+            <a href="{% url 'manage_payments' %}" class="Dash menu-item">
+              <i class="fa fa-credit-card"></i>
+              <div class="inName">Payments Management</div>
+            </a>
+            {% endif %}
+
+            {% if user.role == 'SuperAdmin' %}
+            <!-- Only for SuperAdmin -->
+            <a href="{% url 'access_management' %}" class="Dash menu-item">
+              <i class="fa-solid fa-user-shield"></i>
+              <div class="inName">Access Management</div>
+            </a>
+            {% endif %}
+
+            <!-- Available for all roles -->
+            <a href="{% url 'settings' %}" class="Dash menu-item">
+              <i class="fa-solid fa-gear"></i>
+              <div class="inName">Settings</div>
+            </a>
+
+            <a href="{% url 'admin_contact_us' %}" class="Dash menu-item">
+              <i class="fa-solid fa-phone"></i>
+              <div class="inName">Contact Us</div>
+            </a>
+
+            <a href="{% url 'help_center' %}" class="Dash menu-item">
+              <i class="fa-solid fa-circle-question"></i>
+              <div class="inName">Help Center</div>
+            </a>
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'admin_logout' %}" class="Dash menu-item">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              <div class="inName">Logout</div>
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-overview">
+        {% block content %}
+        <!-- Main content here -->
+        {% endblock %}
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script>
+
+    // Handle active menu item highlighting
+    document.addEventListener('DOMContentLoaded', function () {
+      const currentPath = window.location.pathname;
+      const menuItems = document.querySelectorAll('.menu-item');
+
+      menuItems.forEach(item => {
+        if (item.getAttribute('href') === currentPath) {
+          item.classList.add('active');
+        }
+      });
+    });
+
+    // Toggle dropdowns
+    const toggleDropdown = (selector) => {
+      document.querySelector(selector).classList.toggle('show');
+    };
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function (e) {
+      if (!e.target.closest('.icon-wrapper') && !e.target.closest('.users')) {
+        document.querySelectorAll('.dropdown').forEach(dropdown => {
+          dropdown.classList.remove('show');
+        });
+      }
+    });
+
+    // Search icon click
+    document.querySelector('.search-icon').addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleDropdown('.search-dropdown');
+      document.querySelector('.notification-dropdown').classList.remove('show');
+      document.querySelector('.profile-dropdown').classList.remove('show');
+    });
+
+    // Notification icon click
+    document.querySelector('.notification-icon').addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleDropdown('.notification-dropdown');
+      document.querySelector('.search-dropdown').classList.remove('show');
+      document.querySelector('.profile-dropdown').classList.remove('show');
+    });
+
+    // Profile icon click
+    document.querySelector('.profile-icon').addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleDropdown('.profile-dropdown');
+      document.querySelector('.search-dropdown').classList.remove('show');
+      document.querySelector('.notification-dropdown').classList.remove('show');
+    });
+
+    // Fullscreen toggle
+    document.querySelector('.fullscreen-toggle').addEventListener('click', function () {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    });
+
+    // Dark mode toggle
+    // Function to set logo based on theme
+    function updateLogo() {
+      const logoImg = document.getElementById('logo-img');
+      if (document.body.classList.contains('dark-mode')) {
+        logoImg.src = "{% static 'assets/img/logo-dark.png' %}";
+      } else {
+        logoImg.src = "{% static 'assets/img/logo-light.png' %}";
+      }
+    }
+
+    // Apply saved theme on page load
+    if (localStorage.getItem('theme') === 'dark') {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Always set logo on page load based on current body class
+    updateLogo();
+
+    // Theme toggle button click event
+    document.querySelector('.theme-toggle').addEventListener('click', function () {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+      updateLogo();
+    });
+
+    // Get all sidebar menu items
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    // Add click event listeners
+    menuItems.forEach(item => {
+      item.addEventListener('click', () => {
+        // Hide all content pages
+        document.querySelectorAll('.page').forEach(page => page.style.display = 'none');
+
+        // Get the page id from data-page attribute
+        const pageId = item.getAttribute('data-page');
+
+        // Show the corresponding page content
+        const pageToShow = document.getElementById(pageId);
+        if (pageToShow) {
+          pageToShow.style.display = 'block';
+        }
+      });
+    });
+  </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggleBtn = document.querySelector('.toggle-sidebar');
+      const sidebar = document.querySelector('.navbar');
+      const dashboard = document.querySelector('.dashboard-overview');
+
+      toggleBtn.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        dashboard.classList.toggle('expanded');
+      });
+    });
+    document.querySelectorAll('.icon-wrapper').forEach(wrapper => {
+      wrapper.addEventListener('click', e => {
+        e.stopPropagation();
+        const dropdown = wrapper.querySelector('.dropdown');
+        document.querySelectorAll('.dropdown').forEach(d => {
+          if (d !== dropdown) d.style.display = 'none';
+        });
+        dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+      });
+    });
+
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown').forEach(d => d.style.display = 'none');
+    });
+
+  </script>
+
+
+  <!-- <script src="../templates/script.js"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+
+  <script>
+    $(document).ready(function () {
+      $('#couponsTable').DataTable({
+        "retrieve": true,
+        "responsive": true,
+        "paging": true,
+        "searching": true,
+        "info": true,
+        "lengthChange": true,
+        "pageLength": 5,
+        "order": [[3, "desc"]],
+        "language": {
+          "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+          "lengthMenu": "Show _MENU_ entries"
+        }
+      });
+
+      $('#paymentsTable').DataTable({
+        "retrieve": true,
+        "paging": true,
+        "searching": true,
+        "info": true,
+        "lengthChange": true,
+        "pageLength": 5,
+        "order": [[3, "desc"]],
+        "language": {
+          "info": "Showing _START_ to _END_ of _TOTAL_ entries",
+          "lengthMenu": "Show _MENU_ entries"
+        }
+      });
+
+
+      // Form reset functionality
+      $('.reset').click(function (e) {
+        e.preventDefault();
+        $('input').val('');
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#plansTable').DataTable();
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    const markReadBtn = document.getElementById('mark-all-read');
+    if (markReadBtn) {
+        markReadBtn.addEventListener('click', function() {
+            fetch('/notifications/mark_all_read/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Remove "unread" classes
+                    document.querySelectorAll('.notification-item.unread').forEach(item => {
+                        item.classList.remove('unread');
+                    });
+                    // Remove the notification dot
+                    document.querySelector('.notification-icon .dots')?.remove();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+});
+document.addEventListener('DOMContentLoaded', function() {
+    const markReadBtn = document.getElementById('mark-all-read');
+    if (markReadBtn) {
+        markReadBtn.addEventListener('click', function() {
+            fetch('/notifications/mark_all_read/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Remove "unread" classes
+                    document.querySelectorAll('.notification-item.unread').forEach(item => {
+                        item.classList.remove('unread');
+                    });
+                    // Remove the notification dot
+                    document.querySelector('.notification-icon .dots')?.remove();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
+});
+
+  </script>
+
+</body>
+
+</html>
+
+
+
+

@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.payment-details-container {
+    width: calc(100% - 180px);
+    margin: 20px auto;
+    padding: 20px;
+}
+.export-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+.export-btn {
+    background-color: #007B82;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+.export-btn:hover {
+    background-color: #005f66;
+}
+.status-paid { color: green; font-weight: 600; }
+.status-pending { color: orange; font-weight: 600; }
+.status-failed { color: red; font-weight: 600; }
+.dt-buttons {
+    display: none;
+}
+
+/* Style table header */
+#paymentsTable thead th {
+    background-color: #007B82; /* Your chosen header color */
+    color: white;
+    border-top: 1px solid #005f66; /* optional border */
+    border-bottom: 1px solid #005f66; /* optional border */
+    padding: 10px;
+}
+
+/* Rounded corners for the first <th> */
+#paymentsTable thead th:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+/* Rounded corners for the last <th> */
+#paymentsTable thead th:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+/* Add border and spacing to the table */
+#paymentsTable {
+    border-collapse: separate !important;
+    border-spacing: 0 8px; /* spacing between rows */
+    width: 100%;
+}
+
+/* Rounded corners on first and last TH */
+#paymentsTable thead th:first-child {
+    border-radius: 8px 0 0 0;
+}
+#paymentsTable thead th:last-child {
+    border-radius: 0 8px 0 0;
+}
+
+/* Optional: add border radius to first and last TD of each row */
+#paymentsTable tbody tr td:first-child {
+    border-radius: 8px 0 0 8px;
+}
+#paymentsTable tbody tr td:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+</style>
+
+<div class="payment-details-container">
+    <h1>{{ title|default:"Payment Details" }}</h1>
+
+    <div class="export-container">
+        <button id="customExportBtn" class="export-btn">
+            <i class="fas fa-file-excel"></i> Export to Excel
+        </button>
+    </div>
+
+    <table id="paymentsTable" class="display nowrap" style="width:100%">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Plan</th>
+            <th>Amount (₹)</th>
+            <th>Method</th>
+            <th>Payment Status</th>
+            <th>Country</th>
+            <th>Date</th>
+            <th>Details</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr><td>1001</td><td>Rahul Sharma</td><td>rahul.sharma@example.com</td><td>Gold</td><td>1200</td><td>UPI</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-10</td><td>TXN123456</td></tr>
+        <tr><td>1002</td><td>Priya Patel</td><td>priya.patel@example.com</td><td>Silver</td><td>850</td><td>Credit Card</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-09</td><td>TXN123457</td></tr>
+        <tr><td>1003</td><td>Amit Singh</td><td>amit.singh@example.com</td><td>Free</td><td>1500</td><td>Net Banking</td><td class="status-failed">Failed</td><td>India</td><td>2025-06-08</td><td>INSUFFICIENT_FUNDS</td></tr>
+        <tr><td>1004</td><td>Neha Gupta</td><td>neha.gupta@example.com</td><td>Gold</td><td>750</td><td>Debit Card</td><td class="status-pending">Pending</td><td>India</td><td>2025-06-07</td><td>PROCESSING</td></tr>
+        <tr><td>1005</td><td>Vikram Joshi</td><td>vikram.joshi@example.com</td><td>Silver</td><td>2000</td><td>UPI</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-06</td><td>TXN123458</td></tr>
+         <tr><td>1001</td><td>Rahul Sharma</td><td>rahul.sharma@example.com</td><td>Gold</td><td>1200</td><td>UPI</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-10</td><td>TXN123456</td></tr>
+        <tr><td>1002</td><td>Priya Patel</td><td>priya.patel@example.com</td><td>Silver</td><td>850</td><td>Credit Card</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-09</td><td>TXN123457</td></tr>
+        <tr><td>1003</td><td>Amit Singh</td><td>amit.singh@example.com</td><td>Free</td><td>1500</td><td>Net Banking</td><td class="status-failed">Failed</td><td>India</td><td>2025-06-08</td><td>INSUFFICIENT_FUNDS</td></tr>
+        <tr><td>1004</td><td>Neha Gupta</td><td>neha.gupta@example.com</td><td>Gold</td><td>750</td><td>Debit Card</td><td class="status-pending">Pending</td><td>India</td><td>2025-06-07</td><td>PROCESSING</td></tr>
+        <tr><td>1005</td><td>Vikram Joshi</td><td>vikram.joshi@example.com</td><td>Silver</td><td>2000</td><td>UPI</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-06</td><td>TXN123458</td></tr>
+        <tr><td>1001</td><td>Rahul Sharma</td><td>rahul.sharma@example.com</td><td>Gold</td><td>1200</td><td>UPI</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-10</td><td>TXN123456</td></tr>
+        <tr><td>1002</td><td>Priya Patel</td><td>priya.patel@example.com</td><td>Silver</td><td>850</td><td>Credit Card</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-09</td><td>TXN123457</td></tr>
+        <tr><td>1003</td><td>Amit Singh</td><td>amit.singh@example.com</td><td>Free</td><td>1500</td><td>Net Banking</td><td class="status-failed">Failed</td><td>India</td><td>2025-06-08</td><td>INSUFFICIENT_FUNDS</td></tr>
+        <tr><td>1004</td><td>Neha Gupta</td><td>neha.gupta@example.com</td><td>Gold</td><td>750</td><td>Debit Card</td><td class="status-pending">Pending</td><td>India</td><td>2025-06-07</td><td>PROCESSING</td></tr>
+        <tr><td>1005</td><td>Vikram Joshi</td><td>vikram.joshi@example.com</td><td>Silver</td><td>2000</td><td>UPI</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-06</td><td>TXN123458</td></tr>
+         <tr><td>1001</td><td>Rahul Sharma</td><td>rahul.sharma@example.com</td><td>Gold</td><td>1200</td><td>UPI</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-10</td><td>TXN123456</td></tr>
+        <tr><td>1002</td><td>Priya Patel</td><td>priya.patel@example.com</td><td>Silver</td><td>850</td><td>Credit Card</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-09</td><td>TXN123457</td></tr>
+        <tr><td>1003</td><td>Amit Singh</td><td>amit.singh@example.com</td><td>Free</td><td>1500</td><td>Net Banking</td><td class="status-failed">Failed</td><td>India</td><td>2025-06-08</td><td>INSUFFICIENT_FUNDS</td></tr>
+        <tr><td>1004</td><td>Neha Gupta</td><td>neha.gupta@example.com</td><td>Gold</td><td>750</td><td>Debit Card</td><td class="status-pending">Pending</td><td>India</td><td>2025-06-07</td><td>PROCESSING</td></tr>
+        <tr><td>1005</td><td>Vikram Joshi</td><td>vikram.joshi@example.com</td><td>Silver</td><td>2000</td><td>UPI</td><td class="status-paid">Paid</td><td>India</td><td>2025-06-06</td><td>TXN123458</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+
+<script>
+    $(document).ready(function() {
+       var table = $('#paymentsTable').DataTable({
+    order: [[8, 'desc']],
+    dom: 'Blfrtip',
+    lengthMenu: [[5,10, 20, 50, -1], [5,10, 20, 50, "All"]],
+pageLength: -1,
+    buttons: [
+        {
+            extend: 'excelHtml5',
+            text: '<i class="fas fa-file-excel"></i> Excel',
+            title: '{{ title|default:"PAYMENT_DETAILS" }}_REPORT',
+            exportOptions: {
+                columns: ':visible',
+                format: {
+                    body: function(data, row, column, node) {
+                        if (column === 6) {
+                            return $(node).text();
+                        }
+                        return data;
+                    }
+                }
+            }
+        }
+    ]
+});
+
+        // Trigger DataTables Excel export when your custom button is clicked
+        $('#customExportBtn').on('click', function() {
+            table.button('.buttons-excel').trigger();
+        });
+    });
+</script>
+
+{% endblock %}

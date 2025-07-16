@@ -1584,40 +1584,43 @@ export default function ImageGeneration() {
 
   // Clear localStorage only when tab is closed or navigating back to home
   useEffect(() => {
-    let isInternalNavigation = false;
+  // Track if we're handling a back navigation
+  let isBackNavigation = false;
 
-    const handleBeforeUnload = (e) => {
-      // Only clear if not an internal navigation
-      if (!isInternalNavigation) {
-        localStorage.removeItem("imageGenState");
-      }
-    };
+  const handleBeforeUnload = () => {
+    // Always clear on tab close/refresh
+    localStorage.removeItem("imageGenState");
+  };
 
-    const handlePopState = (e) => {
-      // Check if we're navigating back to home
-      if (window.location.pathname === "/") {
-        localStorage.removeItem("imageGenState");
-      }
-    };
+  const handlePopState = (event) => {
+    // This is definitely a browser back/forward navigation
+    isBackNavigation = true;
+    
+    // Check if we're navigating to home page
+    if (window.location.pathname === "/") {
+      localStorage.removeItem("imageGenState");
+    }
+  };
 
-    // Track link clicks to detect internal navigation
-    const handleClick = (e) => {
-      const target = e.target.closest('a[href]');
-      if (target && target.getAttribute('href') !== '/') {
-        isInternalNavigation = true;
-      }
-    };
+  // Special check for initial page load via back button
+  if (performance.getEntriesByType('navigation')[0]?.type === 'back_forward' &&
+      window.location.pathname === "/") {
+    localStorage.removeItem("imageGenState");
+    console.log("Cleared localStorage on initial back navigation");
+  }
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    window.addEventListener('popstate', handlePopState);
-    document.addEventListener('click', handleClick, true);
+  window.addEventListener('beforeunload', handleBeforeUnload);
+  window.addEventListener('popstate', handlePopState);
 
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      window.removeEventListener('popstate', handlePopState);
-      document.removeEventListener('click', handleClick, true);
-    };
-  }, []);
+  return () => {
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+    window.removeEventListener('popstate', handlePopState);
+   
+    if (!isBackNavigation && window.location.pathname === "/") {
+      localStorage.removeItem("imageGenState");
+    }
+  };
+}, []);
 
   const fetchOriginalFile = async () => {
     try {

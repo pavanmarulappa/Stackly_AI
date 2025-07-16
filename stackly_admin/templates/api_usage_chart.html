@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .filter-btn, .reset-btn {
+    border-radius: 8px;
+    padding: 6px 20px;
+    border: none;
+    color: #fff;
+  }
+
+  .filter-btn {
+    background: linear-gradient(90.88deg, #007B82 2.32%, #001A1C 98.74%);
+  }
+
+  .reset-btn {
+    background: #A1A1A1;
+  }
+
+  .custom-table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .custom-table thead th {
+    background-color: #007B82;
+    color: #fff;
+    padding: 14px 16px;
+    font-size: 12px;
+    border: none;
+  }
+
+  .custom-table thead th:first-child {
+    border-top-left-radius: 12px;
+  }
+
+  .custom-table thead th:last-child {
+    border-top-right-radius: 12px;
+  }
+
+  .custom-table tbody td {
+    background-color: #00B0BA0A;
+    padding: 12px 14px;
+    border: none;
+    font-size: 14px;
+  }
+
+  .custom-table tbody .no-records {
+    text-align: center;
+    color: #A1A1A1;
+    padding: 50px;
+    background-color: #00B0BA0A;
+  }
+
+  .form-control {
+    border: none;
+    border-bottom: 2px solid #007B82;
+    border-radius: 0;
+    box-shadow: none;
+    padding-left: 0;
+    padding-right: 0;
+    background: transparent;
+  }
+
+  .form-control:focus {
+    border-color: #00B0BA;
+    box-shadow: none;
+  }
+
+  .form-label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 6px;
+  }
+
+  .card {
+    background: #fff;
+    border: none;
+    padding: 2px;
+    border-radius: 8px;
+    margin: 2px;
+    margin-left: 50px;
+  }
+
+  /* DARK MODE STYLES */
+
+  body.dark-mode {
+    background-color: #121212;
+    color: #ccc;
+  }
+
+  body.dark-mode .form-control {
+    border-bottom: 2px solid #4fd1c5;
+    color: #e0e0e0;
+  }
+
+  .dark-mode .form-label {
+    color: #ccc;
+  }
+
+  .dark-mode .table-responsive thead th {
+    background-color: #004d4d;
+    color: #ccc;
+  }
+
+  .dark-mode .custom-table tbody td {
+    background-color: #1e1e1e;
+    color: #ddd;
+  }
+
+  .dark-mode .custom-table tbody tr:nth-child(even) {
+    background-color: #2a2a2a;
+  }
+
+  .dark-mode .active-status {
+    color: #4fd1c5;
+  }
+
+  .dark-mode .expired-status {
+    color: #ff6f6f;
+  }
+
+  .dark-mode .action-icon {
+    background: #004d4d;
+  }
+
+  .dark-mode .action-icon:hover {
+    background: #003737;
+  }
+
+  .dark-mode .card {
+    background-color: #1e1e1e;
+    color: #A1A1A1;
+  }
+
+</style>
+
+<div class="container">
+  <div class="card">
+    <h5 class="mb-3">API Usage Monitoring</h5>
+    <div class="d-flex justify-content-end mb-3">
+      <button class="filter-btn me-2">Filter</button>
+      <button class="reset-btn">Reset</button>
+    </div>
+    <div class="row g-3 align-items-end mb-4">
+      <div class="col-md-4">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control" placeholder="Type here">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Date</label>
+        <input type="text" class="form-control" placeholder="dd-mm-yyyy">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">API End Point</label>
+        <input type="text" class="form-control" placeholder="Type here">
+      </div>
+    </div>
+
+    
+
+    <h6>API Usage Logs</h6>
+    <div class="table-responsive">
+    <table class="table custom-table">
+  <thead>
+    <thead>
+  <tr>
+    <th>S.no</th>
+    <th>User</th>
+    <th>Endpoint</th>
+    <th>Request Time</th>
+    <th>Status</th>
+    <th>Response Time (Ms)</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>1</td>
+    <td>Sravan</td>
+    <td>/api/v1/create-plan/</td>
+    <td>2025-06-02 10:15:34</td>
+    <td style="color: green;">200 OK</td>
+    <td>142</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>priya</td>
+    <td>/api/v1/get-users/</td>
+    <td>2025-06-02 10:18:45</td>
+    <td style="color: red;">500 Error</td>
+    <td>210</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>karthik</td>
+    <td>/api/v1/create-coupon/</td>
+    <td>2025-06-02 10:22:01</td>
+    <td style="color: green;">200 OK</td>
+    <td>98</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>admin</td>
+    <td>/api/v1/delete-plan/</td>
+    <td>2025-06-02 10:25:17</td>
+    <td style="color: orange;">401 Unauthorized</td>
+    <td>180</td>
+  </tr>
+</tbody>
+
+  </tbody>
+</table>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,1066 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Main container */
+  .manageCoupons {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    margin-left: 20px;
+  }
+
+  /* Box container */
+  .box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* Inner box */
+  .innerbox {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* Heading */
+  .heading {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: start;
+  }
+
+  /* Form container */
+  .form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 55px;
+  }
+
+  /* Coupon input row */
+  .coupon-row,
+  .date-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+  }
+
+  .coupon-field,
+  .date-field {
+    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  /* Label styles */
+  .field-label {
+    font-size: 18px;
+    font-weight: 400;
+  }
+
+  /* Required star */
+  .star {
+    color: red;
+    font-size: 18px;
+  }
+
+  /* Coupon input line */
+  .coupon-input {
+    width: 100%;
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid #2a2a2a;
+    padding: 5px 0;
+  }
+
+  /* Description input */
+  .description {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  /* Input base styles */
+  .input,
+  input[type="text"],
+  input[type="number"],
+  input[type="date"] {
+    width: 100%;
+    height: 34px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 16px;
+  }
+
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+  }
+
+  .einput {
+    border: 1px solid #ccc !important;
+    padding: 8px 10px;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .einput:focus {
+    border-color: #007B82 !important;
+    outline: none;
+    box-shadow: 0 0 4px rgba(0, 123, 130, 0.5);
+  }
+
+
+
+  /* Buttons */
+  .btns {
+    display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 19px;
+  padding: 20px 0; /* Added vertical padding */
+  margin-top: 20px; /* Added margin to separate from form fields */
+  }
+
+  /* Button links */
+  .btns a {
+    text-decoration: none;
+  }
+
+  .submit,
+  .reset {
+     flex: 1 1 200px;
+  max-width: 240px;
+  height: 52px;
+  border-radius: 8px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 1px 4px 0 #00000033;
+  font-weight: 400;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  margin: 10px 0; /* Added margin for better spacing */
+  }
+
+  .submit {
+    background: linear-gradient(to left, #007B82, #001A1C);
+  }
+
+  .reset {
+    background: #A1A1A1;
+  }
+
+  /* Coupon table section */
+  .coupondetails {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 20px;
+    overflow-x: auto;
+  }
+
+  #couponsTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #couponsTable thead {
+    background-color: #008080;
+    color: #fff;
+  }
+
+  #couponsTable th:first-child {
+    border-top-left-radius: 12px;
+  }
+
+  #couponsTable th:last-child {
+    border-top-right-radius: 12px;
+  }
+
+  #couponsTable thead th,
+  #couponsTable tbody td {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .active-status {
+    color: #007B82;
+    font-weight: 600;
+  }
+
+  .expired-status {
+    color: #ff0000;
+    font-weight: 600;
+  }
+
+  /* .action-icon {
+  width: 28px;
+  height: 28px;
+  margin: 0 5px;
+  padding: 5px;
+  
+  border-radius: 50%;
+}
+
+.action-icon:hover {
+  background: #006666;
+} */
+
+  /* Pagination spacing */
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter {
+    margin-bottom: 20px;
+  }
+
+  .dataTables_wrapper .dataTables_paginate {
+    margin-top: 20px;
+  }
+
+  /* Dark mode adjustments */
+  body.dark-mode input[type="text"],
+  body.dark-mode input[type="number"],
+  body.dark-mode input[type="date"] {
+    color: #e0e0e0;
+  }
+
+  .dark-mode #couponsTable thead {
+    background-color: #004d4d;
+    color: #ccc;
+  }
+
+  .dark-mode #couponsTable tbody tr {
+    background-color: #1e1e1e;
+    color: #ddd;
+  }
+
+  .dark-mode #couponsTable tbody tr:nth-child(even) {
+    background-color: #2a2a2a;
+  }
+
+  .dark-mode .active-status {
+    color: #4bd637;
+  }
+
+  .dark-mode .expired-status {
+    color: #ff6b6b;
+  }
+
+  .dark-mode .action-icon {
+    background: #004d4d;
+  }
+
+  .dark-mode .action-icon:hover {
+    background: #003333;
+  }
+
+  .invalid-feedback,
+  .error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none;
+  }
+
+  .form-control.is-invalid {
+    border-color: #dc3545;
+    box-shadow: none;
+  }
+
+  .was-validated .form-control:invalid~.error-message {
+    display: block;
+  }
+
+  .was-validated .form-control:valid~.error-message {
+    display: none;
+  }
+
+  /* Character count text */
+  .char-count {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  /* Sidebar and navbar container adjustments */
+  @media (max-width: 992px) {
+    .manageCoupons {
+      margin-left: 0;
+      padding: 15px;
+    }
+
+    .btns {
+      flex-direction: column;
+    }
+
+    .submit,
+    .reset {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 576px) {
+
+    .coupon-row,
+    .date-row {
+      flex-direction: column;
+    }
+
+    .coupon-field,
+    .date-field {
+      flex: 1 1 100%;
+    }
+
+    .btns {
+      padding: 0;
+    }
+  }
+
+  .spinner-border {
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+</style>
+
+<div class="manageCoupons">
+  <div class="box">
+    <div class="innerbox">
+      <div class="heading">Manage Coupons</div>
+      <form method="POST" id="couponForm" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="form">
+          <div class="coupon-row">
+            <div class="coupon-field">
+              <label for="code" class="field-label">Coupon Code<span class="star">*</span></label>
+              <div class="coupon-input">
+                <input id="code" type="text" name="code" placeholder="Enter Coupon Code" required
+                  pattern="^[A-Z][A-Za-z0-9]*$"
+                  title="Must start with capital letter and contain only letters and numbers" class="form-control">
+              </div>
+              <div class="error-message">Coupon code must start with a capital letter and contain only letters and
+                numbers.</div>
+            </div>
+
+            <div class="coupon-field">
+              <label for="discount_percentage" class="field-label">Discount Percentage<span
+                  class="star">*</span></label>
+              <div class="coupon-input">
+                <input id="discount_percentage" type="number" name="discount_percentage" placeholder="Enter Discount %"
+                  min="1" max="100" required class="form-control">
+              </div>
+              <div class="error-message">Discount must be between 1 and 100.</div>
+            </div>
+          </div>
+
+          <div class="coupon-row">
+            <div class="coupon-field">
+              <label for="coupon_type" class="field-label">Coupon Type<span class="star">*</span></label>
+              <div class="coupon-input">
+                <select id="coupon_type" name="coupon_type" class="form-control" required>
+                  <option value="general">General (All Plans)</option>
+                  <option value="plan_specific">Plan Specific</option>
+                  <option value="user_specific">User Specific</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="coupon-field" id="plan_field" style="display: none;">
+              <label for="plan_id" class="field-label">Applicable Plan<span class="star">*</span></label>
+              <div class="coupon-input">
+                <select id="plan_id" name="plan_id" class="form-control">
+                  <option value="">Select Plan</option>
+                  {% for plan in plans %}
+                  <option value="{{ plan.id }}">{{ plan.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="coupon-field" id="user_field" style="display: none;">
+              <label for="user_id" class="field-label">Applicable User<span class="star">*</span></label>
+              <div class="coupon-input">
+                <select id="user_id" name="user_id" class="form-control">
+                  <option value="">Select User</option>
+                  {% for user in users %}
+                  <option value="{{ user.id }}">{{ user.get_full_name|default:user.username }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="date-row">
+            <div class="date-field">
+              <label for="valid_from" class="field-label">Valid From<span class="star">*</span></label>
+              <div class="coupon-input">
+                <input id="valid_from" type="datetime-local" name="valid_from" required class="form-control">
+              </div>
+              <div class="error-message">Please select a valid start date.</div>
+            </div>
+
+            <div class="date-field">
+              <label for="valid_to" class="field-label">Valid To<span class="star">*</span></label>
+              <div class="coupon-input">
+                <input id="valid_to" type="datetime-local" name="valid_to" required class="form-control">
+              </div>
+              <div class="error-message">Must be a date after the Valid From date.</div>
+            </div>
+          </div>
+
+          <div class="description">
+            <label for="description" class="field-label">Description<span class="star">*</span></label>
+            <div class="coupon-input">
+              <input id="description" type="text" name="description" placeholder="Enter description" required
+                class="form-control" maxlength="250">
+            </div>
+            <div class="char-count" id="description-count">0/250</div>
+            <div class="error-message" id="description-error">Description is required.</div>
+          </div>
+
+          <div class="coupon-row">
+            <div class="coupon-field">
+              <label for="max_uses" class="field-label">Max Uses (0 for unlimited)</label>
+              <div class="coupon-input">
+                <input id="max_uses" type="number" name="max_uses" placeholder="Enter max uses" min="0" value="1"
+                  class="form-control">
+              </div>
+            </div>
+            <div class="coupon-field">
+              <label for="code" class="field-label">Offer text<span class="star">*</span></label>
+              <div class="coupon-input">
+                <input id="code" type="text" name="offer_text" placeholder="Enter Offer text" required
+                  pattern="^[A-Z][A-Za-z0-9]*$"
+                  title="Must start with capital letter and contain only letters and numbers" class="form-control">
+              </div>
+              <div class="error-message">Text must start with a capital letter and contain only letters and
+                numbers.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btns">
+          <button type="submit" class="submit">Submit</button>
+          <button type="reset" class="reset">Reset</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="coupondetails">
+    <div class="heading">Coupon Details</div>
+    <div class="table">
+      <table id="couponsTable" class="display" style="width:100%">
+        <thead>
+          <tr>
+            <th>S.no</th>
+            <th>Coupon Code</th>
+            <th>Type</th>
+            <th>Discount %</th>
+            <th>Valid From</th>
+            <th>Valid To</th>
+            <th>Applicable To</th>
+            <th>Offer text</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for coupon in coupons %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ coupon.code.upper }}</td>
+            <td>{{ coupon.get_coupon_type_display }}</td>
+            <td>{{ coupon.discount_percentage }}%</td>
+            <td>{{ coupon.valid_from|date:"Y-m-d H:i" }}</td>
+            <td>{{ coupon.valid_to|date:"Y-m-d H:i" }}</td>
+            <td>
+              {% if coupon.coupon_type == 'plan_specific' %}
+              {{ coupon.plan.name }}
+              {% elif coupon.coupon_type == 'user_specific' %}
+              {{ coupon.user.get_full_name|default:coupon.user.username }}
+              {% else %}
+              All Plans
+              {% endif %}
+            </td>
+            <td>{{ coupon.offer_text }}</td>
+            <td>{{ coupon.description|truncatechars:20 }}</td>
+            <td class="status">
+              {% if coupon.is_active %}
+              <a href="{% url 'deactivate_coupon' coupon.id %}">
+                <b style="color:#007B82;;"><span>Active</span></b>
+              </a>
+              {% else %}
+              <a href="{% url 'activate_coupon' coupon.id %}">
+                <b style="color:#A1A1A1;"><span>Inactive</span></b>
+              </a>
+              {% endif %}
+            </td>
+            <td>
+               <div class="action-buttons" style="display: flex; gap: 8px; align-items: center; justify-content: center;">
+              <button class="action-icon" data-toggle="modal" data-target="#editModal{{ coupon.id }}"><svg width="29"
+                  height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="28.2941" height="28.2941" rx="14.1471" fill="#007B82" />
+                  <path
+                    d="M16.8696 9.00124L19.4293 11.5609M15.1632 20.9461H21.9889M8.33758 17.5333L7.48438 20.9461L10.8972 20.0929L20.7824 10.2077C21.1023 9.88767 21.2821 9.45372 21.2821 9.00124C21.2821 8.54876 21.1023 8.1148 20.7824 7.7948L20.6357 7.64805C20.3157 7.32815 19.8817 7.14844 19.4293 7.14844C18.9768 7.14844 18.5428 7.32815 18.2228 7.64805L8.33758 17.5333Z"
+                    stroke="white" stroke-width="1.57515" stroke-linecap="round" stroke-linejoin="round" />
+                </svg></button>
+              <button class="action-icon" data-toggle="modal" data-target="#deleteModal{{ coupon.id }}"><svg width="29"
+                  height="29" viewBox="0 0 29 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="0.294922" y="0.292969" width="28.2941" height="28.2941" rx="14.1471" fill="#007B82" />
+                  <path
+                    d="M7.99034 9.33548L9.85472 20.5968C9.94 21.1123 10.2055 21.5808 10.604 21.9189C11.0025 22.2569 11.508 22.4425 12.0306 22.4426H14.9846M20.8945 9.33548L19.031 20.5968C18.9458 21.1123 18.6802 21.5808 18.2818 21.9189C17.8833 22.2569 17.3777 22.4425 16.8552 22.4426H13.9011M12.6976 13.6616V18.1165M16.1881 13.6616V18.1165M6.28125 9.33548H22.6045M16.8931 9.33548V7.76491C16.8931 7.4139 16.7537 7.07726 16.5055 6.82905C16.2573 6.58085 15.9206 6.44141 15.5696 6.44141H13.3161C12.9651 6.44141 12.6285 6.58085 12.3803 6.82905C12.1321 7.07726 11.9926 7.4139 11.9926 7.76491V9.33548H16.8931Z"
+                    stroke="white" stroke-width="1.32351" stroke-linecap="round" stroke-linejoin="round" />
+                </svg></button>
+                </div>
+            </td>
+          </tr>
+
+          <!-- Edit Modal -->
+          <div class="modal fade" id="editModal{{ coupon.id }}" tabindex="-1" role="dialog"
+            aria-labelledby="editModalLabel{{ coupon.id }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content" style="border-radius: 12px; overflow: hidden;">
+                <div class="modal-header" style="background-color: #007B82; color: white;">
+                  <h5 class="modal-title" id="editModalLabel{{ coupon.id }}">Edit Coupon</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    style="color:white; background-color: #007B82; font-size: 24px;">
+                    &times;
+                  </button>
+                </div>
+
+                <form method="POST" action="{% url 'edit_coupon' coupon.id %}">
+                  {% csrf_token %}
+                  <div class="modal-body" style="padding: 20px;">
+                    <!-- Coupon Code -->
+                    <div class="form-group">
+                      <label>Coupon Code<span class="star">*</span></label>
+                      <input type="text" name="code" value="{{ coupon.code }}" required class="einput"
+                        pattern="[A-Z][A-Za-z0-9]*">
+                      <div class="error-message" id="edit-code-error">Coupon code must start with a capital letter and
+                        contain only letters and numbers</div>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Offer Text<span class="star">*</span></label>
+                      <input type="text" name="offer_text" value="{{ coupon.offer_text }}" required class="einput">
+                      <div class="error-message" id="edit-code-error">Offer Text must start with a capital letter and
+                        contain only letters and numbers</div>
+                    </div>
+
+                    <!-- Coupon Type -->
+                    <div class="form-group">
+                      <label>Coupon Type<span class="star">*</span></label>
+                      <select name="coupon_type" class="einput" required>
+                        <option value="general" {% if coupon.coupon_type == 'general' %}selected{% endif %}>General
+                        </option>
+                        <option value="plan_specific" {% if coupon.coupon_type == 'plan_specific' %}selected{% endif %}>
+                          Plan Specific</option>
+                        <option value="user_specific" {% if coupon.coupon_type == 'user_specific' %}selected{% endif %}>
+                          User Specific</option>
+                      </select>
+                    </div>
+
+                    <!-- Plan Selection (shown only for plan-specific) -->
+                    <div class="form-group" id="edit-plan-field-{{ coupon.id }}"
+                      style="display: {% if coupon.coupon_type == 'plan_specific' %}block{% else %}none{% endif %};">
+                      <label>Applicable Plan<span class="star">*</span></label>
+                      <select name="plan_id" class="einput">
+                        <option value="">Select Plan</option>
+                        {% for plan in plans %}
+                        <option value="{{ plan.id }}" {% if coupon.plan_id == plan.id %}selected{% endif %}>{{ plan.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+
+                    <!-- User Selection (shown only for user-specific) -->
+                    <div class="form-group" id="edit-user-field-{{ coupon.id }}"
+                      style="display: {% if coupon.coupon_type == 'user_specific' %}block{% else %}none{% endif %};">
+                      <label>Applicable User<span class="star">*</span></label>
+                      <select name="user_id" class="einput">
+                        <option value="">Select User</option>
+                        {% for user in users %}
+                        <option value="{{ user.id }}" {% if coupon.user_id == user.id %}selected{% endif %}>{{
+                          user.get_full_name|default:user.username }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+
+                    <!-- Discount Percentage -->
+                    <div class="form-group">
+                      <label>Discount Percentage<span class="star">*</span></label>
+                      <input type="number" name="discount_percentage" value="{{ coupon.discount_percentage }}" min="1"
+                        max="100" required class="einput">
+                      <div class="error-message" id="edit-discount-error">Discount must be between 1 and 100</div>
+                    </div>
+
+                    <!-- Valid From -->
+                    <div class="form-group">
+                      <label>Valid From<span class="star">*</span></label>
+                      <input type="datetime-local" name="valid_from" value="{{ coupon.valid_from|date:'Y-m-d\TH:i' }}"
+                        required class="einput">
+                      <div class="error-message" id="edit-valid-from-error">Please select a valid date</div>
+                    </div>
+
+                    <!-- Valid To -->
+                    <div class="form-group">
+                      <label>Valid To<span class="star">*</span></label>
+                      <input type="datetime-local" name="valid_to" value="{{ coupon.valid_to|date:'Y-m-d\TH:i' }}"
+                        required class="einput">
+                      <div class="error-message" id="edit-valid-to-error">Must be after Valid From date</div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                      <label>Description</label>
+                      <textarea name="description" class="einput" maxlength="250"
+                        id="edit-desc-input{{ coupon.id }}">{{ coupon.description }}</textarea>
+                      <div class="char-count">
+                        <span id="edit-desc-char-count{{ coupon.id }}">{{ coupon.description|length }}</span>/250
+                        characters
+                      </div>
+                      <div class="error-message" id="edit-description-error">Description cannot exceed 250 characters
+                      </div>
+                    </div>
+
+                    <!-- Max Uses -->
+                    <div class="form-group">
+                      <label>Max Uses (0 for unlimited)</label>
+                      <input type="number" name="max_uses" value="{{ coupon.max_uses }}" min="0" class="einput">
+                    </div>
+                  </div>
+
+                  <div class="modal-footer" style="padding: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="reset" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="submit">Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Delete Modal (keep the same as before) -->
+          <div class="modal fade" id="deleteModal{{ coupon.id }}" tabindex="-1" role="dialog"
+            aria-labelledby="deleteModalLabel{{ coupon.id }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content" style="border-radius: 12px; overflow: hidden;">
+                <div class="modal-header" style="background-color: #FF4C4C; color: white;">
+                  <h5 class="modal-title" id="deleteModalLabel{{ coupon.id }}">Delete Coupon</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                    style="color:white; font-size: 24px; background-color: #FF4C4C;">&times;</button>
+                </div>
+                <div class="modal-body" style="padding: 20px; font-size: 18px;">
+                  Are you sure you want to delete coupon <strong>"{{ coupon.code }}"</strong>?
+                </div>
+                <div class="modal-footer" style="padding: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                  <button type="button" class="reset btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <form method="POST" action="{% url 'delete_coupon' coupon.id %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="submit btn btn-danger" style="background: #FF4C4C;">Delete</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize form elements
+    const couponForm = document.getElementById('couponForm');
+    const couponType = document.getElementById('coupon_type');
+    const planField = document.getElementById('plan_field');
+    const userField = document.getElementById('user_field');
+    const validFrom = document.getElementById('valid_from');
+    const validTo = document.getElementById('valid_to');
+    const descInput = document.getElementById('description');
+    const descCount = document.getElementById('description-count');
+
+    // Toggle plan/user fields based on coupon type
+    function toggleCouponFields() {
+      const type = couponType.value;
+      planField.style.display = type === 'plan_specific' ? 'block' : 'none';
+      userField.style.display = type === 'user_specific' ? 'block' : 'none';
+
+      // Update required attributes
+      document.getElementById('plan_id').required = type === 'plan_specific';
+      document.getElementById('user_id').required = type === 'user_specific';
+    }
+
+    // Initialize datetime fields
+    function initDateTimeFields() {
+      const now = new Date();
+      const datetimeValue = now.toISOString().slice(0, 16);
+
+      if (!validFrom.value) {
+        validFrom.value = datetimeValue;
+      }
+
+      // Set valid_to to 1 month from now by default
+      const nextMonth = new Date(now);
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      const nextDatetimeValue = nextMonth.toISOString().slice(0, 16);
+
+      if (!validTo.value) {
+        validTo.value = nextDatetimeValue;
+      }
+    }
+
+    // Character count for description
+    function updateCharCount() {
+      const count = descInput.value.length;
+      descCount.textContent = `${count}/250`;
+    }
+
+    // Form validation
+    function validateForm() {
+      // Check dates
+      if (new Date(validTo.value) <= new Date(validFrom.value)) {
+        alert('Valid To date must be after Valid From date');
+        return false;
+      }
+
+      // Check coupon type specific fields
+      if (couponType.value === 'plan_specific' && !document.getElementById('plan_id').value) {
+        alert('Please select a plan for plan-specific coupon');
+        return false;
+      }
+
+      if (couponType.value === 'user_specific' && !document.getElementById('user_id').value) {
+        alert('Please select a user for user-specific coupon');
+        return false;
+      }
+
+      return true;
+    }
+
+    // Handle edit modals
+    document.querySelectorAll('select[name="coupon_type"]').forEach(select => {
+      select.addEventListener('change', function () {
+        const modalId = this.closest('.modal').id;
+        const couponId = modalId.replace('editModal', '');
+
+        const planField = document.getElementById(`edit-plan-field-${couponId}`);
+        const userField = document.getElementById(`edit-user-field-${couponId}`);
+
+        if (this.value === 'plan_specific') {
+          planField.style.display = 'block';
+          userField.style.display = 'none';
+          planField.querySelector('select').required = true;
+          userField.querySelector('select').required = false;
+        } else if (this.value === 'user_specific') {
+          planField.style.display = 'none';
+          userField.style.display = 'block';
+          planField.querySelector('select').required = false;
+          userField.querySelector('select').required = true;
+        } else {
+          planField.style.display = 'none';
+          userField.style.display = 'none';
+          planField.querySelector('select').required = false;
+          userField.querySelector('select').required = false;
+        }
+      });
+    });
+
+    // Event listeners
+    couponType.addEventListener('change', toggleCouponFields);
+    descInput.addEventListener('input', updateCharCount);
+
+    couponForm.addEventListener('submit', function (e) {
+      if (!validateForm()) {
+        e.preventDefault();
+        return false;
+      }
+
+      // Optional: Show loading state
+      const submitBtn = couponForm.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+
+      return true;
+    });
+
+    // Initialize
+    toggleCouponFields();
+    initDateTimeFields();
+    updateCharCount();
+  });
+</script>
+
+<!-- <script>
+  // Bootstrap 5 form validation with delayed error messages
+  (() => {
+    'use strict';
+
+    const form = document.getElementById('couponForm');
+    if (!form) return;
+
+    const fields = form.querySelectorAll('.form-control');
+
+    // Track fields that have been "touched"
+    const touched = new Set();
+
+    fields.forEach(field => {
+      field.addEventListener('input', () => {
+        touched.add(field);
+        validateField(field);
+      });
+
+      field.addEventListener('blur', () => {
+        touched.add(field);
+        validateField(field);
+      });
+    });
+
+    function validateField(field) {
+      const errorMessage = field.parentElement.nextElementSibling;
+      if (!touched.has(field)) {
+        errorMessage.style.display = 'none';
+        field.classList.remove('is-invalid', 'is-valid');
+        return;
+      }
+
+      if (!field.checkValidity()) {
+        field.classList.add('is-invalid');
+        field.classList.remove('is-valid');
+        errorMessage.style.display = 'block';
+      } else {
+        // Custom validation: valid_to date must be after valid_from
+        if (field.id === 'valid_to') {
+          const validFrom = form.querySelector('#valid_from').value;
+          if (validFrom && field.value && field.value <= validFrom) {
+            field.setCustomValidity('Invalid date range');
+            field.classList.add('is-invalid');
+            errorMessage.style.display = 'block';
+            return;
+          } else {
+            field.setCustomValidity('');
+          }
+        }
+
+        field.classList.remove('is-invalid');
+        field.classList.add('is-valid');
+        errorMessage.style.display = 'none';
+      }
+    }
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+
+      let formValid = true;
+      fields.forEach(field => {
+        touched.add(field);
+        validateField(field);
+        if (!field.checkValidity()) {
+          formValid = false;
+        }
+      });
+
+      if (formValid) {
+        form.submit();
+      }
+    });
+
+    // Character count for description field
+    const descInput = form.querySelector('#description');
+    const charCount = form.querySelector('#description-count');
+
+    if (descInput && charCount) {
+      descInput.addEventListener('input', () => {
+        const currentLength = descInput.value.length;
+        charCount.textContent = `${currentLength}/250`;
+
+        // Optional: turn text red if near limit
+        if (currentLength > 230) {
+          charCount.style.color = 'red';
+        } else {
+          charCount.style.color = '#666';
+        }
+      });
+    }
+
+  })();
+</script>
+<script>
+  'use strict';
+
+  // Function to initialize form validation and char count for a given form by id
+  function initEditCouponForm(couponId) {
+    const form = document.getElementById(`editCouponForm${couponId}`);
+    if (!form) return;
+
+    const fields = form.querySelectorAll('.einput');
+    const touched = new Set();
+
+    fields.forEach(field => {
+      field.addEventListener('input', () => {
+        touched.add(field);
+        validateField(field);
+      });
+
+      field.addEventListener('blur', () => {
+        touched.add(field);
+        validateField(field);
+      });
+    });
+
+    function validateField(field) {
+      const errorMessage = field.parentElement.querySelector('.error-message');
+      if (!touched.has(field)) {
+        errorMessage.style.display = 'none';
+        field.classList.remove('is-invalid', 'is-valid');
+        return;
+      }
+
+      if (!field.checkValidity()) {
+        field.classList.add('is-invalid');
+        field.classList.remove('is-valid');
+        errorMessage.style.display = 'block';
+      } else {
+        // Custom Valid To date validation
+        if (field.name === 'valid_to') {
+          const validFrom = form.querySelector(`[name="valid_from"]`);
+          if (validFrom && validFrom.value && field.value && field.value <= validFrom.value) {
+            field.setCustomValidity('Invalid date range');
+            field.classList.add('is-invalid');
+            errorMessage.style.display = 'block';
+            return;
+          } else {
+            field.setCustomValidity('');
+          }
+        }
+
+        field.classList.remove('is-invalid');
+        field.classList.add('is-valid');
+        errorMessage.style.display = 'none';
+      }
+    }
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+
+      let formValid = true;
+      fields.forEach(field => {
+        touched.add(field);
+        validateField(field);
+        if (!field.checkValidity()) {
+          formValid = false;
+        }
+      });
+
+      if (formValid) {
+        form.submit();
+      }
+    });
+
+    // Character count for description
+    const descInput = form.querySelector(`#edit-desc-input${couponId}`);
+    const charCount = form.querySelector(`#edit-desc-char-count${couponId}`);
+
+    if (descInput && charCount) {
+      descInput.addEventListener('input', () => {
+        const currentLength = descInput.value.length;
+        charCount.textContent = currentLength;
+
+        if (currentLength > 230) {
+          charCount.style.color = 'red';
+        } else {
+          charCount.style.color = '#666';
+        }
+      });
+    }
+  }
+
+  // Initialize form logic when each modal is opened
+  document.addEventListener('DOMContentLoaded', () => {
+    const modals = document.querySelectorAll('[id^="editModal"]');
+
+    modals.forEach(modal => {
+      modal.addEventListener('shown.bs.modal', function () {
+        const couponId = this.id.replace('editModal', '');
+        initEditCouponForm(couponId);
+      });
+    });
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
+    // Set min attribute on creation form fields
+    document.getElementById('valid_from').setAttribute('min', today);
+    document.getElementById('valid_to').setAttribute('min', today);
+
+    // In Edit Modals — as there may be multiple modals, we target them via querySelectorAll
+    const editValidFromFields = document.querySelectorAll("input[name='valid_from']");
+    const editValidToFields = document.querySelectorAll("input[name='valid_to']");
+
+    editValidFromFields.forEach(field => {
+      field.setAttribute('min', today);
+    });
+
+    editValidToFields.forEach(field => {
+      field.setAttribute('min', today);
+    });
+  });
+</script> -->
+<!-- <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
+    {% for coupon in coupons %}
+        const editModal{{ coupon.id }} = document.getElementById("editModal{{ coupon.id }}");
+        const validFromInput{{ coupon.id }} = editModal{{ coupon.id }}.querySelector('input[name="valid_from"]');
+        const validToInput{{ coupon.id }} = editModal{{ coupon.id }}.querySelector('input[name="valid_to"]');
+
+        // Set min attributes on load
+        validFromInput{{ coupon.id }}.setAttribute('min', today);
+        validToInput{{ coupon.id }}.setAttribute('min', today);
+
+        // When Valid From changes, update Valid To's min
+        validFromInput{{ coupon.id }}.addEventListener('change', function() {
+            const selectedFromDate = this.value;
+            validToInput{{ coupon.id }}.setAttribute('min', selectedFromDate);
+
+            // If Valid To is before the new Valid From, clear it
+            if (validToInput{{ coupon.id }}.value < selectedFromDate) {
+                validToInput{{ coupon.id }}.value = '';
+            }
+        });
+    {% endfor %}
+});
+</script> -->
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+{% endblock %}

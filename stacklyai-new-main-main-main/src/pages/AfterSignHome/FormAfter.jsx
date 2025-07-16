@@ -408,7 +408,7 @@ export default function Form({ selectedImage }) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const [formData, setFormData] = useState({
-    buildingType: "",
+    // buildingType: "",
     roomType: "",
     roomStyle: "",
     numDesigns: "1",
@@ -495,7 +495,7 @@ export default function Form({ selectedImage }) {
     } else {
       setActiveTab(tabName);
       setFormData({
-        buildingType: "",
+        // buildingType: "",
         roomType: "",
         roomStyle: "",
         numDesigns: "1",
@@ -551,7 +551,7 @@ export default function Form({ selectedImage }) {
       switch (activeTab) {
         case "Interiors":
           endpoint = "generate-interior-design";
-          formDataToSend.append("building_type", formData.buildingType);
+          // formDataToSend.append("building_type", formData.buildingType);
           formDataToSend.append("room_type", formData.roomType);
           typeDetail = formData.roomType;
           break;
@@ -794,10 +794,11 @@ export default function Form({ selectedImage }) {
         {/* Form Controls */}
         <form
           onSubmit={handleSubmit}
-          className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
+          className="w-full xl:w-1/2 max-w-[550px] flex flex-col gap-6"
+          // className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
         >
           {/* Building Type (only for Interior) */}
-          {activeTab === "Interiors" && (
+          {/* {activeTab === "Interiors" && (
             <div className="space-y-2">
               <label className="text-white text-lg">Choose Building Type</label>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -820,7 +821,7 @@ export default function Form({ selectedImage }) {
                 ))}
               </div>
             </div>
-          )}
+          )} */}
       {/* Room Type Dropdown */}
       <div className="space-y-2 relative">
         <label className="text-white text-lg">
@@ -905,22 +906,61 @@ export default function Form({ selectedImage }) {
 
       {/* AI Strength */}
       <div className="space-y-2">
-        <label className="text-white text-lg">AI Styling Strength</label>
-        <div className="flex flex-wrap gap-3">
-          {["Very Low", "Low", "Medium", "High"].map((level) => (
-            <div
-              key={level}
-              className={`flex-1 min-w-[120px] px-4 py-2 rounded-md cursor-pointer text-center ${formData.aiStrength === level.toLowerCase()
-                ? "bg-white text-[#007B82]"
-                : "bg-[#00000033] text-[#FFFFFF80]"
-                }`}
-              onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
-            >
-              {level}
-            </div>
-          ))}
+  <label className="text-white text-lg">AI Styling Strength</label>
+  <div className="flex flex-col gap-3">
+    {/* Row 1 */}
+    <div className="flex gap-20">
+      {["Very Low", "Low"].map((level) => (
+        <div
+          key={level}
+          className={`w-[255px] h-[45px] flex items-center gap-3 pl-4 rounded-md cursor-pointer text-[16px] transition-all ${
+            formData.aiStrength === level.toLowerCase()
+              ? "bg-[#00000066] text-[#007B82]"
+              : "bg-[#00000033] text-[#FFFFFF]"
+          }`}
+          onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
+        >
+          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+            formData.aiStrength === level.toLowerCase()
+              ? "border-[#007B82] bg-[#007B82]"
+              : "border-white"
+          }`}>
+            {formData.aiStrength === level.toLowerCase() && (
+              <div className="w-2 h-2 rounded-full bg-white"></div>
+            )}
+          </div>
+          {level}
         </div>
-      </div>
+      ))}
+    </div>
+
+    {/* Row 2 */}
+    <div className="flex gap-20">
+      {["Medium", "High"].map((level) => (
+        <div
+          key={level}
+          className={`w-[255px] h-[45px] flex items-center gap-3 pl-4 rounded-md cursor-pointer text-[16px] transition-all ${
+            formData.aiStrength === level.toLowerCase()
+              ? "bg-[#00000066] text-[#007B82]"
+              : "bg-[#00000033] text-[#FFFFFF]"
+          }`}
+          onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
+        >
+          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+            formData.aiStrength === level.toLowerCase()
+              ? "border-[#007B82] bg-[#007B82]"
+              : "border-white"
+          }`}>
+            {formData.aiStrength === level.toLowerCase() && (
+              <div className="w-2 h-2 rounded-full bg-white"></div>
+            )}
+          </div>
+          {level}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
     </form>
       </div >
 
