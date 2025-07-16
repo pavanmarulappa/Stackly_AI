@@ -663,7 +663,7 @@ export default function Form({ selectedImage }) {
               <img
                 src={tab.icon}
                 alt={tab.name}
-                className="w-full h-auto max-w-[60%] max-h-[60%] object-contain"
+                className="w-[full] h-auto max-w-[60%] max-h-[60%] object-contain"
               />
             </div>
             <p className="text-white text-[clamp(0.9rem,1.5vw,1.4rem)] font-semibold text-center">
@@ -821,67 +821,6 @@ export default function Form({ selectedImage }) {
               </div>
             </div>
           )}
-
-          {/* Room Type (dynamic label based on tab) */}
-          {/* <div className="space-y-2">
-            <label className="text-white text-lg">
-              {activeTab === "Interiors"
-                ? "Select Room Type"
-                : activeTab === "Exteriors"
-                  ? "Select House Angle"
-                  : "Select Space"}
-            </label>
-            <select
-              name="roomType"
-              value={formData.roomType}
-              onChange={(e) => handleChange(e.target.value, "roomType")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-              required
-            >
-              <option value="">Select an option</option>
-              {roomTypes[activeTab].map((room) => (
-                <option key={room} value={room.toLowerCase()}>
-                  {room}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          {/* Style Selection */}
-          {/* <div className="space-y-2">
-            <label className="text-white text-lg">Select Style</label>
-            <select
-              name="roomStyle"
-              value={formData.roomStyle}
-              onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-              required
-            >
-              <option value="">Select a style</option>
-              {styles[activeTab].map((style) => (
-                <option key={style} value={style.toLowerCase()}>
-                  {style.charAt(0).toUpperCase() + style.slice(1)}
-                </option>
-              ))}
-            </select>
-        </div> */}
-
-      {/* Number of designs */}
-      {/* <div className="space-y-2">
-            <label className="text-white text-lg">Number of Designs</label>
-            <select
-              name="numDesigns"
-              value={formData.numDesigns}
-              onChange={(e) => handleChange(e.target.value, "numDesigns")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-            >
-              {[...Array(12).keys()].map((num) => (
-                <option key={num + 1} value={num + 1}>
-                  {num + 1}
-                </option>
-              ))}
-            </select>
-          </div> */}
       {/* Room Type Dropdown */}
       <div className="space-y-2 relative">
         <label className="text-white text-lg">

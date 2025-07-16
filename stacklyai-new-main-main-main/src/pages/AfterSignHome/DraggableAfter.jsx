@@ -247,7 +247,6 @@
 //   );
 // }
 
-//DraggableAfter.jsx
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -267,7 +266,8 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
   const [popupImage, setPopupImage] = useState(null);
   const [showDraggable, setShowDraggable] = useState(false);
   const [dragData, setDragData] = useState({ left: "", right: "" });
-  const [visibleActions, setVisibleActions] = useState({}); // key = index, value = boolean
+  const [visibleActions, setVisibleActions] = useState({});
+  const [showAll, setShowAll] = useState(false);
 
   const handleDownload = (imageSrc) => {
     const link = document.createElement("a");
@@ -299,25 +299,27 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
     { left: dragImg1_2, right: dragImg1_1, date: "MM/DD" },
   ];
 
+  const displayedDesigns = showAll ? designs : designs.slice(0, 2);
+
   return (
     <div>
       <div
-        className="max-w-[100vw] h-auto bg-cover bg-center bg-no-repeat"
+        className="max-w-[100vw] h-auto bg-cover bg-top bg-no-repeat"
         style={{ backgroundImage: 'url("/AfterHome/sec4.png")' }}
       >
         {/* Heading */}
-        <div className="w-full min-h-[158px] flex flex-col justify-center items-center gap-[14px]">
-          <div className="w-[1026px] min-h-[78px] font-bold text-[48px] leading-[78px] text-center text-gradient-to-l from-[#007B82] to-[#001A1C] pt-[70px]">
+        <div className="w-full min-h-[158px] flex flex-col justify-center items-center gap-[1px]">
+          <div className="w-[1026px] min-h-[78px] font-bold text-[32px] leading-[78px] text-center text-gradient-to-l from-[#007B82] to-[#001A1C] pt-[70px]">
             Your Recent <span className="text-[#009A98]">Designs</span>
           </div>
-          <div className="w-[1026px] min-h-[56px] font-[400] text-[20px] leading-[24px] text-center text-[#000000]">
+          <div className="w-[1026px] min-h-[56px] font-[400] text-[16px] leading-[24px] text-center text-[#000000]">
             Your latest AI-powered transformations — beautifully rendered and saved in your gallery
           </div>
         </div>
 
         {/* Design Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 p-5 sm:p-10">
-          {designs.map((design, index) => (
+          {displayedDesigns.map((design, index) => (
             <div key={index} className="max-w-[522px] m-auto w-full flex flex-col gap-2">
               <div className="flex justify-between items-center">
                 <div className="text-[16px] font-semibold text-[#007B82]">
@@ -350,8 +352,8 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
                     visibleActions[index] ? "opacity-100" : "opacity-0 pointer-events-none"
                   }`}
                 >
-                  <img src={Search} alt="show" />
-                  <span className="text-[12px] text-[#2A2A2A]">Show</span>
+                  <img src={Search} alt="show"/>
+                  <span className="text-[12px] text-[#007B82]">Show</span>
                 </div>
 
                 {/* Input */}
@@ -365,7 +367,7 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
                   }`}
                 >
                   <img src={Input} alt="input" />
-                  <span className="text-[12px] text-[#2A2A2A]">Input</span>
+                  <span className="text-[12px] text-[#007B82]">Input</span>
                 </div>
 
                 {/* Download */}
@@ -376,7 +378,7 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
                   }`}
                 >
                   <img src={Download} alt="download" />
-                  <span className="text-[12px] text-[#2A2A2A]">Download</span>
+                  <span className="text-[12px] text-[#007B82]">Download</span>
                 </div>
 
                 {/* Share */}
@@ -387,7 +389,7 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
                   }`}
                 >
                   <img src={Share} alt="share" />
-                  <span className="text-[12px] text-[#2A2A2A]">Share</span>
+                  <span className="text-[12px] text-[#007B82]">Share</span>
                 </div>
 
                 {/* More (always visible) */}
@@ -401,14 +403,28 @@ export default function DraggableAfter({ formRef, setSelectedImage }) {
             </div>
           ))}
         </div>
+
+        {/* View All Button */}
+        {!showAll && (
+          <div className="w-full flex justify-center mb-[50px]">
+            <button 
+              onClick={() => setShowAll(true)}
+              className="font-[400] text-[20px] leading-[140%] text-center underline text-[#007B82]"
+            >
+              View More
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* View All */}
-      <Link to="/gallery">
-        <div className="w-full h-[20px] flex justify-center items-center font-[400] text-[20px] leading-[140%] text-center underline text-[#007B82] mb-[50px]">
-          View all
-        </div>
-      </Link>
+      {/* Original View All Link (for redirecting to gallery) */}
+      {showAll && (
+        <Link to="/gallery">
+          <div className="w-full h-[20px] flex justify-center items-center font-[400] text-[20px] leading-[140%] text-center underline text-[#007B82] mb-[50px]">
+            View all
+          </div>
+        </Link>
+      )}
 
       {/* Popup for Right Image */}
       {popupImage && !showDraggable && (
