@@ -1490,6 +1490,7 @@ export default function Home() {
             Transform in <span className="text-[#007b82]">Seconds</span>, Not Days
           </p>
         </div>
+        
 
         {/* Cards Container */}
         <div className="flex justify-center gap-12 w-full max-w-6xl

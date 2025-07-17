@@ -383,6 +383,7 @@ import Home from "../../assets/product-pg/home.png";
 import Tree from "../../assets/product-pg/tree.png";
 import Lock from "../../assets/product-pg/lock.png";
 import Galley from "../../assets/product-pg/gallery.png";
+import Bg from "../../assets/afterHome/DesignBoard.png";
 import I from "../../assets/product-pg/i.png";
 import Magic from "../../assets/product-pg/magic.png";
 import axios from "axios";
@@ -634,7 +635,15 @@ export default function Form({ selectedImage }) {
   }, [selectedImage]);
 
   return (
-    <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
+    <section
+      className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 overflow-hidden"
+      style={{
+        backgroundImage: `url(${Bg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+      }}
+    >
       {/* Header */}
       <div className="w-full max-w-4xl text-center space-y-2">
         <h1 className="text-[clamp(2rem,5vw,3rem)] font-semibold text-white leading-snug">
@@ -656,9 +665,19 @@ export default function Form({ selectedImage }) {
           >
             <div
               className={`w-[clamp(60px,6vw,77px)] aspect-square border-2 p-2 flex justify-center items-center rounded-full transition-all duration-200 ${activeTab === tab.name
-                ? "border-white bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82]"
+                ? "border-white"
                 : "border-[#FFFFFF1A] bg-[#FFFFFF1A] hover:border-blue-300"
                 }`}
+              style={
+                activeTab === tab.name
+                  ? {
+                    backgroundImage:
+                      "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+
+                    backgroundBlendMode: 'overlay' // or 'multiply' depending on desired effect
+                  }
+                  : {}
+              }
             >
               <img
                 src={tab.icon}
@@ -679,7 +698,7 @@ export default function Form({ selectedImage }) {
         {/* Upload Box */}
         <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
           <div
-            className="w-full aspect-[4/3] max-h-[70vh] rounded-xl bg-[#002D30] flex justify-center items-center cursor-pointer relative"
+            className="w-full aspect-[4/3] max-h-[70vh] rounded-xl bg-[#002D3099] flex justify-center items-center cursor-pointer relative"
           >
             <div
               className="w-full h-full border-2 border-dashed border-white rounded-xl flex justify-center items-center relative"
@@ -795,7 +814,7 @@ export default function Form({ selectedImage }) {
         <form
           onSubmit={handleSubmit}
           className="w-full xl:w-1/2 max-w-[550px] flex flex-col gap-6"
-          // className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
+        // className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
         >
           {/* Building Type (only for Interior) */}
           {/* {activeTab === "Interiors" && (
@@ -822,169 +841,166 @@ export default function Form({ selectedImage }) {
               </div>
             </div>
           )} */}
-      {/* Room Type Dropdown */}
-      <div className="space-y-2 relative">
-        <label className="text-white text-lg">
-          {activeTab === "Interiors"
-            ? "Select Room Type"
-            : activeTab === "Exteriors"
-              ? "Select House Angle"
-              : "Select Space"}
-        </label>
-        <div className="relative">
-          <select
-            name="roomType"
-            value={formData.roomType}
-            onChange={(e) => handleChange(e.target.value, "roomType")}
-            className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
-            required
-          >
-            <option value="">Select an option</option>
-            {roomTypes[activeTab].map((room) => (
-              <option key={room} value={room.toLowerCase()}>
-                {room}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
+          {/* Room Type Dropdown */}
+          <div className="space-y-2 relative">
+            <label className="text-white text-lg">
+              {activeTab === "Interiors"
+                ? "Select Room Type"
+                : activeTab === "Exteriors"
+                  ? "Select House Angle"
+                  : "Select Space"}
+            </label>
+            <div className="relative">
+              <select
+                name="roomType"
+                value={formData.roomType}
+                onChange={(e) => handleChange(e.target.value, "roomType")}
+                className="w-full p-3 pr-10 rounded-md bg-white text-[16px] font-medium text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
+                required
+              >
+                <option value="">Select an option</option>
+                {roomTypes[activeTab].map((room) => (
+                  <option key={room} value={room.toLowerCase()}>
+                    {room}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Style Selection Dropdown */}
-      <div className="space-y-2 relative">
-        <label className="text-white text-lg">Select Style</label>
-        <div className="relative">
-          <select
-            name="roomStyle"
-            value={formData.roomStyle}
-            onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
-            className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
-            required
-          >
-            <option value="">Select a style</option>
-            {styles[activeTab].map((style) => (
-              <option key={style} value={style.toLowerCase()}>
-                {style.charAt(0).toUpperCase() + style.slice(1)}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
+          {/* Style Selection Dropdown */}
+          <div className="space-y-2 relative">
+            <label className="text-white text-lg">Select Style</label>
+            <div className="relative">
+              <select
+                name="roomStyle"
+                value={formData.roomStyle}
+                onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
+                className="w-full p-3 pr-10 rounded-md bg-white text-[16px] font-medium text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
+                required
+              >
+                <option value="">Select a style</option>
+                {styles[activeTab].map((style) => (
+                  <option key={style} value={style.toLowerCase()}>
+                    {style.charAt(0).toUpperCase() + style.slice(1)}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* Number of designs Dropdown */}
-      <div className="space-y-2 relative">
-        <label className="text-white text-lg">Number of Designs</label>
-        <div className="relative">
-          <select
-            name="numDesigns"
-            value={formData.numDesigns}
-            onChange={(e) => handleChange(e.target.value, "numDesigns")}
-            className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
-          >
-            {[...Array(12).keys()].map((num) => (
-              <option key={num + 1} value={num + 1}>
-                {num + 1}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
+          {/* Number of designs Dropdown */}
+          <div className="space-y-2 relative">
+            <label className="text-white text-lg">Number of Designs</label>
+            <div className="relative">
+              <select
+                name="numDesigns"
+                value={formData.numDesigns}
+                onChange={(e) => handleChange(e.target.value, "numDesigns")}
+                className="w-full p-3 pr-10 rounded-md bg-white text-[16px] font-medium text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
+              >
+                {[...Array(12).keys()].map((num) => (
+                  <option key={num + 1} value={num + 1}>
+                    {num + 1}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* AI Strength */}
-      <div className="space-y-2">
-  <label className="text-white text-lg">AI Styling Strength</label>
-  <div className="flex flex-col gap-3">
-    {/* Row 1 */}
-    <div className="flex gap-20">
-      {["Very Low", "Low"].map((level) => (
-        <div
-          key={level}
-          className={`w-[255px] h-[45px] flex items-center gap-3 pl-4 rounded-md cursor-pointer text-[16px] transition-all ${
-            formData.aiStrength === level.toLowerCase()
-              ? "bg-[#00000066] text-[#007B82]"
-              : "bg-[#00000033] text-[#FFFFFF]"
-          }`}
-          onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
-        >
-          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-            formData.aiStrength === level.toLowerCase()
-              ? "border-[#007B82] bg-[#007B82]"
-              : "border-white"
-          }`}>
-            {formData.aiStrength === level.toLowerCase() && (
-              <div className="w-2 h-2 rounded-full bg-white"></div>
-            )}
-          </div>
-          {level}
-        </div>
-      ))}
-    </div>
+          {/* AI Strength */}
+          <div className="space-y-2">
+            <label className="text-white text-lg">AI Styling Strength</label>
+            <div className="flex flex-col gap-3">
+              {/* Row 1 */}
+              <div className="flex gap-20">
+                {["Very Low", "Low"].map((level) => (
+                  <div
+                    key={level}
+                    className={`w-[255px] h-[45px] flex items-center gap-3 pl-4 rounded-md cursor-pointer text-[16px] transition-all ${formData.aiStrength === level.toLowerCase()
+                      ? "border-[#FFFFFF1A] bg-[#FFFFFF1A] text-[#007B82]"
+                      : "border-[#FFFFFF1A] bg-[#FFFFFF1A] text-[#FFFFFF]"
 
-    {/* Row 2 */}
-    <div className="flex gap-20">
-      {["Medium", "High"].map((level) => (
-        <div
-          key={level}
-          className={`w-[255px] h-[45px] flex items-center gap-3 pl-4 rounded-md cursor-pointer text-[16px] transition-all ${
-            formData.aiStrength === level.toLowerCase()
-              ? "bg-[#00000066] text-[#007B82]"
-              : "bg-[#00000033] text-[#FFFFFF]"
-          }`}
-          onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
-        >
-          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-            formData.aiStrength === level.toLowerCase()
-              ? "border-[#007B82] bg-[#007B82]"
-              : "border-white"
-          }`}>
-            {formData.aiStrength === level.toLowerCase() && (
-              <div className="w-2 h-2 rounded-full bg-white"></div>
-            )}
+                      }`}
+                    onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.aiStrength === level.toLowerCase()
+                      ? "border-[#007B82] bg-[#007B82]"
+                      : "border-white"
+                      }`}>
+                      {formData.aiStrength === level.toLowerCase() && (
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      )}
+                    </div>
+                    {level}
+                  </div>
+                ))}
+              </div>
+
+              {/* Row 2 */}
+              <div className="flex gap-20">
+                {["Medium", "High"].map((level) => (
+                  <div
+                    key={level}
+                    className={`w-[255px] h-[45px] flex items-center gap-3 pl-4 rounded-md cursor-pointer text-[16px] transition-all ${formData.aiStrength === level.toLowerCase()
+                      ? "border-[#FFFFFF1A] bg-[#FFFFFF1A] text-[#007B82]"
+                      : "border-[#FFFFFF1A] bg-[#FFFFFF1A] text-[#FFFFFF]"
+                      }`}
+                    onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
+                  >
+                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.aiStrength === level.toLowerCase()
+                      ? "border-[#007B82] bg-[#007B82]"
+                      : "border-white"
+                      }`}>
+                      {formData.aiStrength === level.toLowerCase() && (
+                        <div className="w-2 h-2 rounded-full bg-white"></div>
+                      )}
+                    </div>
+                    {level}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-          {level}
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
-    </form>
+        </form>
       </div >
 
-    {/* Generate Button */ }
+      {/* Generate Button */}
 
-    < div
-  className = "w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
-  style = {{
-    backgroundImage:
-    "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+      < div
+        className="w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
         }
-}
+        }
 
       >
-  <button
-    type="submit"
-    onClick={handleSubmit}
-    className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
-  >
-    <span>
-      <img src={Magic} alt="magic" />
-    </span>
-    Generate Design
-  </button>
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
+        >
+          <span>
+            <img src={Magic} alt="magic" />
+          </span>
+          Generate Design
+        </button>
       </div >
     </section >
   );

@@ -177,7 +177,7 @@ export default function HeroBanner() {
           >
             <h3
               // style={{ fontFamily: "'Aptos Serif', serif" }}
-              className="text-[48px] font-semibold leading-[100%] text-white max-[4400px]:text-[28px] text-left max-[1000px]:text-center"
+              className="text-[48px] font-semibold leading-[150%] text-white max-[4400px]:text-[28px] text-left max-[1000px]:text-center"
             >
               Design Your{" "}
               <span className="text-[#FFD700]">

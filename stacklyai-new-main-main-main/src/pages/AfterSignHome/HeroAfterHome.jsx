@@ -259,7 +259,10 @@ export default function HeroAfterHome() {
         </motion.div>
       </section>
 
-
+      {/* form */}
+      <div ref={formAfterRef}>
+        <Form selectedImage={selectedImage} />
+      </div>
 
 
       {/* section-4  */}
@@ -308,20 +311,17 @@ export default function HeroAfterHome() {
 
       {/* section-6  */}
 
-      {/* form */}
-      <div ref={formAfterRef}>
-        <Form selectedImage={selectedImage} />
-      </div>
-         {/* section-5  */}
 
-  <section
-  className="w-full h-[599px] flex justify-center items-center bg-cover bg-center bg-no-repeat 
+      {/* section-5  */}
+
+      <section
+        className="w-full h-[599px] flex justify-center items-center bg-cover bg-center bg-no-repeat 
              max-[440px]:w-[440px] max-[440px]:h-[330px] max-[440px]:opacity-100 max-[440px]:rotate-0"
-  style={{ backgroundImage: `url(${sec5})` }}
->
+        style={{ backgroundImage: `url(${sec5})` }}
+      >
 
-<div
-  className="w-[1179px] h-[282px] rounded-[20px] px-[30px] py-[40px] flex flex-col justify-center items-center gap-[30px] 
+        <div
+          className="w-[1179px] h-[282px] rounded-[20px] px-[30px] py-[40px] flex flex-col justify-center items-center gap-[30px] 
              bg-[#FBA71614] backdrop-blur-[5px]
              max-[440px]:w-[371px] max-[440px]:h-[238px] 
              max-[440px]:px-[12px] max-[440px]:py-[32px] 
@@ -332,9 +332,9 @@ export default function HeroAfterHome() {
            
              max-[440px]:rotate-0 
              max-[440px]:opacity-100"
-  style={{ border: "1px solid #FFAA1780" }}
->
- 
+          style={{ border: "1px solid #FFAA1780" }}
+        >
+
           <div
             className="w-[1119px] h-[202px] flex flex-col justify-center items-center gap-[60px]
              max-[440px]:w-[348px] max-[440px]:h-[174px] max-[440px]:gap-[32px] max-[440px]:opacity-100"
@@ -354,7 +354,7 @@ export default function HeroAfterHome() {
             </div>
             <Link to="">
               {" "}
-           <div className="w-[406px] h-[60px] flex justify-center items-center gap-[10px] 
+              <div className="w-[406px] h-[60px] flex justify-center items-center gap-[10px] 
                 rounded-[8px] bg-[linear-gradient(180deg,#FFAB18_0.09%,#99670E_142.59%)] 
                 shadow-[0px_6px_4px_0px_#00000040] 
                 font-['Inter'] font-[700] text-[20px] leading-[35px] text-center text-white 
@@ -366,14 +366,16 @@ export default function HeroAfterHome() {
                 max-[440px]:border max-[440px]:border-solid max-[440px]:border-white 
                 max-[440px]:text-[16px] max-[440px]:leading-[35px] max-[440px]:font-bold 
                 max-[440px]:whitespace-nowrap max-[440px]:opacity-100">
-  Unlock Unlimited with Gold Plan
-</div>
+                Unlock Unlimited with Gold Plan
+              </div>
 
 
             </Link>
           </div>
         </div>
       </section>
+
+
 
       {/* section-7  */}
 
