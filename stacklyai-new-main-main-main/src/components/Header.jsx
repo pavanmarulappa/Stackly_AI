@@ -649,10 +649,10 @@ export default function Header() {
   const [isHovered, setIsHovered] = useState(false);
   
   // Track screen size
-  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 441);
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 779);
   useEffect(() => {
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth < 441);
+      setIsSmallScreen(window.innerWidth < 779 );
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

@@ -4,13 +4,14 @@ import Bg from "../../assets/contact/sec2bg.png";
 export default function PricingFaq() {
   const [activeIndex, setActiveIndex] = useState(null);
   const [faqCategory, setFaqCategory] = useState(0); // 0 = Get to Know, 1 = Pricing, 2 = API
+  const [visibleCount, setVisibleCount] = useState(4); // Number of FAQs to show initially
 
   const toggleFAQ = (index) => {
     setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
   };
 
   const faqs = [
-    // Group 1: Get to Know Stackly
+    // Group 1: Get to Know Stackly (6 items)
     {
       question: "What is Stackly AI?",
       answer: "Stackly AI is an intelligent platform designed to streamline your tasks using automation and smart tools. It helps enhance productivity by offering tailored solutions based on your needs.",
@@ -27,54 +28,90 @@ export default function PricingFaq() {
       question: "How do I contact Stackly AI?",
       answer: "You can reach out to Stackly AI by sending an email to support@stackly.ai or by filling out the contact form on our website's Contact Us page. We're here to help with any questions, feedback, or support you may need.",
     },
+    {
+      question: "What makes Stackly AI different?",
+      answer: "Stackly AI stands out with its intuitive interface, powerful automation capabilities, and customizable workflows that adapt to your specific needs.",
+    },
+    {
+      question: "Is there a mobile app available?",
+      answer: "Yes, Stackly AI is available on both iOS and Android platforms, allowing you to manage your tasks on the go.",
+    },
 
-    // Group 2: Plans & Pricing
+    // Group 2: Plans & Pricing (6 items)
     {
       question: "How do I get started with StacklyAI APIs?",
-      answer: "Stackly AI is an intelligent platform designed to streamline your tasks using automation and smart tools. It helps enhance productivity by offering tailored solutions based on your needs.",
+      answer: "Getting started is easy! Simply sign up for an account, choose your plan, and you'll gain immediate access to our API documentation and endpoints.",
     },
     {
       question: "What authentication method does StacklyAI use?",
-      answer: "Stackly AI works by analyzing your input and tasks, then offering automated suggestions, integrations, and tools to make your workflow more efficient and seamless.",
+      answer: "We use OAuth 2.0 for secure authentication, along with API keys for simpler integrations.",
     },
     {
       question: "Are there any rate limits on API requests?",
-      answer: "Stackly AI offers both free and premium plans. The free plan includes essential features, while premium plans unlock advanced capabilities and integrations.",
+      answer: "Yes, rate limits apply based on your subscription plan. Free tier has lower limits while premium plans offer higher thresholds.",
     },
     {
       question: "What image formats do StacklyAI APIs support?",
-      answer: "You can reach out to Stackly AI through our support page, via email at support@stackly.ai, or use the chat feature on our website for instant assistance.",
+      answer: "Our APIs support common formats like JPG, PNG, and GIF, with additional formats available in enterprise plans.",
+    },
+    {
+      question: "Can I upgrade my plan at any time?",
+      answer: "Absolutely! You can upgrade your plan anytime from your account dashboard, with prorated charges for the remaining billing period.",
+    },
+    {
+      question: "Is there a free trial for premium features?",
+      answer: "Yes, we offer a 14-day free trial for all premium features so you can test them before committing.",
     },
 
-    // Group 3: API Integration
+    // Group 3: API Integration (6 items)
     {
       question: "What do I get with a STACKLY AI membership?",
-      answer: "Stackly AI is an intelligent platform designed to streamline your tasks using automation and smart tools. It helps enhance productivity by offering tailored solutions based on your needs.",
+      answer: "Membership includes access to all core features, priority support, and regular updates with new capabilities.",
     },
     {
       question: "Is the API available for all users?",
-      answer: "Stackly AI works by analyzing your input and tasks, then offering automated suggestions, integrations, and tools to make your workflow more efficient and seamless.",
+      answer: "API access is available to all users, with different access levels based on your subscription tier.",
     },
     {
       question: "What can I do with the STACKLY AI API?",
-      answer: "Stackly AI offers both free and premium plans. The free plan includes essential features, while premium plans unlock advanced capabilities and integrations.",
+      answer: "Our API allows you to integrate AI capabilities into your own applications, automate workflows, and build custom solutions.",
     },
     {
       question: "Can I cancel or change my membership anytime?",
-      answer: "Stackly AI supports multiple image formats. You can also reach out via our support page or chat for any format-specific queries.",
+      answer: "Yes, you can modify or cancel your membership at any time through your account settings.",
+    },
+    {
+      question: "How to handle other image formats e.g. HEIC, HEIF etc?",
+      answer: "For unsupported image formats, you can contact support. We provide guidance or tools to convert and use those formats.",
+    },
+    {
+      question: "What is the expiration period for my credit pack?",
+      answer: "Credit packs typically have an expiration of 12 months from the purchase date. Check your account for details.",
     },
   ];
 
+  const categoryRanges = [
+    { start: 0, end: 6 },  // Get to Know Stackly (6 items)
+    { start: 6, end: 12 }, // Plans & Pricing (6 items)
+    { start: 12, end: 18 } // API Integration (6 items)
+  ];
+
   const getFaqSlice = () => {
-    const start = faqCategory * 4;
-    const end = start + 4;
-    return faqs.slice(start, end);
+    const { start } = categoryRanges[faqCategory];
+    return faqs.slice(start, start + visibleCount);
   };
 
+  const handleViewAll = () => {
+    const totalInCategory = categoryRanges[faqCategory].end - categoryRanges[faqCategory].start;
+    setVisibleCount(prev => prev >= totalInCategory ? 4 : totalInCategory);
+  };
+
+  const currentCategoryCount = categoryRanges[faqCategory].end - categoryRanges[faqCategory].start;
+
   return (
-    <section className="w-full h-[804px] relative overflow-x-hidden mt-[-13px]">
+    <section className="w-full h-auto min-h-[746px] relative overflow-x-hidden mt-[-13px]">
       {/* Full-width background image */}
-      <div 
+      <div
         className="absolute inset-0 -z-10"
         style={{
           backgroundImage: `url(${Bg})`,
@@ -113,12 +150,14 @@ export default function PricingFaq() {
               }}
             >
               <button
-                className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${
-                  faqCategory === 0
+                className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${faqCategory === 0
                     ? "text-white bg-gradient-to-r from-[#007B82] to-[#001A1C]"
                     : "text-[#007B82] bg-white hover:bg-[#F0F0F0]"
-                }`}
-                onClick={() => setFaqCategory(0)}
+                  }`}
+                onClick={() => {
+                  setFaqCategory(0);
+                  setVisibleCount(4);
+                }}
               >
                 Get to Know Stackly
               </button>
@@ -133,12 +172,14 @@ export default function PricingFaq() {
               }}
             >
               <button
-                className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${
-                  faqCategory === 1
+                className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${faqCategory === 1
                     ? "text-white bg-gradient-to-r from-[#007B82] to-[#001A1C]"
                     : "text-[#007B82] bg-white hover:bg-[#F0F0F0]"
-                }`}
-                onClick={() => setFaqCategory(1)}
+                  }`}
+                onClick={() => {
+                  setFaqCategory(1);
+                  setVisibleCount(4);
+                }}
               >
                 Plans & Pricing
               </button>
@@ -153,12 +194,14 @@ export default function PricingFaq() {
               }}
             >
               <button
-                className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${
-                  faqCategory === 2
+                className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${faqCategory === 2
                     ? "text-white bg-gradient-to-r from-[#007B82] to-[#001A1C]"
                     : "text-[#007B82] bg-white hover:bg-[#F0F0F0]"
-                }`}
-                onClick={() => setFaqCategory(2)}
+                  }`}
+                onClick={() => {
+                  setFaqCategory(2);
+                  setVisibleCount(4);
+                }}
               >
                 API Integration
               </button>
@@ -167,29 +210,26 @@ export default function PricingFaq() {
         </div>
 
         {/* FAQ Items */}
-        <div className="w-[1288px] h-[408px] rounded-[16px] p-6 md:p-12 space-y-4 mt-8">
+        <div className="w-full max-w-[1288px] rounded-[16px] p-6 md:p-12 space-y-4 mt-8">
           {getFaqSlice().map((faq, index) => (
             <div
               key={index}
-              className={`rounded-lg overflow-hidden shadow-md shadow-[#00000085] transition-all duration-300 ${
-                activeIndex === index ? "bg-[#007B82]/10" : "bg-[#FFFFFF4D]"
-              }`}
+              className={`rounded-lg overflow-hidden shadow-md shadow-[#00000085] transition-all duration-300 ${activeIndex === index ? "bg-[#007B82]/10" : "bg-[#FFFFFF4D]"
+                }`}
             >
               <button
-                className={`w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none transition-colors duration-300 ${
-                  activeIndex === index
+                className={`w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none transition-colors duration-300 ${activeIndex === index
                     ? "bg-[#007B82] text-white"
                     : "text-[#FFFFFF]"
-                }`}
+                  }`}
                 onClick={() => toggleFAQ(index)}
               >
                 <span className="text-base md:text-lg font-medium">
                   {faq.question}
                 </span>
                 <svg
-                  className={`w-5 h-5 transform transition-transform duration-200 ${
-                    activeIndex === index ? "rotate-180 text-white" : ""
-                  }`}
+                  className={`w-5 h-5 transform transition-transform duration-200 ${activeIndex === index ? "rotate-180 text-white" : ""
+                    }`}
                   viewBox="0 0 20 20"
                   fill="currentColor"
                 >
@@ -208,6 +248,19 @@ export default function PricingFaq() {
             </div>
           ))}
         </div>
+
+        {/* View All Button */}
+        {/* View All Button */}
+        {currentCategoryCount > 4 && (
+          <div className="mt-[-4px] mb-[-3px]">
+            <button
+              onClick={handleViewAll}
+              className="px-6 py-2 bg-transparent border border-[#007B82] text-[#FFFFFF] text-[14px] underline rounded-lg hover:text-white transition-colors duration-300"
+            >
+              {visibleCount >= currentCategoryCount ? 'Show Less' : 'View All'}
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
