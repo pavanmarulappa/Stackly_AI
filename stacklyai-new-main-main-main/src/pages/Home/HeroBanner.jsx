@@ -180,7 +180,7 @@ export default function HeroBanner() {
               className="text-[48px] font-semibold leading-[150%] text-white max-[4400px]:text-[28px] text-left max-[1000px]:text-center"
             >
               Design Your{" "}
-              <span className="text-[#FFD700]">
+              <span className="text-[#FFA805]">
                 {["“Interiors”", "“Kitchen”", "“Balcony”", "“Living Room”"][changeText]}
               </span>
               <br />

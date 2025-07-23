@@ -453,27 +453,22 @@ CHANNEL_LAYERS = {
     },
 }
 handler403 = 'stackly_admin.views.permission_denied'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+"""EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # or your mail server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sravannaala@gmail.com'
 EMAIL_HOST_PASSWORD = 'ystt qbik esuu srsb' 
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER # use app password for Gmail
-# Only needed if you want email setup ready for production later
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER #use app password for Gmail"""
 
-"""from fastapi_app.config import settings
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST  = os.getenv('SMTP_HOST')
+EMAIL_PORT = int(os.getenv('SMTP_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_HOST_USER = os.getenv('SMTP_USER')
+EMAIL_HOST_PASSWORD = os.getenv('SMTP_PASS')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-if not settings.DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.gmail.com'  # Example for Gmail
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = 'your_email@example.com'   # Will be set in .env later
-    EMAIL_HOST_PASSWORD = 'your_password'      # Will be set in .env later
-    DEFAULT_FROM_EMAIL = 'noreply@example.com'
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'"""
 
 
 CSRF_TRUSTED_ORIGINS = [

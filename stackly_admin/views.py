@@ -32,6 +32,20 @@ from django.utils import timezone
 from datetime import timedelta
 from django.utils.dateparse import parse_datetime
 from datetime import datetime
+from django.utils import timezone
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('SMTP_HOST')
+EMAIL_PORT = int(os.getenv('SMTP_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS') == 'True'
+EMAIL_HOST_USER = os.getenv('SMTP_USER')
+EMAIL_HOST_PASSWORD = os.getenv('SMTP_PASS')
+DEFAULT_FROM_EMAIL = os.getenv('EMAIL_FROM')
+SUPERADMIN_EMAIL =os.getenv('SUPERADMIN_EMAIL')
 
 
 ADMIN_ROLES = ['Admin', 'Moderator']
@@ -547,7 +561,7 @@ def edit_coupon(request, id):
             coupon.discount_percentage = discount_percentage
             coupon.description = description
             coupon.valid_from = valid_from
-            coupon.valid_to = valid_to
+            coupon.valid_to = timezone.make_aware(valid_to)
             coupon.max_uses = max_uses
 
             # Plan-specific coupon
@@ -834,15 +848,18 @@ def settings_view(request):
     })
 
 def contact_us_admin(request):
-    notifications = Notification.objects.filter(register=request.user).order_by('-created_at')
-    unread_count = notifications.filter(is_read=False).count()  # Count unread notifications before slicing
-    notifications = notifications[:5]  # Now slice the notifications
     message = None
     error = None
+
+    # ✅ Check login before anything else
     if not request.user.is_authenticated:
         return redirect('login')  # or your login page
-    
-    # Get the user's profile
+
+    # ✅ Now it's safe to use request.user
+    notifications = Notification.objects.filter(register=request.user).order_by('-created_at')
+    unread_count = notifications.filter(is_read=False).count()
+    notifications = notifications[:5]
+
     try:
         profiles = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
@@ -882,7 +899,7 @@ Stackly Automated Support System
                     subject=f"Support Request: {subject}",
                     body=full_message,
                     from_email=settings.EMAIL_HOST_USER,
-                    to=['sravankumarnala@gmail.com'],
+                    to=[os.getenv('SUPERADMIN_EMAIL')],
                     reply_to=[email],
                 )
 
@@ -897,7 +914,13 @@ Stackly Automated Support System
             except Exception as e:
                 error = f"An error occurred while sending the message: {str(e)}"
 
-    return render(request, 'contact_us.html', {'message': message, 'error': error, 'profiles':profiles,'notifications':notifications,'unread_count':unread_count})
+    return render(request, 'contact_us.html', {
+        'message': message,
+        'error': error,
+        'profiles': profiles,
+        'notifications': notifications,
+        'unread_count': unread_count
+    })
 
 
 def help_center(request):

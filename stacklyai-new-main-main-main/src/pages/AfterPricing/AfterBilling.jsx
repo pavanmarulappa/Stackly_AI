@@ -652,45 +652,45 @@ export default function AfterBilling() {
               </div>
 
               {/* Right side - Plan Details */}
+
+
+
               <div className="w-[426px] h-[504px] border-[1.5px] flex flex-col justify-center items-center gap-[px]">
                 <div className="w-[384.54px] h-[327.96px] rounded-[16px] bg-[#007B82B2] backdrop-blur-32 px-[20px] py-[50px] gap-[20px] flex flex-col justify-start">
                   <div className="font-semibold text-[24px] leading-[100%] text-[white]">
                     Plan Details
                   </div>
 
-                  <div className="w-[334.79px] h-auto rounded-[16px] p-[16px] bg-[#007B82] flex flex-col gap-[8px]">
-                    <div className="flex w-full">
-                      <div className="w-[50%] text-white font-medium">
+                  <div className="w-[334.79px] h-[192.92px] rounded-[16px] p-[16px] bg-[#007B82] flex flex-col justify-center items-center ">
+                    <div className="w-[303px] h-[128px] flex">
+                      <div className="w-[50%] h-[32px] flex justify-start items-center text-[white] font-medium">
                         Plan Name
                       </div>
-                      <div className="w-[50%] text-white font-semibold">
+                      <div className="w-[50%] h-[32px] flex justify-start items-center text-white font-semibold">
                         {plan.name}
                       </div>
                     </div>
-
-                    <div className="flex w-full">
-                      <div className="w-[50%] text-white font-medium">
+                    <div className="w-[303px] h-[128px] flex">
+                      <div className="w-[50%] h-[32px] flex justify-start items-center text-[white] font-medium">
                         Price
                       </div>
-                      <div className="w-[50%] text-white font-semibold">
+                      <div className="w-[50%] h-[32px] flex justify-start items-center text-white font-semibold">
                         ${plan.price}
                       </div>
                     </div>
-
-                    <div className="flex w-full">
-                      <div className="w-[50%] text-white font-medium">
+                    <div className="w-[303px] h-[128px] flex">
+                      <div className="w-[50%] h-[32px] flex justify-start items-center text-[white] font-medium">
                         Duration
                       </div>
-                      <div className="w-[50%] text-white font-semibold">
+                      <div className="w-[50%] h-[32px] flex justify-start items-center text-white font-semibold">
                         {plan.validity_days}
                       </div>
                     </div>
-
-                    <div className="flex w-full">
-                      <div className="w-[50%] text-white font-medium">
+                    <div className="w-[303px] h-[128px] flex">
+                      <div className="w-[50%] h-[32px] flex justify-start items-center text-[white] font-medium">
                         Discount
                       </div>
-                      <div className="w-[50%] text-white font-semibold">
+                      <div className="w-[50%] h-[32px] flex justify-start items-center text-white font-semibold">
                         {plan.offerCode}
                       </div>
                     </div>
@@ -699,11 +699,11 @@ export default function AfterBilling() {
 
                 <div className="w-[384.54px] h-[176.04px] rounded-[16px] bg-[#007B82B2] flex items-end py-5 px-5">
                   <div className="w-[334.79px] h-[66.32px] flex justify-between items-center">
-                    <div className="flex flex-col justify-center items-center">
-                      <div className="text-white text-[14px] font-[400]">
+                    <div className="w-[84px] h-[55px] flex flex-col justify-center items-center">
+                      <div className="w-[77px] h-[17px] font-[400] text-[14px] leading-[100%] text-white">
                         Grand Total
                       </div>
-                      <div className="text-white text-[25px] font-[600]">
+                      <div className="font-[600] text-[25px] leading-[100%] text-[white]">
                         ${plan.price}
                       </div>
                     </div>
@@ -713,10 +713,10 @@ export default function AfterBilling() {
                     </div>
                   </div>
                 </div>
-
                 <div className="w-[50px] h-[50px] rounded-[50px] bg-white absolute top-[480px] right-[450px]"></div>
-                <div className="w-[50px] h-[50px] rounded-[50px] bg-white absolute top-[480px] right-[70px]"></div>
-                <div className="w-[60%] border-[2px] border-dashed border-white absolute top-[505px]"></div>
+                <div className="w-[50px] h-[50px] rounded-[50px] bg-white absolute  top-[480px] right-[70px]"></div>
+                {/* <div className="w-[20%] border-[2px] border-dashed border-white absolute top-[505px]"></div> */}
+                <div className="w-[360px] border-[2px] border-dashed border-white absolute top-[505px]"></div>
               </div>
             </div>
           </div>

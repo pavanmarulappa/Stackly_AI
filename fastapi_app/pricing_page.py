@@ -1022,47 +1022,55 @@ stripe.api_key = STRIPE_SECRET_KEY
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def get_price_for_plan(plan: str, duration: str) -> float:
-    pricing = {
-        "silver": {"monthly": 100.00, "yearly": 500.00},
-        "gold": {"monthly": 200.00, "yearly": 700.00},
-        "platinum": {"monthly": 300.00, "yearly": 900.00},
-        "basic": {"monthly": 0.00, "yearly": 0.00},
-    }
-    if plan not in pricing or duration not in pricing[plan]:
-        raise ValueError(f"Invalid plan or duration: {plan}, {duration}")
-    return pricing[plan][duration]
+from stackly_admin.models import Plan, CouponCode, User
+from asgiref.sync import sync_to_async
+from decimal import Decimal
 
-def get_total_members(plan: str) -> int:
-    return {
-        "basic": 1,
-        "silver": 1,
-        "gold": 5,
-        "platinum": 7
-    }.get(plan.lower(), 1)
+async def get_price_for_plan(plan_id: int) -> float:
+    plan_obj = await sync_to_async(Plan.objects.filter(id=plan_id, is_active=True).first)()
+    if not plan_obj:
+        raise ValueError(f"Invalid or inactive plan ID: {plan_id}")
+    return float(plan_obj.price)
 
-def get_credits_for_plan(plan: str) -> int:
-    return {
-        "basic": 10,
-        "silver": 20,
-        "gold": 50,
-        "platinum": 100  # or -1 for unlimited
-    }.get(plan.lower(), 0)
+async def get_validity_days_for_plan(plan_id: int) -> int:
+    plan_obj = await sync_to_async(Plan.objects.filter(id=plan_id, is_active=True).first)()
+    if not plan_obj:
+        raise ValueError(f"Invalid or inactive plan ID: {plan_id}")
+    return plan_obj.validity_days
 
-def get_discount_for_coupon(coupon_code: str, original_price: float) -> float:
-    discount_percentage = 0
-    if coupon_code == "DISCOUNT20":
-        discount_percentage = 20
-    # Extend coupon logic here
-    return (original_price * discount_percentage) / 100
+async def get_max_api_calls_for_plan(plan_id: int) -> int:
+    plan_obj = await sync_to_async(Plan.objects.filter(id=plan_id, is_active=True).first)()
+    if not plan_obj:
+        raise ValueError(f"Invalid or inactive plan ID: {plan_id}")
+    return plan_obj.max_api_calls
 
-def get_credits_for_plan(plan: str) -> int:
-    return {
-        "basic": 10,
-        "silver": 20,
-        "gold": 50,
-        "platinum": 100  # or -1 for unlimited
-    }.get(plan.lower(), 0)
+async def get_discount_for_coupon(coupon_code: str, original_price: float, plan_id: int = None, user_id: int = None) -> float:
+    now = timezone.now()
+    coupon = await sync_to_async(CouponCode.objects.filter(code__iexact=coupon_code, is_active=True, valid_from__lte=now, valid_to__gte=now).first)()
+
+    if not coupon:
+        return 0.0
+    
+    # Check plan and user conditions based on your CouponCode model logic
+    if coupon.coupon_type == 'plan_specific' and plan_id:
+        if coupon.plan_id != plan_id:
+            return 0.0
+
+    if coupon.coupon_type == 'user_specific' and user_id:
+        if coupon.user_id != user_id:
+            return 0.0
+
+    if not coupon.is_valid():
+        return 0.0
+
+    discount_amount = (Decimal(original_price) * Decimal(coupon.discount_percentage)) / 100
+    return float(discount_amount)
+
+async def get_credits_for_plan(plan_id: int) -> int:
+    plan_obj = await sync_to_async(Plan.objects.filter(id=plan_id, is_active=True).first)()
+    if not plan_obj:
+        raise ValueError(f"Invalid or inactive plan ID: {plan_id}")
+    return plan_obj.max_api_calls
 
 class BillingInfoModel(BaseModel):
     full_name: str
@@ -1117,62 +1125,89 @@ Your Team
     except Exception as e:
         print(f"Failed to send email: {e}")
 
+def safe_str(value):
+    return str(value) if value is not None else ""
+
 
 @router.post("/create-checkout-session/")
 async def create_checkout_session(subscription_data: SubscriptionData):
     try:
-        #user = await sync_to_async(UserData.objects.get)(id=user_id)
+        # Fetch user
         user = await sync_to_async(UserData.objects.filter(id=subscription_data.userid).first)()
         if not user:
             raise HTTPException(status_code=404, detail="User not found with this ID")
         
-        price = get_price_for_plan(subscription_data.plan, subscription_data.duration)
-        if subscription_data.coupon_code:
-            discount = get_discount_for_coupon(subscription_data.coupon_code, price)
-            price -= discount
-            price = max(price, 0.0)
+        # Fetch plan object dynamically from DB
+        plan_obj = await sync_to_async(Plan.objects.filter(name__iexact=subscription_data.plan, is_active=True).first)()
+        if not plan_obj:
+            raise HTTPException(status_code=404, detail=f"Plan '{subscription_data.plan}' not found or inactive")
+        
+        price = float(plan_obj.price)
+        discount = 0.0
+        used_credits = 0  # Assuming credits logic comes later or zero for now
 
+        if subscription_data.coupon_code:
+            coupon = await sync_to_async(CouponCode.objects.filter(
+                code=subscription_data.coupon_code, is_active=True,
+                valid_from__lte=timezone.now(), valid_to__gte=timezone.now()
+            ).first)()
+            
+            if coupon:
+                discount = (price * coupon.discount_percentage) / 100
+            else:
+                raise HTTPException(status_code=400, detail="Invalid or expired coupon code")
+
+        final_price = max(price - discount, 0.0)
+
+        # Prepare billing info JSON
         billing_info_str = json.dumps({
-            "full_name": subscription_data.billing_info.full_name,
-            "email": subscription_data.billing_info.email ,
-            "phone_number": subscription_data.billing_info.phone_number,
-            "street_address": subscription_data.billing_info.street_address,
-            "city": subscription_data.billing_info.city,
-            "state": subscription_data.billing_info.state,
-            "country": subscription_data.billing_info.country,
-            "pincode": subscription_data.billing_info.pincode
+            "full_name": safe_str(subscription_data.billing_info.full_name),
+            "email": safe_str(subscription_data.billing_info.email),
+            "phone_number": safe_str(subscription_data.billing_info.phone_number),
+            "street_address": safe_str(subscription_data.billing_info.street_address),
+            "city": safe_str(subscription_data.billing_info.city),
+            "state": safe_str(subscription_data.billing_info.state),
+            "country": safe_str(subscription_data.billing_info.country),
+            "pincode": safe_str(subscription_data.billing_info.pincode)
         })
 
+        # Create Stripe checkout session
         checkout_session = stripe.checkout.Session.create(
-            payment_method_types=['card'],
-            line_items=[{
-                'price_data': {
-                    'currency': 'inr',
-                    'product_data': {
-                        'name': f"{subscription_data.plan.capitalize()} Plan - {subscription_data.duration.capitalize()}"
-                    },
-                    'unit_amount': int(price * 100),
+        payment_method_types=['card'],
+        line_items=[{
+            'price_data': {
+                'currency': 'inr',
+                'product_data': {
+                    'name': f"{plan_obj.name.capitalize()} Plan - {subscription_data.duration.capitalize()}"
                 },
-                'quantity': 1
-            }],
-            mode='payment',
-            success_url=FRONTEND_SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}",
-            cancel_url=FRONTEND_CANCEL_URL,
-            metadata={
-                "user_id": str(subscription_data.userid),
-                "email": str(subscription_data.email),
-                "userid": str(subscription_data.userid),
-                "plan": str(subscription_data.plan),
-                "duration": str(subscription_data.duration),
-                "coupon_code": str(subscription_data.coupon_code),
-                "payment_method": str(subscription_data.payment_method),
-                "billing_info": billing_info_str,
-                "payment_success": str(subscription_data.payment_success)
-            }
-        )
+                'unit_amount': int(final_price * 100),
+            },
+            'quantity': 1
+        }],
+        mode='payment',
+        success_url=FRONTEND_SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url=FRONTEND_CANCEL_URL,
+        metadata={
+            "user_id": safe_str(subscription_data.userid),
+            "email": safe_str(subscription_data.email),
+            "plan": safe_str(plan_obj.name),
+            "duration": safe_str(subscription_data.duration),
+            "coupon_code": safe_str(subscription_data.coupon_code),
+            "payment_method": safe_str(subscription_data.payment_method),
+            "billing_info": billing_info_str,
+            "payment_success": safe_str(subscription_data.payment_success),
+            "max_api_calls": safe_str(plan_obj.max_api_calls),
+            "original_price": str(price),
+            "discount_amount": str(discount),
+            "used_credits": str(used_credits)
+        }
+    )
+
         return {"checkout_url": checkout_session.url}
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
 
 def generate_api_key():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=32))
@@ -1182,6 +1217,12 @@ def create_unique_api_key():
         api_key = generate_api_key()
         if not APIKeyManager.objects.filter(active_keys=api_key).exists():
             return api_key
+        
+def safe_float(val):
+    try:
+        return float(val)
+    except (TypeError, ValueError):
+        return 0.0
 
 @router.post("/stripe-webhook/")
 async def stripe_webhook(request: Request):
@@ -1251,11 +1292,11 @@ async def verify_payment(session_id: str = Query(..., description="Stripe Checko
             }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error verifying payment: {str(e)}")
-    
+
 @router.post("/update-subscription/")
 async def update_subscription(session_id: str):
     try:
-        # Check if this session has already been processed
+        # Check if session already processed
         existing_billing = await sync_to_async(BillingHistory.objects.filter(transaction_id=session_id).exists)()
         if existing_billing:
             return {"message": "This session has already been processed"}
@@ -1265,86 +1306,92 @@ async def update_subscription(session_id: str):
         metadata = checkout_session.metadata
         payment_intent_id = checkout_session.payment_intent
 
-        # Retrieve user from metadata
-        user_id = int(metadata.get("user_id"))
-        user = await sync_to_async(UserData.objects.get)(id=user_id)
-        user_email = user.email
-
-        # Load billing info from metadata
-        billing_info_data = json.loads(metadata.get("billing_info", "{}"))
-
         if checkout_session.payment_status != "paid":
             raise HTTPException(status_code=400, detail="Payment not successful.")
+
+        # Retrieve user
+        user_id = int(metadata.get("user_id"))
+        user = await sync_to_async(UserData.objects.get)(id=user_id)
+
+        # Load billing info
+        billing_info_data = json.loads(metadata.get("billing_info", "{}"))
 
         @sync_to_async
         @transaction.atomic
         def perform_db_operations():
-            # Step 1: Calculate prices and discount
-            plan = metadata["plan"].lower()
+            plan_name = metadata["plan"].lower()
             duration = metadata["duration"]
-            original_price = get_price_for_plan(plan, duration)
-            discount_amount = get_discount_for_coupon(metadata.get("coupon_code"), original_price)
-            discount_price = original_price - discount_amount
 
-            discount_percent = round((discount_amount / original_price) * 100) if discount_amount > 0 else 0
+            # Fetch Plan object
+            plan_obj = Plan.objects.filter(name__iexact=plan_name, is_active=True).first()
+            if not plan_obj:
+                raise Exception(f"Plan '{plan_name}' not found or inactive")
 
-            # Step 2: Update UserSubscription
+            original_price = safe_float(plan_obj.price)
+
+            # Apply coupon if available
+            discount_amount = 0.0
+            coupon_code = metadata.get("coupon_code")
+            if coupon_code:
+                coupon = CouponCode.objects.filter(
+                    code=coupon_code, is_active=True,
+                    valid_from__lte=timezone.now(), valid_to__gte=timezone.now()
+                ).first()
+                if coupon:
+                    discount_amount = (original_price * coupon.discount_percentage) / 100
+
+            discount_price = max(original_price - discount_amount, 0.0)
+            discount_percent = round((discount_amount / original_price) * 100) if discount_amount else 0
+
+            # Update subscription
             subscription, _ = UserSubscription.objects.get_or_create(user=user)
-            subscription.current_plan = plan
+            start_date = timezone.now().date()
+            expiry_date = start_date + (relativedelta(years=1) if duration == "yearly" else relativedelta(months=1))
+            used_credits = int(metadata.get("used_credits", 0))
+
+            subscription.current_plan = plan_name
             subscription.duration = duration
-            subscription.start_date = timezone.now().date()
-            subscription.expiry_date = subscription.start_date + relativedelta(years=1) if duration == "yearly" else subscription.start_date + relativedelta(months=1)
-            subscription.renews_on = subscription.expiry_date
-            subscription.total_price = original_price
+            subscription.start_date = start_date
+            subscription.expiry_date = expiry_date
+            subscription.renews_on = expiry_date
+            subscription.original_price = original_price
             subscription.discount_price = discount_price
             subscription.discount_amount = discount_amount
             subscription.discount_percentage = discount_percent
             subscription.is_active = True
-            subscription.total_credits = get_credits_for_plan(plan)
-            if subscription.duration == "yearly":
-                subscription.expiry_date = subscription.start_date + relativedelta(years=1)
-            else:
-                subscription.expiry_date = subscription.start_date + relativedelta(months=1)
+            subscription.total_credits = plan_obj.max_api_calls
+            subscription.used_credits=used_credits
+            subscription.coupon_code=coupon_code
             subscription.save()
 
-
-            # Step 3: Always assign a new API key and move old ones to revoked
-            usage_count = 0
+            # Manage API keys
             new_api_key = create_unique_api_key()
+            api_key_manager, _ = APIKeyManager.objects.get_or_create(user=user)
 
-            api_key_manager, created = APIKeyManager.objects.get_or_create(user=user)
-
-            # Load active_keys safely as a list
             try:
                 active_keys = json.loads(api_key_manager.active_keys) if isinstance(api_key_manager.active_keys, str) else (api_key_manager.active_keys or [])
-            except Exception:
+            except:
                 active_keys = []
 
-            # Load revoked_keys safely as a list
             try:
                 revoked_keys = json.loads(api_key_manager.revoked_keys) if isinstance(api_key_manager.revoked_keys, str) else (api_key_manager.revoked_keys or [])
-            except Exception:
+            except:
                 revoked_keys = []
 
-            # Move existing active keys to revoked
             revoked_keys.extend(active_keys)
-
-            # Set new key as the only active key
             api_key_manager.active_keys = json.dumps([new_api_key])
             api_key_manager.revoked_keys = json.dumps(revoked_keys)
-
-            # Update APIKeyManager details
-            api_key_manager.plan = plan
-            api_key_manager.monthly_credits = get_credits_for_plan(plan)
-            api_key_manager.usage_count = usage_count
+            api_key_manager.plan = plan_name
+            api_key_manager.monthly_credits = plan_obj.max_api_calls
+            api_key_manager.usage_count = 0
             api_key_manager.is_active = True
             api_key_manager.save()
 
-            # Step 4: Save billing info
+            # Save billing info
             billing_info = BillingInfo.objects.create(
                 user=user,
                 full_name=billing_info_data.get("full_name", ""),
-                email=billing_info_data.get("email",""),
+                email=billing_info_data.get("email", ""),
                 phone_number=billing_info_data.get("phone_number", ""),
                 street_address=billing_info_data.get("street_address", ""),
                 city=billing_info_data.get("city", ""),
@@ -1353,30 +1400,30 @@ async def update_subscription(session_id: str):
                 zip_code=billing_info_data.get("pincode", "")
             )
 
-            # Step 5: Create billing history
-            invoice_id = f"INV-{timezone.now().strftime('%Y%m%d')}-{random.randint(1000, 9999)}"
+            # Create billing history
+            invoice_id = f"INV-{timezone.now().strftime('%Y%m%d')}-{random.randint(1000,9999)}"
             billing = BillingHistory.objects.create(
                 user=user,
-                plan_name=plan,
+                plan_name=plan_name,
                 amount=discount_price,
                 payment_method=metadata.get("payment_method", "unknown"),
                 status="paid",
                 invoice_id=invoice_id,
                 transaction_id=payment_intent_id,
-                paid_on=timezone.now().date()
+                paid_on=start_date
             )
 
-            # Step 6: Generate invoice PDF
+            # Generate PDF invoice
             invoice_path = generate_invoice_pdf({
                 "customer_name": billing_info.full_name,
                 "email": billing_info.email,
                 "invoice_id": invoice_id,
                 "paid_on": billing.paid_on.strftime("%d-%m-%Y"),
-                "renews_on": subscription.renews_on.strftime("%d-%m-%Y"),
-                "plan": plan,
+                "renews_on": expiry_date.strftime("%d-%m-%Y"),
+                "plan": plan_name,
                 "duration": duration,
-                "start_date": subscription.start_date.strftime("%d-%m-%Y"),
-                "expire_date": subscription.expiry_date.strftime("%d-%m-%Y"),
+                "start_date": start_date.strftime("%d-%m-%Y"),
+                "expire_date": expiry_date.strftime("%d-%m-%Y"),
                 "amount": original_price,
                 "discount_price": discount_price,
                 "discount_amount": discount_amount,
@@ -1388,7 +1435,7 @@ async def update_subscription(session_id: str):
             billing.invoice = invoice_path
             billing.save()
 
-            # Step 7: Send invoice to customer
+            # Send invoice via email
             send_invoice_email(
                 to_email=billing_info.email,
                 customer_name=billing_info.full_name,
@@ -1402,7 +1449,8 @@ async def update_subscription(session_id: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
-    
+
+
 def send_payment_failure_email(to_email: str, name: str):
     try:
         msg = EmailMessage()
