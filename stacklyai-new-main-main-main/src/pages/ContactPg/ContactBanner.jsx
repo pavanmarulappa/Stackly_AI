@@ -32,10 +32,11 @@ import React from "react";
 import logo from "../../assets/pricing-pg/logo.png"; // replace with your logo path
 import iconChat from "../../assets/pricing-pg/chat.png"; // faded background icon
 import iconNote from "../../assets/pricing-pg/pad.png"; // another background icon
+import BG from "../../assets/contactus/Ellipse.png";
 
 const ContactBanner = () => {
   return (
-   <section className="relative flex flex-col items-center justify-center w-full min-h-[425px] px-4 py-20 bg-white overflow-hidden gap-[30px]
+   <section className="bg-[#000000] mt-[-82px] relative flex flex-col items-center justify-center w-full min-h-[425px] px-4 py-20 overflow-hidden gap-[30px]
   max-[440px]:flex max-[440px]:flex-col max-[440px]:w-[440px] max-[440px]:min-h-[195px]
   max-[440px]:px-[20px] max-[440px]:py-[40px] max-[440px]:gap-[27px]">
 

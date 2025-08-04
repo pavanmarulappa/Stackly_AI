@@ -115,7 +115,7 @@
 //footer.jsx
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import logo from "../assets/Logo.png";
+import logo from "../assets/Logo1.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
@@ -138,13 +138,13 @@ export default function Footer() {
 
   const hiddenRoutes = [
     "/sign-up",
-    "/sign-in",
-    "/Otp",
+    "/Sign-in",
+    "/otp",
     "/ForgetPg",
-    "/signupOtp",
+    "/SignupOtp",
     "/ResetPassword",
     "/ResetPopup",
-    "/signuppopup",
+    "/SignUpPopup",
     "/HeroForgetPg",
   ];
 
@@ -156,7 +156,8 @@ export default function Footer() {
     return null; // Hide on all screen sizes
   }
   return (
-    <footer className="w-full h-auto flex justify-center items-center flex-col mt-0 shadow-lg bg-[rgba(0,123,130,0.04)]">
+  <footer className="w-full h-auto flex justify-center items-center flex-col mt-0 shadow-lg bg-black">
+
       {/* <div className="w-full h-[2px] border-black bg-[#2a2a2a] rounded-[2px] mb-14"></div> */}
       <div className="max-w-full mx-auto grid lg:grid-cols-4 md:grid-cols-2 lg:mx-20 md:mx-12 sm:mx-10 sm:mx-0 gap-10 mt-10 
   max-[440px]:flex max-[440px]:flex-col max-[440px]:w-[400px] max-[440px]:min-h-[427px] max-[440px]:gap-[24px]">
@@ -171,26 +172,27 @@ export default function Footer() {
     max-[440px]:w-[192px] max-[440px]:h-[56px] max-[440px]:object-contain"
           />
 
-          <p className="text-[16px] leading-[24px] 
+        <p className="text-[16px] leading-[24px] text-white 
   max-[440px]:w-[296px] max-[440px]:h-[80px] 
   max-[440px]:font-['Inter'] max-[440px]:font-[400] 
   max-[440px]:text-[12px] max-[440px]:leading-[140%] 
   max-[440px]:tracking-[0.3px]">
-            Automatically generate photo-like images of your desired spaces in
-            seconds. Unleash the most advanced AI interior design tool to boost
-            your productivity.
-          </p>
+  Automatically generate photo-like images of your desired spaces in
+  seconds. Unleash the most advanced AI interior design tool to boost
+  your productivity.
+</p>
+
           <div className="flex gap-4 mt-4 max-[440px]:hidden">
-            <a href="#" className="text-[#007b82]">
+            <a href="#" className="text-[#FFFFFF]">
               <FontAwesomeIcon icon={faFacebookF} className="w-5 h-5" />
             </a>
-            <a href="#" className="text-[#007b82]">
+            <a href="#" className="text-[#FFFFFF]">
               <FontAwesomeIcon icon={faTwitter} className="w-5 h-5" />
             </a>
-            <a href="#" className="text-[#007b82]">
+            <a href="#" className="text-[#FFFFFF]">
               <FontAwesomeIcon icon={faInstagram} className="w-5 h-5" />
             </a>
-            <a href="#" className="text-[#007b82]">
+            <a href="#" className="text-[#FFFFFF]">
               <FontAwesomeIcon icon={faPinterestP} className="w-5 h-5" />
             </a>
           </div>
@@ -198,11 +200,11 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-bold text-[18px] mb-4 text-[#007b82] max-[440px]:hidden">
+          <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF] max-[440px]:hidden">
             Quick links
           </h4>
 
-          <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#2A2A2A] max-[440px]:hidden">
+          <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#FFFFFF] max-[440px]:hidden">
 
             <li>
               <a href="#">Home</a>
@@ -223,11 +225,11 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-bold text-[18px] mb-4 text-[#007b82] max-[440px]:hidden">
+          <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF] max-[440px]:hidden">
             Terms & Policy
           </h4>
 
-          <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#2A2A2A] max-[440px]:hidden">
+          <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#FFFFFF] max-[440px]:hidden">
 
             <li>
               <a href="#">Terms of Services</a>
@@ -243,8 +245,8 @@ export default function Footer() {
 
         {/* Desktop Version (Hidden on mobile) */}
         <div className="hidden max-[440px]:hidden">
-          <h4 className="font-bold text-[18px] mb-4 text-[#007b82]">Quick links</h4>
-          <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#2A2A2A]">
+          <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF]">Quick links</h4>
+          <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#FFFFFF]">
             <li><a href="#">Home</a></li>
             <li><a href="#">Trends</a></li>
             <li><a href="#">Products</a></li>
@@ -254,8 +256,8 @@ export default function Footer() {
         </div>
 
         <div className="hidden max-[440px]:hidden">
-          <h4 className="font-bold text-[18px] mb-4 text-[#007b82]">Terms & Policy</h4>
-          <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#2A2A2A]">
+          <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF]">Terms & Policy</h4>
+          <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#FFFFFF]">
             <li><a href="#">Terms of Services</a></li>
             <li><a href="#">Privacy and Cookie Policy</a></li>
             <li><a href="#">Cookie Settings</a></li>
@@ -304,14 +306,14 @@ export default function Footer() {
         <div
           className="max-[440px]:flex max-[440px]:flex-col max-[440px]:w-[193px] max-[440px]:gap-[12px]"
         >
-          <h4 className="font-bold text-[18px] mb-4 text-[#007b82] max-[440px]:text-[14px] max-[440px]:mb-0 max-[440px]:leading-[24px] max-[440px]:tracking-[0.3px] max-[440px]:font-semibold font-['Inter']">
+          <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF] max-[440px]:text-[14px] max-[440px]:mb-0 max-[440px]:leading-[24px] max-[440px]:tracking-[0.3px] max-[440px]:font-semibold font-['Inter']">
             Contact Us
           </h4>
 
-          <div className="text-[16px] leading-[40px] tracking-[0.3px] text-[#2A2A2A] max-[440px]:text-[14px] max-[440px]:leading-[20px]">
+          <div className="text-[16px] leading-[40px] tracking-[0.3px] text-[#FFFFFF] max-[440px]:text-[14px] max-[440px]:leading-[20px]">
             <a
               href="mailto:info@stacklyai.com"
-              className="flex items-center gap-2 text-[#007B82] transition-colors"
+              className="flex items-center gap-2 text-[#FFFFFF] transition-colors"
             >
               <svg
                 className="w-4 h-4"
@@ -326,7 +328,7 @@ export default function Footer() {
                   d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              <div className="text-[#2b2b2b]">info@stacklyai.com</div>
+              <div className="text-[#FFFFFF]">info@stacklyai.com</div>
             </a>
           </div>
         </div>
@@ -337,7 +339,7 @@ export default function Footer() {
       ></div>
 
 
-      <div className="text-center text-[#007B82] text-[16px] leading-[16px] tracking-[0.26px] text-xs mt-4 mb-10
+      <div className="text-center text-[#FFFFFF] text-[16px] leading-[16px] tracking-[0.26px] text-xs mt-4 mb-10
   max-[440px]:w-[400px] max-[440px]:h-[24px] 
   max-[440px]:font-['Inter'] max-[440px]:font-normal 
   max-[440px]:text-[16px] max-[440px]:leading-[16px] 

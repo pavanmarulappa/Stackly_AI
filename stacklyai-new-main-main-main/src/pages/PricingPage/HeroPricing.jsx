@@ -142,6 +142,8 @@ import UiPlans from "./UiPlans";
 import ConformationPage from "./ConformationPage";
 import Pay from "./Pay";
 import { Link } from "react-router-dom";
+import Frame1 from "../../assets/pricing-pg/Frame1.png";//section 6 background
+
 
 
 
@@ -161,11 +163,32 @@ export default function HeroPricing() {
 
     <div>
       {/* section-1 */}
-<section className="relative w-full h-[400px] md:h-[400px] flex items-center justify-center bg-[#000000] overflow-hidden
-           max-[440px]:flex max-[440px]:flex-col
-           max-[440px]:h-[300px] max-[440px]:py-[60px] max-[440px]:px-[40px]">
+<section
+  className="relative w-full flex items-center justify-center bg-[#000000] overflow-hidden
+             h-[400px]  // default height for all
+
+             max-[440px]:flex max-[440px]:flex-col
+             max-[440px]:h-[300px] max-[440px]:py-[60px] max-[440px]:px-[40px]
+
+             min-[441px]:max-[768px]:h-[300px]  // ✅ only tablet height
+             min-[441px]:max-[768px]:pt-[60px]
+             min-[441px]:max-[768px]:pr-[40px]
+             min-[441px]:max-[768px]:pb-[60px]
+             min-[441px]:max-[768px]:pl-[40px]"
+>
+
   {/* Animated Background Elements */}
-  <div className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden">
+  <div
+  className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden
+
+    min-[441px]:max-[768px]:w-[768px]
+    min-[441px]:max-[768px]:h-[300px]
+    min-[441px]:max-[768px]:pt-[60px]
+    min-[441px]:max-[768px]:pr-[40px]
+    min-[441px]:max-[768px]:pb-[60px]
+    min-[441px]:max-[768px]:pl-[40px]"
+>
+
   {/* Banner 1 - Now using Tailwind for responsive positioning */}
   <div
     className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]
@@ -335,42 +358,116 @@ export default function HeroPricing() {
       {/* <PricingTable /> */}
       <UiPlans />
 
-      {/* section-6  */}
+     {/* section-6  */}
 
-      <div
-        className="h-[497px] text-white py-12 px-4 md:px-16 text-center  
-             max-[440px]:bg-transparent max-[440px]:flex max-[440px]:flex-col 
-             max-[440px]:w-[440px] max-[440px]:h-[486px] 
-             max-[440px]:pt-[40px] max-[440px]:pr-[20px] 
-             max-[440px]:pb-[40px] max-[440px]:pl-[20px] 
-             max-[440px]:gap-[48px]"
-        style={{
-          backgroundImage: `url(${Frame})`,
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-        }}
-      >
+     <div
+  className="
+    h-[497px] text-white py-12 px-4 md:px-16 text-center  
+
+    max-[440px]:bg-transparent max-[440px]:flex max-[440px]:flex-col 
+    max-[440px]:w-[440px] max-[440px]:h-[486px] 
+    max-[440px]:pt-[40px] max-[440px]:pr-[20px] 
+    max-[440px]:pb-[40px] max-[440px]:pl-[20px] 
+    max-[440px]:gap-[48px]
+
+    /* Tablet styles (441px to 768px) */
+    min-[441px]:max-[768px]:w-[768px]
+    min-[441px]:max-[768px]:h-[484px]
+    min-[441px]:max-[768px]:gap-[48px]
+    min-[441px]:max-[768px]:pt-[60px]
+    min-[441px]:max-[768px]:pr-[40px]
+    min-[441px]:max-[768px]:pb-[60px]
+    min-[441px]:max-[768px]:pl-[40px]
+  "
+  style={{
+    backgroundImage: `url(${Frame1})`,
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+  }}
+>
 
 
-        <div className="hidden [@media(min-width:441px)]:block ">
-          <h2 className="text-[32px] font-bold leading-[64px] text-center text-[white]">
-            Why Upgrade to <span className="text-[#FFB900]">Premium</span>?
-          </h2>
 
+     <h2
+  className="
+    text-[32px] font-bold leading-[64px] text-center text-white 
+    max-[440px]:text-[20px] max-[440px]:leading-[140%] 
+    max-[440px]:w-[400px] max-[440px]:h-[28px] max-[440px]:mx-auto
+
+    /* Tablet styles */
+    min-[441px]:max-[768px]:w-[688px]
+    min-[441px]:max-[768px]:h-[34px]
+    min-[441px]:max-[768px]:text-[24px]
+    min-[441px]:max-[768px]:font-[700]
+    min-[441px]:max-[768px]:leading-[140%]
+    min-[441px]:max-[768px]:text-center
+  "
+  style={{
+    fontFamily: "Inter",
+    fontWeight: 700,
+    fontStyle: "normal",
+    letterSpacing: "0%",
+    opacity: 1,
+    transform: "rotate(0deg)",
+  }}
+>
+  Why Upgrade to <span className="text-[#FFB900]">Premium</span>?
+</h2>
+
+
+ <div className="hidden [@media(min-width:441px)]:block ">
           <div className="mt-[-10px] inline-block mb-8">
-            <span
-              className="w-[295px] h-[64px] text-[22px] leading-[44px] text-center text-white text-sm font-semibold px-[30px] py-[10px] rounded-[50px] relative top-[55px]"
-              style={{
-                background: "linear-gradient(180deg, #FBA716 8.5%, #90600D 100%)",
-              }}
-            >
+           <span
+  className="
+    w-[295px] h-[64px] text-[22px] leading-[44px] text-center text-white 
+    text-sm font-semibold px-[30px] py-[10px] rounded-[50px] relative top-[55px]
+
+    /* Tablet styles */
+    min-[441px]:max-[768px]:w-[207px]
+    min-[441px]:max-[768px]:h-[38px]
+    min-[441px]:max-[768px]:px-[12px]
+    min-[441px]:max-[768px]:py-[8px]
+    min-[441px]:max-[768px]:rounded-[50px]
+  "
+  style={{
+    background: "linear-gradient(180deg, #FBA716 8.5%, #90600D 100%)",
+    opacity: 1,
+    transform: "rotate(0deg)",
+  }}
+>
+
               Features of Paid Plans
             </span>
           </div>
 
-          <div className="border-[2px] border-solid border-teal-700 rounded-[30px] px-[60px] py-[80px] max-w-[1200px] mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+        <div
+  className="
+    border-[2px] border-solid border-teal-700 rounded-[30px] 
+    px-[60px] py-[80px] max-w-[1200px] mx-auto
+
+    /* Tablet styles */
+    min-[441px]:max-[768px]:w-[688px]
+    min-[441px]:max-[768px]:h-[282px]
+    min-[441px]:max-[768px]:rounded-[30px]
+    min-[441px]:max-[768px]:gap-[10px]
+    min-[441px]:max-[768px]:border-[1px]
+    min-[441px]:max-[768px]:p-[10px]
+  "
+>
+
+           <div
+  className="
+    grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left
+
+    /* Tablet styles */
+    min-[441px]:max-[768px]:w-[668px]
+    min-[441px]:max-[768px]:h-[262px]
+    min-[441px]:max-[768px]:gap-[50px]
+    min-[441px]:max-[768px]:p-[35px_8px]
+  "
+>
+
               {features.map((feature, idx) => (
                 <div key={idx} className="flex items-start gap-2">
                   {/* Square with gradient and transparent check */}
@@ -409,26 +506,28 @@ export default function HeroPricing() {
         </div>
 
         {/* MOBILE */}
-        <div className="[@media(min-width:441px)]:hidden mt-[3px]">
+        <div className="[@media(min-width:441px)]:hidden -mt-[40px]">
 
-          <h2 className="w-[400px] h-[28px] text-center font-inter font-bold text-[20px] leading-[140%] mx-auto mb-4">
-            <span className="text-[#000000]">Why Go </span>
-            <span className="text-[#007B82]">Premium?</span>
-          </h2>
+      
 
 
-          <div className="w-full flex justify-center">
+
+          <div className="w-full flex justify-center mt-[-15px]">
             <div
               className="inline-block mb-8 flex items-center justify-center 
              w-full"
             >
-              <span
-                className="whitespace-nowrap text-white font-[400] text-[14px] leading-[140%] tracking-[0] 
-               font-['Inter'] bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] 
-               px-[30px] py-[10px] rounded-[50px] relative top-[55px] flex justify-center items-center"
-              >
-                Features of Paid Plans
-              </span>
+           <span
+  className="whitespace-nowrap text-white font-[400] text-[14px] leading-[140%] tracking-[0] 
+             font-['Inter'] px-[30px] py-[10px] rounded-[50px] 
+             relative top-[55px] flex justify-center items-center"
+  style={{
+    background: "linear-gradient(180deg, #FBA716 8.5%, #90600D 100%)"
+  }}
+>
+  Features of Paid Plans
+</span>
+
             </div>
 
           </div>
@@ -441,18 +540,23 @@ export default function HeroPricing() {
             <div className="grid grid-cols-2 gap-y-6 gap-x-20 w-full max-w-[550px] mx-auto py-[45px] px-[8px] text-left">
               {features.map((feature, idx) => (
                 <div key={idx} className="flex items-start gap-3">
-                  <div className="bg-[#007B82] w-[24px] h-[24px] rounded-md flex items-center justify-center mt-[4px]">
+                  <div className="bg-[#FBA716] w-[24px] h-[24px] rounded-md flex items-center justify-center mt-[4px]">
                     <CheckCircle2 className="w-[14px] h-[14px] text-white" />
                   </div>
-                  <span className="w-[126px] text-left font-['Inter'] font-medium text-[14px] leading-[140%] text-[#000000]">
+                  <span className="w-[126px] text-left font-['Inter'] font-medium text-[14px] leading-[140%] text-[#FFFFFF]">
                     {feature}
                   </span>
                 </div>
               ))}
             </div>
+
+
+
+
           </div>
         </div>
       </div>
+
       {/* section-7 */}
       {/* <PricingFaq /> */}
       {/* section 8  */}

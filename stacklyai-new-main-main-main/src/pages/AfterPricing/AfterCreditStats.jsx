@@ -1,6 +1,6 @@
 import React from "react";
-import TotalCreditsImg from "../../assets/pricing-pg/img1.png"; // Replace with your first image
-import TodaysUsageImg from "../../assets/pricing-pg/img2.png"; // Replace with your first image
+import TotalCreditsImg from "../../assets/pricing-pg/img1.jpg"; // Replace with your first image
+import TodaysUsageImg from "../../assets/pricing-pg/img2.jpg"; // Replace with your first image
 
 
 export default function AfterCreditStats() {

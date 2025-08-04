@@ -1,19 +1,17 @@
-import React from "react";
-import { motion } from "framer-motion";
-import ContactBanner from "./ContactBanner";
-import ContactForm1 from "./ContactForm1";
-import Profile from "../Profile/Profile";
-import Faq from "./ContactFaq";
+import React from 'react'
+import ContactBanner from './ContactBanner'
+import ContactForm from './ContactForm'
+import Profile from '../Profile/Profile'
 
 export default function HeroContact() {
   return (
     <div>
       
-      {/* <ContactBanner/> */}
+      <ContactBanner/>
 
-      <ContactForm1/>
-      <Faq/>
+      <ContactForm/>
 
+      {/* <Profile /> */}
     </div>
   )
 }

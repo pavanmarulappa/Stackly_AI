@@ -173,101 +173,252 @@
 // }
 import React from "react";
 import { Link } from "react-router-dom";
-import Coins from "../../assets/product-pg/Coins.png";
-import Coin1 from "../../assets/product-pg/Coin1.png";
+import Coins from "../../assets/product-pg/GroupCoin.png";
+import StarLight from "../../assets/product-pg/StarLight.png";
 import bg from "../../assets/product-pg/bg.png";
+import Ellipseblur from "../../assets/product-pg/Ellipseblur.png";
+import packageBg from "../../assets/product-pg/packageBg.png";
+import Rectangle from "../../assets/product-pg/Rectangle.png";
+import EclicpBlur2 from "../../assets/product-pg/EclicpBlur2.png";
+
 export default function SignUpBanner() {
   return (
-    <section
-      className="relative w-full min-h-[606px] flex justify-center items-center px-6 py-16
-        bg-center bg-cover bg-no-repeat
-        max-sm:min-h-[330px] max-sm:px-5 max-sm:py-10"
-      style={{ backgroundImage: `url(${bg})` }}
+// NEW FIGMA DISGINE
+<section className="w-full h-[647px] bg-black relative overflow-hidden">
+  <div
+    className="absolute w-[196px] h-[196px] top-[0px] left-[-16px] opacity-100 rotate-0"
+    style={{
+      backgroundImage: `url(${Ellipseblur})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}
+  ></div>
+  {/* coin img */}
+ <div
+  className="absolute w-[123.61px] h-[110.34px] z-[9999]" 
+  style={{ top: "476px", left: "1190px" }}
+>
+  <img
+    src={Coins}
+    alt="Coins"
+    className="w-full h-full object-contain pointer-events-none"
+  />
+</div>
+{/* star light */}
+<div
+  className="absolute w-[147.53px] h-[140px] z-[9999]"
+  style={{ top: "48px", left: "1200px" }} // Change position as needed
+>
+  <img
+    src={StarLight}
+    alt="Star Light"
+    className="w-full h-full object-contain pointer-events-none"
+  />
+</div>
+<div className="absolute w-[19px] h-[26px] top-[523.91px] left-[140.31px] rotate-[34.5deg] bg-[#FFB200] opacity-60 blur-[12px] shadow-[0_0_40px_20px_rgba(255,178,0,0.6)] rounded-full z-[9999]"></div>
+
+
+
+
+  {/* <div
+  className="absolute w-[888px] h-[888px] top-[-120px] left-[506px] opacity-100 rotate-0"
+  style={{
+    backgroundImage: `url(${packageBg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+  }}
+></div> */}
+{/* main div */}
+<div
+  className="absolute w-[1147px] h-[456px] top-[98px] left-1/2 -translate-x-1/2 transform opacity-100 rotate-0 backdrop-blur-sm"
+  style={{
+    backdropFilter: "blur(14px)",
+    WebkitBackdropFilter: "blur(14px)", // For Safari support
+  }}
+>
+<div
+  className="absolute w-[1147px] h-[456px] top-0 left-0 rounded-[32px] border-[8px] overflow-hidden"
+  style={{
+    background: "#FFD33E1A",
+    
+  }}
+>
+  {/* Rectangle image overlay */}
+  <img 
+    src={Rectangle} 
+    alt="Decorative border"
+    className="absolute w-full h-full object-cover mix-blend-overlay opacity-20" 
+    style={{
+      pointerEvents: 'none' // makes the image non-interactive
+    }}
+  />
+  <div
+  className="absolute w-[263px] h-[37px] left-[442px] rounded-[40px]"
+  style={{
+    background: "linear-gradient(180deg, #E19E2C 0%, #F1E06C 39.19%, #694003 78.38%)",
+  }}
+></div>
+<div className="absolute w-[123.61px] h-[110.34px]" style={{ top: "476px", left: "1215px" }}>
+  <img src={Coins} alt="Coins" className="w-full h-full object-contain pointer-events-none" />
+</div>
+
+
+  <div
+  className="absolute w-[1025px] h-[274px] top-[91.5px] left-[67px] flex flex-col items-center gap-[20px] opacity-100"
+>
+  {/* Top Child Div - Heading */}
+  <div className="w-[927px] h-[200px] flex items-center justify-center text-center">
+    <h2
+      className="text-[52px] font-[600] italic leading-[140%]"
+      style={{
+        fontFamily: 'Lora',
+        background: "linear-gradient(180deg, #FFFFFF 11%, #FFD980 48.37%, #FFB300 85.75%)",
+        WebkitBackgroundClip: "text",
+        WebkitTextFillColor: "transparent",
+      }}
     >
-      {/* Coins - visible on both desktop and mobile */}
-      <img
-        src={Coin1}
-        alt="Coin1"
-        className="absolute top-[466px] left-[1250px] w-[66px] h-[56px] object-contain z-10 max-sm:top-[280px] max-sm:left-[90%] max-sm:w-[40px] max-sm:h-[34px]"
-      />
-      <img
-        src={Coin1}
-        alt="Coin1"
-        className="absolute top-[500px] left-[1220px] w-[66px] h-[43px] object-contain z-10 max-sm:top-[300px] max-sm:left-[85%] max-sm:w-[35px] max-sm:h-[23px]"
-      />
-      <img
-        src={Coin1}
-        alt="Coin1"
-        className="absolute top-[429px] left-[231px] w-[104px] h-[87px] object-contain z-0 max-sm:top-[230px] max-sm:left-[3%] max-sm:w-[60px] max-sm:h-[50px]"
-      />
+      Elevate Your Experience with Every High Perk!
+    </h2>
+  </div>
 
-      {/* Desktop Version (unchanged) */}
-      <div
-        className="relative z-10 w-full max-w-[778px] h-[340px] flex flex-col justify-center items-center gap-6 px-[30px] py-10 rounded-[20px] max-sm:hidden"
-        style={{
-          background: "linear-gradient(98.48deg, #FCBD18 6.37%, #FBEFD0 50.02%, #FCBD18 93.66%)",
-          backdropFilter: "blur(2px)",
-          border: "1px solid transparent",
-          borderRadius: "20px",
-          overflow: "hidden",
-        }}
-      >
-        <h1 className="w-[530px] h-[100px] text-[36px] font-semibold leading-[140%] text-center text-[#2A2A2A] font-inter max-md:text-[28px]">
-          Step up to <span className="text-[#F3AE00]">GOLD</span> for all Premium Benefits!
-        </h1>
+  {/* Bottom Child Div - Button */}
+  <div
+  className="w-[337px] h-[54px] flex items-center justify-center rounded-[58px] border-[2px] px-[146px] py-[12px]"
+  style={{
+    background: "linear-gradient(180deg, #FFF996 -53.7%, #CC8913 40.28%, #9A762A 134.26%)",
+  }}
+>
+  <p
+    className="text-[20px] font-medium leading-[100%] text-center whitespace-nowrap"
+    style={{
+      fontFamily: 'poppins-font',
+      color: '#FFFFFF',
+    }}
+  >
+    Activate Pro Subscription
+  </p>
+</div>
 
-        <Link to="/sign-up" className="w-full max-w-[406px]">
-          <div
-            className="w-[406px] h-[60px] flex justify-center items-center rounded-xl text-[18px] font-semibold text-[#FFFFFF] max-md:h-[48px] max-md:text-[16px]"
-            style={{
-              background: "linear-gradient(177.23deg, #FFAB18 -146.36%, #99670E 331.21%)",
-            }}
-          >
-            GET STARTED!
-          </div>
-        </Link>
+</div>
 
-        <img
-          src={Coins}
-          alt="Coins"
-          className="absolute bottom-[15px] right-[15px] w-[100px] h-auto object-contain"
-        />
-      </div>
+</div>
 
-      {/* Updated Mobile Version - matches desktop styling */}
-      <div
-        className="relative z-10 w-full max-w-[90%] h-[180px] sm:hidden flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-[20px]"
-        style={{
-          background: "linear-gradient(98.48deg, #FCBD18 6.37%, #FBEFD0 50.02%, #FCBD18 93.66%)",
-          backdropFilter: "blur(2px)",
-          border: "1px solid transparent",
-          borderRadius: "20px",
-          overflow: "hidden",
-        }}
-      >
-        <h1 className="text-[24px] font-semibold leading-[140%] text-center text-[#2A2A2A] font-inter px-4">
-          Step up to <span className="text-[#F3AE00]">GOLD</span> for Premium!
-        </h1>
+</div>
 
-        <Link to="/sign-up" className="w-full max-w-[250px]">
-          <div
-            className="w-[250px] h-[40px] flex justify-center items-center rounded-xl text-[16px] font-semibold text-[#FFFFFF]"
-            style={{
-              background: "linear-gradient(177.23deg, #FFAB18 -146.36%, #99670E 331.21%)",
-            }}
-          >
-            GET STARTED!
-          </div>
-        </Link>
 
-        {/* Coins in mobile version */}
-        <img
-          src={Coins}
-          alt="Coins"
-          className="absolute top-[120px] left-[300px] w-[70px] h-auto object-contain"
-        />
-      </div>
-    </section>
+</section>
+
+
+
+
+
+
+//old figma disgine
+//  <section
+//   className="hidden relative w-full min-h-[606px] 
+//     flex justify-center items-center px-6 py-16
+//     bg-center bg-cover bg-no-repeat
+//     max-sm:min-h-[330px] max-sm:px-5 max-sm:py-10
+//     min-[441px]:max-[768px]:w-[768px]
+//     min-[441px]:max-[768px]:min-h-[490px]
+//     min-[441px]:max-[768px]:px-[40px]
+//     min-[441px]:max-[768px]:py-[60px]"
+//   style={{ backgroundImage: `url(${bg})` }}
+// >
+
+
+
+      
+//       <img
+//         src={Coin1}
+//         alt="Coin1"
+//         className="absolute top-[466px] left-[1250px] w-[66px] h-[56px] object-contain z-10 max-sm:top-[150px] max-sm:left-[80%] max-sm:w-[40px] max-sm:h-[34px]"
+//       />
+//       <img
+//         src={Coin1}
+//         alt="Coin1"
+//         className="absolute top-[500px] left-[1220px] w-[66px] h-[43px] object-contain z-10 max-sm:top-[180px] max-sm:left-[75%] max-sm:w-[35px] max-sm:h-[23px]"
+//       />
+//     <img
+//   src={Coin1}
+//   alt="Coin1"
+//   className="absolute top-[429px] left-[231px] w-[104px] h-[87px] object-contain z-0
+
+//     max-sm:top-[100px] max-sm:left-[10%] max-sm:w-[60px] max-sm:h-[50px]
+
+//     min-[441px]:max-[768px]:top-[390px]
+//     min-[441px]:max-[768px]:left-[90px]"
+// />
+
+
+//     <div
+//   className="relative z-10 w-full max-w-[778px] h-[340px] flex flex-col justify-center items-center gap-6 px-[30px] py-10 rounded-[20px] max-sm:hidden
+
+//     min-[441px]:max-[768px]:max-w-[688px]
+//     min-[441px]:max-[768px]:h-[231px]"
+//   style={{
+//     background: "linear-gradient(98.48deg, #FCBD18 6.37%, #FBEFD0 50.02%, #FCBD18 93.66%)",
+//     backdropFilter: "blur(2px)",
+//     border: "1px solid transparent",
+//     borderRadius: "20px",
+//     overflow: "hidden",
+//   }}
+// >
+
+//         <h1 className="w-[530px] h-[100px] text-[36px] font-semibold leading-[140%] text-center text-[#2A2A2A] font-inter max-md:text-[28px]">
+//           Step up to <span className="text-[#F3AE00]">GOLD</span> for all Premium Benefits!
+//         </h1>
+
+//         <Link to="/sign-up" className="w-full max-w-[406px]">
+//           <div
+//             className="w-[406px] h-[60px] flex justify-center items-center rounded-xl text-[18px] font-semibold text-[#FFFFFF] max-md:h-[48px] max-md:text-[16px]"
+//             style={{
+//               background: "linear-gradient(177.23deg, #FFAB18 -146.36%, #99670E 331.21%)",
+//             }}
+//           >
+//             GET STARTED!
+//           </div>
+//         </Link>
+
+//         <img
+//           src={Coins}
+//           alt="Coins"
+//           className="absolute bottom-[15px] right-[15px] w-[100px] h-auto object-contain"
+//         />
+//       </div>
+
+//       <div
+//         className="relative z-10 w-full max-w-[90%] h-[280px] sm:hidden flex flex-col justify-center items-center gap-6 px-6 py-8 rounded-[20px]"
+//         style={{
+//           background: "linear-gradient(98.48deg, #FCBD18 6.37%, #FBEFD0 50.02%, #FCBD18 93.66%)",
+//           backdropFilter: "blur(2px)",
+//           border: "1px solid transparent",
+//           borderRadius: "20px",
+//           overflow: "hidden",
+//         }}
+//       >
+//         <h1 className="text-[24px] font-semibold leading-[140%] text-center text-[#2A2A2A] font-inter px-4">
+//           Step up to <span className="text-[#F3AE00]">GOLD</span> for Premium!
+//         </h1>
+
+//         <Link to="/sign-up" className="w-full max-w-[300px]">
+//           <div
+//             className="w-full h-[50px] flex justify-center items-center rounded-xl text-[16px] font-semibold text-[#FFFFFF]"
+//             style={{
+//               background: "linear-gradient(177.23deg, #FFAB18 -146.36%, #99670E 331.21%)",
+//             }}
+//           >
+//             GET STARTED!
+//           </div>
+//         </Link>
+
+        
+//         <img
+//           src={Coins}
+//           alt="Coins"
+//           className="absolute bottom-[10px] right-[10px] w-[70px] h-auto object-contain"
+//         />
+//       </div>
+//     </section>
   );
 }
-

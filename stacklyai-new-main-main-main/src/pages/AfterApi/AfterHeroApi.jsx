@@ -124,11 +124,7 @@ export default function AfterHeroApi() {
           onClick={() => {
             document.getElementById('connect-form')?.scrollIntoView({ behavior: 'smooth' });
           }}
-          className="w-[306px] h-[45px] mt-8 rounded-[6px] border-[1px] border-solid border-transparent text-white font-semibold text-[18px] leading-[100%]"
-          style={{
-            backgroundImage:
-              "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
-          }}
+          className="w-[306px] h-[45px] mt-8 rounded-[6px] border-[1px] border-solid border-transparent bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white font-semibold text-[18px] leading-[100%]"
         >
           Let’s Connect!
         </button>
@@ -207,31 +203,20 @@ export default function AfterHeroApi() {
 
           <div className="w-[730px] h-[721px] rounded-[10px] border-[1px] border-[#007B8214] border-solid p-[50px] gap-[10px] bg-[#ffffff] shadow-[#ABB2BB40] shadow-[0_0_12px_0] flex justify-center items-center">
             <form className="space-y-6 w-full" onSubmit={handleSubmit}>
-              {/* First Name - String validation */}
+
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 flex flex-col">
-                  <label className="text-sm font-bold text-[#2A2A2A] mb-1">Full Name<span className="text-red-500"> *</span></label>
+                  <label className="text-sm font-bold text-[#2A2A2A] mb-1">First Name<span className="text-red-500"> *</span></label>
                   <input
                     name="full_name"
                     type="text"
                     placeholder="Ram"
                     value={formData.full_name}
-                    onChange={(e) => {
-                      // Only allow letters and spaces
-                      if (/^[A-Za-z\s]*$/.test(e.target.value)) {
-                        handleChange(e);
-                      }
-                    }}
+                    onChange={handleChange}
                     required
-                    className={`border border-[#E2E2E2] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 ${formData.full_name ? 'bg-[#E8F0FE]' : 'bg-[#F9F9F9]'
-                      }`}
+                    className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
-                  {formData.full_name && !/^[A-Za-z\s]+$/.test(formData.full_name) && (
-                    <p className="text-red-500 text-xs mt-1">Only letters and spaces allowed</p>
-                  )}
                 </div>
-
-                {/* Email - Strict validation */}
                 <div className="flex-1 flex flex-col">
                   <label className="text-sm font-bold text-[#2A2A2A] mb-1">Email<span className="text-red-500"> *</span></label>
                   <input
@@ -240,19 +225,12 @@ export default function AfterHeroApi() {
                     placeholder="ramprakash@example.com"
                     value={formData.email}
                     onChange={handleChange}
-                    pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                     required
-                    className={`border border-[#E2E2E2] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 ${formData.email ? 'bg-[#E8F0FE]' : 'bg-[#F9F9F9]'
-                      }`}
-                    title="Please enter a valid email (e.g., user@example.com)"
+                    className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
-                  {formData.email && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email) && (
-                    <p className="text-red-500 text-xs mt-1">Please enter a valid email</p>
-                  )}
                 </div>
               </div>
 
-              {/* Contact Number - Phone validation */}
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 flex flex-col">
                   <label className="text-sm font-bold text-[#2A2A2A] mb-1">Contact number<span className="text-red-500"> *</span></label>
@@ -261,25 +239,21 @@ export default function AfterHeroApi() {
                     type="tel"
                     placeholder="+91 0123456789"
                     value={formData.contact_number}
-                    onChange={(e) => {
-                      // Allow numbers, +, -, and spaces
-                      if (/^[0-9+\-\s]*$/.test(e.target.value)) {
-                        handleChange(e);
-                      }
-                    }}
-                    pattern="^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$"
+                    onChange={handleChange}
                     required
-                    className={`border border-[#E2E2E2] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 ${formData.contact_number ? 'bg-[#E8F0FE]' : 'bg-[#F9F9F9]'
-                      }`}
-                    title="Please enter a valid phone number"
+                    className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
-                  {formData.contact_number && !/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(formData.contact_number) && (
-                    <p className="text-red-500 text-xs mt-1">Please enter a valid phone number</p>
-                  )}
                 </div>
+
+                {/* <div className="flex-1 flex flex-col">
+            <label className="text-sm font-bold text-[#2A2A2A] mb-1">Country</label>
+            <div className="flex items-center border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 h-[42px]">
+              <img src="https://flagcdn.com/w40/in.png" alt="India Flag" className="mr-2" />
+              <span className="text-gray-500">India</span>
+            </div>
+          </div> */}
               </div>
 
-              {/* Company Name */}
               <div className="flex flex-col">
                 <label className="text-sm font-bold text-[#2A2A2A] mb-1">Company Name<span className="text-red-500"> *</span></label>
                 <input
@@ -289,12 +263,10 @@ export default function AfterHeroApi() {
                   value={formData.company_name}
                   onChange={handleChange}
                   required
-                  className={`border border-[#E2E2E2] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 ${formData.company_name ? 'bg-[#E8F0FE]' : 'bg-[#F9F9F9]'
-                    }`}
+                  className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
-              {/* Address */}
               <div className="flex flex-col">
                 <label className="text-sm font-bold text-[#2A2A2A] mb-1">Address<span className="text-red-500"> *</span></label>
                 <input
@@ -304,12 +276,10 @@ export default function AfterHeroApi() {
                   value={formData.address}
                   onChange={handleChange}
                   required
-                  className={`border border-[#E2E2E2] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 ${formData.address ? 'bg-[#E8F0FE]' : 'bg-[#F9F9F9]'
-                    }`}
+                  className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
-              {/* Message */}
               <div className="flex flex-col">
                 <label className="text-sm font-bold text-[#2A2A2A] mb-1">Message<span className="text-red-500"> *</span></label>
                 <textarea
@@ -320,22 +290,13 @@ export default function AfterHeroApi() {
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  className={`border border-[#E2E2E2] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500 ${formData.message ? 'bg-[#E8F0FE]' : 'bg-[#F9F9F9]'
-                    }`}
+                  className="border border-[#E2E2E2] bg-[#F9F9F9] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
-                <div className="text-xs text-gray-500 text-right">
-                  {formData.message?.length || 0}/500 characters
-                </div>
               </div>
-
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-[465px] h-[45px] text-white py-2 rounded hover:opacity-90 transition"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
-                  }}
+                  className="w-[465px] h-[45px] bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white py-2 rounded hover:opacity-90 transition"
                 >
                   Let's Connect!
                 </button>

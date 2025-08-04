@@ -171,11 +171,6 @@ export default function AfterPaymentProcessing() {
         })
         .then(() => {
           if (!isMounted) return;
-
-          // ✅ Clear billing info from localStorage
-          localStorage.removeItem("billing_email");
-          localStorage.removeItem("billing_name");
-          
           setStatus("Subscription updated successfully!");
           setTimeout(() => navigate("/AfterPayment"), 2000);
         })

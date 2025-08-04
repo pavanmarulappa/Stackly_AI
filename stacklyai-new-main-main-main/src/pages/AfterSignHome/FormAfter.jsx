@@ -383,7 +383,6 @@ import Home from "../../assets/product-pg/home.png";
 import Tree from "../../assets/product-pg/tree.png";
 import Lock from "../../assets/product-pg/lock.png";
 import Galley from "../../assets/product-pg/gallery.png";
-import Bg from "../../assets/afterHome/DesignBoard.png";
 import I from "../../assets/product-pg/i.png";
 import Magic from "../../assets/product-pg/magic.png";
 import axios from "axios";
@@ -409,7 +408,7 @@ export default function Form({ selectedImage }) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   const [formData, setFormData] = useState({
-    // buildingType: "",
+    buildingType: "",
     roomType: "",
     roomStyle: "",
     numDesigns: "1",
@@ -496,7 +495,7 @@ export default function Form({ selectedImage }) {
     } else {
       setActiveTab(tabName);
       setFormData({
-        // buildingType: "",
+        buildingType: "",
         roomType: "",
         roomStyle: "",
         numDesigns: "1",
@@ -552,7 +551,7 @@ export default function Form({ selectedImage }) {
       switch (activeTab) {
         case "Interiors":
           endpoint = "generate-interior-design";
-          // formDataToSend.append("building_type", formData.buildingType);
+          formDataToSend.append("building_type", formData.buildingType);
           formDataToSend.append("room_type", formData.roomType);
           typeDetail = formData.roomType;
           break;
@@ -635,59 +634,72 @@ export default function Form({ selectedImage }) {
   }, [selectedImage]);
 
   return (
-    <section
-      className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 overflow-hidden"
-      style={{
-        backgroundImage: `url(${Bg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }}
-    >
+    <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
       {/* Header */}
-      <div className="w-full max-w-4xl text-center space-y-2">
-        <h1 className="text-[clamp(2rem,5vw,3rem)] font-semibold text-white leading-snug">
+      <div
+        className="w-full max-w-4xl text-center space-y-2
+             max-[440px]:w-[400px] max-[440px]:h-[53px] 
+             max-[440px]:gap-[16px] max-[440px]:opacity-100"
+      >
+
+        <h1
+          className="text-[clamp(2rem,5vw,3rem)] font-semibold text-white leading-snug 
+             max-[440px]:w-[400px] max-[440px]:h-[22px] 
+             max-[440px]:text-[18px] max-[440px]:font-semibold 
+             max-[440px]:leading-[100%] max-[440px]:text-center max-[440px]:opacity-100"
+        >
           Let AI Style It
         </h1>
-        <p className="text-[clamp(1rem,2.5vw,1.5rem)] font-medium text-white leading-snug">
-          Upload a photo to begin your AI-powered {activeTab.toLowerCase()}{" "}
-          design
+
+        <p
+          className="text-[clamp(1rem,2.5vw,1.5rem)] font-medium text-white leading-snug
+             max-[440px]:w-[400px] max-[440px]:h-[17px] 
+             max-[440px]:text-[14px] max-[440px]:font-normal 
+             max-[440px]:leading-[100%] max-[440px]:text-center max-[440px]:opacity-100"
+        >
+          Upload a photo to begin your AI-powered {activeTab.toLowerCase()} design
         </p>
+
       </div>
 
       {/* Tabs */}
-      <div className="w-full max-w-6xl flex flex-wrap justify-center items-center gap-4">
+      <div
+        className="w-full max-w-6xl flex flex-wrap justify-center items-center gap-4
+             max-[440px]:w-[230px] max-[440px]:h-[60px] max-[440px]:gap-[31px] max-[440px]:opacity-100"
+      >
+
         {tabs.map((tab) => (
           <div
             key={tab.name}
-            className="w-[clamp(120px,15vw,200px)] max-w-[200px] h-[clamp(100px,12vh,128px)] flex flex-col justify-center items-center gap-2 cursor-pointer"
+            className="w-[clamp(120px,15vw,200px)] max-w-[200px] h-[clamp(100px,12vh,128px)] flex flex-col justify-center items-center gap-2 cursor-pointer
+             max-[440px]:w-[56px] max-[440px]:h-[60px] max-[440px]:gap-[12px] max-[440px]:opacity-100"
             onClick={() => handleTabChange(tab.name)}
           >
-            <div
-              className={`w-[clamp(60px,6vw,77px)] aspect-square border-2 p-2 flex justify-center items-center rounded-full transition-all duration-200 ${activeTab === tab.name
-                ? "border-white"
-                : "border-[#FFFFFF1A] bg-[#FFFFFF1A] hover:border-blue-300"
-                }`}
-              style={
-                activeTab === tab.name
-                  ? {
-                    backgroundImage:
-                      "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
 
-                    backgroundBlendMode: 'overlay' // or 'multiply' depending on desired effect
-                  }
-                  : {}
-              }
+            <div
+              className={`w-[clamp(60px,6vw,77px)] aspect-square border-2 p-2 flex justify-center items-center rounded-full transition-all duration-200
+              max-[440px]:w-[32px] max-[440px]:h-[32px]
+              max-[440px]:gap-[4.5px] max-[440px]:px-[9px] max-[440px]:py-[10.8px]
+              max-[440px]:rounded-[40.5px] max-[440px]:border-[0.9px] max-[440px]:opacity-100
+              ${activeTab === tab.name
+                  ? "border-white bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82]"
+                  : "border-[#FFFFFF1A] bg-[#FFFFFF1A] hover:border-blue-300"
+                }`}
             >
+
               <img
                 src={tab.icon}
                 alt={tab.name}
-                className="w-[full] h-auto max-w-[60%] max-h-[60%] object-contain"
+                className="w-full h-auto max-w-[60%] max-h-[60%] object-contain
+             max-[440px]:w-[17.97px] max-[440px]:h-[13.07px] max-[440px]:opacity-100"
               />
+
             </div>
-            <p className="text-white text-[clamp(0.9rem,1.5vw,1.4rem)] font-semibold text-center">
+            <p className="text-white text-[clamp(0.9rem,1.5vw,1.4rem)] font-semibold text-center
+              max-[440px]:w-[56px] max-[440px]:h-[17px] max-[440px]:text-[12px] max-[440px]:leading-[140%] max-[440px]:opacity-100">
               {tab.name}
             </p>
+
           </div>
         ))}
       </div>
@@ -696,16 +708,24 @@ export default function Form({ selectedImage }) {
       {/* Form Section */}
       <div className="w-full max-w-7xl  flex flex-col xl:flex-row gap-10 items-start justify-between">
         {/* Upload Box */}
-        <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
+      <div
+  className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4
+             max-[440px]:w-[329px] max-[440px]:h-[341.547px] max-[440px]:gap-[16px] max-[440px]:opacity-100 
+             max-[440px]:mx-auto max-[440px]:justify-center max-[440px]:items-center"
+>
+
           <div
-            className="w-full aspect-[4/3] max-h-[70vh] rounded-xl bg-[#002D3099] flex justify-center items-center cursor-pointer relative"
+            className="w-full aspect-[4/3] max-h-[70vh] rounded-xl bg-[#002D30] flex justify-center items-center cursor-pointer relative"
           >
             <div
-              className="w-full h-full border-2 border-dashed border-white rounded-xl flex justify-center items-center relative"
-              onClick={() => inpRef.current.click()}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-            >
+  className="w-full h-full border-2 border-dashed border-white rounded-xl flex justify-center items-center relative
+             max-[440px]:w-[329px] max-[440px]:h-[285.547px] max-[440px]:px-[50.69px] max-[440px]:py-[96.22px]
+             max-[440px]:rounded-[6.21px] max-[440px]:border-[0.52px] max-[440px]:border-white max-[440px]:border-dashed"
+  onClick={() => inpRef.current.click()}
+  onDragOver={handleDragOver}
+  onDrop={handleDrop}
+>
+
               {imgURL ? (
                 <>
                   {!isImageLoaded && (
@@ -776,17 +796,32 @@ export default function Form({ selectedImage }) {
                   )}
                 </>
               ) : (
-                <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
-                  <div className="w-[70px] h-[70px] rounded-full bg-white/10 shadow-md flex justify-center items-center">
-                    <img
-                      src={Galley}
-                      alt="gallery"
-                      className="w-[38px] h-[38px] object-contain"
-                    />
-                  </div>
-                  <p className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug">
-                    Drag & drop or click to upload a photo
-                  </p>
+                  <div
+                    className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2
+                    max-[440px]:w-[145px] max-[440px]:h-[81px] max-[440px]:opacity-100"
+                  >
+
+                <div
+                      className="w-[70px] h-[70px] rounded-full bg-white/10 shadow-md flex justify-center items-center
+             max-[440px]:w-[36px] max-[440px]:h-[36px] max-[440px]:px-[9.31px] max-[440px]:py-[8.28px] 
+             max-[440px]:rounded-[20.69px] max-[440px]:opacity-100"
+                    >
+                      <img
+                        src={Galley}
+                        alt="gallery"
+                        className="w-[38px] h-[38px] object-contain 
+               max-[440px]:w-[16.23px] max-[440px]:h-[13.01px] max-[440px]:opacity-100"
+                      />
+                    </div>
+
+                 <p
+  className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug 
+             max-[440px]:w-[153px] max-[440px]:h-[40px] max-[440px]:text-[14px] 
+             max-[440px]:leading-[140%] max-[440px]:font-normal max-[440px]:opacity-100"
+>
+  Drag & drop or click to upload a photo
+</p>
+
                 </div>
               )}
               <input
@@ -801,48 +836,69 @@ export default function Form({ selectedImage }) {
           </div>
 
           {/* Photo Guide */}
-          <div className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] flex justify-around items-center cursor-pointer hover:bg-white/10 transition-colors">
-            <div className="w-[24px] h-[24px]">
+          <div
+            className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] 
+             flex justify-around items-center cursor-pointer hover:bg-white/10 transition-colors
+             max-[440px]:w-[135px] max-[440px]:h-[40px] max-[440px]:gap-[10px] 
+             max-[440px]:px-[10px] max-[440px]:py-[8px] max-[440px]:rounded-[6px] 
+             max-[440px]:border-[1.5px] max-[440px]:opacity-100"
+          >
+
+            <div
+              className="w-[24px] h-[24px] 
+             max-[440px]:w-[24px] max-[440px]:h-[24px] max-[440px]:opacity-100"
+            >
               <img src={I} alt="i" />
             </div>
-            <div className="w-[93px] h-[19px] text-[16px] font-[medium] leading-[100%] text-center text-white">
+
+            <div
+              className="w-[93px] h-[19px] text-[16px] font-medium leading-[100%] text-center text-white 
+             max-[440px]:w-[81px] max-[440px]:h-[17px] max-[440px]:text-[14px] max-[440px]:font-medium max-[440px]:opacity-100"
+            >
               Photo guide
             </div>
+
           </div>
         </div>
         {/* Form Controls */}
         <form
           onSubmit={handleSubmit}
-          className="w-full xl:w-1/2 max-w-[550px] flex flex-col gap-6"
-        // className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
+          className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
         >
           {/* Building Type (only for Interior) */}
-          {/* {activeTab === "Interiors" && (
-            <div className="space-y-2">
-              <label className="text-white text-lg">Choose Building Type</label>
-              <div className="flex flex-col sm:flex-row gap-4">
-                {["Commercial", "Residential"].map((type) => (
-                  <div
-                    key={type}
-                    className={`flex-1 flex justify-between items-center px-4 py-2 rounded-md cursor-pointer ${formData.buildingType === type.toLowerCase() // Changed here
-                      ? "bg-white text-[#007B82]"
-                      : "bg-[#00000033] text-[#FFFFFF80]"
-                      }`}
-                    onClick={() => handleChange(type.toLowerCase(), "buildingType")} // Changed here
-                  >
-                    <span>{type}</span>
-                    <input
-                      type="radio"
-                      checked={formData.buildingType === type.toLowerCase()} // Changed here
-                      onChange={() => { }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          )} */}
-          {/* Room Type Dropdown */}
-          <div className="space-y-2 relative">
+          {activeTab === "Interiors" && (
+  <div className="space-y-2">
+    <label className="text-white text-lg max-[440px]:text-sm">Choose Building Type</label>
+    <div className="flex flex-col sm:flex-row gap-4 max-[440px]:flex-row max-[440px]:gap-2">
+      {["Commercial", "Residential"].map((type) => (
+        <div
+          key={type}
+          className={`flex-1 flex justify-between items-center px-4 py-2 rounded-md cursor-pointer
+            ${
+              formData.buildingType === type.toLowerCase()
+                ? "bg-white text-[#007B82]"
+                : "bg-[#00000033] text-[#FFFFFF80]"
+            }
+            max-[440px]:px-2 max-[440px]:py-1 max-[440px]:text-xs max-[440px]:text-[10px] max-[440px]:h-[35px]
+          `}
+          onClick={() => handleChange(type.toLowerCase(), "buildingType")}
+        >
+          <span className="max-[440px]:text-[11px]">{type}</span>
+          <input
+            type="radio"
+            checked={formData.buildingType === type.toLowerCase()}
+            onChange={() => {}}
+            className="max-[440px]:w-[12px] max-[440px]:h-[12px]"
+          />
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
+
+          {/* Room Type (dynamic label based on tab) */}
+          {/* <div className="space-y-2">
             <label className="text-white text-lg">
               {activeTab === "Interiors"
                 ? "Select Room Type"
@@ -850,157 +906,186 @@ export default function Form({ selectedImage }) {
                   ? "Select House Angle"
                   : "Select Space"}
             </label>
-            <div className="relative">
-              <select
-                name="roomType"
-                value={formData.roomType}
-                onChange={(e) => handleChange(e.target.value, "roomType")}
-                className="w-full p-3 pr-10 rounded-md bg-white text-[16px] font-medium text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
-                required
-              >
-                <option value="">Select an option</option>
-                {roomTypes[activeTab].map((room) => (
-                  <option key={room} value={room.toLowerCase()}>
-                    {room}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
-          </div>
+            <select
+              name="roomType"
+              value={formData.roomType}
+              onChange={(e) => handleChange(e.target.value, "roomType")}
+              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
+              required
+            >
+              <option value="">Select an option</option>
+              {roomTypes[activeTab].map((room) => (
+                <option key={room} value={room.toLowerCase()}>
+                  {room}
+                </option>
+              ))}
+            </select>
+          </div> */}
 
-          {/* Style Selection Dropdown */}
-          <div className="space-y-2 relative">
+          {/* Style Selection */}
+          {/* <div className="space-y-2">
             <label className="text-white text-lg">Select Style</label>
-            <div className="relative">
-              <select
-                name="roomStyle"
-                value={formData.roomStyle}
-                onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
-                className="w-full p-3 pr-10 rounded-md bg-white text-[16px] font-medium text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
-                required
-              >
-                <option value="">Select a style</option>
-                {styles[activeTab].map((style) => (
-                  <option key={style} value={style.toLowerCase()}>
-                    {style.charAt(0).toUpperCase() + style.slice(1)}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
-          </div>
+            <select
+              name="roomStyle"
+              value={formData.roomStyle}
+              onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
+              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
+              required
+            >
+              <option value="">Select a style</option>
+              {styles[activeTab].map((style) => (
+                <option key={style} value={style.toLowerCase()}>
+                  {style.charAt(0).toUpperCase() + style.slice(1)}
+                </option>
+              ))}
+            </select>
+        </div> */}
 
-          {/* Number of designs Dropdown */}
-          <div className="space-y-2 relative">
+      {/* Number of designs */}
+      {/* <div className="space-y-2">
             <label className="text-white text-lg">Number of Designs</label>
-            <div className="relative">
-              <select
-                name="numDesigns"
-                value={formData.numDesigns}
-                onChange={(e) => handleChange(e.target.value, "numDesigns")}
-                className="w-full p-3 pr-10 rounded-md bg-white text-[16px] font-medium text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
-              >
-                {[...Array(12).keys()].map((num) => (
-                  <option key={num + 1} value={num + 1}>
-                    {num + 1}
-                  </option>
-                ))}
-              </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                </svg>
-              </div>
-            </div>
+            <select
+              name="numDesigns"
+              value={formData.numDesigns}
+              onChange={(e) => handleChange(e.target.value, "numDesigns")}
+              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
+            >
+              {[...Array(12).keys()].map((num) => (
+                <option key={num + 1} value={num + 1}>
+                  {num + 1}
+                </option>
+              ))}
+            </select>
+          </div> */}
+      {/* Room Type Dropdown */}
+      <div className="space-y-2 relative">
+        <label className="text-white text-lg">
+          {activeTab === "Interiors"
+            ? "Select Room Type"
+            : activeTab === "Exteriors"
+              ? "Select House Angle"
+              : "Select Space"}
+        </label>
+        <div className="relative">
+          <select
+            name="roomType"
+            value={formData.roomType}
+            onChange={(e) => handleChange(e.target.value, "roomType")}
+            className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
+            required
+          >
+            <option value="">Select an option</option>
+            {roomTypes[activeTab].map((room) => (
+              <option key={room} value={room.toLowerCase()}>
+                {room}
+              </option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+            <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
           </div>
+        </div>
+      </div>
 
-          {/* AI Strength */}
-          <div className="space-y-2">
-            <label className="text-white text-lg">AI Styling Strength</label>
-            <div className="flex flex-col gap-3">
-              {/* Row 1 */}
-              <div className="flex gap-20">
-                {["Very Low", "Low"].map((level) => (
-                  <div
-                    key={level}
-                    className={`w-[255px] h-[45px] flex items-center gap-3 pl-4 rounded-md cursor-pointer text-[16px] transition-all ${formData.aiStrength === level.toLowerCase()
-                      ? "border-[#FFFFFF1A] bg-[#FFFFFF1A] text-[#007B82]"
-                      : "border-[#FFFFFF1A] bg-[#FFFFFF1A] text-[#FFFFFF]"
+     {/* Style & Number of Designs – Side by Side on Mobile */}
+<div className="max-[440px]:flex max-[440px]:flex-wrap max-[440px]:gap-[12px]">
+  {/* Style Selection Dropdown */}
+  <div className="space-y-2 relative max-[440px]:w-[172px]">
+    <label className="text-white text-lg max-[440px]:text-[14px]">Select Style</label>
+    <div className="relative">
+      <select
+        name="roomStyle"
+        value={formData.roomStyle}
+        onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
+        className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent 
+                   max-[440px]:h-[40px] max-[440px]:p-[10px] max-[440px]:pr-[36px] max-[440px]:text-[14px] max-[440px]:rounded-[4px]"
+        required
+      >
+        <option value="">Select a style</option>
+        {styles[activeTab].map((style) => (
+          <option key={style} value={style.toLowerCase()}>
+            {style.charAt(0).toUpperCase() + style.slice(1)}
+          </option>
+        ))}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+        <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
+      </div>
+    </div>
+  </div>
 
-                      }`}
-                    onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
-                  >
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.aiStrength === level.toLowerCase()
-                      ? "border-[#007B82] bg-[#007B82]"
-                      : "border-white"
-                      }`}>
-                      {formData.aiStrength === level.toLowerCase() && (
-                        <div className="w-2 h-2 rounded-full bg-white"></div>
-                      )}
-                    </div>
-                    {level}
-                  </div>
-                ))}
-              </div>
+  {/* Number of Designs Dropdown */}
+  <div className="space-y-2 relative max-[440px]:w-[172px]">
+    <label className="text-white text-lg max-[440px]:text-[14px]">Number of Designs</label>
+    <div className="relative">
+      <select
+        name="numDesigns"
+        value={formData.numDesigns}
+        onChange={(e) => handleChange(e.target.value, "numDesigns")}
+        className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent 
+                   max-[440px]:h-[40px] max-[440px]:p-[10px] max-[440px]:pr-[36px] max-[440px]:text-[14px] max-[440px]:rounded-[4px]"
+      >
+        {[...Array(12).keys()].map((num) => (
+          <option key={num + 1} value={num + 1}>
+            {num + 1}
+          </option>
+        ))}
+      </select>
+      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+        <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</div>
 
-              {/* Row 2 */}
-              <div className="flex gap-20">
-                {["Medium", "High"].map((level) => (
-                  <div
-                    key={level}
-                    className={`w-[255px] h-[45px] flex items-center gap-3 pl-4 rounded-md cursor-pointer text-[16px] transition-all ${formData.aiStrength === level.toLowerCase()
-                      ? "border-[#FFFFFF1A] bg-[#FFFFFF1A] text-[#007B82]"
-                      : "border-[#FFFFFF1A] bg-[#FFFFFF1A] text-[#FFFFFF]"
-                      }`}
-                    onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
-                  >
-                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${formData.aiStrength === level.toLowerCase()
-                      ? "border-[#007B82] bg-[#007B82]"
-                      : "border-white"
-                      }`}>
-                      {formData.aiStrength === level.toLowerCase() && (
-                        <div className="w-2 h-2 rounded-full bg-white"></div>
-                      )}
-                    </div>
-                    {level}
-                  </div>
-                ))}
-              </div>
+      {/* AI Strength */}
+      <div className="space-y-2">
+        <label className="text-white text-lg">AI Styling Strength</label>
+        <div className="flex flex-wrap gap-3">
+          {["Very Low", "Low", "Medium", "High"].map((level) => (
+            <div
+              key={level}
+              className={`flex-1 min-w-[120px] px-4 py-2 rounded-md cursor-pointer text-center ${formData.aiStrength === level.toLowerCase()
+                ? "bg-white text-[#007B82]"
+                : "bg-[#00000033] text-[#FFFFFF80]"
+                }`}
+              onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
+            >
+              {level}
             </div>
-          </div>
-        </form>
+          ))}
+        </div>
+      </div>
+    </form>
       </div >
 
-      {/* Generate Button */}
+    {/* Generate Button */ }
 
-      < div
-        className="w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
+    < div
+  className = "w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
+  style = {{
+    backgroundImage:
+    "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
         }
-        }
+}
 
       >
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
-        >
-          <span>
-            <img src={Magic} alt="magic" />
-          </span>
-          Generate Design
-        </button>
+  <button
+    type="submit"
+    onClick={handleSubmit}
+    className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
+  >
+    <span>
+      <img src={Magic} alt="magic" />
+    </span>
+    Generate Design
+  </button>
       </div >
     </section >
   );

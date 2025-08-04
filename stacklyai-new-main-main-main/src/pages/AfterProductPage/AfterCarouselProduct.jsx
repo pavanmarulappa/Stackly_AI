@@ -111,7 +111,7 @@
 //         />
 //       </div>
 
-
+      
 //         {" "}
 //         <div className="flex gap-2.5 justify-center items-center mt-10">
 //           <nav className="bg-[#00b0ba] p-3 sm:px-[25px] sm:py-[15px] rounded-[5px] flex gap-2.5 justify-center items-center">
@@ -131,11 +131,11 @@
 //             </p>
 //           </nav>
 //         </div>{" "}
-
+     
 //     </div>
 //   );
 // }
-
+   
 
 
 import React, { useState, useRef } from "react";
@@ -173,15 +173,7 @@ export default function AfterCarouselProducts() {
         <p>Curated ideas for modern living</p>
       </div>
       <div className="w-full flex justify-center items-center">
-        <div className="
-    w-full max-w-[850px] min-h-[48px] rounded-[10px] 
-    border-[1px] border-solid border-white px-[20px] py-[10px] 
-    text-white font-[500] text-[16px] text-center leading-[28px] my-[20px]
-    transition-all duration-300 ease-in-out
-    hover:bg-gradient-to-r hover:from-[#00B0BA]/30 hover:to-[#00B0BA]/10
-    hover:border-[#00B0BA] hover:shadow-[0_0_15px_rgba(0,176,186,0.4)]
-    active:bg-gradient-to-r active:from-[#00B0BA]/40 active:to-[#00B0BA]/20
-  ">
+        <div className="w-full max-w-[850px] min-h-[48px] rounded-[10px] border-[1px] border-solid border-white px-[20px] py-[10px] text-white font-[500] text-[16px] text-center leading-[28px] my-[20px]">
           Soft Neutrals Tone
         </div>
       </div>
@@ -247,18 +239,21 @@ export default function AfterCarouselProducts() {
       <div className="flex justify-center items-center gap-2 my-5">
         <span
           onClick={() => setIndex(0)}
-          className={`${index === 0 ? "w-5 h-3 bg-cyan-500" : "w-3 h-3 bg-white"
-            } rounded-full cursor-pointer`}
+          className={`${
+            index === 0 ? "w-5 h-3 bg-cyan-500" : "w-3 h-3 bg-white"
+          } rounded-full cursor-pointer`}
         />
         <span
           onClick={() => setIndex(1)}
-          className={`${index === 1 ? "w-5 h-3 bg-cyan-500" : "w-3 h-3 bg-white"
-            } rounded-full cursor-pointer`}
+          className={`${
+            index === 1 ? "w-5 h-3 bg-cyan-500" : "w-3 h-3 bg-white"
+          } rounded-full cursor-pointer`}
         />
         <span
           onClick={() => setIndex(2)}
-          className={`${index === 2 ? "w-5 h-3 bg-cyan-500" : "w-3 h-3 bg-white"
-            } rounded-full cursor-pointer`}
+          className={`${
+            index === 2 ? "w-5 h-3 bg-cyan-500" : "w-3 h-3 bg-white"
+          } rounded-full cursor-pointer`}
         />
       </div>
 
@@ -287,7 +282,7 @@ export default function AfterCarouselProducts() {
       {/* Your form section - add this somewhere below in your component */}
       <div ref={formRef} className="mt-20">
         {/* Your form content goes here */}
-
+       
         {/* Add your form elements */}
       </div>
     </div>

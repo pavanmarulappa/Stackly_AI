@@ -364,20 +364,23 @@ export default function DraggableImagesProducts() {
 
   const RoomCard = ({ roomName, originalImage, transformedImage, roomKey }) => (
     <div className="max-w-[522px] m-auto w-full h-auto sm:min-h-auto flex flex-col gap-2 max-[440px]:w-[188px] max-[440px]:h-[188.02px] max-[440px]:gap-[7.51px]">
-      <div className="max-w-[520px] min-h-[35px] flex justify-between max-[440px]:w-[188px] max-[440px]:h-[20px] max-[440px]:justify-between">
-        <div className="text-[18px] font-semibold leading-[35px] spacing-[8px] text-center text-[#2A2A2A] max-[440px]:w-[91px] max-[440px]:h-[13px] max-[440px]:mt-3 max-[440px]:font-[400] max-[440px]:text-[14px] max-[440px]:leading-[12.23px] max-[440px]:tracking-[0] max-[440px]:text-center">
-          {roomName}
-        </div>
-        <div
-          className="w-[21px] h-[21px] max-[440px]:w-[19.99px] max-[440px]:h-[19.99px] max-[440px]:top-[0px] cursor-pointer hover:opacity-80"
-          onClick={() => handleFullscreenn(transformedImage)}
-        >
-          <Link to="/Sign-in">
-            {" "}
-            <img src={DragSize} alt="Fullscreen" title="View fullscreen" />
-          </Link>
-        </div>
-      </div>
+     <div className="max-w-[520px] min-h-[35px] flex items-center justify-between 
+                max-[440px]:w-[188px] max-[440px]:h-[20px] max-[440px]:justify-between">
+  
+  <div className="text-[18px] font-semibold leading-[35px] tracking-[0.5px] text-[#2A2A2A] 
+                  max-[440px]:w-[91px] max-[440px]:h-[13px] max-[440px]:text-[14px] 
+                  max-[440px]:leading-[12.23px] max-[440px]:tracking-[0]">
+    {roomName}
+  </div>
+
+  <div className="w-[21px] h-[21px] max-[440px]:w-[20px] max-[440px]:h-[20px] cursor-pointer hover:opacity-80 flex items-center justify-center">
+    <Link to="/Sign-in">
+      <img src={DragSize} alt="Fullscreen" title="View fullscreen" />
+    </Link>
+  </div>
+
+</div>
+
       <div className="max-w-[522px] w-full h-auto rounded-[4px]">
         <DraggableImages
           imageRight={originalImage}
@@ -514,32 +517,86 @@ export default function DraggableImagesProducts() {
       )}
 
       {/* DraggableImages Section */}
-      <div className="mt-[20px]">
-        <div className="w-[1440px] h-[994px]
-  max-[440px]:flex max-[440px]:flex-col 
-  max-[440px]:w-[440px] max-[440px]:h-[643.38px] 
-  max-[440px]:pt-[2px] max-[440px]:pr-[20px] 
-  max-[440px]:pb-[40px] max-[440px]:pl-[20px] 
-  max-[440px]:gap-[22px]">
+      <div className="min-[769px]:mt-[20px]">
 
-          <div className="w-full min-h-[158px] flex flex-col justify-center items-center gap-[0px]
-  max-[440px]:w-[400px] max-[440px]:h-[76px] max-[440px]:flex-col max-[440px]:gap-[0px]">
+       <div
+  className="w-[1440px] h-[994px]
 
-            <div className="w-[1026px] min-h-[78px] font-bold text-[32px] leading-[78px] text-center font-inter 
-  max-[440px]:w-[400px] max-[440px]:h-[30px] max-[440px]:font-[700] max-[440px]:text-[18px] max-[440px]:leading-[78px] max-[440px]:tracking-[0] max-[440px]:text-center 
-  bg-gradient-to-r from-[#007B82] to-[#001A1C] bg-clip-text text-transparent max-[440px]:bg-gradient-to-r max-[440px]:from-[#001A1C] max-[440px]:to-[#007B82] max-[440px]:bg-clip-text max-[440px]:text-transparent">
+             /* Mobile styles */
+             max-[440px]:flex max-[440px]:flex-col 
+             max-[440px]:w-[440px] max-[440px]:h-[643.38px] 
+             max-[440px]:pt-[2px] max-[440px]:pr-[20px] 
+             max-[440px]:pb-[40px] max-[440px]:pl-[20px] 
+             max-[440px]:gap-[22px]
+
+             /* Tablet styles */
+             min-[441px]:max-[768px]:w-[768px]
+             min-[441px]:max-[768px]:h-[852.04px]
+             min-[441px]:max-[768px]:pt-[60px]
+             min-[441px]:max-[768px]:pr-[40px]
+             min-[441px]:max-[768px]:pb-[60px]
+             min-[441px]:max-[768px]:pl-[40px]
+             min-[441px]:max-[768px]:gap-[32px]"
+>
+
+
+          <div
+            className="w-full min-h-[158px] flex flex-col justify-center items-center gap-[0px]
+
+             /* Mobile styles */
+             max-[440px]:w-[400px] max-[440px]:h-[76px] 
+             max-[440px]:flex-col max-[440px]:gap-[0px]
+
+             /* Tablet styles */
+             min-[441px]:max-[768px]:w-[688px]
+             min-[441px]:max-[768px]:h-[86px]
+             min-[441px]:max-[768px]:gap-[24px]"
+          >
+
+
+            <div
+              className="w-[1026px] h-[78px] flex items-center justify-center 
+             font-bold text-[32px] leading-[78px] text-center font-inter 
+             bg-gradient-to-r from-[#007B82] to-[#001A1C] bg-clip-text text-transparent
+
+             /* Mobile styles */
+             max-[440px]:w-[400px] max-[440px]:h-[30px] 
+             max-[440px]:text-[18px] max-[440px]:leading-[30px] 
+             max-[440px]:bg-gradient-to-r max-[440px]:from-[#001A1C] 
+             max-[440px]:to-[#007B82]
+
+             /* Tablet styles */
+             min-[441px]:max-[768px]:w-[688px]
+             min-[441px]:max-[768px]:h-[22px]
+             min-[441px]:max-[768px]:text-[24px]
+             min-[441px]:max-[768px]:leading-[22px]"
+            >
               Spaces That Inspire You
             </div>
 
 
-            <div className="w-[1026px] min-h-[56px] text-[400] text-semibold text-[20px] leading-[28px] text-center text-[#000000]
-              max-[440px]:w-[400px] max-[440px]:h-[34px] max-[440px]:font-[400] max-[440px]:text-[12px] max-[440px]:leading-[140%] max-[440px]:tracking-[0] max-[440px]:text-center font-inter">
+            <div className="w-[1026px] min-h-[56px] text-[20px] leading-[28px] text-center text-[#000000] font-inter font-normal
+              /* Mobile styles */
+              max-[440px]:w-[400px] max-[440px]:h-[34px] max-[440px]:text-[12px]
+              max-[440px]:leading-[140%] max-[440px]:tracking-[0] max-[440px]:text-center max-[440px]:font-[400]
+
+              /* Tablet styles */
+              min-[441px]:max-[768px]:w-[688px]
+              min-[441px]:max-[768px]:h-[40px]
+              min-[441px]:max-[768px]:text-[14px]
+              min-[441px]:max-[768px]:leading-[140%]
+              min-[441px]:max-[768px]:font-[400]"
+            >
               Explore handpicked collections for every corner of your home —
               from cozy balconies to focused work zones.
             </div>
+
           </div>
 
-          <div className="w-[1280px] h-[853px] ml-[30px] grid grid-cols-1 md:grid-cols-3  gap-y-1 gap-10 sm:gap-15 mt-[-20px] p-5 sm:p-10 max-[440px]:hidden">
+         <div className="w-[1280px] h-[853px] ml-[30px] grid grid-cols-1 md:grid-cols-3 gap-y-1 gap-10 sm:gap-15 mt-[-20px] p-5 sm:p-10 
+  max-[440px]:hidden 
+  min-[441px]:max-[768px]:hidden">
+
             <RoomCard
               roomName="Living Room"
               originalImage={dragImg1_1}
@@ -582,10 +639,48 @@ export default function DraggableImagesProducts() {
               roomKey="studyRoom"
             />
           </div>
+ 
+       {/* TABLET 2x2 GRID – only visible between 441px and 768px */}
+<div className="
+  hidden 
+  min-[441px]:max-[768px]:grid 
+  min-[441px]:max-[768px]:grid-cols-2 
+  min-[441px]:max-[768px]:w-[688px] 
+  min-[441px]:max-[768px]:h-[614px] 
+  min-[441px]:max-[768px]:gap-[16px] 
+  min-[441px]:max-[768px]:justify-center 
+  min-[441px]:max-[768px]:items-center 
+  min-[441px]:max-[768px]:mx-auto 
+  min-[441px]:max-[768px]:mt-[-20px] 
+  min-[441px]:max-[768px]:p-5">
 
-          {/* MOBILE CARDS */}
-          {/* MOBILE CARDS - HORIZONTAL SCROLL */}
-          {/* MOBILE CARDS - 2x2 Grid for screens < md */}
+
+  <RoomCard
+    roomName="Living Room"
+    originalImage={dragImg1_1}
+    transformedImage={dragImg1_2}
+    roomKey="livingRoom"
+  />
+  <RoomCard
+    roomName="Kitchen"
+    originalImage={dragImg2_1}
+    transformedImage={dragImg2_2}
+    roomKey="kitchen"
+  />
+  <RoomCard
+    roomName="Dining Room"
+    originalImage={dragImg1_2}
+    transformedImage={dragImg1_1}
+    roomKey="diningRoom"
+  />
+  <RoomCard
+    roomName="Kids Room"
+    originalImage={dragImg3_1}
+    transformedImage={dragImg3_2}
+    roomKey="kidsRoom"
+  />
+</div>
+
           {/* MOBILE CONTAINER - relative wrapper */}
           <div className="relative w-full px-4 py-4 md:hidden">
 

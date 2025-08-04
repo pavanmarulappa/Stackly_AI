@@ -12,13 +12,8 @@ export default function AfterPackageProducts() {
           Premium Benefits!
         </div>
         <Link to="/AfterUiPlans">
-          <div
-            className="w-[406px] min-h-[60px] rounded-[5px] text-[20px] font-bold leading-[35px] spacing-[8px] text-center text-white flex justify-center items-center"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
-            }}
-          >
+          {" "}
+          <div className="w-[406px] min-h-[60px] rounded-[5px] bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-[20px] font-bold leading-[35px] spacing-[8px] text-center text-white flex justify-center items-center">
             GET STARTED!
           </div>
         </Link>

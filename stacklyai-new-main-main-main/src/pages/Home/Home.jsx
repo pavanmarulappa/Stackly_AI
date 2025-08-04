@@ -830,11 +830,23 @@
 //     </div>
 //   );
 // }
+import { useState, useRef, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { Link } from "react-router-dom";
 
-import React, { useEffect, useState } from "react";
+// Components
 import Form from "./Form";
 import GalleryHover from "../../components/GalleryHover";
 import { useAnimation } from "../../components/AnimatedDesignSection";
+import FAQ from "./FAQ";
+import HeroBanner from "./HeroBanner";
+import DraggableImageSection from "./DraggableImageSection";
+import ImageSlider from "./ImageSlider";
+import StepsHome from "./StepsHome";
+import BasicForm from "./BasicForm";
+
+// Section Images
 import sec3Pattern1 from "../../assets/home/sec3/arcticons_ai-chat-alt-1.png";
 import sec3Pattern2 from "../../assets/home/sec3/arcticons_ai-chat-alt-2.png";
 import sec3Pattern3 from "../../assets/home/sec3/material-icon-theme_gemini-ai.png";
@@ -848,7 +860,7 @@ import sec4Icon1 from "../../assets/home/sec4/1.png";
 import sec4Icon2 from "../../assets/home/sec4/2.png";
 import sec4Icon3 from "../../assets/home/sec4/3.png";
 import sec4Icon4 from "../../assets/home/sec4/4.png";
-import Frame from "../../assets/home/Frame.png"
+import Frame from "../../assets/home/Frame.png";
 
 import sec5BlockImg from "../../assets/home/sec5/Frame 182.png";
 import sec5Frame1 from "../../assets/home/sec5/Frame 175.png";
@@ -879,59 +891,101 @@ import sec13Img1 from "../../assets/home/sec13/img1.jpg";
 import sec13Img2 from "../../assets/home/sec13/img2.jpg";
 
 import sec14Img2 from "../../assets/home/sec14/Vector.png";
-import sec14Img3 from "../../assets/home/sec14/m1.jpg";
-import sec14Img4 from "../../assets/home/sec14/m2.jpg";
-import sec14Img5 from "../../assets/home/sec14/m3.jpg";
-import FAQ from "./FAQ";
-import HeroBanner from "./HeroBanner";
-import DraggableImageSection from "./DraggableImageSection";
-import ImageSlider from "./ImageSlider";
-import StepsHome from "./StepsHome";
-import Star from "../../assets/home/star.png";
+import sec14Img3 from "../../assets/home/sec14/m3.jpg";
+import sec14Img4 from "../../assets/home/sec14/m1.jpg";
+import sec14Img5 from "../../assets/home/sec14/m2.jpg";
+
+import DotFrame from "../../assets/home/DotFrame.png";
+import NewFrame from "../../assets/home/nsec3/image2.png";
+import NewFrame2 from "../../assets/home/nsec3/image1.png";
+import NewFrame3 from "../../assets/home/nsec3/image3.png";
+import NewFrame4 from "../../assets/home/nsec3/image4.png";
+import NewFrame5 from "../../assets/home/nsec3/image5.png";
+import NewFrame6 from "../../assets/home/nsec3/image6.png";
+import Group from "../../assets/home/nsec3/StarGroup.png";
+import vector from "../../assets/home/nsec3/vector.png";
+import star from "../../assets/home/Big star.png";
+import Star from "../../assets/home/stars.png";
 import Reacts from "../../assets/home/react.png";
-import Stars from "../../assets/home/stars.png";
 import Magic from "../../assets/product-pg/magic.png";
-import { Link } from "react-router-dom"
-import BasicForm from "./BasicForm";
+import Line from "../../assets/home/Sideline.png";
+import BgVideo2 from "../../assets/home/vd2.mp4";
+import Bfooter from "../../assets/home/footer.png";
 
-
-//export default function Home() {
-//export default function Home() {
 export default function Home() {
-  const frameImages = [
-    "/home/sec5/frame1.png",
-    "/home/sec5/frame2.png",
-    "/home/sec5/frame3.png",
-    "/home/sec5/frame4.png",
-    "/home/sec5/frame5.png",
-    "/home/sec5/frame6.png",
-    "/home/sec5/frame7.png",
-    "/home/sec5/frame8.png",
-  ];
-
   const { sectionRef, animations } = useAnimation();
-
-  const faqs = [
-    {
-      question: "What is Stackly AI?",
-      answer: "Stackly AI is an intelligent platform designed to streamline your tasks using automation and smart tools. It helps enhance productivity by offering tailored solutions based on your needs."
-    },
-    {
-      question: "How does Stackly AI work?",
-      answer: "Stackly AI works by analyzing your input and tasks, then offering automated suggestions, integrations, and tools to make your workflow more efficient and seamless."
-    },
-    {
-      question: "Is Stackly AI free to use?",
-      answer: "Stackly AI offers both free and premium plans. The free plan includes essential features, while premium plans unlock advanced capabilities and integrations."
-    },
-    {
-      question: "How do I contact Stackly AI?",
-      answer: "You can reach out to Stackly AI by sending an email to support@stackly.ai or by filling out the contact form on our website's Contact Us page. We're here to help with any questions, feedback, or support you may need."
-    }
-  ]; // <-- Closing bracket for faqs array was missing
-
-  // Correctly placed outside the faqs array
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+  const controls = useAnimation();
+  const [ref, inView] = useInView({ threshold: 0.1 });
+  const [isHovering1, setIsHovering1] = useState(false);
+
+  const counter45Ref = useRef(null);
+  const counter100Ref = useRef(null);
+  const hasAnimated = useRef(false);
+  const lastTriggered = useRef(0);
+
+
+const faqs = [
+  {
+    question: "How does Stackly AI work?",
+    answer: "Stackly AI uses advanced algorithms to automate tasks efficiently.",
+    related: [
+      {
+        question: "Is Stackly AI suitable for beginners?",
+        answer: "Yes, Stackly AI has a beginner-friendly interface.",
+      },
+      {
+        question: "What technologies does Stackly use?",
+        answer: "It uses React, Node.js, and AI/ML models under the hood.",
+      },
+    ],
+  },
+  {
+    question: "Is there a free version available?",
+    answer: "Yes, Stackly AI offers a free trial with limited features.",
+    related: [
+      {
+        question: "How long does the free trial last?",
+        answer: "The free trial lasts for 14 days from the signup date.",
+      },
+      {
+        question: "Can I upgrade during the trial?",
+        answer: "Yes, you can upgrade anytime via your account settings.",
+      },
+    ],
+  },
+  {
+    question: "Can Stackly AI integrate with other tools?",
+    answer: "Yes, it supports integration with tools like Zapier and Slack.",
+    related: [
+      {
+        question: "Does Stackly AI support API access?",
+        answer: "Yes, Stackly AI provides API documentation for developers.",
+      },
+      {
+        question: "Can I sync Stackly with my CRM?",
+        answer: "Absolutely, CRM integration is available in the pro plan.",
+      },
+    ],
+  },
+  {
+    question: "Is customer support available?",
+    answer: "Yes, 24/7 customer support is available via chat and email.",
+    related: [
+      {
+        question: "Is live chat support available?",
+        answer: "Yes, you can chat with support directly through the dashboard.",
+      },
+      {
+        question: "Where can I raise a ticket?",
+        answer: "Go to the 'Help' section and click 'Raise a Ticket'.",
+      },
+    ],
+  },
+];
+
+
   const mobileCards = [
     {
       id: 1,
@@ -942,8 +996,8 @@ export default function Home() {
     },
     {
       id: 2,
-      name: "Cristian Rama ",
-      role: "Architectr",
+      name: "Cristian Rama",
+      role: "Architect",
       image: sec14Img4,
       quote: "I needed to replace my living room furniture so I generated a few design ideas with Stackly AI. I picked my favorite, sent it to the furniture maker and now I have it in real life. Awesome technology!"
     },
@@ -964,6 +1018,74 @@ export default function Home() {
     setCurrentCardIndex((prev) => (prev === 0 ? mobileCards.length - 1 : prev - 1));
   };
 
+const [isHovering2, setIsHovering2] = useState(false);
+
+const handleMouseEnter1 = () => setIsHovering1(true);
+const handleMouseLeave1 = () => setIsHovering1(false);
+
+const handleMouseEnter2 = () => setIsHovering2(true);
+const handleMouseLeave2 = () => setIsHovering2(false);
+  
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        when: "beforeChildren",
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { y: 50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.8, ease: "easeOut" }
+    }
+  };
+
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    }
+  }, [controls, inView]);
+  const [ref1, inView1] = useInView({ threshold: 0.1 });
+const [ref2, inView2] = useInView({ threshold: 0.1 });
+const [ref4, inView4] = useInView({ threshold: 0.1 });
+
+const animateCounter = (ref, target) => {
+    let start = 0;
+    const duration = 1000;
+    const increment = target / (duration / 16);
+
+    const step = () => {
+      start += increment;
+      if (start >= target) {
+        ref.current.textContent = `${target}+`;
+      } else {
+        ref.current.textContent = `${Math.floor(start)}+`;
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
+  };
+
+useEffect(() => {
+  if (inView4) {
+    const now = Date.now();
+    if (now - lastTriggered.current > 2000) { // 2-second cooldown
+      animateCounter(counter45Ref, 45);
+      animateCounter(counter100Ref, 100);
+      lastTriggered.current = now;
+    }
+  }
+}, [inView4]);
+
+
   return (
     <div>
       {/* banner  */}
@@ -972,13 +1094,13 @@ export default function Home() {
 
       {/* section 2 */}
 
-      <section className="w-full max-w-[1440px] h-[453px] flex flex-col justify-center items-center gap-5 p-[30px] 
+      {/* <section className="w-full max-w-[1440px] h-[453px] flex flex-col justify-center items-center gap-5 p-[30px] 
                     bg-gradient-to-l from-[#00B0BA14] to-[#00B0BA00] relative
                     max-[440px]:h-[248px] max-[440px]:min-h-0 max-[440px]:py-[60px] max-[440px]:px-[20px] 
-                    max-[440px]:gap-[20px]">
+                    max-[440px]:gap-[20px]"> */}
 
         {/* Desktop-only decorative elements (hidden on mobile) */}
-        <img
+        {/* <img
           src={Star}
           alt=""
           className="absolute top-[70px] right-[80px] w-[39px] h-[30px] max-[440px]:hidden"
@@ -1007,10 +1129,10 @@ export default function Home() {
           src={Reacts}
           alt=""
           className="absolute bottom-[40px] right-[71.25px] w-[74px] h-[74px] max-[440px]:hidden"
-        />
+        /> */}
 
         {/* Mobile-only decorative elements (hidden on desktop) */}
-        <img
+        {/* <img
           src={Star}
           alt=""
           className="hidden max-[440px]:block absolute top-[20px] right-[20px] w-[19px] h-[20px]"
@@ -1039,17 +1161,17 @@ export default function Home() {
           src={Reacts}
           alt=""
           className="hidden max-[440px]:block absolute bottom-[20px] right-[20px] w-[40px] h-[40px]"
-        />
+        /> */}
 
         {/* H1 - Title */}
-        <h1 className="w-full max-w-[220px] text-[24px] font-black leading-[100%] text-center text-[#2a2a2a] mx-auto
+        {/* <h1 className="w-full max-w-[220px] text-[24px] font-black leading-[100%] text-center text-[#2a2a2a] mx-auto
                  max-[440px]:max-w-[300px] max-[440px]:text-[20px] max-[440px]:font-[700] 
                  max-[440px]:text-[#000000] font-inter max-[440px]:mt-[20px]">
           STACKLY AI
-        </h1>
+        </h1> */}
 
         {/* H2 - Subtitle with icon */}
-        <div className="w-full max-w-[979px] flex flex-col items-center">
+        {/* <div className="w-full max-w-[979px] flex flex-col items-center">
           <h2 className="w-full flex items-center justify-center gap-[10px] text-center
                max-[440px]:gap-[8px] max-[440px]:items-center">
             <img
@@ -1062,19 +1184,246 @@ export default function Home() {
               Smarter. Faster. Built for Excellence
             </span>
           </h2>
-        </div>
+        </div> */}
 
         {/* Paragraph */}
-        <p className="w-full max-w-[839px] text-[24px] font-normal leading-[35px] text-center text-[#2A2A2A] mx-auto
+        {/* <p className="w-full max-w-[839px] text-[24px] font-normal leading-[35px] text-center text-[#2A2A2A] mx-auto
                 max-[440px]:text-[14px] max-[440px]:leading-[140%] max-[440px]:px-[30px]">
           Experience rapid, photo-realistic designs powered by advanced AI—trusted by professionals and homeowners alike.
-        </p>
+        </p> */}
 
-      </section>
+      {/* </section> */}
+
+
+
+{/* new figma disgine sec2 */}
+  <section className="w-full h-[857px] rotate-0 opacity-100 bg-[#000000] relative overflow-hidden">
+  {/* DotFrame image */}
+  <img
+    src={DotFrame}
+    alt="Dot Frame"
+    className="w-[800px] h-[163px] opacity-100 rotate-0 absolute top-[62px] left-[-367px]"
+  />
+
+  {/* Hoverable frames */}
+  <div className="relative w-full h-[800px] overflow-hidden">
+    {/* FIRST IMAGE DIV */}
+    <motion.div
+      ref={ref1}
+      initial={{ y: 100, opacity: 0 }}
+      animate={inView1 ? { y: 0, opacity: 1 } : {}}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="absolute top-[95px] left-[319px] w-[325px] h-[381px] overflow-hidden z-10"
+      onMouseEnter={handleMouseEnter1}
+      onMouseLeave={handleMouseLeave1}
+    >
+      <div className="w-full h-full relative">
+        <motion.img
+          src={NewFrame}
+          alt="New Frame"
+          className="w-full h-full object-cover absolute top-0 left-0"
+          animate={{
+            x: isHovering1 ? "-100%" : "0%",
+          }}
+          transition={{ duration: 0.5 }}
+        />
+        <motion.img
+          src={NewFrame4}
+          alt="New Frame 4"
+          className="w-full h-full object-cover absolute top-0 left-0"
+          initial={{ x: "100%" }}
+          animate={{
+            x: isHovering1 ? "0%" : "100%",
+          }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        />
+      </div>
+    </motion.div>
+
+    {/* SECOND IMAGE DIV */}
+    <motion.div
+      ref={ref2}
+      initial={{ y: 100, opacity: 0 }}
+      animate={inView2 ? { y: 0, opacity: 1 } : {}}
+      transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+      className="absolute top-[350px] left-[105px] w-[325px] h-[381px] overflow-hidden z-10"
+      onMouseEnter={handleMouseEnter2}
+      onMouseLeave={handleMouseLeave2}
+    >
+      <div className="w-full h-full relative">
+        <motion.img
+          src={NewFrame2}
+          alt="New Frame 2"
+          className="w-full h-full object-cover absolute top-0 left-0"
+          animate={{
+            x: isHovering2 ? "-100%" : "0%",
+          }}
+          transition={{ duration: 0.5 }}
+        />
+        <motion.img
+          src={NewFrame6}
+          alt="New Frame 6"
+          className="w-full h-full object-cover absolute top-0 left-0"
+          initial={{ x: "100%" }}
+          animate={{
+            x: isHovering2 ? "0%" : "100%",
+          }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        />
+      </div>
+    </motion.div>
+  </div>
+
+  {/* Text container */}
+  <motion.div
+    initial={{ y: 50, opacity: 0 }}
+    animate={inView1 ? { y: 0, opacity: 1 } : {}}
+    transition={{ duration: 0.8, delay: 0.4 }}
+    className="absolute top-[158px] left-[752px] w-[488px] h-[152px] flex flex-col gap-[12px] opacity-100"
+  >
+    <div className="w-[262px] h-[22px]">
+      <p className="text-white font-[400] text-[18px] leading-[100%] poppins-font">
+        STACKLY AI
+      </p>
+    </div>
+    <div className="w-[488px] h-[118px]">
+      <p className="text-white font-[400] text-[52px] leading-[140%] lancelot-text -mt-[14px]">
+        Design Your Dream Space Effortlessly
+      </p>
+    </div>
+  </motion.div>
+
+  {/* Description box */}
+  <motion.div
+    initial={{ y: 50, opacity: 0 }}
+    animate={inView2 ? { y: 0, opacity: 1 } : {}}
+    transition={{ duration: 0.8, delay: 0.6 }}
+    className="w-[616px] h-[176px] absolute top-[440px] right-[40px] flex flex-col gap-[6px]"
+  >
+    <div className="w-full h-[45px]">
+      <p className="text-white text-[32px] font-[400] leading-[140%] poppins-font">
+        Minimal Style
+      </p>
+    </div>
+    <div className="w-[616px] h-[125px]">
+      <p className="text-white text-[18px] font-[400] leading-[140%] lora-text">
+        Step into a space where less truly becomes more. Our AI blends clean lines,
+        soft tones, and thoughtful spacing to create interiors that feel light, breathable,
+        and beautifully uncluttered. <br />
+        Designed to inspire calm, focus, and modern sophistication without lifting a finger.
+      </p>
+    </div>
+  </motion.div>
+
+  {/* Icons */}
+  <motion.img
+    initial={{ opacity: 0 }}
+    animate={inView1 ? { opacity: 1 } : {}}
+    transition={{ duration: 0.8, delay: 0.8 }}
+    src={Group}
+    alt="Group 28"
+    className="absolute w-[26.99px] h-[26.99px] top-[31px] left-[1300px] rotate-0 border-[1.9px] border-solid border-black"
+  />
+
+  <motion.img
+    initial={{ opacity: 0 }}
+    animate={inView2 ? { opacity: 1 } : {}}
+    transition={{ duration: 0.8, delay: 1.0 }}
+    src={Group}
+    alt="Group 28"
+    className="absolute w-[55.01px] h-[55.01px] top-[810px] left-[1297px] rotate-0 border-[1.9px] border-black"
+  />
+
+  {/* Explore more button */}
+  <motion.div
+    initial={{ y: 20, opacity: 0 }}
+    animate={inView2 ? { y: 0, opacity: 1 } : {}}
+    transition={{ duration: 0.8, delay: 1.2 }}
+  >
+    <Link to="/sign-in">
+      <div className="absolute w-[280px] h-[50px] top-[685px] left-[1041px] flex items-center px-[6px] group">
+        <div className="w-[217px] h-[34px] flex items-center justify-center">
+          <p className="text-white text-[24px] font-[400] leading-[140%] text-center font-[Lora] transition-all duration-300 group-hover:text-opacity-80">
+            Explore more
+          </p>
+        </div>
+        <div className="w-[50px] h-[50px] ml-[-15px] rotate-[-180deg] rounded-[30px] bg-white/10 relative flex items-center justify-center transition-all duration-300 group-hover:bg-white/20">
+          <img
+            src={vector}
+            alt="icon"
+            className="w-[22.5px] h-[17.5px] rotate-[-180deg] transition-all duration-300 group-hover:opacity-80 group-hover:brightness-0 group-hover:invert"
+          />
+        </div>
+      </div>
+    </Link>
+  </motion.div>
+</section>
+
+
+
+{/* new figma setion3 */}
+<section className="w-full h-[150px] bg-black relative overflow-hidden">
+  <div className="absolute top-[60px] left-0 flex w-max h-[30px] animate-marquee-alt">
+    {[...Array(2)].map((_, j) =>
+      Array(20)
+        .fill(0)
+        .map((_, i) => (
+          <div
+            key={`${j}-${i}`}
+            className="w-[256px] h-[30px] flex items-center gap-[12px]"
+          >
+            {/* Star Icon */}
+            <div className="w-[30px] h-[30px] flex items-center justify-center">
+              <img
+                src={star}
+                alt="icon"
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            {/* Text */}
+            <div
+              className={`w-[214px] h-[25px] flex items-center px-2 border ${
+                i % 2 === 0
+                  ? "border-white/50 text-white"
+                  : "border-white text-white/50"
+              }`}
+            >
+              <p className="text-[16px] font-[400] leading-[140%] font-[Poppins] whitespace-nowrap overflow-hidden text-ellipsis">
+                Visuals to the Next Level
+              </p>
+            </div>
+          </div>
+        ))
+    )}
+  </div>
+
+  {/* Local animation keyframes */}
+  <style>
+    {`
+      @keyframes marquee-alt {
+        0% { transform: translateX(0%); }
+        100% { transform: translateX(-50%); }
+      }
+      .animate-marquee-alt {
+        animation: marquee-alt 25s linear infinite;
+      }
+    `}
+  </style>
+</section>
+
+
+
+
 
 
       {/* section 3 */}
-      <section className="w-full min-h-[900px] max-[440px]:min-h-[634px]" ref={sectionRef}>
+      {/*  full section is hidden */}
+     <section 
+  className="hidden w-full min-h-[900px] max-[440px]:min-h-[634px]"
+  
+  ref={sectionRef}
+>
         <div
           className="w-full min-h-[900px] max-[440px]:min-h-[634px] bg-cover bg-center bg-no-repeat bg-blend-overlay pb-0
     max-[440px]:flex max-[440px]:flex-col
@@ -1199,12 +1548,13 @@ export default function Home() {
         </div>
       </section>
 
+    
+
       {/* Section 4 */}
 
-      <section className="relative w-full h-auto flex justify-center items-center p-[50px] bg-gradient-to-l from-[#00B0BA14] to-[#00B0BA00] 
+      {/* <section className="relative w-full h-auto flex justify-center items-center p-[50px] bg-gradient-to-l from-[#00B0BA14] to-[#00B0BA00] 
   max-[500px]:p-5 max-[440px]:min-h-[537px]">
 
-        {/* ⭐ Decorative Stars — Top Left */}
         <img
           src={Star}
           alt=""
@@ -1216,7 +1566,6 @@ export default function Home() {
           className="absolute top-[130px] left-[90px] w-[30px] max-[440px]:top-[50px] max-[440px]:left-[35px] max-[440px]:w-[13px] max-[440px]:h-[15px]"
         />
 
-        {/* ⭐ Decorative Stars — Bottom Right */}
         <img
           src={Star}
           alt=""
@@ -1295,8 +1644,9 @@ export default function Home() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
+      
 
 
       {/* <GalleryHover
@@ -1311,30 +1661,53 @@ export default function Home() {
         sec5Frame8={sec5Frame8}
       /> */}
       {/* section 6 */}
-      <section
-        className="w-full h-[477px] bg-[#021C1D] px-4 py-16 flex justify-center items-center 
-             max-[440px]:min-h-[280px] max-[440px]:px-4"
-      >
+     {/* <section
+  className="w-full h-[477px] bg-[#021C1D] px-4 py-16 flex justify-center items-center 
+             max-[440px]:w-[440px] 
+             max-[440px]:h-[280px] 
+             max-[440px]:px-[20px] 
+             max-[440px]:py-[40px] 
+             max-[440px]:gap-[40px] 
+             max-[440px]:opacity-100"
+>
+
         <div
           className="w-full max-w-6xl flex flex-col items-center
              max-[440px]:w-full max-[440px]:px-4 
              max-[440px]:gap-[16px]"
         >
-          {/* Title */}
+         
           <h2
-            className="text-center text-white text-[40px] md:text-3xl leading-[140%] font-semibold mb-16
-               max-[440px]:text-[18px] max-[440px]:leading-[140%] max-[440px]:mb-4 max-[440px]:w-full"
-          >
-            Our Design Range, Trusted Worldwide
-          </h2>
+  className="text-center text-white text-[40px] md:text-3xl leading-[140%] font-semibold mb-16
+           
+             max-[440px]:text-[18px] 
+             max-[440px]:leading-[140%] 
+             max-[440px]:font-medium 
+             max-[440px]:mb-4 
+             max-[440px]:w-[400px] 
+             max-[440px]:h-[25px] 
+             max-[440px]:opacity-100"
+  style={{ fontFamily: "Inter" }}
+>
+  Our Design Range, Trusted Worldwide
+</h2>
 
-          {/* First Row */}
-          <div
-            className="w-[900px] h-[100px] grid grid-cols-1 md:grid-cols-3 items-center gap-2
-               max-[440px]:flex max-[440px]:flex-row 
-               max-[440px]:w-full max-[440px]:justify-between max-[440px]:gap-[8px]"
-          >
-            {/* Images */}
+
+          
+  <div
+  className="w-[900px] h-[100px] grid grid-cols-1 md:grid-cols-3 items-center gap-2
+             max-[440px]:flex max-[440px]:flex-row 
+             max-[440px]:w-[400px] 
+             max-[440px]:h-[51px] 
+             max-[440px]:gap-[18px] 
+             max-[440px]:justify-center 
+             max-[440px]:items-center 
+             max-[440px]:text-center 
+             max-[440px]:mx-auto"
+>
+
+
+           
             <div
               className="flex justify-center md:justify-start -space-x-4
       max-[440px]:w-[118px] max-[440px]:h-[40px]"
@@ -1351,7 +1724,7 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Middle - Stat */}
+           
             <div
               className="text-center
       max-[440px]:flex max-[440px]:flex-col max-[440px]:justify-center max-[440px]:items-center
@@ -1379,7 +1752,7 @@ export default function Home() {
 
             </div>
 
-            {/* Right - Text */}
+           
             <div
               className="text-center mr-[30px] text-[white] text-[18px] leading-[140%]
       max-[440px]:w-[158px] max-[440px]:h-[51px]
@@ -1392,15 +1765,21 @@ export default function Home() {
           </div>
 
 
-          {/* Second Row */}
-          <div
-            className="w-[900px] h-[100px] grid grid-cols-1 ml-[90px] mt-[15px] md:grid-cols-3 items-center gap-6
-    max-[440px]:flex max-[440px]:flex-row
-    max-[440px]:w-[400px] max-[440px]:h-[68px]
-    max-[440px]:gap-[18px]"
-          >
+        
+   <div
+  className="w-[900px] h-[100px] grid grid-cols-1 ml-[90px] mt-[15px] md:grid-cols-3 items-center gap-6
+             max-[440px]:flex max-[440px]:flex-row 
+             max-[440px]:w-[400px] 
+             max-[440px]:h-[68px] 
+             max-[440px]:ml-[30px]
+             max-[440px]:gap-[18px] 
+             max-[440px]:opacity-100
+             max-[440px]:justify-center max-[440px]:items-center max-[440px]:text-center"
+>
 
-            {/* Left - Text */}
+
+
+          
             <div
               className="text-[white] text-[18px] mr-[20px] leading-[140%] text-center
     max-[440px]:w-[147px] max-[440px]:h-[68px]
@@ -1415,7 +1794,6 @@ export default function Home() {
             </div>
 
 
-            {/* Middle - User Images */}
             <div
               className="flex justify-center -space-x-4
     max-[440px]:w-[118px] max-[440px]:h-[40px]
@@ -1435,7 +1813,7 @@ export default function Home() {
 
             </div>
 
-            {/* Right - Stat */}
+           
             <div className="text-center mr-[40px] 
   max-[440px]:flex max-[440px]:flex-col 
   max-[440px]:w-[89px] max-[440px]:h-auto">
@@ -1461,17 +1839,223 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
+
+
+     
 
       <StepsHome />
 
       {/* Section 7 */}
 
       <BasicForm />
+      
+      {/* new figma section6 */}
+  <section className="w-full h-[713px] opacity-100 relative overflow-hidden">
+  <video
+    autoPlay
+    loop
+    muted
+    playsInline
+    className="absolute top-0 left-0 w-full h-full object-cover -z-10"
+  >
+    <source src={BgVideo2} type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
 
-      <section className="w-full min-h-[792px] py-16 px-6 flex flex-col items-center bg-white text-gray-800
+        <div
+          className="absolute w-[1277px] h-[481px] top-[135px] left-[96px] opacity-100 flex gap-[46px]"
+          style={{ transform: "rotate(0deg)" }}
+        >
+        
+        {/* left div */}
+        <div
+  className="w-[936px] h-[481px] flex flex-col justify-between opacity-100"
+  style={{ transform: "rotate(0deg)" }}
+>
+  {/* Top Section */}
+  <div className="w-[936px] h-[232px] flex flex-col gap-[42px] opacity-100">
+    {/* Heading */}
+    <div className="w-[936px] h-[82px] flex items-center">
+      <h2
+        className="w-[599px] h-[82px] text-[32px] leading-[100%] font-normal text-white"
+        style={{ fontFamily: 'Lora' }}
+      >
+        Elevate your home with artfully crafted, AI-enhanced design.
+      </h2>
+    </div>
+
+    {/* Paragraph */}
+    <p
+      className="w-[830px] h-[108px] text-[18px] leading-[150%] font-normal text-white"
+      style={{ fontFamily: 'Poppins' }}
+    >
+      Experience interior design that speaks for itself. Our tailored AI-powered solutions have
+      consistently delighted clients around the world bringing unique styles, functional layouts,
+      and beautiful results to every space. From modern minimalism to timeless elegance, we deliver
+      designs that truly feel like home.
+    </p>
+  </div>
+
+  {/* Bottom Section */}
+  <div className="relative w-[424px] h-[199px] rounded-[20px]" style={{ background: "#8A38F514" }}>
+              {/* Gradient border overlay */}
+              <div
+                className="absolute inset-0 rounded-[20px] pointer-events-none"
+                style={{
+                  border: "1px solid transparent",
+                  background: "linear-gradient(283.03deg, #8A38F5 -4.05%, #000000 106.3%) border-box",
+                  WebkitMask: "linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)",
+                  WebkitMaskComposite: "xor",
+                  maskComposite: "exclude",
+                  padding: "1px",
+                  borderRadius: "20px"
+                }}
+              />
+
+              {/* Your existing content container */}
+              <div
+                className="w-[412px] h-[186px] rounded-[20px] flex flex-col gap-[18px] mt-[7px] ml-[7px] pt-[24px] pr-[16px] pb-[24px] pl-[20px]"
+                style={{
+                  background: "#8A38F514",
+                }}
+              >
+                <h3
+                  className="w-[376px] h-[24px] text-white text-[20px] font-medium leading-[120%]"
+                  style={{ fontFamily: 'Inter' }}
+                >
+                  Discover Smarter Design Possibilities
+                </h3>
+                <p
+                  className="w-[376px] h-[34px] text-white text-[14px] font-normal leading-[120%]"
+                  style={{ fontFamily: 'Inter' }}
+                >
+                  Explore how our AI transforms your spaces fast, stylish, and effortless
+                </p>
+
+                <div className="w-[245px] h-[44px] flex items-center justify-start">
+                  <Link to="/sign-in">
+                    <div
+                      className="w-[222px] h-[44px] flex items-center gap-[10px] border border-solid rounded-[30px] px-[30px] py-[10px]"
+                      style={{
+                        background: "linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)"
+                      }}
+                    >
+                      <div
+                        className="w-[128px] h-[19px] text-[16px] font-medium leading-[100%] text-white"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        Explore Features
+                      </div>
+                      <div className="w-[24px] h-[24px] p-[2.25px] box-border">
+                        <img
+                          src={Frame}
+                          alt="icon"
+                          className="w-[19.5px] h-[19.5px]"
+                          style={{
+                            filter: "brightness(0) saturate(100%) invert(92%) sepia(56%) saturate(763%) hue-rotate(239deg) brightness(97%) contrast(102%)",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+         {/* right div */}
+          <div
+            ref={ref4}
+            className="w-full h-[481px] opacity-100 flex flex-col gap-[105px]"
+            style={{ transform: "rotate(0deg)" }}
+          >
+            <div
+              className="w-full h-[481px] opacity-100 flex flex-col gap-[105px]"
+              style={{ transform: "rotate(0deg)" }}
+            >
+              {/* 45+ div */}
+              <div className="w-[280px] h-[181px] border border-white opacity-100">
+                <div className="w-[224px] h-[149px] relative left-[15px] opacity-100 flex flex-col items-center justify-between">
+                  {/* Top Text */}
+                  <div className="w-[224px] h-[115px] flex items-center justify-center">
+                    <p
+                      className="text-[82px] font-medium leading-[140%] text-center"
+                      style={{
+                        fontFamily: 'Poppins',
+                        background: "linear-gradient(104.83deg, #8A38F5 28.54%, #C22CA2 84.84%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent"
+                      }}
+                    >
+                      <span ref={counter45Ref}>0+</span>
+                    </p>
+                  </div>
+                  {/* Bottom Text */}
+                  <div className="w-[224px] h-[34px] flex items-center justify-center">
+                    <p
+                      className="text-[24px] font-normal leading-[140%] text-white text-center"
+                      style={{ fontFamily: 'Poppins' }}
+                    >
+                      Design Styles
+                    </p>
+                  </div>
+                </div>
+                <div className="w-[269px] h-[52px] border border-white opacity-100">
+                  <img src={Line} alt="Sideline" className="w-full h-full object-contain" />
+                </div>
+              </div>
+              {/* 100+ div */}
+              <div className="w-[295px] h-[175px] border border-white opacity-100">
+                <div className="w-[239px] h-[149px] relative opacity-100 flex flex-col items-center justify-between">
+
+                  {/* Top Text */}
+                  <div className="w-[239px] h-[115px] flex items-center justify-center">
+                    <p
+                      className="text-[82px] font-medium leading-[140%] text-center"
+                      style={{
+                        fontFamily: 'Poppins',
+                        background: "linear-gradient(104.83deg, #8A38F5 28.54%, #C22CA2 84.84%)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent"
+                      }}
+                    >
+                      <span ref={counter100Ref}>0+</span>
+                    </p>
+                  </div>
+
+                  {/* Bottom Text */}
+                  <div className="w-[239px] h-[34px] flex items-center justify-center">
+                    <p
+                      className="text-[24px] font-normal leading-[140%] text-white text-center"
+                      style={{ fontFamily: 'Poppins' }}
+                    >
+                      Happy Users
+                    </p>
+                  </div>
+                </div>
+
+                <div className="w-[269px] h-[52px] border border-white opacity-100">
+                  <img src={Line} alt="Sideline" className="w-full h-full object-contain" />
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+
+
+
+
+        </div>
+
+
+      </section>
+
+
+      {/* <section className="w-full min-h-[792px] py-16 px-6 flex flex-col items-center bg-white text-gray-800
   max-[440px]:w-full max-[440px]:min-h-0 max-[440px]:py-[40px] max-[440px]:px-[20px] max-[440px]:gap-[10px]">
-        {/* Heading - Desktop */}
+      
         <div className="text-center mb-12 max-[440px]:hidden">
           <h2 className="text-[32px] font-semibold mb-[10px] leading-[140%]">
             StacklyAI is for Homeowners and Professionals
@@ -1481,7 +2065,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Heading - Mobile */}
+      
         <div className="text-center mb-1 hidden max-[440px]:flex max-[440px]:flex-col max-[440px]:w-[400px] max-[440px]:min-h-[95px] max-[440px]:gap-[20px] max-[440px]:mx-auto">
           <h2 className="max-[440px]:w-[400px] max-[440px]:h-[56px] max-[440px]:font-semibold max-[440px]:text-[20px] max-[440px]:leading-[140%] max-[440px]:tracking-[0] max-[440px]:text-center font-inter">
             StacklyAI is for <span className="text-[#007b82]">Homeowners</span> and <span className="text-[#007b82]">Professionals</span>
@@ -1490,14 +2074,13 @@ export default function Home() {
             Transform in <span className="text-[#007b82]">Seconds</span>, Not Days
           </p>
         </div>
-        
 
-        {/* Cards Container */}
+       
         <div className="flex justify-center gap-12 w-full max-w-6xl
     max-[440px]:flex max-[440px]:flex-row max-[440px]:w-[400px] max-[440px]:min-h-[307px] 
     max-[440px]:px-[8px] max-[440px]:gap-[24px]">
 
-          {/* Personal Use Card - Desktop */}
+         
           <div className="flex flex-col items-center text-center w-full max-w-[522px] max-[440px]:hidden">
             <h3 className="text-[24px] font-semibold mb-8 w-full text-left leading-[140%] font-inter">
               <span className="text-[#007B82]">01</span> For Personal Use
@@ -1513,7 +2096,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Personal Use Card - Mobile */}
           <div className="flex-col items-center text-center hidden max-[440px]:flex max-[440px]:w-[180px] max-[440px]:h-[307px] max-[440px]:gap-[16px]">
             <h3 className="text-[38px] font-semibold leading-[140%] text-center mb-0
         max-[440px]:text-[14px] max-[440px]:w-[180px] max-[440px]:h-[27px]
@@ -1535,7 +2117,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Professional Use Card - Desktop */}
           <div className="flex flex-col items-center text-center w-full max-w-[522px] max-[440px]:hidden">
             <h3 className="text-[24px] font-semibold mb-8 w-full text-left leading-[140%] font-inter">
               <span className="text-[#007B82]">02</span> For Professional Use
@@ -1551,7 +2132,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Professional Use Card - Mobile */}
           <div className="flex-col items-center text-center hidden max-[440px]:flex max-[440px]:w-[180px] max-[440px]:h-[307px] max-[440px]:gap-[16px]">
             <h3 className="text-[38px] font-semibold leading-[140%] text-center mb-0
         max-[440px]:text-[14px] max-[440px]:w-[180px] max-[440px]:h-[27px]
@@ -1575,16 +2155,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Sign Up Section */}
+      
       <section className="relative w-full min-h-[612px] flex justify-center items-center px-6 py-16
   bg-center bg-cover bg-no-repeat 
   max-sm:min-h-[330px] max-sm:px-5 max-sm:py-10"
         style={{ backgroundImage: "url('/home/sec8/Bg.png')" }}>
 
-        {/* Overlay with bg-[#000000cc] */}
+       
         <div className="absolute inset-0 bg-[#000000cc] z-0"></div>
 
-        {/* Desktop Version */}
+       
         <div
           className="relative z-10 w-full max-w-[836px] h-[264px] flex flex-col justify-center items-center gap-6 px-[30px] py-10 rounded-[20px] max-sm:hidden"
           style={{
@@ -1596,7 +2176,7 @@ export default function Home() {
             overflow: 'hidden'
           }}
         >
-          {/* Border Gradient */}
+       
           <div
             className="absolute inset-0 rounded-[20px] pointer-events-none"
             style={{
@@ -1634,7 +2214,6 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Mobile Version */}
         <div className="relative z-10 w-full max-w-[371px] min-h-[250px] bg-[#00000099] backdrop-blur-[2px] flex flex-col justify-center items-center gap-3 rounded-[12px] p-6 sm:hidden
   "style={{
             background: 'rgba(255, 255, 255, 0.12)',
@@ -1664,7 +2243,7 @@ export default function Home() {
             </div>
           </Link>
         </div>
-      </section>
+      </section> */}
 
       {/* Section 9 */}
 
@@ -1807,12 +2386,13 @@ export default function Home() {
           ))}
         </div>
       </section> */}
-<section
+
+{/* <section
   className="w-full max-w-[1440px] h-[867px] flex flex-col justify-center items-center gap-[18px] px-6 overflow-hidden mx-auto
     max-[440px]:w-[440px] max-[440px]:h-auto max-[440px]:min-h-[521px]
     max-[440px]:pt-[20px] max-[440px]:pr-[20px] max-[440px]:pb-[40px] max-[440px]:pl-[20px] max-[440px]:gap-[18px]"
 >
-  {/* Heading & Subheading */}
+ 
   <div className="flex flex-col items-center gap-[18px] w-full">
     <h1
       className="max-w-[1320px] w-full text-[32px] font-semibold leading-[140%] text-center text-black
@@ -1833,7 +2413,6 @@ export default function Home() {
     </p>
   </div>
 
-  {/* Card List */}
   <div
     className="flex justify-center items-center gap-5 p-5 flex-wrap w-full
       max-[440px]:flex-nowrap max-[440px]:w-[400px] max-[440px]:gap-[10px] max-[440px]:overflow-x-auto max-[440px]:scrollbar-none"
@@ -1855,7 +2434,7 @@ export default function Home() {
           max-[440px]:rounded-[5.7px] max-[440px]:border max-[440px]:border-[0.57px]
           max-[440px]:px-[10px] max-[440px]:py-[10px] max-[440px]:gap-[10px] shrink-0"
       >
-        {/* Image */}
+       
         <div className="overflow-hidden h-[calc(100%-100px)]">
           <img
             src={item.img}
@@ -1864,7 +2443,7 @@ export default function Home() {
           />
         </div>
 
-        {/* Text */}
+       
         <div
           className="h-[100px] p-5 transition-all duration-500 ease-in-out transform translate-y-0
             max-[440px]:p-0 max-[440px]:h-auto"
@@ -1879,7 +2458,7 @@ export default function Home() {
       </div>
     ))}
   </div>
-</section>
+</section> */}
 
 {/* <section
   className="w-full max-w-[1440px] h-[867px] flex flex-col justify-center items-center gap-[18px] px-6 overflow-hidden mx-auto
@@ -2039,7 +2618,7 @@ export default function Home() {
 
       {/* {section-16} */}
 
-      <section
+      {/* <section
         className="relative w-full bg-cover bg-center bg-no-repeat
     max-[440px]:w-[440px] 
     max-[440px]:h-[573px] 
@@ -2095,7 +2674,7 @@ export default function Home() {
               </span>
             </h2>
 
-            {/* Desktop: Logo + “You're in good company” in one row */}
+           
             <div className="hidden md:flex items-center gap-4 mb-8">
               <div className="w-[60px] h-[60px] rounded-full flex justify-center items-center bg-[#FFFFFF1F] p-3 shadow-lg">
                 <img src={sec14Img2} alt="logo" className="w-full h-full object-contain" />
@@ -2106,7 +2685,7 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Mobile centered logo and paragraph (unchanged) */}
+         
             <div className="md:hidden mb-16">
               <p
                 className="text-[14px] leading-[140%] font-medium text-center text-gray-300 mt-1 w-[400px] mx-auto"
@@ -2133,10 +2712,9 @@ export default function Home() {
             </div>
 
 
-            {/* Member Cards Section – Hidden below 440px */}
             <div className="w-[100vw] flex justify-center items-center flex-wrap gap-10 max-[440px]:hidden">
 
-              {/* Card 1 */}
+             
               <div className="max-w-[413px] min-h-[242px] bg-white rounded-[12px] p-10 flex flex-col items-center">
 
                 <div className="min-w-[413px] h-full flex justify-around items-center">
@@ -2156,7 +2734,6 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Card 2 */}
               <div className="max-w-[413px] min-h-[286px] bg-white rounded-[12px] p-10 flex flex-col items-center">
 
                 <div className="min-w-[413px] h-full flex justify-around items-center">
@@ -2176,7 +2753,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Card 3 */}
+           
               <div className="max-w-[413px] min-h-[286px] bg-white rounded-[12px] p-10 flex flex-col items-center">
 
                 <div className="min-w-[413px] h-full flex justify-around items-center">
@@ -2196,14 +2773,13 @@ export default function Home() {
                 </p>
               </div>
 
-            </div>
+            </div> */}
 
 
             {/* MOBILE < */}
 
 
-            {/* Mobile Testimonial Carousel */}
-            {/* Mobile Testimonial Carousel (Only <441px visible) */}
+{/*         
             <div
               className="hidden max-[440px]:flex flex-col items-center w-full px-4 pb-8 max-[440px]:-mt-10"
               style={{
@@ -2214,7 +2790,7 @@ export default function Home() {
             >
 
               <div className="relative overflow-hidden w-[349px] mx-auto">
-                {/* Carousel Track */}
+             
                 <div
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{ transform: `translateX(-${currentCardIndex * 100}%)` }}
@@ -2249,10 +2825,9 @@ export default function Home() {
                   ))}
                 </div>
 
-                {/* Navigation Arrows */}
-                {/* Combined Arrows and Dots (Same Row) */}
+               
                 <div className="flex items-center justify-center gap-4 mt-6 w-full">
-                  {/* Left Arrow */}
+                 
                   <button
                     onClick={prevCard}
                     className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
@@ -2269,7 +2844,7 @@ export default function Home() {
                     </svg>
                   </button>
 
-                  {/* Dots (Centered between arrows) */}
+                 
                   <div className="flex gap-2">
                     {mobileCards.map((_, index) => (
                       <button
@@ -2282,7 +2857,7 @@ export default function Home() {
                     ))}
                   </div>
 
-                  {/* Right Arrow */}
+                 
                   <button
                     onClick={nextCard}
                     className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
@@ -2304,13 +2879,84 @@ export default function Home() {
 
           </div>
         </div>
-      </section>
+      </section> */}
+
+      
+      
 
       {/* {section faq} */}
 
       {/* {section-15} */}
 
-      {/* <FAQ faqs={faqs} /> */}
+      <FAQ faqs={faqs} />
+<section
+  className="relative w-full max-w-full h-[316px] opacity-100 mx-auto bg-cover bg-center"
+  style={{ backgroundImage: `url(${Bfooter})` }}
+>
+<div className="absolute top-[63px] left-1/2 transform -translate-x-1/2 w-[737px] h-[190px] flex flex-col items-center gap-[24px] opacity-100">
+
+    {/* Heading Text */}
+    <div
+      className="w-[484px] h-[45px] text-center text-white text-[32px] leading-[140%] font-[500] whitespace-nowrap"
+      style={{ fontFamily: 'Poppins' }}
+    >
+      Sign Up Quickly! Get
+      <span className="bg-gradient-to-r from-[#C22CA2] to-[#8A38F5] text-transparent bg-clip-text"> 25%</span> Offer
     </div>
+{/* Combined Info Row */}
+<div className="flex items-center justify-center gap-[30px] opacity-100">
+  {/* 30 Free Outputs */}
+  <div className="flex items-center gap-[8px]">
+    <div className="w-[8px] h-[8px] rounded-full bg-[#C22CA2]"></div>
+    <div
+      className="text-white text-[18px] leading-[140%] font-[500]"
+      style={{ fontFamily: 'Inter' }}
+    >
+      30 free outputs
+    </div>
+  </div>
+
+  {/* No Credit Card Required */}
+  <div className="flex items-center gap-[8px]">
+    <div className="w-[8px] h-[8px] rounded-full bg-[#C22CA2]"></div>
+    <div
+      className="text-white text-[18px] leading-[140%] font-[500]"
+      style={{ fontFamily: 'Inter' }}
+    >
+      No credit card required
+    </div>
+  </div>
+</div>
+
+    {/* Button */}
+  
+   <Link to="/sign-in">
+  <div
+    className="w-[207px] h-[44px] flex items-center justify-center gap-[10px] px-[30px] py-[10px] rounded-[30px] border border-white"
+    style={{
+      background:
+        "linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)",
+      opacity: 1,
+    }}
+  >
+    <span
+      className="text-white text-[16px] leading-[100%] font-[500]"
+      style={{ fontFamily: "Inter" }}
+    >
+      Start Free Trial
+    </span>
+    <div className="w-[24px] h-[24px] opacity-100">
+      <img src={Frame} alt="icon" className="w-full h-full" />
+    </div>
+  </div>
+</Link>
+
+  </div>
+</section>
+
+
+
+
+</div>
   );
 }

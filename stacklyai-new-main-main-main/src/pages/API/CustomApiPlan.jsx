@@ -152,6 +152,7 @@ import { motion } from "framer-motion";
 import vector from "../../assets/api/vector.png";
 import user from "../../assets/api/user.png";
 import trending from "../../assets/api/trending.png";
+import { AnimatePresence } from "framer-motion";
 
 const CustomAPIPlan = () => {
   const [current, setCurrent] = useState(0);
@@ -223,24 +224,114 @@ const CustomAPIPlan = () => {
   };
 
   return (
-    <div className="w-full min-h-[714px] bg-black flex flex-col justify-center items-center gap-[48px] px-[80px] py-[80px] max-[440px]:bg-gradient-to-b max-[440px]:from-[#011B1C] max-[440px]:to-[#057D82] max-[440px]:min-h-[500px] max-[440px]:items-center max-[440px]:px-[20px] max-[440px]:py-[40px] max-[440px]:gap-[32px]">
-      <div className="max-w-[1280px] min-h-[581px] flex flex-col items-center max-[440px]:min-h-[420px] max-[440px]:mt-[8px]">
-        <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="w-[648px] min-h-[64px] text-[32px] font-normal leading-[64px] text-center text-white whitespace-nowrap max-[440px]:w-[319px] max-[440px]:h-[42px] max-[440px]:font-bold max-[440px]:text-[20px] max-[440px]:leading-[100%] max-[440px]:mt-[40px]" 
-          style={{ fontFamily: "Aptos Serif", letterSpacing: "0%" }}
-        >
-          Why Choose a <span className="text-[#00B0BA]">Custom API Plan?</span>
-        </motion.h2>
+   <div className="w-full min-h-[714px] bg-black flex flex-col justify-center items-center gap-[48px] px-[80px] py-[80px]
+
+  /* Mobile */
+  max-[440px]:bg-gradient-to-b 
+  max-[440px]:from-[#011B1C] 
+  max-[440px]:to-[#057D82] 
+  max-[440px]:min-h-[500px] 
+  max-[440px]:items-center 
+  max-[440px]:px-[20px] 
+  max-[440px]:py-[40px] 
+  max-[440px]:gap-[32px]
+
+  /* Tablet (441px–768px) */
+  min-[441px]:max-[768px]:w-[768px]
+  min-[441px]:max-[768px]:min-h-[500px]
+  min-[441px]:max-[768px]:px-[40px]
+  min-[441px]:max-[768px]:py-[60px]
+  min-[441px]:max-[768px]:gap-[32px]"
+>
+
+    <div
+  className="
+    max-w-[1280px] min-h-[581px] flex flex-col items-center
+
+    /* Mobile styles */
+    max-[440px]:min-h-[420px] 
+    max-[440px]:mt-[8px]
+
+    /* Tablet styles: 441px to 768px */
+    min-[441px]:max-[768px]:w-[768px]
+    min-[441px]:max-[768px]:h-[500px]
+    min-[441px]:max-[768px]:pt-[60px]
+    min-[441px]:max-[768px]:pr-[40px]
+    min-[441px]:max-[768px]:pb-[60px]
+    min-[441px]:max-[768px]:pl-[40px]
+    min-[441px]:max-[768px]:gap-[32px]
+  "
+>
+
+       <motion.h2 
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8 }}
+  className="w-[648px] min-h-[64px] text-[44px] font-normal leading-[64px] text-center text-white whitespace-nowrap
+
+    /* Mobile */
+    max-[440px]:w-[319px]
+    max-[440px]:h-[42px]
+    max-[440px]:font-bold
+    max-[440px]:text-[20px]
+    max-[440px]:leading-[100%]
+    max-[440px]:mt-[40px]
+
+    /* Tablet */
+    min-[441px]:max-[768px]:w-[375px]
+    min-[441px]:max-[768px]:h-[64px]
+    min-[441px]:max-[768px]:text-[24px]
+    min-[441px]:max-[768px]:font-[500]
+    min-[441px]:max-[768px]:leading-[64px]
+  " 
+  style={{ fontFamily: "Inter", letterSpacing: "0%" }}
+>
+  Why Choose a <span className="text-[#00B0BA]">Custom API Plan?</span>
+</motion.h2>
+
 
         {/* Desktop View (≥441px) */}
-        <div className="hidden min-[441px]:flex min-[441px]:w-[1281px] min-[441px]:h-[442px] min-[441px]:gap-[21px] min-[441px]:opacity-100 min-[441px]:mt-[60px] min-[441px]:flex-wrap min-[441px]:justify-center">
+       <div className="
+  hidden
+  min-[441px]:flex 
+  min-[441px]:w-[1281px] 
+  min-[441px]:h-[442px] 
+  min-[441px]:gap-[21px] 
+  min-[441px]:opacity-100 
+  min-[441px]:mt-[60px] 
+  min-[441px]:flex-wrap 
+  min-[441px]:justify-center
+
+  /* Tablet overrides */
+  min-[441px]:max-[768px]:w-[1161px] 
+  min-[441px]:max-[768px]:h-[284px]
+  min-[441px]:max-[768px]:gap-[21px]
+  min-[441px]:max-[768px]:opacity-100
+"
+>
+
           {boxes.map((box, index) => (
             <motion.div
               key={index}
-              className="relative w-[413px] h-[442px] px-[40px] py-[80px] gap-[10px] rounded-[24px] flex flex-col items-center text-center overflow-hidden cursor-pointer"
+className="
+  relative 
+  w-[413px] h-[442px] 
+  px-[40px] py-[80px] 
+  gap-[10px] 
+  rounded-[24px] 
+  flex flex-col items-center text-center overflow-hidden cursor-pointer
+
+  /* Tablet (441px - 768px) overrides */
+  min-[441px]:max-[768px]:w-[200px]
+  min-[441px]:max-[768px]:h-[284px]
+  min-[441px]:max-[768px]:pt-[40px]
+  min-[441px]:max-[768px]:pr-[20px]
+  min-[441px]:max-[768px]:pb-[40px]
+  min-[441px]:max-[768px]:pl-[20px]
+  min-[441px]:max-[768px]:rounded-[12px]
+  min-[441px]:max-[768px]:opacity-100
+"
+
               style={{
                 border: '2px solid rgba(255, 255, 255, 0.2)',
                 background: 'rgba(255, 255, 255, 0.1)',
@@ -255,32 +346,57 @@ const CustomAPIPlan = () => {
               onHoverEnd={() => handleHover(index, false)}
             >
               {/* Animated gradient */}
-              <motion.div 
-                className="absolute top-0 right-0 w-[134px] h-[134px] pointer-events-none"
-                style={{
-                  background: `linear-gradient(225deg, ${box.gradient} 0%, transparent 70%)`,
-                  filter: 'blur(16px)'
-                }}
-                animate={gradientAnimation}
-              />
+            <motion.div 
+  className="
+    absolute 
+    top-0 right-0 
+    w-[134px] h-[134px] 
+    pointer-events-none
+
+    /* Tablet: center and smaller */
+    min-[441px]:max-[768px]:top-1/2
+    min-[441px]:max-[768px]:left-1/2
+    min-[441px]:max-[768px]:right-auto
+    min-[441px]:max-[768px]:transform
+    min-[441px]:max-[768px]:-translate-x-1/2
+    min-[441px]:max-[768px]:-translate-y-1/2
+    min-[441px]:max-[768px]:w-[80px]
+    min-[441px]:max-[768px]:h-[80px]
+  "
+  style={{
+    background: `linear-gradient(225deg, ${box.gradient} 0%, transparent 70%)`,
+    filter: 'blur(16px)',
+  }}
+  animate={gradientAnimation}
+/>
+
 
               {/* Floating icon */}
-              <motion.div 
-                className="w-[60px] h-[60px] flex items-center justify-center mb-10 z-10"
-                animate={
-                  hoverStates[index] ? 
-                  { 
-                    y: -5,
-                    scale: 1.1,
-                    rotate: [0, 5, -5, 0],
-                    transition: { duration: 0.5 }
-                  } : 
-                  {
-                    y: [0, -5, 0],
-                    transition: { duration: 3, repeat: Infinity }
-                  }
-                }
-              >
+            <motion.div 
+  className="
+    w-[60px] h-[60px] flex items-center justify-center mb-10 z-10
+
+    /* Tablet: smaller and centered */
+    min-[441px]:max-[768px]:w-[40px]
+    min-[441px]:max-[768px]:h-[40px]
+    min-[441px]:max-[768px]:mx-auto
+    min-[441px]:max-[768px]:mb-[20px]
+  "
+  animate={
+    hoverStates[index] ? 
+    { 
+      y: -5,
+      scale: 1.1,
+      rotate: [0, 5, -5, 0],
+      transition: { duration: 0.5 }
+    } : 
+    {
+      y: [0, -5, 0],
+      transition: { duration: 3, repeat: Infinity }
+    }
+  }
+>
+
                 <img 
                   src={box.icon} 
                   alt="" 
@@ -288,36 +404,72 @@ const CustomAPIPlan = () => {
                 />
               </motion.div>
 
-              <div className="flex flex-col items-center text-center relative z-10" style={{ width: '333px', height: '210px', gap: '40px' }}>
-                <motion.h3
-                  className="text-[#FFFFFF] font-medium text-[24px] leading-[100%] w-full h-[34px] opacity-100 max-[440px]:text-[20px]"
-                  style={{ fontFamily: 'Inter' }}
-                  animate={
-                    hoverStates[index] ? 
-                    { 
-                      scale: 1.05,
-                      textShadow: `0 0 15px ${box.color}`
-                    } : 
-                    {}
-                  }
-                >
-                  {box.title}
-                </motion.h3>
+             <div
+  className="
+    flex flex-col items-center text-center relative z-10
 
-                <motion.p
-                  className="text-[#FFFFFF] text-[20px] leading-[140%] w-full h-[136px] opacity-100"
-                  style={{ fontFamily: 'Inter', fontWeight: 400 }}
-                  animate={
-                    hoverStates[index] ? 
-                    { 
-                      y: 5,
-                      scale: 1.02
-                    } : 
-                    {}
-                  }
-                >
-                  {box.desc}
-                </motion.p>
+    /* Tablet styles */
+    min-[441px]:max-[768px]:gap-[40px]
+  "
+  style={{
+    width: '333px',
+    height: '210px',
+
+    // Tablet overrides
+    '--tw-style-width': '160px',
+    '--tw-style-height': '204px',
+  }}
+>
+
+              <motion.h3
+  className="
+    text-[#FFFFFF] font-medium text-[24px] leading-[100%] w-full h-[34px] opacity-100 text-center
+    max-[440px]:text-[20px]
+
+    /* Tablet styles */
+    min-[441px]:max-[768px]:w-[160px]
+    min-[441px]:max-[768px]:h-[44px]
+    min-[441px]:max-[768px]:font-bold
+    min-[441px]:max-[768px]:text-[18px]
+  "
+  style={{ fontFamily: 'Inter' }}
+  animate={
+    hoverStates[index]
+      ? {
+          scale: 1.05,
+          textShadow: `0 0 15px ${box.color}`,
+        }
+      : {}
+  }
+>
+  {box.title}
+</motion.h3>
+
+               <motion.p
+  className="
+    text-[#FFFFFF] text-[20px] leading-[140%] w-full h-[136px] opacity-100 text-center
+    max-[440px]:text-[14px]
+
+    /* Tablet styles */
+    min-[441px]:max-[768px]:w-[160px]
+    min-[441px]:max-[768px]:h-[120px]
+    min-[441px]:max-[768px]:text-[14px]
+    min-[441px]:max-[768px]:font-[400]
+    min-[441px]:max-[768px]:mt-[-36px]
+  "
+  style={{ fontFamily: 'Inter' }}
+  animate={
+    hoverStates[index]
+      ? {
+          y: 5,
+          scale: 1.02,
+        }
+      : {}
+  }
+>
+  {box.desc}
+</motion.p>
+
               </div>
 
               {/* Subtle particles */}
@@ -355,42 +507,45 @@ const CustomAPIPlan = () => {
           ))}
         </div>
 
-        {/* Mobile View (<441px) */}
-        <div className="min-[441px]:hidden mt-[60px] max-[440px]:mt-[20px] flex flex-col items-center">
-          <motion.div
-            className="w-[319px] h-[330px] px-[24px] py-[60px] bg-white rounded-[24px] flex flex-col items-center text-center max-[440px]:w-[319px] max-[440px]:h-[224px] max-[440px]:p-[24px] max-[440px]:rounded-[20px] max-[440px]:gap-[10px]"
-            key={current}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="w-[60px] h-[60px] flex items-center justify-center mb-4">
-              <img 
-                src={boxes[current].icon} 
-                alt="" 
-                className="w-full h-full object-contain" 
-              />
-            </div>
-            
-            <h3 className="text-[#00B0BA] font-bold text-[20px] leading-[100%] text-center max-[410px]:w-[271px] max-[410px]:h-[22px] max-[410px]:text-[18px] max-[410px]:font-[700] max-[410px]:leading-[100%]">
-              {boxes[current].title}
-            </h3>
-            
-            <p className="mt-[16px] text-[#2B2B2B] text-[14px] leading-[150%] text-center max-[410px]:w-[271px] max-[410px]:h-[60px] max-[410px]:font-[400] max-[410px]:leading-[140%]">
-              {boxes[current].desc}
-            </p>
-          </motion.div>
+     {/* Mobile View (<441px) */}
+<div className="min-[441px]:hidden mt-[60px] max-[440px]:mt-[20px] flex flex-col items-center">
+  <AnimatePresence mode="wait">
+    <motion.div
+      key={current}
+      className="w-[319px] h-[224px] px-[30px] py-[70px] bg-white rounded-[20px] flex flex-col items-start text-left justify-start gap-[10px]"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+    >
+      <h3 className="text-[#00B0BA] font-bold text-[18px] leading-[100%] w-full">
+        {boxes[current].title}
+      </h3>
 
-          <motion.button
-            onClick={handleNext}
-            className="mt-4 px-6 py-2 bg-[#00B0BA] text-white rounded-full text-sm font-medium"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Next
-          </motion.button>
-        </div>
+      <p className="text-[#2B2B2B] text-[14px] font-[400] leading-[140%] w-full">
+        {boxes[current].desc}
+      </p>
+
+      {/* <div className="w-[60px] h-[60px] mt-auto ml-auto">
+        <img 
+          src={boxes[current].icon} 
+          alt="" 
+          className="w-full h-full object-contain" 
+        />
+      </div> */}
+    </motion.div>
+  </AnimatePresence>
+
+  <motion.button
+    onClick={handleNext}
+    className="mt-4 px-6 py-2 bg-[#00B0BA] text-white rounded-full text-sm font-medium"
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+  >
+    Next
+  </motion.button>
+</div>
+
       </div>
     </div>
   );
@@ -566,4 +721,3 @@ export default CustomAPIPlan;
 // };
 
 // export default CustomAPIPlan;
-
