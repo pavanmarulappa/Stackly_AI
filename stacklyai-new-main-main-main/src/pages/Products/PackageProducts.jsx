@@ -176,7 +176,7 @@ import { Link } from "react-router-dom";
 import Coins from "../../assets/product-pg/GroupCoin.png";
 import StarLight from "../../assets/product-pg/StarLight.png";
 import bg from "../../assets/product-pg/bg.png";
-import Ellipseblur from "../../assets/product-pg/Ellipseblur.png";
+import Ellipseblur from "../../assets/product-pg/sec3bg.png";
 import packageBg from "../../assets/product-pg/packageBg.png";
 import Rectangle from "../../assets/product-pg/Rectangle.png";
 import EclicpBlur2 from "../../assets/product-pg/EclicpBlur2.png";
@@ -185,14 +185,13 @@ export default function SignUpBanner() {
   return (
 // NEW FIGMA DISGINE
 <section className="w-full h-[647px] bg-black relative overflow-hidden">
-  <div
-    className="absolute w-[196px] h-[196px] top-[0px] left-[-16px] opacity-100 rotate-0"
-    style={{
-      backgroundImage: `url(${Ellipseblur})`,
-      backgroundSize: "cover",
-      backgroundPosition: "center",
-    }}
-  ></div>
+  
+  <img
+          src={Ellipseblur}
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
+        
   {/* coin img */}
  <div
   className="absolute w-[123.61px] h-[110.34px] z-[9999]" 
@@ -206,8 +205,8 @@ export default function SignUpBanner() {
 </div>
 {/* star light */}
 <div
-  className="absolute w-[147.53px] h-[140px] z-[9999]"
-  style={{ top: "48px", left: "1200px" }} // Change position as needed
+  className="absolute w-[157.53px] h-[150px] z-[9999]"
+  style={{ top: "45px", left: "1175px" }} // Change position as needed
 >
   <img
     src={StarLight}
@@ -215,7 +214,8 @@ export default function SignUpBanner() {
     className="w-full h-full object-contain pointer-events-none"
   />
 </div>
-<div className="absolute w-[19px] h-[26px] top-[523.91px] left-[140.31px] rotate-[34.5deg] bg-[#FFB200] opacity-60 blur-[12px] shadow-[0_0_40px_20px_rgba(255,178,0,0.6)] rounded-full z-[9999]"></div>
+{/* BLUR DIV */}
+<div className="absolute w-[19px] h-[26px] top-[523.91px] left-[110.31px] rotate-[34.5deg] bg-[#FFB200] opacity-100 blur-[12px] shadow-[0_0_40px_20px_rgba(255,178,0,0.6)] rounded-full z-[9999]"></div>
 
 
 
@@ -232,8 +232,8 @@ export default function SignUpBanner() {
 <div
   className="absolute w-[1147px] h-[456px] top-[98px] left-1/2 -translate-x-1/2 transform opacity-100 rotate-0 backdrop-blur-sm"
   style={{
-    backdropFilter: "blur(14px)",
-    WebkitBackdropFilter: "blur(14px)", // For Safari support
+    backdropFilter: "blur(5px)",
+    WebkitBackdropFilter: "blur(5px)", // For Safari support
   }}
 >
 <div
@@ -298,14 +298,9 @@ export default function SignUpBanner() {
     Activate Pro Subscription
   </p>
 </div>
-
 </div>
-
 </div>
-
 </div>
-
-
 </section>
 
 

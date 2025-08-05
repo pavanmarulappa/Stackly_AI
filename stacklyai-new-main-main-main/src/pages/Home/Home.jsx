@@ -2901,7 +2901,7 @@ useEffect(() => {
       style={{ fontFamily: 'Poppins' }}
     >
       Sign Up Quickly! Get
-      <span className="bg-gradient-to-r from-[#C22CA2] to-[#8A38F5] text-transparent bg-clip-text"> 25%</span> Offer
+      <span className="bg-gradient-to-r from-[#C22CA2] to-[#8A38F5] font-bold text-transparent bg-clip-text"> 25%</span> Offer
     </div>
 {/* Combined Info Row */}
 <div className="flex items-center justify-center gap-[30px] opacity-100">

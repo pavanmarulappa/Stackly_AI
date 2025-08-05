@@ -406,7 +406,7 @@ export default function Header() {
   >
     {[
       { to: "/", label: "Home" },
-      { to: "/products", label: "Products" },
+      { to: "/products", label: "Features" },
       { to: "/pricing", label: "Pricing" },
       { to: "/api", label: "API" },
       { to: "/contact", label: "Contact Us" },
