@@ -829,6 +829,7 @@ import sec14Img4 from "../../assets/home/sec14/m2.jpg";
 import sec14Img5 from "../../assets/home/sec14/m3.jpg";
 import ApiFaq from './ApiFaq';
 import keyImage from "../../assets/api/key.png";
+import apibg from "../../assets/api/API.png";
 
 import { Link } from 'react-router-dom';
 
@@ -873,9 +874,20 @@ export default function HeroApi() {
   return (
   <div>
 {/* NEW FIGMA DISGINE */}
-<section className="w-full min-h-[2731px] bg-black -mt-[82px] pt-[80px] flex flex-col items-center">
+<section
+  className="w-full min-h-auto -mt-[75px] pt-[75px] flex flex-col items-center bg-no-repeat bg-top"
+  style={{
+    backgroundImage: `url(${apibg})`,
+    backgroundSize: "100% 2302px", // ✅ full width, fixed height
+    backgroundPosition: "top",
+    backgroundRepeat: "no-repeat",
+    opacity: 1,
+    transform: "rotate(0deg)",
+  }}
+>
+
   {/* Marquee Section */}
-  <div className="w-full h-[46px]">
+  <div className="w-full h-[46px] mb-3 ">
     <div className="marquee-container w-full h-full overflow-hidden whitespace-nowrap">
       <div className="marquee-content animate-marquee inline-block">
         <span className="marquee-text text-[16px] px-4">
@@ -891,7 +903,7 @@ export default function HeroApi() {
   </div>
 
   {/* Centered Content Block */}
-  <div className="w-full max-w-[836px] h-[281px] flex flex-col items-center gap-[40px] mt-[200px] px-4 text-center">
+  <div className="w-full max-w-[836px] h-[281px] flex flex-col items-center gap-[40px] mt-[90px] px-4 text-center">
     
     {/* Heading */}
     <div className="w-full h-[107px]">
@@ -910,6 +922,7 @@ export default function HeroApi() {
     </div>
 
     {/* Button */}
+    <Link to="/sign-in">
      <div className="w-[212px] h-[44px] flex items-center gap-[10px] px-[30px] py-[10px] rounded-[30px] border border-white bg-gradient-to-r from-[rgba(138,56,245,0.5)] to-[rgba(194,44,162,0.5)]">
        {/* Right Child: Text */}
       <div className="w-[118px] h-[19px] flex items-center">
@@ -921,12 +934,13 @@ export default function HeroApi() {
       <div className="w-[24px] h-[24px] flex items-center justify-center">
         <img src={buttonkey} alt="Key" className="w-full h-full object-contain" />
       </div>
-
-     
-    </div>
+      </div>
+    </Link>
 
   </div>
   <ApiIntegrate />
+  <CustomAPIPlan />
+   
 </section>
 
 
@@ -954,7 +968,7 @@ export default function HeroApi() {
 
       {/* section-8  */}
 
-      {/* <CustomAPIPlan /> */}
+      
 
       {/* section-9  */}
 

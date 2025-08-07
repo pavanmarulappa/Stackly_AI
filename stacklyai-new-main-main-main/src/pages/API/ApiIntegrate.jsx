@@ -489,7 +489,7 @@ const StacklyAPIIntegration = () => {
   return (
   <div
   className="relative w-full
-             min-[441px]:max-[768px]:h-[684px]"
+             min-[441px]:max-[768px]:h-[684px] mt-28"
 >
 
 
@@ -574,48 +574,86 @@ const StacklyAPIIntegration = () => {
   }}
 >
   {integrationData.map((item, index) => (
-    <motion.div
-      key={index}
-      className="relative w-full max-w-[390px] h-[300px] p-12 bg-white flex flex-col justify-center items-start gap-5
-                 shadow-[4px_4px_12px_0px_#007B8229] rounded-[40px] text-left
-                 max-[440px]:w-[194px] max-[440px]:h-[153px] 
-                 max-[440px]:rounded-[22.28px] max-[440px]:p-4 max-[440px]:gap-3"
-      style={{
-        backdropFilter: 'blur(84px)',
-        boxShadow: `
-          4px 4px 12px 0px #007B8229,
-          inset 2px 2px 16px 0px #FFFFFF14
-        `,
-      }}
-      variants={{
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1 },
-      }}
-      transition={{ type: "spring", stiffness: 100 }}
-      whileHover={{
-        y: -5,
-        boxShadow: '0 10px 25px rgba(0, 123, 130, 0.3)',
-        transition: { duration: 0.2 },
-      }}
-      onHoverStart={() => setHoveredIndex(index)}
-      onHoverEnd={() => setHoveredIndex(null)}
-    >
-      {/* Gradient Border */}
-      <motion.div 
-  className="absolute inset-0 rounded-[40px] p-[2px] pointer-events-none
-             max-[440px]:rounded-[22.28px] 
-             min-[441px]:max-[768px]:hidden"
+ <motion.div
+  key={index}
+  className="relative w-full max-w-[390px] h-[300px] p-12 bg-black flex flex-col justify-center items-start gap-5
+             shadow-[4px_4px_12px_0px_#007B8229] rounded-[40px] text-left
+             max-[440px]:w-[194px] max-[440px]:h-[153px] 
+             max-[440px]:rounded-[22.28px] max-[440px]:p-4 max-[440px]:gap-3"
   style={{
-    background: 'linear-gradient(180deg, #8A38F5 0%, #FFFFFF 50%, #8A38F5 100%)',
-    WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-    WebkitMaskComposite: 'xor',
-    maskComposite: 'exclude',
+    backdropFilter: 'blur(84px)',
+    boxShadow: `
+      4px 4px 12px 0px #007B8229,
+      inset 2px 2px 16px 0px #FFFFFF14
+    `,
+  }}
+  variants={{
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1 },
+  }}
+  transition={{ type: "spring", stiffness: 100 }}
+  whileHover={{
+    y: -5,
+    boxShadow: '0 10px 25px rgba(0, 123, 130, 0.3)',
+    transition: { duration: 0.2 },
+  }}
+  onHoverStart={() => setHoveredIndex(index)}
+  onHoverEnd={() => setHoveredIndex(null)}
+>
+  {/* 🔲 Gradient Border */}
+  <motion.div 
+    className="absolute inset-0 rounded-[40px] p-[2px] pointer-events-none
+               max-[440px]:rounded-[22.28px] 
+               min-[441px]:max-[768px]:hidden"
+    style={{
+      background: 'linear-gradient(180deg, #8A38F5 0%, #FFFFFF 50%, #8A38F5 100%)',
+      WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+      WebkitMaskComposite: 'xor',
+      maskComposite: 'exclude',
+    }}
+    animate={{
+      opacity: hoveredIndex === index ? 0.8 : 0.6,
+      transition: { duration: 0.3 },
+    }}
+  />
+
+{/* 🔵 Glowing Div 1 – Left to Right */}
+<motion.div
+  className="absolute w-[134px] h-[134px] rounded-full pointer-events-none"
+  style={{
+    top: '-40px',
+    left: '-40px',
+    background: 'rgba(194, 44, 162, 0.5)', // More visible
+    filter: 'blur(100px)',
+    zIndex: 0, // Bring it just below content, not behind everything
+    willChange: 'transform',
   }}
   animate={{
-    opacity: hoveredIndex === index ? 0.8 : 0.6,
-    transition: { duration: 0.3 },
+    x: hoveredIndex === index ? 40 : 0,
+    opacity: hoveredIndex === index ? 1 : 0.8,
+    transition: { duration: 0.5 },
   }}
 />
+
+{/* 🔵 Glowing Div 2 – Right to Left */}
+<motion.div
+  className="absolute w-[134px] h-[134px] rounded-full pointer-events-none"
+  style={{
+    bottom: '-40px',
+    right: '-40px',
+    background: 'rgba(194, 44, 162, 0.5)', // More visible
+    filter: 'blur(100px)',
+    zIndex: 0,
+    willChange: 'transform',
+  }}
+  animate={{
+    x: hoveredIndex === index ? -40 : 0,
+    opacity: hoveredIndex === index ? 1 : 0.8,
+    transition: { duration: 0.5 },
+  }}
+/>
+
+
 
 
       <motion.h3
@@ -627,7 +665,7 @@ const StacklyAPIIntegration = () => {
           letterSpacing: "0%",
         }}
         animate={{
-          color: hoveredIndex === index ? '#00B0BA' : '#2a2a2a',
+          color: hoveredIndex === index ? '#00B0BA' : '#FFFFFF',
           transition: { duration: 0.2 },
         }}
       >
@@ -635,7 +673,7 @@ const StacklyAPIIntegration = () => {
       </motion.h3>
 
       <motion.p
-        className="w-full text-[12px] sm:text-[18px] text-[#707070] sm:text-[#007B82] leading-snug
+        className="w-full text-[12px] sm:text-[18px] text-[#FFFFFF] sm:text-[#FFFFFF] leading-snug
                    max-[440px]:text-[12px] max-[440px]:leading-[140%]"
         style={{ 
           fontFamily: "Inter",
@@ -725,7 +763,7 @@ const StacklyAPIIntegration = () => {
       </motion.h3>
 
       <motion.p
-        className="text-[12px] leading-snug text-[#FFFFFF]"
+        className="text-[12px] leading-snug text-[#707070]"
         style={{ fontFamily: "Inter" }}
         animate={{
           x: hoveredIndex === index ? 5 : 0,

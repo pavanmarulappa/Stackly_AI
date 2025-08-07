@@ -109,7 +109,7 @@ export default function PricingFaq() {
   const currentCategoryCount = categoryRanges[faqCategory].end - categoryRanges[faqCategory].start;
 
   return (
-    <section className="w-full h-auto min-h-[746px] bg-black relative overflow-x-hidden mt-[-13px]">
+    <section className="w-full h-auto min-h-[746px] bg-black relative overflow-x-hidden ">
       {/* Full-width background image */}
 
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-[-50px] z-0 w-[1561px] h-[401px] flex justify-center items-center pointer-events-none select-none">

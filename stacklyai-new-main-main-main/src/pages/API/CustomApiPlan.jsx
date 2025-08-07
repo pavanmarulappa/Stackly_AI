@@ -148,11 +148,13 @@
 // export default CustomAPIPlan;
 
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import vector from "../../assets/api/vector.png";
 import user from "../../assets/api/user.png";
 import trending from "../../assets/api/trending.png";
 import { AnimatePresence } from "framer-motion";
+import buttonkey from '../../assets/api/Key1.png'
 
 const CustomAPIPlan = () => {
   const [current, setCurrent] = useState(0);
@@ -182,372 +184,165 @@ const CustomAPIPlan = () => {
     }
   ];
 
-  const handleNext = () => {
-    setCurrent((prev) => (prev + 1) % boxes.length);
-  };
-
-  const handleHover = (index, isHovering) => {
-    const newHoverStates = [...hoverStates];
-    newHoverStates[index] = isHovering;
-    setHoverStates(newHoverStates);
-  };
-
-  // Floating animation for all boxes
-  const floatingAnimation = {
-    y: [0, -10, 0],
-    transition: {
-      duration: 4,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  };
-
-  // Hover animation
-  const hoverAnimation = {
-    y: -15,
-    scale: 1.03,
-    boxShadow: "0 25px 50px -12px rgba(0, 176, 186, 0.25)",
-    transition: {
-      duration: 0.3
-    }
-  };
-
-  // Gradient pulse animation
-  const gradientAnimation = {
-    scale: [1, 1.1, 1],
-    opacity: [0.4, 0.7, 0.4],
-    transition: {
-      duration: 6,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  };
 
   return (
-   <div className="w-full min-h-[714px] bg-black flex flex-col justify-center items-center gap-[48px] px-[80px] py-[80px]
-
-  /* Mobile */
-  max-[440px]:bg-gradient-to-b 
-  max-[440px]:from-[#011B1C] 
-  max-[440px]:to-[#057D82] 
-  max-[440px]:min-h-[500px] 
-  max-[440px]:items-center 
-  max-[440px]:px-[20px] 
-  max-[440px]:py-[40px] 
-  max-[440px]:gap-[32px]
-
-  /* Tablet (441px–768px) */
-  min-[441px]:max-[768px]:w-[768px]
-  min-[441px]:max-[768px]:min-h-[500px]
-  min-[441px]:max-[768px]:px-[40px]
-  min-[441px]:max-[768px]:py-[60px]
-  min-[441px]:max-[768px]:gap-[32px]"
+   <div className="w-full h-[631px] bg-black flex flex-col justify-center items-center  px-[80px] py-[80px]">
+<div
+  className="absolute top-[1520px] left-1/2 transform -translate-x-1/2 w-full max-w-[1230px] h-auto opacity-100 flex flex-col gap-[38px] px-4"
 >
+  {/* Top Heading */}
+  <div className="w-full text-center text-white">
+    <h2 className="font-[Lora] font-semibold text-[32px] leading-[100%]">
+      Who Can Integrate StacklyAI API?
+    </h2>
+  </div>
 
-    <div
-  className="
-    max-w-[1280px] min-h-[581px] flex flex-col items-center
-
-    /* Mobile styles */
-    max-[440px]:min-h-[420px] 
-    max-[440px]:mt-[8px]
-
-    /* Tablet styles: 441px to 768px */
-    min-[441px]:max-[768px]:w-[768px]
-    min-[441px]:max-[768px]:h-[500px]
-    min-[441px]:max-[768px]:pt-[60px]
-    min-[441px]:max-[768px]:pr-[40px]
-    min-[441px]:max-[768px]:pb-[60px]
-    min-[441px]:max-[768px]:pl-[40px]
-    min-[441px]:max-[768px]:gap-[32px]
-  "
->
-
-       <motion.h2 
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8 }}
-  className="w-[648px] min-h-[64px] text-[44px] font-normal leading-[64px] text-center text-white whitespace-nowrap
-
-    /* Mobile */
-    max-[440px]:w-[319px]
-    max-[440px]:h-[42px]
-    max-[440px]:font-bold
-    max-[440px]:text-[20px]
-    max-[440px]:leading-[100%]
-    max-[440px]:mt-[40px]
-
-    /* Tablet */
-    min-[441px]:max-[768px]:w-[375px]
-    min-[441px]:max-[768px]:h-[64px]
-    min-[441px]:max-[768px]:text-[24px]
-    min-[441px]:max-[768px]:font-[500]
-    min-[441px]:max-[768px]:leading-[64px]
-  " 
-  style={{ fontFamily: "Inter", letterSpacing: "0%" }}
->
-  Why Choose a <span className="text-[#00B0BA]">Custom API Plan?</span>
-</motion.h2>
-
-
-        {/* Desktop View (≥441px) */}
-       <div className="
-  hidden
-  min-[441px]:flex 
-  min-[441px]:w-[1281px] 
-  min-[441px]:h-[442px] 
-  min-[441px]:gap-[21px] 
-  min-[441px]:opacity-100 
-  min-[441px]:mt-[60px] 
-  min-[441px]:flex-wrap 
-  min-[441px]:justify-center
-
-  /* Tablet overrides */
-  min-[441px]:max-[768px]:w-[1161px] 
-  min-[441px]:max-[768px]:h-[284px]
-  min-[441px]:max-[768px]:gap-[21px]
-  min-[441px]:max-[768px]:opacity-100
-"
->
-
-          {boxes.map((box, index) => (
+  {/* Bottom Cards Section */}
+  <div className="w-full flex justify-center">
+    <div className="w-full flex flex-wrap justify-center gap-[18px]">
+      {boxes.map((box, index) => (
+        <motion.div
+          key={index}
+          className="flex flex-col justify-start items-start rounded-md px-4 py-5 gap-[18px] bg-black border border-gray-800"
+          style={{
+            width: index === 0 ? 383 : index === 1 ? 356 : 340,
+            height: index === 0 ? 186 : 184,
+          }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "0px 0px -100px 0px" }}
+          variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: {
+              opacity: 1,
+              y: 0,
+              transition: { duration: 0.5, delay: index * 0.1 },
+            },
+          }}
+          whileHover={{
+            y: -5,
+            borderColor: box.color,
+          }}
+        >
+          {/* Icon + Title in one line */}
+          <div className="flex flex-row items-center gap-2 mb-2">
             <motion.div
-              key={index}
-className="
-  relative 
-  w-[413px] h-[442px] 
-  px-[40px] py-[80px] 
-  gap-[10px] 
-  rounded-[24px] 
-  flex flex-col items-center text-center overflow-hidden cursor-pointer
-
-  /* Tablet (441px - 768px) overrides */
-  min-[441px]:max-[768px]:w-[200px]
-  min-[441px]:max-[768px]:h-[284px]
-  min-[441px]:max-[768px]:pt-[40px]
-  min-[441px]:max-[768px]:pr-[20px]
-  min-[441px]:max-[768px]:pb-[40px]
-  min-[441px]:max-[768px]:pl-[20px]
-  min-[441px]:max-[768px]:rounded-[12px]
-  min-[441px]:max-[768px]:opacity-100
-"
-
-              style={{
-                border: '2px solid rgba(255, 255, 255, 0.2)',
-                background: 'rgba(255, 255, 255, 0.1)',
-                backdropFilter: 'blur(84px)'
-              }}
-              animate={hoverStates[index] ? hoverAnimation : floatingAnimation}
+              initial={{ x: -50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
               whileHover={{
-                scale: 1.05,
-                boxShadow: `0 25px 50px -12px ${box.color}80`
+                filter: [
+                  `drop-shadow(0 0 2px ${box.color})`,
+                  `drop-shadow(0 0 8px ${box.color})`,
+                  `drop-shadow(0 0 4px ${box.color})`,
+                ],
+                transition: {
+                  duration: 0.8,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                },
               }}
-              onHoverStart={() => handleHover(index, true)}
-              onHoverEnd={() => handleHover(index, false)}
+              viewport={{ once: true }}
+              transition={{
+                x: {
+                  duration: 0.6,
+                  delay: index * 0.15,
+                  ease: [0.25, 0.1, 0.25, 1],
+                },
+                opacity: { duration: 0.4 },
+              }}
             >
-              {/* Animated gradient */}
-            <motion.div 
-  className="
-    absolute 
-    top-0 right-0 
-    w-[134px] h-[134px] 
-    pointer-events-none
-
-    /* Tablet: center and smaller */
-    min-[441px]:max-[768px]:top-1/2
-    min-[441px]:max-[768px]:left-1/2
-    min-[441px]:max-[768px]:right-auto
-    min-[441px]:max-[768px]:transform
-    min-[441px]:max-[768px]:-translate-x-1/2
-    min-[441px]:max-[768px]:-translate-y-1/2
-    min-[441px]:max-[768px]:w-[80px]
-    min-[441px]:max-[768px]:h-[80px]
-  "
-  style={{
-    background: `linear-gradient(225deg, ${box.gradient} 0%, transparent 70%)`,
-    filter: 'blur(16px)',
-  }}
-  animate={gradientAnimation}
-/>
-
-
-              {/* Floating icon */}
-            <motion.div 
-  className="
-    w-[60px] h-[60px] flex items-center justify-center mb-10 z-10
-
-    /* Tablet: smaller and centered */
-    min-[441px]:max-[768px]:w-[40px]
-    min-[441px]:max-[768px]:h-[40px]
-    min-[441px]:max-[768px]:mx-auto
-    min-[441px]:max-[768px]:mb-[20px]
-  "
-  animate={
-    hoverStates[index] ? 
-    { 
-      y: -5,
-      scale: 1.1,
-      rotate: [0, 5, -5, 0],
-      transition: { duration: 0.5 }
-    } : 
-    {
-      y: [0, -5, 0],
-      transition: { duration: 3, repeat: Infinity }
-    }
-  }
->
-
-                <img 
-                  src={box.icon} 
-                  alt="" 
-                  className="w-full h-full object-contain" 
-                />
-              </motion.div>
-
-             <div
-  className="
-    flex flex-col items-center text-center relative z-10
-
-    /* Tablet styles */
-    min-[441px]:max-[768px]:gap-[40px]
-  "
-  style={{
-    width: '333px',
-    height: '210px',
-
-    // Tablet overrides
-    '--tw-style-width': '160px',
-    '--tw-style-height': '204px',
-  }}
->
-
-              <motion.h3
-  className="
-    text-[#FFFFFF] font-medium text-[24px] leading-[100%] w-full h-[34px] opacity-100 text-center
-    max-[440px]:text-[20px]
-
-    /* Tablet styles */
-    min-[441px]:max-[768px]:w-[160px]
-    min-[441px]:max-[768px]:h-[44px]
-    min-[441px]:max-[768px]:font-bold
-    min-[441px]:max-[768px]:text-[18px]
-  "
-  style={{ fontFamily: 'Inter' }}
-  animate={
-    hoverStates[index]
-      ? {
-          scale: 1.05,
-          textShadow: `0 0 15px ${box.color}`,
-        }
-      : {}
-  }
->
-  {box.title}
-</motion.h3>
-
-               <motion.p
-  className="
-    text-[#FFFFFF] text-[20px] leading-[140%] w-full h-[136px] opacity-100 text-center
-    max-[440px]:text-[14px]
-
-    /* Tablet styles */
-    min-[441px]:max-[768px]:w-[160px]
-    min-[441px]:max-[768px]:h-[120px]
-    min-[441px]:max-[768px]:text-[14px]
-    min-[441px]:max-[768px]:font-[400]
-    min-[441px]:max-[768px]:mt-[-36px]
-  "
-  style={{ fontFamily: 'Inter' }}
-  animate={
-    hoverStates[index]
-      ? {
-          y: 5,
-          scale: 1.02,
-        }
-      : {}
-  }
->
-  {box.desc}
-</motion.p>
-
-              </div>
-
-              {/* Subtle particles */}
-              {hoverStates[index] && (
-                <>
-                  {[...Array(8)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute rounded-full"
-                      style={{
-                        background: box.color,
-                        width: Math.random() * 4 + 2 + 'px',
-                        height: Math.random() * 4 + 2 + 'px',
-                        left: Math.random() * 100 + '%',
-                        top: Math.random() * 100 + '%',
-                        opacity: 0.6
-                      }}
-                      initial={{ scale: 0 }}
-                      animate={{ 
-                        scale: [0, 1, 0],
-                        opacity: [0, 0.6, 0],
-                        x: (Math.random() - 0.5) * 20,
-                        y: (Math.random() - 0.5) * 20
-                      }}
-                      transition={{ 
-                        duration: 1.5,
-                        repeat: Infinity,
-                        delay: i * 0.1
-                      }}
-                    />
-                  ))}
-                </>
-              )}
+              <img
+                src={box.icon}
+                alt={box.title}
+                className="w-[24px] h-[24px] transition-all duration-300 hover:scale-110"
+              />
             </motion.div>
-          ))}
-        </div>
 
-     {/* Mobile View (<441px) */}
-<div className="min-[441px]:hidden mt-[60px] max-[440px]:mt-[20px] flex flex-col items-center">
-  <AnimatePresence mode="wait">
-    <motion.div
-      key={current}
-      className="w-[319px] h-[224px] px-[30px] py-[70px] bg-white rounded-[20px] flex flex-col items-start text-left justify-start gap-[10px]"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.5 }}
-    >
-      <h3 className="text-[#00B0BA] font-bold text-[18px] leading-[100%] w-full">
-        {boxes[current].title}
-      </h3>
+            <motion.h3
+              className="text-[18px] font-semibold text-white"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.15 + 0.3,
+              }}
+            >
+              {box.title}
+            </motion.h3>
+          </div>
 
-      <p className="text-[#2B2B2B] text-[14px] font-[400] leading-[140%] w-full">
-        {boxes[current].desc}
-      </p>
-
-      {/* <div className="w-[60px] h-[60px] mt-auto ml-auto">
-        <img 
-          src={boxes[current].icon} 
-          alt="" 
-          className="w-full h-full object-contain" 
-        />
-      </div> */}
-    </motion.div>
-  </AnimatePresence>
-
-  <motion.button
-    onClick={handleNext}
-    className="mt-4 px-6 py-2 bg-[#00B0BA] text-white rounded-full text-sm font-medium"
-    whileHover={{ scale: 1.05 }}
-    whileTap={{ scale: 0.95 }}
-  >
-    Next
-  </motion.button>
+          {/* Description */}
+          <motion.p
+            className="text-sm text-white leading-[1.4] text-opacity-80"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{
+              duration: 0.5,
+              delay: index * 0.15 + 0.4,
+            }}
+          >
+            {box.desc}
+          </motion.p>
+        </motion.div>
+      ))}
+    </div>
+  </div>
 </div>
 
-      </div>
+
+{/* SEC2 DIV */}
+
+<div className="w-full px-4 mt-[245px] flex justify-center">
+  <div className="w-full max-w-[1280px] h-[257px] flex flex-col items-center justify-center gap-[32px] text-center text-white">
+
+    {/* Top Title */}
+    <h2
+      className="text-[52px] leading-[100%] font-[400] font-[Lancelot]"
+      style={{ fontFamily: 'Lancelot, serif' }}
+    >
+      Ready to Create Something Great?
+    </h2>
+
+    {/* Middle Paragraph */}
+    <p className="text-[20px] font-[400] leading-[140%] font-[Poppins] max-w-[1000px]">
+      We offer flexible API plans tailored to your needs. <br />
+      Let’s build the right setup, just for you!
+    </p>
+
+<Link to="/sign-in"> {/* update with your actual route */}
+  <div
+    className="w-[297px] h-[44px] flex items-center gap-[10px] px-[30px] py-[10px] rounded-[30px] border cursor-pointer"
+    style={{
+      background: "linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)",
+      borderColor: "#C22CA299",
+    }}
+  >
+    {/* Text */}
+    <div className="text-white text-[16px] font-medium font-[Poppins] leading-none">
+      LOGIN TO ACCESS API KEY
     </div>
+
+    {/* Icon */}
+    <div className="w-[24px] h-[24px]">
+      <img
+        src={buttonkey}
+        alt="icon"
+        className="w-full h-full object-contain"
+      />
+    </div>
+  </div>
+</Link>
+
+
+
+  </div>
+</div>
+
+
+</div>
+
   );
 };
 

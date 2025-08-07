@@ -13,10 +13,7 @@
 // import Pay from "./Pay";
 // import { Link } from "react-router-dom";
 
-
-
 // export default function HeroPricing() {
-
 
 //       const features = [
 //         "Unlimited Designs",
@@ -131,7 +128,13 @@ import { CheckCircle2 } from "lucide-react";
 import Banner1 from "../../assets/pricing-pg/GroupCollage.png";
 import Banner2 from "../../assets/pricing-pg/GroupCollage.png";
 import Frame from "../../assets/pricing-pg/Frame.png";
+import pricingBG from "../../assets/pricing-pg/pricingBG.png";
+import BannerImg from "../../assets/pricing-pg/bannerSec2.png";
+import scrol from "../../assets/pricing-pg/scrol.png";
+import GraphImage from "../../assets/pricing-pg/Graph.png";
+import sec4Bg from "../../assets/pricing-pg/sec4Bg.png";
 
+import arrow from "../../assets/home/Arrow.png";
 import CreditStats from "./CreditStats";
 import Graph from "./Graph";
 import PricingTable from "./PricingTable";
@@ -142,14 +145,8 @@ import UiPlans from "./UiPlans";
 import ConformationPage from "./ConformationPage";
 import Pay from "./Pay";
 import { Link } from "react-router-dom";
-import Frame1 from "../../assets/pricing-pg/Frame1.png";//section 6 background
-
-
-
 
 export default function HeroPricing() {
-
-
   const features = [
     "Unlimited Designs",
     "High-Resolution 4K Images",
@@ -160,205 +157,227 @@ export default function HeroPricing() {
   ];
 
   return (
-
     <div>
       {/* section-1 */}
-<section
-  className="relative w-full flex items-center justify-center bg-[#000000] overflow-hidden
-             h-[400px]  // default height for all
-
-             max-[440px]:flex max-[440px]:flex-col
-             max-[440px]:h-[300px] max-[440px]:py-[60px] max-[440px]:px-[40px]
-
-             min-[441px]:max-[768px]:h-[300px]  // ✅ only tablet height
-             min-[441px]:max-[768px]:pt-[60px]
-             min-[441px]:max-[768px]:pr-[40px]
-             min-[441px]:max-[768px]:pb-[60px]
-             min-[441px]:max-[768px]:pl-[40px]"
+     <section
+  className="relative w-full h-auto  -mt-[75px] pt-[75px]  mx-auto  opacity-100 bg-black"
 >
-
-  {/* Animated Background Elements */}
   <div
-  className="absolute top-0 left-0 w-full h-full z-0 overflow-hidden
+  className="absolute w-[604px] h-[604px] rounded-full bg-[#8A38F580] opacity-100 pointer-events-none"
+  style={{
+    top: "-467px",
+    left: "-258px",
+    transform: "rotate(0deg)",
+    filter: "blur(200px)",
+  }}
+></div>
+      {/* Marquee Section */}
+      <div className="h-[46px] marquee-container max-[440px]:w-[440px] max-[440px]:h-[46px]">
+        <div className="marquee-content">
+          <span className="marquee-text text-[16px] mr-8">
+            Hey! It looks like you are from USA. We support Purchasing Power
+            Parity pricing, so enjoy 50% off on your subscription. Use code:
+            abc589
+          </span>
+          <span className="marquee-text text-[16px]">
+            Hey! It looks like you are from USA. We support Purchasing Power
+            Parity pricing, so enjoy 50% off on your subscription. Use code:
+            abc589
+          </span>
+        </div>
+      </div>
 
-    min-[441px]:max-[768px]:w-[768px]
-    min-[441px]:max-[768px]:h-[300px]
-    min-[441px]:max-[768px]:pt-[60px]
-    min-[441px]:max-[768px]:pr-[40px]
-    min-[441px]:max-[768px]:pb-[60px]
-    min-[441px]:max-[768px]:pl-[40px]"
->
+<div className="w-[1231px] h-[200px] flex items-center gap-[49px] opacity-100 absolute top-[216px] left-[123px]">
 
-  {/* Banner 1 - Now using Tailwind for responsive positioning */}
-  <div
-    className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]
-              left-[1%] top-[-50%]
-              max-[440px]:w-[260px] max-[440px]:h-[800px]
-              max-[440px]:left-[-10%] max-[440px]:top-[-60%]"
-    style={{
-      transformOrigin: 'center center',
-      animation: 'bounceVertical 15s linear infinite'
-    }}
-  >
-    <img
-      src={Banner1}
-      alt="Diagonal Grid 1"
-      className="w-full h-full object-cover"
-    />
+  {/* Left Child */}
+  <div className="w-[474px] h-[200px] opacity-100">
+    <h2 className="font-[Lora] font-semibold text-[52px] leading-[100%] tracking-[0] text-white">
+      Discover How <br />
+      <span className="text-purple-400">Stackly.AI</span> Drives <br />
+      Innovation
+    </h2>
   </div>
 
-  {/* Banner 2 - Now using Tailwind for responsive positioning */}
+  {/* Right Child */}
+  <div className="w-[708px] h-[136px] gap-[20px] opacity-100 flex flex-col justify-center text-white">
+  {/* Top child: paragraph */}
+  <p className="w-[708px] h-[72px] font-[Inter] font-normal text-[20px] leading-[100%] text-white opacity-100">
+    Trusted by thousands of designers, homeowners, and teams worldwide. Explore real-time usage stats and watch our community transform spaces every day.
+  </p>
+
+  {/* Bottom child: Button */}
+  <div className="w-[158px] h-[44px]">
   <div
-    className="absolute w-[700px] h-[1200px] rotate-[-45deg] opacity-[0.30]
-              left-[44%] top-[-160%]
-              max-[440px]:w-[260px] max-[440px]:h-[800px]
-              max-[440px]:left-[40%] max-[440px]:top-[-120%]"
+    className="w-[158px] h-[44px] rounded-[30px] gap-[10px] px-[30px] py-[10px] flex items-center justify-center"
     style={{
-      transformOrigin: 'center center',
-      animation: 'bounceVerticalReverse 15s linear infinite'
+      background: 'linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)',
+      border: '1px solid #C22CA299',
     }}
   >
+    {/* Text */}
+    <span className="text-white font-inter font-medium text-[16px] leading-[100%]">
+      Try Now
+    </span>
+
+    {/* Icon */}
+    <div className="w-[24px] h-[24px]">
+      <img src={arrow} alt="arrow" className="w-full h-full object-contain" />
+    </div>
+  </div>
+</div>
+
+</div>
+
+</div>
+
+ <CreditStats />
+
+ {/* GRAPH JSX */}
+<div
+  className="w-full h-[816px] gap-[32px] opacity-100 relative top-[1200px]"
+>
+  {/* text div */}
+  <div className="w-[666px] h-[138px] flex flex-col gap-[18px] text-white mx-auto">
+    {/* Top Child - Heading */}
+    <div className="w-full h-[66px]">
+      <h2 className="text-[52px] font-semibold leading-[100%] font-[Lora] text-center">
+        Growing Bigger, Every Day
+      </h2>
+    </div>
+
+    {/* Bottom Child - Subheading */}
+    <div className="w-full h-[54px]">
+      <p className="text-[18px] font-normal leading-[100%] text-center font-[Poppins]">
+        Live graph displaying your credit activity over time, with labeled points such as “Yesterday,” “Today,” and others for easy tracking.
+      </p>
+    </div>
+  </div>
+{/* graph div */}
+<div className="w-full h-auto flex flex-col items-center gap-[8px]">
+
+  {/* Top Child Box */}
+  <div className="w-[1280px] h-[612px] rounded-[20px] border border-[#8A38F599]">
+    <div className="w-full h-full rounded-[20px] bg-[#8A38F51A] shadow-[0px_0px_6px_0px_#00000040] pt-[44px]">
+      {/* TOP BAR HEAD */}
+      <div className="w-[1139px] h-[63px] mx-auto flex justify-between items-center">
+        {/* Left Child */}
+        <div className="w-[372.6px] h-[63px] flex flex-col gap-[12px] items-start justify-center">
+          {/* Top Text Div */}
+          <div className="h-[27px]">
+            <p className="text-white text-[16px] font-medium leading-[100%] font-[Poppins]">
+              Current Date : 26-03-2025
+            </p>
+          </div>
+
+          {/* Bottom Div */}
+          <div className="h-[24px] flex gap-[12px] items-center">
+            {/* Left Child */}
+            <div className="w-[125.3px] h-[24px] flex items-center gap-[4px]">
+              {/* Left Icon (dot) */}
+              <div className="w-[13.3px] h-[13.3px] bg-white rounded-full"></div>
+
+              {/* Right Text */}
+              <div className="w-[108px] h-[24px] flex items-center justify-center">
+                <span className="text-white text-[16px] font-normal leading-[23.27px] font-[Poppins]">
+                  Designs Used
+                </span>
+              </div>
+            </div>
+
+            {/* Right Child */}
+            <div className="w-[253.3px] h-[24px] flex items-center gap-[4px]">
+              {/* Gradient Dot */}
+              <div
+                className="w-[13.3px] h-[13.3px] rounded-full"
+                style={{
+                  background: 'linear-gradient(180deg, #8A38F5 0%, #51218F 100%)',
+                }}
+              ></div>
+
+              {/* Right Text */}
+              <div className="w-[236px] h-[24px] flex items-center justify-center">
+                <span className="text-white text-[16px] font-normal leading-[23.27px] font-[Poppins]">
+                  Credits consumed in January
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Child (buttons/icons if any) */}
+        <div className="w-[254px] h-[44px] flex gap-[18px] items-center">
+  {/* Left Div (Gradient Button) */}
+  <div
+    className="w-[200px] h-[44px] flex items-center justify-center gap-[10px] rounded-[30px] border border-[#C22CA299] px-[30px] py-[10px]"
+    style={{
+      background: 'linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)',
+    }}
+  >
+    {/* Text */}
+    <div className="flex items-center gap-[8px]">
+  {/* Text */}
+  <span className="text-white text-[16px] font-medium font-[Inter] leading-[100%]">
+    January 2025
+  </span>
+
+  {/* Icon */}
+  <div className="w-[24px] h-[24px] flex items-center justify-center">
     <img
-      src={Banner2}
-      alt="Diagonal Grid 2"
-      className="w-full h-full object-cover"
+      src={scrol}
+      alt="Month Icon"
+      className="w-[18px] h-[9px] top-[8px]"
     />
   </div>
 </div>
 
-  {/* Content (unchanged) */}
-  <div
-    className="relative z-10 text-center text-white px-4
-           max-[440px]:flex max-[440px]:flex-col
-           max-[440px]:w-[360px] max-[440px]:h-[146px]
-           max-[440px]:pt-[6px] max-[440px]:pr-[12px] max-[440px]:pb-[6px] max-[440px]:pl-[12px]
-           max-[440px]:gap-[28px]"
-  >
-    <h2
-      className="text-[32px] font-medium leading-[100%] text-center
-       max-[440px]:w-[336px] max-[440px]:h-[46px]
-       max-[440px]:text-[20px] max-[440px]:leading-[100%]
-       max-[440px]:font-['Inter'] max-[440px]:font-bold max-[440px]:text-center
-       max-[440px]:relative max-[440px]:z-0"
-    >
-      See How <span className="text-teal-400">Stackly.AI</span> Powers Innovation
-    </h2>
-
-    <p
-      className="mt-8 text-[20px] max-w-[937px] mx-auto text-white font-medium text-center
-           max-[440px]:w-[336px] max-[440px]:h-[60px]
-           max-[440px]:text-[14px] max-[440px]:leading-[140%]
-           max-[440px]:font-['Inter'] max-[440px]:font-medium max-[440px]:text-center"
-    >
-      Trusted by thousands of creators, developers, and teams. Explore live usage
-      stats and see how our community is growing every day.
-    </p>
   </div>
 
-  {/* Animation Styles */}
-  <style jsx global>{`
-    @keyframes bounceVertical {
-      0%, 100% {
-        transform: rotate(-45deg) translateY(-10%);
-      }
-      50% {
-        transform: rotate(-45deg) translateY(10%);
-      }
-    }
-    @keyframes bounceVerticalReverse {
-      0%, 100% {
-        transform: rotate(-45deg) translateY(10%);
-      }
-      50% {
-        transform: rotate(-45deg) translateY(-10%);
-      }
-    }
-  `}</style>
-  
-</section>
+  {/* Right Div (Menu Icon Circle) */}
+  <div className="w-[36px] h-[36px] bg-transparent flex items-center justify-center">
+    {/* Menu Icon (3 lines) */}
+    <div className="w-[27px] h-[18px] flex flex-col justify-between">
+      <span className="block h-[2px] w-full bg-white rounded"></span>
+      <span className="block h-[2px] w-full bg-white rounded"></span>
+      <span className="block h-[2px] w-full bg-white rounded"></span>
+    </div>
+  </div>
+</div>
 
 
-      {/* section-2 and section-3 — swapped on <441px */}
-      <div className="flex flex-col">
-        <div className="order-2 max-[440px]:order-1">
-          <Graph />
-        </div>
-        <div className="order-1 max-[440px]:order-2">
-          <CreditStats />
-        </div>
       </div>
+    </div>
+  </div>
+<div className="w-full relative flex justify-center -top-[464px]">
+  <div className="w-[1044px] h-[350px]">
+    <img
+      src={GraphImage}
+      alt="Graph"
+      className="w-full h-full object-contain"
+    />
+  </div>
+</div>
 
 
-      {/* section-4  */}
+  {/* Bottom Text */}
+ <div className="w-[1280px] h-[26px] text-center text-white relative -top-[350px]">
+  <p className="font-[Inter] text-[18px] font-normal leading-[100%]">
+    *These numbers reflect the real impact of Stackly.Ai developers, teams, and creators building smarter every day.
+  </p>
+</div>
 
-      <section
-        className="hidden bg-[#001E20] text-white text-center py-16 px-4 mb-[120px]
-            max-[440px]:hidden
-             max-[440px]:bg-[#00B0BA14] max-[440px]:flex max-[440px]:flex-col
-             max-[440px]:w-[440px] max-[440px]:h-[245px] 
-             max-[440px]:pt-[40px] max-[440px]:pr-[20px] max-[440px]:pb-[40px] max-[440px]:pl-[20px]
-             max-[440px]:gap-[40px]"
-      >
-        {/* Heading */}
-        {/* Desktop & Tablet version: shown only on >440px */}
-        <div className="max-[440px]:hidden">
-          <h2 className="text-[44px] font-semibold leading-[140%] text-center mb-6">
-            Ready to Experience the Power?
-          </h2>
-          <Link to="/Sign-in">
-            <button
-              className="text-white font-bold py-3 px-8 rounded-md text-[20px] transition-all duration-300 
-                max-[440px]:text-[16px] max-[440px]:py-2 max-[440px]:px-6"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
-              }}
-            >
-              Get Started for Free
-            </button>
-          </Link>
-          <p className="mt-6 text-[16px] leading-[28px] font-[400] text-[#f5f5f5]">
-            No credit card needed. Sign up and explore your free credits today.
-          </p>
-        </div>
-        {/* Mobile version: shown only on <441px */}
-        <div className="hidden max-[440px]:block">
-          <h2
-            className="w-[400px] h-[24px] font-['Inter'] font-semibold text-[20px] leading-[100%]
-               tracking-[0] text-center text-[#000000]"
-          >
-            There’s a <span className="text-[#007B82]">Plan </span>for Creator
-          </h2>
-          <p
-            className="w-[400px] h-[17px] font-['Inter'] font-[400] text-[14px] leading-[100%]
-               tracking-[0] text-center text-[#000000] mt-4"
-          >
-            From casual users to design pros, we’ve got you covered
-          </p>
-          {/* ✅ Center the button below */}
-          <div className="flex justify-center mt-6">
-            <Link to="/Sign-in">
-              <button
-                className="bg-gradient-to-r from-[#00B0BA] via-[black] to-[#007B82] hover:from-cyan-600  
-                   text-white font-bold py-2 px-6 rounded-md text-[16px] 
-                   transition-all duration-300
-                   max-[440px]:w-[304px] max-[440px]:h-[60px] max-[440px]:rounded-[8px]
-                   max-[440px]:text-[18px] max-[440px]:leading-[100%] max-[440px]:font-['Inter'] 
-                   max-[440px]:font-[700] max-[440px]:text-center max-[440px]:flex max-[440px]:items-center 
-                   max-[440px]:justify-center"
-              >
-                Get Started!
-              </button>
-            </Link>
-          </div>
-        </div>
-      </section>
+</div>
 
-      {/* section-5  */}
-      {/* <PricingTable /> */}
-      <UiPlans />
+</div>
 
-     {/* section-6  */}
+
+    
+<div className="mt-[1210px]"> {/* You can adjust the 200px value as needed */}
+  <UiPlans />
+</div>
+
+
+
+{/* section-6  */}
 
      <div
   className="
@@ -380,7 +399,7 @@ export default function HeroPricing() {
     min-[441px]:max-[768px]:pl-[40px]
   "
   style={{
-    backgroundImage: `url(${Frame1})`,
+    backgroundImage: `url(${sec4Bg})`,
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
@@ -412,7 +431,7 @@ export default function HeroPricing() {
     transform: "rotate(0deg)",
   }}
 >
-  Why Upgrade to <span className="text-[#FFB900]">Premium</span>?
+  Why Upgrade to <span className="text-[#FFB900]">Pro</span>?
 </h2>
 
 
@@ -441,9 +460,9 @@ export default function HeroPricing() {
             </span>
           </div>
 
-        <div
+   <div
   className="
-    border-[2px] border-solid border-teal-700 rounded-[30px] 
+    rounded-[30px] 
     px-[60px] py-[80px] max-w-[1200px] mx-auto
 
     /* Tablet styles */
@@ -451,10 +470,10 @@ export default function HeroPricing() {
     min-[441px]:max-[768px]:h-[282px]
     min-[441px]:max-[768px]:rounded-[30px]
     min-[441px]:max-[768px]:gap-[10px]
-    min-[441px]:max-[768px]:border-[1px]
     min-[441px]:max-[768px]:p-[10px]
   "
 >
+
 
            <div
   className="
@@ -556,6 +575,7 @@ export default function HeroPricing() {
           </div>
         </div>
       </div>
+</section>
 
       {/* section-7 */}
       {/* <PricingFaq /> */}

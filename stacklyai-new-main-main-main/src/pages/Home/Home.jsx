@@ -1892,8 +1892,8 @@ useEffect(() => {
               <div
                 className="w-[412px] h-[186px] rounded-[20px] flex flex-col gap-[18px] mt-[7px] ml-[7px] pt-[24px] pr-[16px] pb-[24px] pl-[20px]"
                 style={{
-                  background: "#8A38F514",
-                }}
+  backgroundColor: "#2E0854CC" // CC ≈ 80% opacity
+}}
               >
                 <h3
                   className="w-[376px] h-[24px] text-white text-[20px] font-medium leading-[120%]"

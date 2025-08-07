@@ -997,107 +997,216 @@ export default function AfterUiPlans() {
   const toggleGoldMore = () => setShowGoldMore(!showGoldMore);
 
   const BasicPlan = ({ mobile = false }) => (
-    <div className={`${mobile ? 'w-[340px]' : 'w-full'} rounded-[12px] p-5 bg-[#FFFFFF1A] border-[1px] border-solid border-white shadow-[0_2px_12px_#007B8229] flex flex-col gap-6`}>
+    <div className={`${mobile ? 'w-[340px]' : 'w-full'} rounded-[12px] p-5 bg-[#000000CC] border-[2px] border-solid border-[#FFFFFF33] shadow-[0_2px_12px_#007B8229] flex flex-col gap-6`}>
       <div className="flex flex-col gap-4">
-        <div className="font-bold text-2xl text-[#00b0ba]">
-          Basic <span className="text-white text-lg">(Free)</span>
-        </div>
-        <p className="text-white text-sm">
-          Perfect for personal or casual users who want a simple idea of interior design.
-        </p>
-        <div className="text-white font-bold text-2xl">
-          $0 <span className="text-base font-normal">/per month</span>
-        </div>
+       <div className="w-full flex justify-center">
+  <div className="font-bold text-2xl text-[#FFFFFF]">
+    Basic <span className="text-white text-lg">(Free)</span>
+  </div>
+</div>
+
+        <p
+  className="text-white text-sm text-center w-full"
+>
+  Perfect for personal or casual users who want a simple idea of interior design.
+</p>
+
+        <div className="flex justify-center">
+  <div className="text-white font-bold text-2xl">
+    $0 <span className="text-base font-normal">/per month</span>
+  </div>
+</div>
+
         <Link to="/Sign-in">
-          <div className="w-full py-3 bg-white rounded-lg border border-[#007B82] text-[#007B82] flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white">
-            Get Started
+          <div
+            className="w-full h-[42px] gap-[10px] rounded-[30px] border border-[#C22CA299] 
+             px-[30px] py-[10px] text-white flex justify-center items-center 
+             bg-gradient-to-r from-[#8A38F580] to-[#C22CA280]
+             hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white"
+          >
+            Purchase
           </div>
+
         </Link>
       </div>
-      <hr className="border-dashed border-[#1A1A1A2E]" />
-      <div className="flex flex-col gap-4 mt-4">
-        {["10 Room Designs per month", "Limited AI-generated layouts", "Basic furniture suggestions", "Download SD images,no advanced tools", "Email support (Standard)", "No customization options", "No revision support", "Watermark images"].map((item, idx) => (
-          <div className="flex gap-2 items-start" key={idx}>
-            <img src={Tik} alt="tik" className="w-5 h-5 mt-0.5 flex-shrink-0" />
-            <span className="text-white text-sm font-medium">{item}</span>
-          </div>
-        ))}
+      <hr className="border-dashed border-[#C99FFF]" />
+    <div className="flex flex-col gap-4 mt-4">
+  {[
+    "10 Room Designs per month",
+    "Limited AI-generated layouts",
+    "Basic furniture suggestions",
+    "Download SD images, no advanced tools",
+    "Email support (Standard)",
+    "No customization options",
+    "No revision support",
+    "Watermark images",
+  ].map((item, idx) => (
+    <div className="flex gap-2 items-start" key={idx}>
+      <div className="w-5 h-5 mt-0.5 flex-shrink-0 bg-[linear-gradient(180deg,#8A38F5_0%,#C22CA2_100%)] rounded-[4px] flex items-center justify-center">
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-3 h-3"
+        >
+          <path
+            d="M5 13L9 17L19 7"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </div>
+      <span className="text-white text-sm font-medium">{item}</span>
+    </div>
+  ))}
+</div>
+
     </div>
   );
 
   const SilverPlan = ({ mobile = false }) => (
     <div
-      className={`${mobile ? 'w-[340px]' : 'w-full'} rounded-[12px] p-5 border-[5px] border-solid border-[#00B0BA] flex flex-col gap-6`}
+      className={`${mobile ? 'w-[340px]' : 'w-full'} rounded-[12px] p-5 border-[2px] border-solid border-[#FFFFFF33] flex flex-col gap-6`}
       style={{
-        background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.04) 100%)',
+       
         boxShadow: '8px 8px 4px 0px #00000029 inset, -8px -8px 4px 0px #00000029 inset',
       }}
     >
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-white text-2xl font-bold">Silver</h3>
-          <img src={Silver} alt="silver" className="w-16 h-16" />
-        </div>
-        <p className="text-white text-sm">
-          Ideal for homeowners or renters looking for more creative control and polished designs.
-        </p>
-        <div className="text-white text-2xl font-bold">
-          $29 or ₹2,399 <span className="text-base font-normal">/per month</span>
-        </div>
-        <div className="bg-[#FFFFFF1A] p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229]">
+       <div className="flex justify-center items-center">
+  <h3 className="text-white text-2xl font-bold">Premium</h3>
+</div>
+
+       <p className="text-white text-sm text-center w-full">
+  Ideal for homeowners or renters looking for more creative control and polished designs.
+</p>
+
+       <div className="text-white text-2xl font-bold text-center w-full">
+  $29 or ₹2,399 <span className="text-base font-normal">/per month</span>
+</div>
+
+        <div className="bg-[#8A38F51A] p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229]">
           <p className="text-xs font-medium">Use code (Get 10%OFF)</p>
           <div className="flex items-center justify-center gap-2 mt-1">
-            <img src={DarkPg} alt="page" className="w-4 h-4" />
-            <span className="font-bold text-lg text-[#00b0ba]">STACKLY10</span>
-          </div>
+  <img
+    src={DarkPg}
+    alt="page"
+    className="w-4 h-4 filter brightness-0 invert"
+  />
+  <span className="font-bold text-lg text-white">STACKLY10</span>
+</div>
+
         </div>
         <Link to="/Sign-in">
-          <div className="w-full py-3 bg-white rounded-lg border border-[#007B82] text-[#007B82] flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white">
-            Get Started
+            <div
+            className="w-full h-[42px] gap-[10px] rounded-[30px] border border-[#C22CA299] 
+             px-[30px] py-[10px] text-white flex justify-center items-center 
+             bg-gradient-to-r from-[#8A38F580] to-[#C22CA280]
+             hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white"
+          >
+            Purchase
           </div>
         </Link>
       </div>
-      <hr className="border-dashed border-[#1A1A1A2E]" />
-      <div className="flex flex-col gap-4 mt-4">
-        {["50 Room Designs per month", "Advanced AI layout suggestions", "Access to premium themes & colour palettes", "Furniture & decor recommendations", "High-resolution image download"]
-          .concat(showSilverMore ? ["Priority email support", "Basic customization options", "Limited revisions (up to 3)", "No watermark on images"] : [])
-          .map((item, idx) => (
-            <div className="flex gap-2 items-start" key={idx}>
-              <img src={Tik} alt="tik" className="w-5 h-5 mt-0.5 flex-shrink-0" />
-              <span className="text-white text-sm font-medium">{item}</span>
-            </div>
-          ))}
-        <button className="flex gap-2 items-center cursor-pointer text-white" onClick={toggleSilverMore}>
-          <img src={Rarrow} alt="arrow" className={`w-3 h-4 transition-transform ${showSilverMore ? "rotate-90" : ""}`} />
-          <span className="text-sm font-medium">
-            {showSilverMore ? "Show less" : "See 4 more"}
-          </span>
-        </button>
+      <hr className="border-dashed border-[#C99FFF]" />
+   <div className="flex flex-col gap-4 mt-4">
+  {[
+    "50 Room Designs per month",
+    "Advanced AI layout suggestions",
+    "Access to premium themes & colour palettes",
+    "Furniture & decor recommendations",
+    "High-resolution image download"
+  ]
+    .concat(
+      showSilverMore
+        ? [
+            "Priority email support",
+            "Basic customization options",
+            "Limited revisions (up to 3)",
+            "No watermark on images"
+          ]
+        : []
+    )
+    .map((item, idx) => (
+      <div className="flex gap-2 items-start" key={idx}>
+        <div className="w-5 h-5 mt-0.5 flex-shrink-0 bg-[linear-gradient(180deg,#8A38F5_0%,#C22CA2_100%)] rounded-[4px] flex items-center justify-center">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-3 h-3"
+          >
+            <path
+              d="M5 13L9 17L19 7"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <span className="text-white text-sm font-medium">{item}</span>
       </div>
+    ))}
+
+  <button
+    className="flex gap-2 items-center cursor-pointer text-white"
+    onClick={toggleSilverMore}
+  >
+    <svg
+      width="10"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={`w-3 h-4 transition-transform ${
+        showSilverMore ? "rotate-90" : ""
+      }`}
+    >
+      <path
+        d="M8 5L15 12L8 19"
+        stroke="#8A38F5"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+    <span className="text-sm font-medium">
+      {showSilverMore ? "Show less" : "See 4 more"}
+    </span>
+  </button>
+</div>
+
     </div>
   );
 
   const GoldPlan = ({ mobile = false }) => (
     <div
-      className={`${mobile ? 'w-[340px]' : 'w-full'} relative rounded-[12px] p-5 border-[1px] border-solid shadow-[0_2px_12px_#007B8229] flex flex-col gap-6`}
-      style={{ borderColor: '#B5780F', background: 'linear-gradient(179.75deg, #B5780F 0.22%, rgba(255, 255, 255, 0.1) 100.65%)' }}
+      className={`${mobile ? 'w-[340px]' : 'w-full'} relative rounded-[12px] p-5 border-[2px] border-solid border-[#FFFFFF33] flex flex-col gap-6`}
+      // style={{ borderColor: '#B5780F', background: 'linear-gradient(179.75deg, #B5780F 0.22%, rgba(255, 255, 255, 0.1) 100.65%)' }}
     >
       <span className="absolute top-0 right-0 bg-gradient-to-b from-[#FFAA17] to-[#99660E] px-2 py-1 text-white text-xs font-medium rounded-tr-md rounded-bl-lg">
         Most Popular
       </span>
       <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-[#FFFFFF] text-2xl font-bold">Gold</h3>
-          <img src={Gold} alt="gold" className="w-[63px] h-[47px] mt-4" />
-        </div>
-        <p className="text-white text-sm">
+        <div className="flex justify-center items-center">
+  <h3 className="text-[#FFFFFF] text-2xl font-bold">Pro</h3>
+</div>
+
+        <p className="text-white text-sm text-center w-full">
           Best for professionals, renovators, or anyone seeking top-tier results and personalization.
         </p>
-        <div className="text-white mb-1 text-2xl font-bold">
-          $59 or ₹4,799 <span className="text-base font-normal">/per month</span>
-        </div>
-        <div className="bg-[#F9BC1C] p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229]">
+       <div className="text-white mb-1 text-2xl font-bold text-center w-full">
+  $59 or ₹4,799 <span className="text-base font-normal">/per month</span>
+</div>
+
+        <div className="bg-[#8A38F51A] p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229]">
           <p className="text-xs font-medium text-white">Use code (Get 10%OFF)</p>
           <div className="flex items-center justify-center gap-2 mt-1">
             <img src={DarkPg} alt="page" className="w-4 h-4 invert brightness-0" />
@@ -1105,8 +1214,13 @@ export default function AfterUiPlans() {
           </div>
         </div>
         <Link to="/Sign-in">
-          <div className="w-full py-3 bg-white rounded-lg border-2 border-[#F3A216] text-[#F3A216] shadow-sm flex justify-center items-center hover:text-white hover:bg-gradient-to-b from-[#F3A216] to-[#f5b543]">
-            Get Started
+            <div
+            className="w-full h-[42px] gap-[10px] rounded-[30px] border border-[#C22CA299] 
+             px-[30px] py-[10px] text-white flex justify-center items-center 
+             bg-gradient-to-r from-[#8A38F580] to-[#C22CA280]
+             hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white"
+          >
+            Purchase
           </div>
         </Link>
       </div>
@@ -1148,7 +1262,7 @@ export default function AfterUiPlans() {
           >
             <path
               d="M8 5L15 12L8 19"
-              stroke="#F3A216"
+              stroke="#8A38F5"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -1162,22 +1276,22 @@ export default function AfterUiPlans() {
 
   return (
     <section
-      className="w-full py-12 px-4 bg-cover bg-top bg-no-repeat max-[440px]:-mt-[18px]"
-      style={{ backgroundImage: `url(${BG})` }}
+      className="w-full py-12 px-4 bg-cover bg-top bg-no-repeat max-[440px]:-mt-[2239px]"
+     
     >
       <div className="hidden max-[440px]:block w-[168px] h-[168px] bg-[#00B0BA66] mx-auto mb-6 rounded-full blur-[124px]"></div>
 
       <div className="max-w-6xl mx-auto flex flex-col items-center gap-12 max-[440px]:-mt-[185px]">
         <div className="text-center">
-          <h2
-            className="text-white leading-[1.2] font-medium mb-4 max-w-2xl mx-auto 
-            text-[32px] md:text-4xl 
-            max-[440px]:w-[400px] max-[440px]:h-[24px] max-[440px]:text-[20px] max-[440px]:leading-[100%] max-[440px]:text-center
-            min-[441px]:max-[768px]:w-full min-[441px]:max-[768px]:h-auto min-[441px]:max-[768px]:text-[24px]"
-            style={{ fontFamily: 'Inter' }}
-          >
-            Find the right plan that <br className="hidden min-[769px]:inline" /> suits your needs
-          </h2>
+         <h2
+  className="lora-text text-white leading-[1.2] font-medium mb-4 max-w-2xl mx-auto 
+    text-[32px] md:text-4xl 
+    max-[440px]:w-[400px] max-[440px]:h-[24px] max-[440px]:text-[20px] max-[440px]:leading-[100%] max-[440px]:text-center
+    min-[441px]:max-[768px]:w-full min-[441px]:max-[768px]:h-auto min-[441px]:max-[768px]:text-[24px]"
+>
+  Find the right plan that <br className="hidden min-[769px]:inline" /> suits your needs
+</h2>
+
           <p
             className="text-white text-[20px] md:text-xl mx-auto 
             max-[440px]:w-[400px] max-[440px]:h-[44px] max-[440px]:text-[16px] 

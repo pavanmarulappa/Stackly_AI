@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import blur from "../../assets/product-pg/sec1bg.png";
 import arrow from "../../assets/home/Arrow.png";
 import group from "../../assets/product-pg/groupimg.png";
-
 import drag1 from "../../assets/product-pg/drag1.png";
 import drag2 from "../../assets/product-pg/drag2.png";
 import drag3 from "../../assets/product-pg/drag3.png";
@@ -16,9 +16,59 @@ import drag9 from "../../assets/product-pg/drag9.png";
 import drag10 from "../../assets/product-pg/drag10.png";
 
 export default function HeroProducts() {
-  return (
-    // NEW FIGMA DESIGN
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [isMarqueePaused, setIsMarqueePaused] = useState(false);
+  const marqueeRef = useRef(null);
 
+  const images = [drag1, drag2, drag3, drag4, drag5, drag6, drag7, drag8, drag9, drag10];
+
+  // Handle image click to open pop-up and pause marquee
+  const handleImageClick = (index) => {
+    setSelectedImageIndex(index);
+    setIsPopUpOpen(true);
+    setIsMarqueePaused(true);
+  };
+
+  // Close pop-up and resume marquee
+  const handleClosePopUp = () => {
+    setIsPopUpOpen(false);
+    setIsMarqueePaused(false);
+  };
+
+  // Navigate to previous image in slider
+  const handlePrevImage = () => {
+    setSelectedImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  // Navigate to next image in slider
+  const handleNextImage = () => {
+    setSelectedImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
+  // Pause/resume marquee animation based on isMarqueePaused
+  useEffect(() => {
+    const marquee = marqueeRef.current;
+    if (marquee) {
+      marquee.style.animationPlayState = isMarqueePaused ? "paused" : "running";
+    }
+  }, [isMarqueePaused]);
+
+  // Pop-up animation variants
+  const popUpVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.3, ease: "easeOut" } },
+    exit: { opacity: 0, scale: 0.8, transition: { duration: 0.2 } },
+  };
+
+  // Slider image animation variants
+  const imageVariants = {
+    hidden: { opacity: 0, x: 50 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.3 } },
+    exit: { opacity: 0, x: -50, transition: { duration: 0.3 } },
+  };
+
+  return (
     <section className="relative w-full h-[1187px] opacity-100 -mt-[82px] pt-[82px] overflow-hidden">
       {/* Blur background image */}
       <img
@@ -92,100 +142,106 @@ export default function HeroProducts() {
 
           {/* Image Marquee Section */}
           <div className="relative w-screen max-w-none h-[449.14px] overflow-hidden -mx-[calc((100vw-100%)/2)]">
-            {/* Marquee Track - This will loop continuously */}
-            <div className="absolute flex gap-0 h-full animate-marquee whitespace-nowrap">
+            {/* Marquee Track */}
+            <div
+              ref={marqueeRef}
+              className="absolute flex gap-0 h-full animate-marquee whitespace-nowrap"
+              style={{ animation: "marquee-latest 20s linear infinite" }}
+            >
               {/* First Column */}
               <div className="inline-block h-full w-[286.5px] mr-[6px]">
-                {/* Top image */}
-                <div className="relative w-full h-[250.98px] border-[0.58px] border-gray-300 overflow-hidden group">
+                <div className="relative w-full h-[250.98px] border-[0.58px] border-gray-300 overflow-hidden group cursor-pointer">
                   <img
                     src={drag1}
-                    alt="Image"
+                    alt="Image 1"
                     className="absolute top-[-68px] w-full h-[383px] object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(0)}
                   />
                 </div>
-                {/* Bottom image */}
-                <div className="w-full h-[192.16px] mt-[6px] overflow-hidden group">
+                <div className="w-full h-[192.16px] mt-[6px] overflow-hidden group cursor-pointer">
                   <img
                     src={drag2}
-                    alt="Image"
+                    alt="Image 2"
                     className="w-full h-full object-cover border border-gray-300 transition-transform duration-500 group-hover:scale-110"
                     style={{ borderWidth: "0.58px" }}
+                    onClick={() => handleImageClick(1)}
                   />
                 </div>
               </div>
 
               {/* Second Column */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
-                {/* Top row */}
                 <div className="flex gap-[6px] w-full h-[192.16px] mb-[6px]">
                   <div
-                    className="w-[286.5px] h-full border border-gray-300 overflow-hidden group"
+                    className="w-[286.5px] h-full border border-gray-300 overflow-hidden group cursor-pointer"
                     style={{ borderWidth: "0.58px" }}
                   >
                     <img
                       src={drag3}
-                      alt="Top Left"
+                      alt="Image 3"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onClick={() => handleImageClick(2)}
                     />
                   </div>
                   <div
-                    className="w-[280px] h-full border border-gray-300 overflow-hidden group"
+                    className="w-[280px] h-full border border-gray-300 overflow-hidden group cursor-pointer"
                     style={{ borderWidth: "0.58px" }}
                   >
                     <img
                       src={drag4}
-                      alt="Top Right"
+                      alt="Image 4"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onClick={() => handleImageClick(3)}
                     />
                   </div>
                 </div>
-                {/* Bottom image */}
                 <div
-                  className="w-full h-[250.98px] border border-gray-300 overflow-hidden group"
+                  className="w-full h-[250.98px] border border-gray-300 overflow-hidden group cursor-pointer"
                   style={{ borderWidth: "0.58px" }}
                 >
                   <img
                     src={drag5}
-                    alt="Bottom"
+                    alt="Image 5"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(4)}
                   />
                 </div>
               </div>
 
               {/* Third Column */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
-                {/* Top image */}
                 <div
-                  className="w-full h-[250.98px] border border-gray-300 overflow-hidden group"
+                  className="w-full h-[250.98px] border border-gray-300 overflow-hidden group cursor-pointer"
                   style={{ borderWidth: "0.58px" }}
                 >
                   <img
                     src={drag6}
-                    alt="Top"
+                    alt="Image 6"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(5)}
                   />
                 </div>
-                {/* Bottom row */}
                 <div className="flex gap-[6px] mt-[6px]">
                   <div
-                    className="w-[286.5px] h-[192.16px] border border-gray-300 overflow-hidden group"
+                    className="w-[286.5px] h-[192.16px] border border-gray-300 overflow-hidden group cursor-pointer"
                     style={{ borderWidth: "0.58px" }}
                   >
                     <img
                       src={drag7}
-                      alt="Bottom Left"
+                      alt="Image 7"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onClick={() => handleImageClick(6)}
                     />
                   </div>
                   <div
-                    className="w-[280px] h-[192px] border border-gray-300 overflow-hidden group"
+                    className="w-[280px] h-[192px] border border-gray-300 overflow-hidden group cursor-pointer"
                     style={{ borderWidth: "0.58px" }}
                   >
                     <img
                       src={drag8}
-                      alt="Bottom Right"
+                      alt="Image 8"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onClick={() => handleImageClick(7)}
                     />
                   </div>
                 </div>
@@ -193,134 +249,136 @@ export default function HeroProducts() {
 
               {/* Fourth Column */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
-                <div className="w-full h-[192.16px] overflow-hidden group">
+                <div className="w-full h-[192.16px] overflow-hidden group cursor-pointer">
                   <img
                     src={drag9}
-                    alt="Top"
+                    alt="Image 9"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(8)}
                   />
                 </div>
-                <div className="w-full h-[250.98px] border-[0.58px] mt-[6px] border-gray-300 overflow-hidden group">
+                <div className="w-full h-[250.98px] border-[0.58px] mt-[6px] border-gray-300 overflow-hidden group cursor-pointer">
                   <img
                     src={drag10}
-                    alt="Bottom"
+                    alt="Image 10"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(9)}
                   />
                 </div>
               </div>
 
-              {/* Duplicate the content to create seamless looping */}
-              {/* First Column (Duplicate) */}
+              {/* Duplicate content for seamless looping */}
               <div className="inline-block h-full w-[286.5px] mr-[6px]">
-                {/* Top image */}
-                <div className="relative w-full h-[250.98px] border-[0.58px] border-gray-300 overflow-hidden group">
+                <div className="relative w-full h-[250.98px] border-[0.58px] border-gray-300 overflow-hidden group cursor-pointer">
                   <img
                     src={drag1}
-                    alt="Image"
+                    alt="Image 1"
                     className="absolute top-[-68px] w-full h-[383px] object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(0)}
                   />
                 </div>
-                {/* Bottom image */}
-                <div className="w-full h-[192.16px] mt-[6px] overflow-hidden group">
+                <div className="w-full h-[192.16px] mt-[6px] overflow-hidden group cursor-pointer">
                   <img
                     src={drag2}
-                    alt="Image"
+                    alt="Image 2"
                     className="w-full h-full object-cover border border-gray-300 transition-transform duration-500 group-hover:scale-110"
                     style={{ borderWidth: "0.58px" }}
+                    onClick={() => handleImageClick(1)}
                   />
                 </div>
               </div>
 
-              {/* Second Column (Duplicate) */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
-                {/* Top row */}
                 <div className="flex gap-[6px] w-full h-[192.16px] mb-[6px]">
                   <div
-                    className="w-[286.5px] h-full border border-gray-300 overflow-hidden group"
+                    className="w-[286.5px] h-full border border-gray-300 overflow-hidden group cursor-pointer"
                     style={{ borderWidth: "0.58px" }}
                   >
                     <img
                       src={drag3}
-                      alt="Top Left"
+                      alt="Image 3"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onClick={() => handleImageClick(2)}
                     />
                   </div>
                   <div
-                    className="w-[280px] h-full border border-gray-300 overflow-hidden group"
+                    className="w-[280px] h-full border border-gray-300 overflow-hidden group cursor-pointer"
                     style={{ borderWidth: "0.58px" }}
                   >
                     <img
                       src={drag4}
-                      alt="Top Right"
+                      alt="Image 4"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onClick={() => handleImageClick(3)}
                     />
                   </div>
                 </div>
-                {/* Bottom image */}
                 <div
-                  className="w-full h-[250.98px] border border-gray-300 overflow-hidden group"
+                  className="w-full h-[250.98px] border border-gray-300 overflow-hidden group cursor-pointer"
                   style={{ borderWidth: "0.58px" }}
                 >
                   <img
                     src={drag5}
-                    alt="Bottom"
+                    alt="Image 5"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(4)}
                   />
                 </div>
               </div>
 
-              {/* Third Column (Duplicate) */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
-                {/* Top image */}
                 <div
-                  className="w-full h-[250.98px] border border-gray-300 overflow-hidden group"
+                  className="w-full h-[250.98px] border border-gray-300 overflow-hidden group cursor-pointer"
                   style={{ borderWidth: "0.58px" }}
                 >
                   <img
                     src={drag6}
-                    alt="Top"
+                    alt="Image 6"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(5)}
                   />
                 </div>
-                {/* Bottom row */}
                 <div className="flex gap-[6px] mt-[6px]">
                   <div
-                    className="w-[286.5px] h-[192.16px] border border-gray-300 overflow-hidden group"
+                    className="w-[286.5px] h-[192.16px] border border-gray-300 overflow-hidden group cursor-pointer"
                     style={{ borderWidth: "0.58px" }}
                   >
                     <img
                       src={drag7}
-                      alt="Bottom Left"
+                      alt="Image 7"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onClick={() => handleImageClick(6)}
                     />
                   </div>
                   <div
-                    className="w-[280px] h-[192px] border border-gray-300 overflow-hidden group"
+                    className="w-[280px] h-[192px] border border-gray-300 overflow-hidden group cursor-pointer"
                     style={{ borderWidth: "0.58px" }}
                   >
                     <img
                       src={drag8}
-                      alt="Bottom Right"
+                      alt="Image 8"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      onClick={() => handleImageClick(7)}
                     />
                   </div>
                 </div>
               </div>
 
-              {/* Fourth Column (Duplicate) */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
-                <div className="w-full h-[192.16px] overflow-hidden group">
+                <div className="w-full h-[192.16px] overflow-hidden group cursor-pointer">
                   <img
                     src={drag9}
-                    alt="Top"
+                    alt="Image 9"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(8)}
                   />
                 </div>
-                <div className="w-full h-[250.98px] border-[0.58px] mt-[6px] border-gray-300 overflow-hidden group">
+                <div className="w-full h-[250.98px] border-[0.58px] mt-[6px] border-gray-300 overflow-hidden group cursor-pointer">
                   <img
                     src={drag10}
-                    alt="Bottom"
+                    alt="Image 10"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    onClick={() => handleImageClick(9)}
                   />
                 </div>
               </div>
@@ -329,20 +387,70 @@ export default function HeroProducts() {
         </div>
       </div>
 
-      {/* CSS for the marquee animation */}
+      {/* Pop-up Modal */}
+      <AnimatePresence>
+        {isPopUpOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={handleClosePopUp}
+          >
+            <motion.div
+              className="relative bg-white rounded-lg overflow-hidden max-w-[90vw] max-h-[90vh]"
+              variants={popUpVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              onClick={(e) => e.stopPropagation()}
+            >
+              
+              <div className="relative w-[600px] h-[400px] flex items-center justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={selectedImageIndex}
+                    src={images[selectedImageIndex]}
+                    alt={`Image ${selectedImageIndex + 1}`}
+                    className="w-full h-full object-contain"
+                    variants={imageVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  />
+                </AnimatePresence>
+                {/* <button
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                  onClick={handlePrevImage}
+                >
+                  ←
+                </button>
+                <button
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                  onClick={handleNextImage}
+                >
+                  →
+                </button> */}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Inline CSS for marquee animation */}
       <style>{`
-  @keyframes marquee-latest {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-  .animate-marquee {
-    animation: marquee-latest 20s linear infinite;
-  }
-`}</style>
+        @keyframes marquee-latest {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-marquee {
+          animation: marquee-latest 20s linear infinite;
+        }
+      `}</style>
     </section>
   );
 }
