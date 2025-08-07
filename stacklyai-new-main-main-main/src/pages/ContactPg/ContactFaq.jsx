@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Bg from "../../assets/contact/sec2bg.png";
+// import Bg from "../../assets/contact/FAQS.png";
 
 export default function PricingFaq() {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -109,29 +109,30 @@ export default function PricingFaq() {
   const currentCategoryCount = categoryRanges[faqCategory].end - categoryRanges[faqCategory].start;
 
   return (
-    <section className="w-full h-auto min-h-[746px] relative overflow-x-hidden mt-[-13px]">
+    <section className="w-full h-auto min-h-[746px] bg-black relative overflow-x-hidden mt-[-13px]">
       {/* Full-width background image */}
-      <div
-        className="absolute inset-0 -z-10"
-        style={{
-          backgroundImage: `url(${Bg})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'top',
-          backgroundRepeat: 'no-repeat',
-          width: '101vw',
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
-      />
+
+      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 mt-[-50px] z-0 w-[1561px] h-[401px] flex justify-center items-center pointer-events-none select-none">
+        <h1
+          className="leading-none font-[700] text-white"
+          style={{
+            fontFamily: "Poppins, sans-serif",
+            fontSize: "273.02px",
+            color: "#FFFFFF14",
+          }}
+        >
+          FAQS
+        </h1>
+      </div>
 
       {/* Content */}
       <div className="relative w-full h-full max-w-screen-xl mx-auto py-16 px-4 sm:px-6 flex flex-col items-center">
         {/* Heading */}
-        <div className="text-center mb-10 w-full mt-2">
+        <div className="text-center mb-10 w-full mt-10">
           <h2 className="text-[32px] font-black text-[#FFFFFF] leading-tight">
             Frequently Asked Questions
           </h2>
-          <p className="mt-5 text-[#FFFFFF] max-w-[941px] mx-auto text-[18px] font-normal leading-relaxed">
+          <p className="mt-3 text-[#FFFFFF] max-w-[941px] mx-auto text-[18px] font-normal leading-relaxed">
             Have questions? We've got answers! Explore our FAQs to learn more
             about how Stackly AI works, its features, and how it can help you
             streamline your tasks effortlessly.
@@ -146,13 +147,13 @@ export default function PricingFaq() {
               className="relative w-[179px] h-[46px] rounded-[12px] p-[1px]"
               style={{
                 background:
-                  "linear-gradient(95.11deg, rgba(0, 176, 186, 0.5) 3.73%, rgba(0, 80, 84, 0.5) 99.47%)",
+                  "linear-gradient(135.12deg, #8A38F5 -12.98%, #48207E 100.32%)",
               }}
             >
               <button
                 className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${faqCategory === 0
-                    ? "text-white bg-gradient-to-r from-[#007B82] to-[#001A1C]"
-                    : "text-[#007B82] bg-white hover:bg-[#F0F0F0]"
+                  ? "text-white bg-transparent"
+                  : "text-white bg-black hover:bg-gradient-to-br hover:from-[#8A38F5] hover:to-[#48207E] "
                   }`}
                 onClick={() => {
                   setFaqCategory(0);
@@ -168,13 +169,14 @@ export default function PricingFaq() {
               className="relative w-[137px] h-[46px] rounded-[12px] p-[1px]"
               style={{
                 background:
-                  "linear-gradient(95.11deg, rgba(0, 176, 186, 0.5) 3.73%, rgba(0, 80, 84, 0.5) 99.47%)",
+                  "linear-gradient(135.12deg, #8A38F5 -12.98%, #48207E 100.32%)",
               }}
             >
+
               <button
                 className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${faqCategory === 1
-                    ? "text-white bg-gradient-to-r from-[#007B82] to-[#001A1C]"
-                    : "text-[#007B82] bg-white hover:bg-[#F0F0F0]"
+                  ? "text-white bg-transparent"
+                  : "text-white bg-black hover:bg-gradient-to-br hover:from-[#8A38F5] hover:to-[#48207E] "
                   }`}
                 onClick={() => {
                   setFaqCategory(1);
@@ -190,13 +192,13 @@ export default function PricingFaq() {
               className="relative w-[137px] h-[46px] rounded-[12px] p-[1px]"
               style={{
                 background:
-                  "linear-gradient(95.11deg, rgba(0, 176, 186, 0.5) 3.73%, rgba(0, 80, 84, 0.5) 99.47%)",
+                  "linear-gradient(135.12deg, #8A38F5 -12.98%, #48207E 100.32%)",
               }}
             >
               <button
                 className={`w-full h-full px-2 text-[16px] font-medium rounded-[11px] flex items-center justify-center whitespace-nowrap ${faqCategory === 2
-                    ? "text-white bg-gradient-to-r from-[#007B82] to-[#001A1C]"
-                    : "text-[#007B82] bg-white hover:bg-[#F0F0F0]"
+                  ? "text-white bg-transparent"
+                  : "text-white bg-black hover:bg-gradient-to-br hover:from-[#8A38F5] hover:to-[#48207E] "
                   }`}
                 onClick={() => {
                   setFaqCategory(2);
@@ -210,17 +212,19 @@ export default function PricingFaq() {
         </div>
 
         {/* FAQ Items */}
-        <div className="w-full max-w-[1288px] rounded-[16px] p-6 md:p-12 space-y-4 mt-8">
+        <div className="w-full max-w-[1288px] rounded-[16px] p-6 md:p-12 space-y-4 mt-3">
           {getFaqSlice().map((faq, index) => (
             <div
               key={index}
-              className={`rounded-lg overflow-hidden shadow-md shadow-[#00000085] transition-all duration-300 ${activeIndex === index ? "bg-[#007B82]/10" : "bg-[#FFFFFF4D]"
-                }`}
+              className="rounded-lg overflow-hidden transition-all duration-300"
+              style={{
+                background: "#FFFFFF1A",
+                boxShadow: "0px 4px 8px 0px #00000040",
+                backdropFilter: "blur(9px)",
+              }}
             >
               <button
-                className={`w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none transition-colors duration-300 ${activeIndex === index
-                    ? "bg-[#007B82] text-white"
-                    : "text-[#FFFFFF]"
+                className={`w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none transition-colors duration-300 ${activeIndex === index ? "bg-[#FFFFFF1A] text-white" : "text-[#FFFFFF]"
                   }`}
                 onClick={() => toggleFAQ(index)}
               >
@@ -241,7 +245,7 @@ export default function PricingFaq() {
                 </svg>
               </button>
               {activeIndex === index && (
-                <div className="px-5 pb-6 pt-6 text-sm md:text-base text-[#2A2A2A] bg-white">
+                <div className="px-5 pb-6 pt-6 text-sm md:text-base text-white bg-[#FFFFFF1A]">
                   {faq.answer}
                 </div>
               )}
