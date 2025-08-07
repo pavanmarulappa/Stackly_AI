@@ -918,12 +918,17 @@ export default function Home() {
   const [isHovering, setIsHovering] = useState(false);
   const controls = useAnimation();
   const [ref, inView] = useInView({ threshold: 0.1 });
-  const [isHovering1, setIsHovering1] = useState(false);
 
   const counter45Ref = useRef(null);
   const counter100Ref = useRef(null);
   const hasAnimated = useRef(false);
   const lastTriggered = useRef(0);
+  const [isHovering1, setIsHovering1] = useState(false);
+  const [isHovering2, setIsHovering2] = useState(false);
+  const [currentImage1, setCurrentImage1] = useState(0);
+  const [currentImage2, setCurrentImage2] = useState(0);
+  const [ref1, inView1] = useInView({ threshold: 0.1 });
+  const [ref2, inView2] = useInView({ threshold: 0.1 });
 
 
 const faqs = [
@@ -1010,6 +1015,64 @@ const faqs = [
     }
   ];
 
+  const images1 = [NewFrame, NewFrame3, NewFrame4];
+  const images2 = [NewFrame2, NewFrame5, NewFrame6];
+
+  // Image cycling for first div on hover
+  useEffect(() => {
+    if (isHovering1) {
+      const interval = setInterval(() => {
+        setCurrentImage1((prev) => (prev + 1) % images1.length);
+      }, 500);
+      return () => clearInterval(interval);
+    } else {
+      setCurrentImage1(0); // Reset to NewFrame on mouse leave
+    }
+  }, [isHovering1]);
+
+  // Image cycling for second div on hover
+  useEffect(() => {
+    if (isHovering2) {
+      const interval = setInterval(() => {
+        setCurrentImage2((prev) => (prev + 1) % images2.length);
+      }, 500);
+      return () => clearInterval(interval);
+    } else {
+      setCurrentImage2(0); // Reset to NewFrame2 on mouse leave
+    }
+  }, [isHovering2]);
+
+  const handleMouseEnter1 = () => {
+    setIsHovering1(true);
+  };
+
+  const handleMouseLeave1 = () => {
+    setIsHovering1(false);
+    setCurrentImage1(0); // Reset to NewFrame
+  };
+
+  const handleMouseEnter2 = () => {
+    setIsHovering2(true);
+  };
+
+  const handleMouseLeave2 = () => {
+    setIsHovering2(false);
+    setCurrentImage2(0); // Reset to NewFrame2
+  };
+
+  const handleClick1 = () => {
+    setClickCount1((prev) => (prev + 1) % 3); // Cycle through 0, 1, 2
+    setCurrentImage1(clickCount1 === 0 ? 1 : 2); // NewFrame3 (index 1) or NewFrame4 (index 2)
+  };
+
+  const handleClick2 = () => {
+    setClickCount2((prev) => (prev + 1) % 3); // Cycle through 0, 1, 2
+    setCurrentImage2(clickCount2 === 0 ? 1 : 2); // NewFrame5 (index 1) or NewFrame6 (index 2)
+  };
+
+
+   
+
   const nextCard = () => {
     setCurrentCardIndex((prev) => (prev === mobileCards.length - 1 ? 0 : prev + 1));
   };
@@ -1017,15 +1080,6 @@ const faqs = [
   const prevCard = () => {
     setCurrentCardIndex((prev) => (prev === 0 ? mobileCards.length - 1 : prev - 1));
   };
-
-const [isHovering2, setIsHovering2] = useState(false);
-
-const handleMouseEnter1 = () => setIsHovering1(true);
-const handleMouseLeave1 = () => setIsHovering1(false);
-
-const handleMouseEnter2 = () => setIsHovering2(true);
-const handleMouseLeave2 = () => setIsHovering2(false);
-  
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -1052,8 +1106,6 @@ const handleMouseLeave2 = () => setIsHovering2(false);
       controls.start("visible");
     }
   }, [controls, inView]);
-  const [ref1, inView1] = useInView({ threshold: 0.1 });
-const [ref2, inView2] = useInView({ threshold: 0.1 });
 const [ref4, inView4] = useInView({ threshold: 0.1 });
 
 const animateCounter = (ref, target) => {
@@ -1197,220 +1249,143 @@ useEffect(() => {
 
 
 {/* new figma disgine sec2 */}
-  <section className="w-full h-[857px] rotate-0 opacity-100 bg-[#000000] relative overflow-hidden">
-  {/* DotFrame image */}
-  <img
-    src={DotFrame}
-    alt="Dot Frame"
-    className="w-[800px] h-[163px] opacity-100 rotate-0 absolute top-[62px] left-[-367px]"
-  />
+   <section className="w-full h-[857px] rotate-0 opacity-100 bg-[#000000] relative overflow-hidden">
+      {/* DotFrame image */}
+      <img
+        src={DotFrame}
+        alt="Dot Frame"
+        className="w-[800px] h-[163px] opacity-100 rotate-0 absolute top-[62px] left-[-367px]"
+      />
 
-  {/* Hoverable frames */}
-  <div className="relative w-full h-[800px] overflow-hidden">
-    {/* FIRST IMAGE DIV */}
-    <motion.div
-      ref={ref1}
-      initial={{ y: 100, opacity: 0 }}
-      animate={inView1 ? { y: 0, opacity: 1 } : {}}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-      className="absolute top-[95px] left-[319px] w-[325px] h-[381px] overflow-hidden z-10"
-      onMouseEnter={handleMouseEnter1}
-      onMouseLeave={handleMouseLeave1}
-    >
-      <div className="w-full h-full relative">
-        <motion.img
-          src={NewFrame}
-          alt="New Frame"
-          className="w-full h-full object-cover absolute top-0 left-0"
-          animate={{
-            x: isHovering1 ? "-100%" : "0%",
-          }}
-          transition={{ duration: 0.5 }}
-        />
-        <motion.img
-          src={NewFrame4}
-          alt="New Frame 4"
-          className="w-full h-full object-cover absolute top-0 left-0"
-          initial={{ x: "100%" }}
-          animate={{
-            x: isHovering1 ? "0%" : "100%",
-          }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        />
+      {/* Hoverable frames */}
+      <div className="relative w-full h-[800px] overflow-hidden">
+        {/* FIRST IMAGE DIV */}
+        <motion.div
+          ref={ref1}
+          initial={{ y: 100, opacity: 0 }}
+          animate={inView1 ? { y: 0, opacity: 1 } : {}}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="absolute top-[95px] left-[319px] w-[325px] h-[381px] overflow-hidden z-10"
+          onMouseEnter={handleMouseEnter1}
+          onMouseLeave={handleMouseLeave1}
+          onClick={handleClick1}
+        >
+          <div className="w-full h-full relative">
+            <img
+              src={images1[currentImage1]}
+              alt={`Frame ${currentImage1 + 1}`}
+              className="w-full h-full object-cover absolute top-0 left-0"
+              style={{ transition: "opacity 0.3s ease-in-out" }}
+            />
+          </div>
+        </motion.div>
+
+        {/* SECOND IMAGE DIV */}
+        <motion.div
+          ref={ref2}
+          initial={{ y: 100, opacity: 0 }}
+          animate={inView2 ? { y: 0, opacity: 1 } : {}}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          className="absolute top-[350px] left-[105px] w-[325px] h-[381px] overflow-hidden z-10"
+          onMouseEnter={handleMouseEnter2}
+          onMouseLeave={handleMouseLeave2}
+          onClick={handleClick2}
+        >
+          <div className="w-full h-full relative">
+            <img
+              src={images2[currentImage2]}
+              alt={`Frame ${currentImage2 + 1}`}
+              className="w-full h-full object-cover absolute top-0 left-0"
+              style={{ transition: "opacity 0.3s ease-in-out" }}
+            />
+          </div>
+        </motion.div>
       </div>
-    </motion.div>
 
-    {/* SECOND IMAGE DIV */}
-    <motion.div
-      ref={ref2}
-      initial={{ y: 100, opacity: 0 }}
-      animate={inView2 ? { y: 0, opacity: 1 } : {}}
-      transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-      className="absolute top-[350px] left-[105px] w-[325px] h-[381px] overflow-hidden z-10"
-      onMouseEnter={handleMouseEnter2}
-      onMouseLeave={handleMouseLeave2}
-    >
-      <div className="w-full h-full relative">
-        <motion.img
-          src={NewFrame2}
-          alt="New Frame 2"
-          className="w-full h-full object-cover absolute top-0 left-0"
-          animate={{
-            x: isHovering2 ? "-100%" : "0%",
-          }}
-          transition={{ duration: 0.5 }}
-        />
-        <motion.img
-          src={NewFrame6}
-          alt="New Frame 6"
-          className="w-full h-full object-cover absolute top-0 left-0"
-          initial={{ x: "100%" }}
-          animate={{
-            x: isHovering2 ? "0%" : "100%",
-          }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        />
-      </div>
-    </motion.div>
-  </div>
-
-  {/* Text container */}
-  <motion.div
-    initial={{ y: 50, opacity: 0 }}
-    animate={inView1 ? { y: 0, opacity: 1 } : {}}
-    transition={{ duration: 0.8, delay: 0.4 }}
-    className="absolute top-[158px] left-[752px] w-[488px] h-[152px] flex flex-col gap-[12px] opacity-100"
-  >
-    <div className="w-[262px] h-[22px]">
-      <p className="text-white font-[400] text-[18px] leading-[100%] poppins-font">
-        STACKLY AI
-      </p>
-    </div>
-    <div className="w-[488px] h-[118px]">
-      <p className="text-white font-[400] text-[52px] leading-[140%] lancelot-text -mt-[14px]">
-        Design Your Dream Space Effortlessly
-      </p>
-    </div>
-  </motion.div>
-
-  {/* Description box */}
-  <motion.div
-    initial={{ y: 50, opacity: 0 }}
-    animate={inView2 ? { y: 0, opacity: 1 } : {}}
-    transition={{ duration: 0.8, delay: 0.6 }}
-    className="w-[616px] h-[176px] absolute top-[440px] right-[40px] flex flex-col gap-[6px]"
-  >
-    <div className="w-full h-[45px]">
-      <p className="text-white text-[32px] font-[400] leading-[140%] poppins-font">
-        Minimal Style
-      </p>
-    </div>
-    <div className="w-[616px] h-[125px]">
-      <p className="text-white text-[18px] font-[400] leading-[140%] lora-text">
-        Step into a space where less truly becomes more. Our AI blends clean lines,
-        soft tones, and thoughtful spacing to create interiors that feel light, breathable,
-        and beautifully uncluttered. <br />
-        Designed to inspire calm, focus, and modern sophistication without lifting a finger.
-      </p>
-    </div>
-  </motion.div>
-
-  {/* Icons */}
-  <motion.img
-    initial={{ opacity: 0 }}
-    animate={inView1 ? { opacity: 1 } : {}}
-    transition={{ duration: 0.8, delay: 0.8 }}
-    src={Group}
-    alt="Group 28"
-    className="absolute w-[26.99px] h-[26.99px] top-[31px] left-[1300px] rotate-0 border-[1.9px] border-solid border-black"
-  />
-
-  <motion.img
-    initial={{ opacity: 0 }}
-    animate={inView2 ? { opacity: 1 } : {}}
-    transition={{ duration: 0.8, delay: 1.0 }}
-    src={Group}
-    alt="Group 28"
-    className="absolute w-[55.01px] h-[55.01px] top-[810px] left-[1297px] rotate-0 border-[1.9px] border-black"
-  />
-
-  {/* Explore more button */}
-  <motion.div
-    initial={{ y: 20, opacity: 0 }}
-    animate={inView2 ? { y: 0, opacity: 1 } : {}}
-    transition={{ duration: 0.8, delay: 1.2 }}
-  >
-    <Link to="/sign-in">
-      <div className="absolute w-[280px] h-[50px] top-[685px] left-[1041px] flex items-center px-[6px] group">
-        <div className="w-[217px] h-[34px] flex items-center justify-center">
-          <p className="text-white text-[24px] font-[400] leading-[140%] text-center font-[Lora] transition-all duration-300 group-hover:text-opacity-80">
-            Explore more
+      {/* Text container */}
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={inView1 ? { y: 0, opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: 0.4 }}
+        className="absolute top-[158px] left-[752px] w-[488px] h-[152px] flex flex-col gap-[12px] opacity-100"
+      >
+        <div className="w-[262px] h-[22px]">
+          <p className="text-white font-[400] text-[18px] leading-[100%] poppins-font">
+            STACKLY AI
           </p>
         </div>
-        <div className="w-[50px] h-[50px] ml-[-15px] rotate-[-180deg] rounded-[30px] bg-white/10 relative flex items-center justify-center transition-all duration-300 group-hover:bg-white/20">
-          <img
-            src={vector}
-            alt="icon"
-            className="w-[22.5px] h-[17.5px] rotate-[-180deg] transition-all duration-300 group-hover:opacity-80 group-hover:brightness-0 group-hover:invert"
-          />
+        <div className="w-[488px] h-[118px]">
+          <p className="text-white font-[400] text-[52px] leading-[140%] lancelot-text -mt-[14px]">
+            Design Your Dream Space Effortlessly
+          </p>
         </div>
-      </div>
-    </Link>
-  </motion.div>
-</section>
+      </motion.div>
 
+      {/* Description box */}
+      <motion.div
+        initial={{ y: 50, opacity: 0 }}
+        animate={inView2 ? { y: 0, opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="w-[616px] h-[176px] absolute top-[440px] right-[40px] flex flex-col gap-[6px]"
+      >
+        <div className="w-full h-[45px]">
+          <p className="text-white text-[32px] font-[400] leading-[140%] poppins-font">
+            Minimal Style
+          </p>
+        </div>
+        <div className="w-[616px] h-[125px]">
+          <p className="text-white text-[18px] font-[400] leading-[140%] lora-text">
+            Step into a space where less truly becomes more. Our AI blends clean lines,
+            soft tones, and thoughtful spacing to create interiors that feel light, breathable,
+            and beautifully uncluttered. <br />
+            Designed to inspire calm, focus, and modern sophistication without lifting a finger.
+          </p>
+        </div>
+      </motion.div>
 
+      {/* Icons */}
+      <motion.img
+        initial={{ opacity: 0 }}
+        animate={inView1 ? { opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: 0.8 }}
+        src={Group}
+        alt="Group 28"
+        className="absolute w-[26.99px] h-[26.99px] top-[31px] left-[1300px] rotate-0 border-[1.9px] border-solid border-black"
+      />
 
-{/* new figma setion3 */}
-<section className="w-full h-[150px] bg-black relative overflow-hidden">
-  <div className="absolute top-[60px] left-0 flex w-max h-[30px] animate-marquee-alt">
-    {[...Array(2)].map((_, j) =>
-      Array(20)
-        .fill(0)
-        .map((_, i) => (
-          <div
-            key={`${j}-${i}`}
-            className="w-[256px] h-[30px] flex items-center gap-[12px]"
-          >
-            {/* Star Icon */}
-            <div className="w-[30px] h-[30px] flex items-center justify-center">
-              <img
-                src={star}
-                alt="icon"
-                className="w-full h-full object-contain"
-              />
-            </div>
+      <motion.img
+        initial={{ opacity: 0 }}
+        animate={inView2 ? { opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: 1.0 }}
+        src={Group}
+        alt="Group 28"
+        className="absolute w-[55.01px] h-[55.01px] top-[810px] left-[1297px] rotate-0 border-[1.9px] border-black"
+      />
 
-            {/* Text */}
-            <div
-              className={`w-[214px] h-[25px] flex items-center px-2 border ${
-                i % 2 === 0
-                  ? "border-white/50 text-white"
-                  : "border-white text-white/50"
-              }`}
-            >
-              <p className="text-[16px] font-[400] leading-[140%] font-[Poppins] whitespace-nowrap overflow-hidden text-ellipsis">
-                Visuals to the Next Level
+      {/* Explore more button */}
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        animate={inView2 ? { y: 0, opacity: 1 } : {}}
+        transition={{ duration: 0.8, delay: 1.2 }}
+      >
+        <Link to="/sign-in">
+          <div className="absolute w-[280px] h-[50px] top-[685px] left-[1041px] flex items-center px-[6px] group">
+            <div className="w-[217px] h-[34px] flex items-center justify-center">
+              <p className="text-white text-[24px] font-[400] leading-[140%] text-center font-[Lora] transition-all duration-300 group-hover:text-opacity-80">
+                Explore more
               </p>
             </div>
+            <div className="w-[50px] h-[50px] ml-[-15px] rotate-[-180deg] rounded-[30px] bg-white/10 relative flex items-center justify-center transition-all duration-300 group-hover:bg-white/20">
+              <img
+                src={vector}
+                alt="icon"
+                className="w-[22.5px] h-[17.5px] rotate-[-180deg] transition-all duration-300 group-hover:opacity-80 group-hover:brightness-0 group-hover:invert"
+              />
+            </div>
           </div>
-        ))
-    )}
-  </div>
-
-  {/* Local animation keyframes */}
-  <style>
-    {`
-      @keyframes marquee-alt {
-        0% { transform: translateX(0%); }
-        100% { transform: translateX(-50%); }
-      }
-      .animate-marquee-alt {
-        animation: marquee-alt 25s linear infinite;
-      }
-    `}
-  </style>
-</section>
+        </Link>
+      </motion.div>
+    </section>
 
 
 

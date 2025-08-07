@@ -96,7 +96,14 @@ export default function FAQ({ faqs }) {
                   Have a
                 </div>
                 <div className="w-[32px] h-[32px]">
-                  <img src={star} alt="icon" className="w-full h-full object-contain" />
+                  <img
+                    src={star}
+                    alt="icon"
+                    className="w-full h-full object-contain"
+                    style={{
+                      animation: "spin 4s linear infinite",
+                    }}
+                  />
                 </div>
               </div>
               <div className="w-[758px] h-[54px] text-white text-[42px] leading-[100%] font-[500] lora-text">
@@ -120,7 +127,14 @@ export default function FAQ({ faqs }) {
                     {faq.question}
                   </div>
                   <div className="w-[34px] h-[34px]">
-                    <img src={star} alt="icon" className="w-full h-full object-contain" />
+                    <img
+                      src={star}
+                      alt="icon"
+                      className="w-full h-full object-contain"
+                      style={{
+                        animation: "spin 4s linear infinite",
+                      }}
+                    />
                   </div>
                 </div>
 
@@ -145,16 +159,32 @@ export default function FAQ({ faqs }) {
           </div>
         </div>
 
-        {/* Left Side Div (Empty for now) */}
-       <div className="w-[485px] h-[539px] rounded-[12px]">
-  <img
-    src={Faqimg}
-    alt="FAQ Illustration"
-    className="w-full h-full object-cover rounded-[12px]"
-  />
-</div>
+        {/* Left Side Div */}
+        <div className="w-[485px] h-[539px] rounded-[12px]">
+          <img
+            src={Faqimg}
+            alt="FAQ Illustration"
+            className="w-full h-full object-cover rounded-[12px]"
+          />
+        </div>
       </div>
+
+      {/* Inline CSS for the rotation animation */}
+      <style>
+        {`
+          @keyframes spin {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}
+      </style>
     </section>
+  );
+}
  
 
 
@@ -252,5 +282,4 @@ export default function FAQ({ faqs }) {
 //     </section>
 
 
-  );
-}
+ 
