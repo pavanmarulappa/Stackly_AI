@@ -327,7 +327,7 @@ import { useLocation, useNavigate, NavLink } from "react-router-dom";
 
 import logoImg from "../assets/Logo1.png";
 import { UserContext } from "../context/UserContext";
-import arrow from "../assets/home/Arrow.png"
+import arrow from "../assets/home/Arrow.png";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -345,7 +345,7 @@ export default function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // ✅ Route check
+  // ✅ Route check (case-insensitive)
   const hiddenPages = [
     "/sign-up",
     "/sign-in",
@@ -362,8 +362,8 @@ export default function Header() {
   // ✅ Optional: route endpoint check for JSX condition
   const endpoint = location.pathname.split("/").filter(Boolean).pop()?.toLowerCase();
 
-  // ✅ Hide header for small screens on specific pages
-  if (isSmallScreen && isHiddenPage) {
+  // ✅ Hide header on all screen sizes for specific pages
+  if (isHiddenPage) {
     return null;
   }
 

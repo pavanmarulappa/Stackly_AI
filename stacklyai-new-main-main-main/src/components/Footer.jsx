@@ -138,8 +138,8 @@ export default function Footer() {
 
   const hiddenRoutes = [
     "/sign-up",
-    "/Sign-in",
-    "/otp",
+    "/sign-in",
+    "/Otp",
     "/ForgetPg",
     "/SignupOtp",
     "/ResetPassword",
@@ -205,7 +205,6 @@ export default function Footer() {
           </h4>
 
           <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#FFFFFF] max-[440px]:hidden">
-
             <li>
               <a href="#">Home</a>
             </li>
@@ -223,14 +222,12 @@ export default function Footer() {
             </li>
           </ul>
         </div>
-
         <div>
           <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF] max-[440px]:hidden">
             Terms & Policy
           </h4>
 
           <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#FFFFFF] max-[440px]:hidden">
-
             <li>
               <a href="#">Terms of Services</a>
             </li>
@@ -242,7 +239,6 @@ export default function Footer() {
             </li>
           </ul>
         </div>
-
         {/* Desktop Version (Hidden on mobile) */}
         <div className="hidden max-[440px]:hidden">
           <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF]">Quick links</h4>
@@ -254,7 +250,6 @@ export default function Footer() {
             <li><a href="#">API</a></li>
           </ul>
         </div>
-
         <div className="hidden max-[440px]:hidden">
           <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF]">Terms & Policy</h4>
           <ul className="text-[16px] leading-[40px] spacing-[0.3px] text-[#FFFFFF]">
@@ -263,17 +258,14 @@ export default function Footer() {
             <li><a href="#">Cookie Settings</a></li>
           </ul>
         </div>
-
         {/* Mobile Version (Only visible on mobile <441px) */}
         <div className="hidden max-[440px]:flex max-[440px]:flex-row max-[440px]:justify-between max-[440px]:gap-[16px] max-[440px]:w-full max-[440px]:-mt-[48px]">
-
 
           {/* Quick Links Mobile */}
           <div className="flex flex-col gap-[8px]">
             <h4 className="text-[#007b82] text-[14px] font-semibold leading-[24px] tracking-[0.3px] font-['Inter']">
               Quick links
             </h4>
-
             <ul className="flex flex-col justify-between w-[106px] h-[133px] text-[14px] leading-[100%] tracking-[0.3px] text-[#2A2A2A] font-['Inter']">
               <li className="h-[17px]"><a href="#">Home</a></li>
               <li className="h-[17px]"><a href="#">Trends</a></li>
@@ -281,9 +273,7 @@ export default function Footer() {
               <li className="h-[17px]"><a href="#">Pricing</a></li>
               <li className="h-[17px]"><a href="#">API</a></li>
             </ul>
-
           </div>
-
           {/* Terms & Policy Mobile */}
           <div className="flex flex-col gap-[8px]">
             <h4 className="text-[#007b82] text-[14px] font-semibold leading-[24px] tracking-[0.3px] font-['Inter']">
@@ -295,14 +285,9 @@ export default function Footer() {
                 <li className="h-[17px]"><a href="#">Privacy and Cookie Policy</a></li>
                 <li className="h-[17px]"><a href="#">Cookie Settings</a></li>
               </ul>
-
             </ul>
-
           </div>
-
         </div>
-
-
         <div
           className="max-[440px]:flex max-[440px]:flex-col max-[440px]:w-[193px] max-[440px]:gap-[12px]"
         >
