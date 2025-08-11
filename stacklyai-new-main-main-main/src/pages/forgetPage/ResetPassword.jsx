@@ -762,9 +762,9 @@ export default function ResetPassword() {
     >
       <div className="relative w-[740px] h-[460px] flex items-center justify-center z-10">
         <div
-          className="relative z-10 w-full h-full rounded-[16px] px-6 py-8 flex flex-col items-center justify-center"
+          className="relative bg-[#00000066] z-10 w-full h-full rounded-[16px] px-6 py-8 flex flex-col items-center justify-center"
           style={{
-            background: "transparent",
+            
             borderTop: "2px solid",
             borderImageSlice: 1,
             borderImageSource: `
@@ -808,7 +808,7 @@ export default function ResetPassword() {
                 setError("");
               }}
               placeholder="Enter new password"
-              className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border border-[#ffffff3b] text-white placeholder-gray-400 text-sm"
+              className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border-[1px] border-solid border-[#FFFFFF33] text-white placeholder-gray-400 text-sm"
             />
 
             <label className="text-white text-[15px]">Confirm Password</label>
@@ -820,7 +820,7 @@ export default function ResetPassword() {
                 setError("");
               }}
               placeholder="Re-enter password"
-              className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border border-[#ffffff3b] text-white placeholder-gray-400 text-sm"
+              className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border-[1px] border-solid border-[#FFFFFF33] text-white placeholder-gray-400 text-sm"
             />
 
             {error && (

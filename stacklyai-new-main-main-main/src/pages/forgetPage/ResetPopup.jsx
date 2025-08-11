@@ -434,10 +434,10 @@ export default function HeroResetSuccess() {
       <div className="absolute w-[700px] h-[300px] bottom-[-100px] right-[-100px] bg-[#51218F] opacity-40 rounded-full blur-[150px] z-0"></div>
 
       {/* Card Wrapper */}
-      <div className="relative w-[740px] h-[250px] flex items-center justify-center z-10">
+      <div className="relative  w-[740px] h-[250px] flex items-center justify-center z-10">
         {/* Gradient Border Card */}
         <div
-          className="relative z-10 w-[740px] h-[332px] rounded-[16px] px-6 py-8 flex flex-col items-center justify-center text-center opacity-100"
+          className="relative bg-[#00000066] z-10 w-[740px] h-[332px] rounded-[16px] px-6 py-8 flex flex-col items-center justify-center text-center opacity-100"
           style={{
             borderTop: "2px solid",
             borderImageSlice: 1,

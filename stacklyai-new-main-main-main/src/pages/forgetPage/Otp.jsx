@@ -899,7 +899,7 @@ const VerifyOTP = () => {
     >
       <div
         className={`
-          relative w-[740px] h-[438px] rounded-[16px] border-2 
+          relative bg-[#00000066] w-[740px] h-[438px] rounded-[16px] border-2 
           pt-[32px] pr-[24px] pb-[32px] pl-[24px] flex flex-col items-center gap-[24px]
           backdrop-blur-md 
           shadow-[0_0_0_1px_rgba(138,56,245,0.4),_0_0_20px_rgba(138,56,245,0.15),_inset_0_0_10px_rgba(138,56,245,0.15)]
@@ -923,18 +923,18 @@ const VerifyOTP = () => {
         </div>
 
         {/* Title */}
-        <h2 className="text-white text-[28px] font-normal leading-[100%] tracking-normal text-center font-[Poppins]">
+        <h2 className="text-white text-[28px] mt-14 font-normal leading-[100%] tracking-normal text-center font-[Poppins]">
           Enter OTP
         </h2>
 
         {/* Subtext */}
-        <p className="text-[#F7F7FF80] text-[16px] font-normal leading-[100%] tracking-normal text-center font-[Poppins] max-w-[414px] opacity-100 mt-3">
+        <p className="text-[#F7F7FF80] text-[16px] font-normal leading-[150%] tracking-normal text-center font-[Poppins] max-w-[414px] opacity-100 mt-0">
           We’ve sent a 6-digit OTP to your email. Please enter it below to
           continue.
         </p>
 
         {/* OTP Inputs */}
-        <div className="flex justify-center gap-4 mt-8">
+        <div className="w-[554px] h-[45px] flex justify-center gap-11 mt-0">
           {otp.map((value, index) => (
             <input
               key={index}

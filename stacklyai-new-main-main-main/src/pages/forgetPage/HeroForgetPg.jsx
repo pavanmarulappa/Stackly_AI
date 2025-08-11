@@ -530,9 +530,9 @@ export default function HeroForgetPg() {
         {/* Gradient Border Wrapper */}
         {/* Card Content */}
         <div
-          className="relative z-10 w-full h-full rounded-[16px] px-6 py-8 flex flex-col items-center justify-center"
+          className="relative bg-[#00000066] z-10 w-full h-full rounded-[16px] px-6 py-8 flex flex-col items-center justify-center"
           style={{
-            background: "transparent",
+           
             borderTop: "2px solid",
             borderImageSlice: 1,
             borderImageSource: `
@@ -569,7 +569,7 @@ export default function HeroForgetPg() {
           </p>
 
           {/* Form */}
-          <div className="flex flex-col items-start gap-3 mt-6">
+          <div className="flex flex-col items-start gap-3 mt-6 ">
             <label className="text-white text-[15px]">
               Enter your email ID
             </label>
@@ -582,7 +582,7 @@ export default function HeroForgetPg() {
                 setEmail(e.target.value);
                 setError("");
               }}
-              className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border border-[#ffffff3b] text-white placeholder-gray-400 text-sm"
+              className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border-[1px] border-solid border-[#FFFFFF33] text-white placeholder-gray-400 text-sm"
             />
 
             {error && (

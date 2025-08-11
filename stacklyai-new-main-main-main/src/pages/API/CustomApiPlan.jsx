@@ -188,7 +188,7 @@ const CustomAPIPlan = () => {
   return (
    <div className="w-full h-[631px] bg-black flex flex-col justify-center items-center  px-[80px] py-[80px]">
 <div
-  className="absolute top-[1520px] left-1/2 transform -translate-x-1/2 w-full max-w-[1230px] h-auto opacity-100 flex flex-col gap-[38px] px-4"
+  className="absolute top-[1440px] left-1/2 transform -translate-x-1/2 w-full max-w-[1230px] h-auto opacity-100 flex flex-col gap-[38px] px-4"
 >
   {/* Top Heading */}
   <div className="w-full text-center text-white">
@@ -294,7 +294,7 @@ const CustomAPIPlan = () => {
 
 {/* SEC2 DIV */}
 
-<div className="w-full px-4 mt-[245px] flex justify-center">
+<div className="w-full px-4 mt-[295px] flex justify-center">
   <div className="w-full max-w-[1280px] h-[257px] flex flex-col items-center justify-center gap-[32px] text-center text-white">
 
     {/* Top Title */}
