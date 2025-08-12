@@ -976,7 +976,7 @@ const faqs = [
   },
   {
     question: "Is customer support available?",
-    answer: "Yes, 24/7 customer support is available via chat and email.",
+    answer: "Yes, 24/7 customer support is available via chat and email.Yes, 24/7 customer support is available via chat and email.Yes, 24/7 customer support is available via chat and email.Yes, 24/7 customer support is available via chat and email.Yes, 24/7 customer support is available via chat and email.Yes, 24/7 customer support is available via chat and email.Yes, 24/7 customer support is available via chat and email.",
     related: [
       {
         question: "Is live chat support available?",

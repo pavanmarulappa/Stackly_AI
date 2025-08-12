@@ -83,14 +83,14 @@ export default function FAQ({ faqs }) {
   };
 
   return (
-    <section className="w-full h-[707px] pt-[60px] pr-[80px] pb-[60px] pl-[80px] bg-black">
-      <div className="w-full h-[587px] flex gap-[52px]">
+    <section className="w-full  pt-[60px] pr-[80px] pb-[60px] pl-[80px] bg-black">
+      <div className="w-full  flex gap-[52px]">
         {/* Right Side Div */}
-        <div className="w-[758px] h-[587px] flex flex-col gap-[52px]">
+        <div className="w-[758px]  flex flex-col gap-[52px]">
           {/* Top Section */}
           <div className="w-[758px] h-[176px] flex flex-col gap-[24px]">
             {/* Heading */}
-            <div className="w-[758px] h-[108px]">
+            <div className="w-[758px] ">
               <div className="w-[758px] h-[54px] flex items-center gap-[12px]">
                 <div className="w-[131px] h-[54px] text-white text-[42px] leading-[100%] font-[500] lora-text">
                   Have a
@@ -140,7 +140,7 @@ export default function FAQ({ faqs }) {
 
                 {/* Conditional Answer */}
                 {activeIndex === index && (
-                  <div className="text-white text-[16px] mt-[10px] leading-[140%] poppins-font w-[758px]">
+                  <div className="text-white text-[16px] ml-12 mt-[10px] leading-[160%] poppins-font w-[680px] h-ful ">
                     {faq.answer}
                   </div>
                 )}

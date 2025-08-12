@@ -22,12 +22,28 @@ export default function HeroProducts() {
   const marqueeRef = useRef(null);
 
   const images = [drag1, drag2, drag3, drag4, drag5, drag6, drag7, drag8, drag9, drag10];
+  const [hoverTimeout, setHoverTimeout] = useState(null);
 
   // Handle image click to open pop-up and pause marquee
-  const handleImageClick = (index) => {
-    setSelectedImageIndex(index);
-    setIsPopUpOpen(true);
-    setIsMarqueePaused(true);
+  //   const handleImageHover = (index) => {
+  //   setSelectedImageIndex(index);
+  //   setIsPopUpOpen(true);
+  //   setIsMarqueePaused(true);
+  // };
+  let hoverTimer = null;
+
+  const handleMouseEnter = (index) => {
+    hoverTimer = setTimeout(() => {
+      setSelectedImageIndex(index);
+      setIsPopUpOpen(true);
+      setIsMarqueePaused(true);
+    }, 800); // 0.8 second hold
+  };
+  const handleMouseLeave = () => {
+    if (hoverTimer) {
+      clearTimeout(hoverTimer);
+      hoverTimer = null;
+    }
   };
 
   // Close pop-up and resume marquee
@@ -76,7 +92,6 @@ export default function HeroProducts() {
         alt="Background"
         className="absolute inset-0 w-full h-full object-cover z-0"
       />
-
       {/* Marquee Section */}
       <div className="h-[46px] marquee-container max-[440px]:w-[440px] max-[440px]:h-[46px]">
         <div className="marquee-content">
@@ -92,7 +107,6 @@ export default function HeroProducts() {
           </span>
         </div>
       </div>
-
       {/* Main Centered Content */}
       <div className="absolute top-[203px] left-1/2 -translate-x-1/2 w-full max-w-[1240px] px-4 sm:px-6 lg:px-8 flex flex-col gap-[64px]">
         {/* Hero Section */}
@@ -102,20 +116,17 @@ export default function HeroProducts() {
               STACKLY AI
             </p>
           </div>
-
           <div>
             <h1 className="lora-text text-[32px] sm:text-[42px] md:text-[52px] leading-[110%] text-transparent bg-clip-text bg-gradient-to-b from-white to-[#CDA8FC]">
               Smarter Design for Every Space You Live and Love
             </h1>
           </div>
-
           <div>
             <p className="font-[Inter] font-semibold text-[14px] sm:text-[16px] md:text-[18px] leading-[140%]">
               Experience intelligent design solutions crafted to enhance
               interiors, exteriors and outdoor spaces with seamless AI precision
             </p>
           </div>
-
           <Link to="/sign-in">
             <div className="w-[158px] h-[44px] px-[30px] py-[10px] gap-[10px] flex items-center justify-center rounded-[30px] border border-[#C22CA299] bg-[linear-gradient(95.92deg,rgba(138,56,245,0.5)_15.32%,rgba(194,44,162,0.5)_99.87%)] cursor-pointer">
               <div className="w-[64px] h-[19px] text-white text-[16px] leading-[100%] font-medium font-[Inter]">
@@ -127,7 +138,6 @@ export default function HeroProducts() {
             </div>
           </Link>
         </div>
-
         {/* Latest Design Trends Section */}
         <div className="w-full flex flex-col items-center gap-[48px]">
           {/* Title */}
@@ -139,7 +149,6 @@ export default function HeroProducts() {
               Curated ideas for modern living
             </p>
           </div>
-
           {/* Image Marquee Section */}
           <div className="relative w-screen max-w-none h-[449.14px] overflow-hidden -mx-[calc((100vw-100%)/2)]">
             {/* Marquee Track */}
@@ -155,7 +164,8 @@ export default function HeroProducts() {
                     src={drag1}
                     alt="Image 1"
                     className="absolute top-[-68px] w-full h-[383px] object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(0)}
+                    onMouseEnter={() => handleMouseEnter(0)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
                 <div className="w-full h-[192.16px] mt-[6px] overflow-hidden group cursor-pointer">
@@ -164,11 +174,11 @@ export default function HeroProducts() {
                     alt="Image 2"
                     className="w-full h-full object-cover border border-gray-300 transition-transform duration-500 group-hover:scale-110"
                     style={{ borderWidth: "0.58px" }}
-                    onClick={() => handleImageClick(1)}
+                    onMouseEnter={() => handleMouseEnter(1)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
               </div>
-
               {/* Second Column */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
                 <div className="flex gap-[6px] w-full h-[192.16px] mb-[6px]">
@@ -180,7 +190,8 @@ export default function HeroProducts() {
                       src={drag3}
                       alt="Image 3"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onClick={() => handleImageClick(2)}
+                      onMouseEnter={() => handleMouseEnter(2)}
+                      onMouseLeave={handleMouseLeave}
                     />
                   </div>
                   <div
@@ -191,7 +202,8 @@ export default function HeroProducts() {
                       src={drag4}
                       alt="Image 4"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onClick={() => handleImageClick(3)}
+                      onMouseEnter={() => handleMouseEnter(3)}
+                      onMouseLeave={handleMouseLeave}
                     />
                   </div>
                 </div>
@@ -203,11 +215,11 @@ export default function HeroProducts() {
                     src={drag5}
                     alt="Image 5"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(4)}
+                    onMouseEnter={() => handleMouseEnter(4)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
               </div>
-
               {/* Third Column */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
                 <div
@@ -218,7 +230,8 @@ export default function HeroProducts() {
                     src={drag6}
                     alt="Image 6"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(5)}
+                    onMouseEnter={() => handleMouseEnter(5)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
                 <div className="flex gap-[6px] mt-[6px]">
@@ -230,7 +243,8 @@ export default function HeroProducts() {
                       src={drag7}
                       alt="Image 7"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onClick={() => handleImageClick(6)}
+                      onMouseEnter={() => handleMouseEnter(6)}
+                      onMouseLeave={handleMouseLeave}
                     />
                   </div>
                   <div
@@ -241,12 +255,12 @@ export default function HeroProducts() {
                       src={drag8}
                       alt="Image 8"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onClick={() => handleImageClick(7)}
+                      onMouseEnter={() => handleMouseEnter(7)}
+                      onMouseLeave={handleMouseLeave}
                     />
                   </div>
                 </div>
               </div>
-
               {/* Fourth Column */}
               <div className="inline-block h-full w-[573px] mr-[6px]">
                 <div className="w-full h-[192.16px] overflow-hidden group cursor-pointer">
@@ -254,7 +268,8 @@ export default function HeroProducts() {
                     src={drag9}
                     alt="Image 9"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(8)}
+                    onMouseEnter={() => handleMouseEnter(8)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
                 <div className="w-full h-[250.98px] border-[0.58px] mt-[6px] border-gray-300 overflow-hidden group cursor-pointer">
@@ -262,11 +277,11 @@ export default function HeroProducts() {
                     src={drag10}
                     alt="Image 10"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(9)}
+                    onMouseEnter={() => handleMouseEnter(9)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
               </div>
-
               {/* Duplicate content for seamless looping */}
               <div className="inline-block h-full w-[286.5px] mr-[6px]">
                 <div className="relative w-full h-[250.98px] border-[0.58px] border-gray-300 overflow-hidden group cursor-pointer">
@@ -274,7 +289,8 @@ export default function HeroProducts() {
                     src={drag1}
                     alt="Image 1"
                     className="absolute top-[-68px] w-full h-[383px] object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(0)}
+                    onMouseEnter={() => handleMouseEnter(0)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
                 <div className="w-full h-[192.16px] mt-[6px] overflow-hidden group cursor-pointer">
@@ -283,11 +299,11 @@ export default function HeroProducts() {
                     alt="Image 2"
                     className="w-full h-full object-cover border border-gray-300 transition-transform duration-500 group-hover:scale-110"
                     style={{ borderWidth: "0.58px" }}
-                    onClick={() => handleImageClick(1)}
+                    onMouseEnter={() => handleMouseEnter(1)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
               </div>
-
               <div className="inline-block h-full w-[573px] mr-[6px]">
                 <div className="flex gap-[6px] w-full h-[192.16px] mb-[6px]">
                   <div
@@ -298,7 +314,8 @@ export default function HeroProducts() {
                       src={drag3}
                       alt="Image 3"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onClick={() => handleImageClick(2)}
+                      onMouseEnter={() => handleMouseEnter(2)}
+                      onMouseLeave={handleMouseLeave}
                     />
                   </div>
                   <div
@@ -309,7 +326,8 @@ export default function HeroProducts() {
                       src={drag4}
                       alt="Image 4"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onClick={() => handleImageClick(3)}
+                      onMouseEnter={() => handleMouseEnter(3)}
+                      onMouseLeave={handleMouseLeave}
                     />
                   </div>
                 </div>
@@ -321,11 +339,11 @@ export default function HeroProducts() {
                     src={drag5}
                     alt="Image 5"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(4)}
+                    onMouseEnter={() => handleMouseEnter(4)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
               </div>
-
               <div className="inline-block h-full w-[573px] mr-[6px]">
                 <div
                   className="w-full h-[250.98px] border border-gray-300 overflow-hidden group cursor-pointer"
@@ -335,7 +353,8 @@ export default function HeroProducts() {
                     src={drag6}
                     alt="Image 6"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(5)}
+                    onMouseEnter={() => handleMouseEnter(5)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
                 <div className="flex gap-[6px] mt-[6px]">
@@ -347,7 +366,8 @@ export default function HeroProducts() {
                       src={drag7}
                       alt="Image 7"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onClick={() => handleImageClick(6)}
+                      onMouseEnter={() => handleMouseEnter(6)}
+                      onMouseLeave={handleMouseLeave}
                     />
                   </div>
                   <div
@@ -358,19 +378,20 @@ export default function HeroProducts() {
                       src={drag8}
                       alt="Image 8"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      onClick={() => handleImageClick(7)}
+                      onMouseEnter={() => handleMouseEnter(7)}
+                      onMouseLeave={handleMouseLeave}
                     />
                   </div>
                 </div>
               </div>
-
               <div className="inline-block h-full w-[573px] mr-[6px]">
                 <div className="w-full h-[192.16px] overflow-hidden group cursor-pointer">
                   <img
                     src={drag9}
                     alt="Image 9"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(8)}
+                    onMouseEnter={() => handleMouseEnter(8)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
                 <div className="w-full h-[250.98px] border-[0.58px] mt-[6px] border-gray-300 overflow-hidden group cursor-pointer">
@@ -378,7 +399,8 @@ export default function HeroProducts() {
                     src={drag10}
                     alt="Image 10"
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    onClick={() => handleImageClick(9)}
+                    onMouseEnter={() => handleMouseEnter(9)}
+                    onMouseLeave={handleMouseLeave}
                   />
                 </div>
               </div>
@@ -386,7 +408,6 @@ export default function HeroProducts() {
           </div>
         </div>
       </div>
-
       {/* Pop-up Modal */}
       <AnimatePresence>
         {isPopUpOpen && (
@@ -398,42 +419,43 @@ export default function HeroProducts() {
             onClick={handleClosePopUp}
           >
             <motion.div
-              className="relative bg-white rounded-lg overflow-hidden max-w-[90vw] max-h-[90vh]"
+              className="relative rounded-2xl overflow-hidden max-w-[55vw] max-h-[65vh]"
               variants={popUpVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
               onClick={(e) => e.stopPropagation()}
+              onMouseLeave={handleClosePopUp}
             >
-              
-              <div className="relative w-[600px] h-[400px] flex items-center justify-center">
-                <AnimatePresence mode="wait">
-                  <motion.img
-                    key={selectedImageIndex}
-                    src={images[selectedImageIndex]}
-                    alt={`Image ${selectedImageIndex + 1}`}
-                    className="w-full h-full object-contain"
-                    variants={imageVariants}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                  />
-                </AnimatePresence>
-                {/* <button
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={selectedImageIndex}
+                  src={images[selectedImageIndex]}
+                  alt={`Image ${selectedImageIndex + 1}`}
+                  className="w-[1025px] h-[441px] object-cover" // fills popup completely
+                  variants={imageVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                />
+                <button
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:scale-125 transition-transform duration-200 drop-shadow-lg"
                   onClick={handlePrevImage}
                 >
-                  ←
+                  ‹
                 </button>
+
                 <button
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:scale-125 transition-transform duration-200 drop-shadow-lg"
                   onClick={handleNextImage}
                 >
-                  →
-                </button> */}
-              </div>
+                  ›
+                </button>
+              </AnimatePresence>
             </motion.div>
+
           </motion.div>
+
         )}
       </AnimatePresence>
 

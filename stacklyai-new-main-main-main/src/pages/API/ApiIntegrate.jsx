@@ -35,7 +35,7 @@ const StacklyAPIIntegration = () => {
   return (
   <div
   className="relative w-full
-             min-[441px]:max-[768px]:h-[684px] mt-18"
+             min-[441px]:max-[768px]:h-[684px] mt- [-28] "
 >
 
 
@@ -43,7 +43,7 @@ const StacklyAPIIntegration = () => {
       {typeof window !== 'undefined' && window.innerWidth <= 440 && (
        <div
   className="w-[120px] h-[120px] rounded-full absolute top-0 left-1/2 translate-x-[-50%] blur-[80px] z-0
-             min-[441px]:max-[768px]:h-[684px]"
+             min-[441px]:max-[768px]:h-[684px] bg-black"
   
 />
 
@@ -165,44 +165,40 @@ const StacklyAPIIntegration = () => {
   />
 
 {/* 🔵 Glowing Div 1 – Top Right (moves Left to Right) */}
-{/* 🔴 Glowing Div 1 – Top Right */}
 <motion.div
-  className="absolute w-[134px] h-[104px] rounded-full pointer-events-none"
+  className="absolute w-[134px] h-[134px] rounded-full pointer-events-none"
   style={{
-    top: '0px',
-    right: '0px',
-    background: 'rgba(194, 44, 162, 0.9)', // alpha increased from 0.5 → 0.8
+    top: '0px',                 
+    right: '0px',                
+    background: 'rgba(194, 44, 162, 0.5)',
     filter: 'blur(100px)',
     zIndex: 0,
     willChange: 'transform',
   }}
   animate={{
-    x: hoveredIndex === index ? -20 : 0,
+    x: hoveredIndex === index ? -20 : 0,   // Move left on hover
     opacity: hoveredIndex === index ? 1 : 0.8,
     transition: { duration: 0.5 },
   }}
 />
 
-{/* 🔵 Glowing Div 2 – Bottom Left */}
+{/* 🔵 Glowing Div 2 – Bottom Left (moves Right to Left) */}
 <motion.div
-  className="absolute w-[134px] h-[104px] rounded-full pointer-events-none"
+  className="absolute w-[134px] h-[134px] rounded-full pointer-events-none"
   style={{
-    bottom: '0px',
-    left: '0px',
-    background: 'rgba(194, 44, 162, 0.9)', // changed from #C22CA24D to rgba for stronger glow
+    bottom: '0px',              
+    left: '0px',                 
+    background: '#C22CA24D',
     filter: 'blur(100px)',
     zIndex: 0,
     willChange: 'transform',
   }}
   animate={{
-    x: hoveredIndex === index ? 20 : 0,
+    x: hoveredIndex === index ? 20 : 0,   // Move right on hover
     opacity: hoveredIndex === index ? 1 : 0.8,
     transition: { duration: 0.5 },
   }}
 />
-
-
-
 
       <motion.h3
         className="w-full text-[28px] sm:text-[28px] font-bold text-[#2a2a2a] leading-tight
@@ -213,7 +209,7 @@ const StacklyAPIIntegration = () => {
           letterSpacing: "0%",
         }}
         animate={{
-          color: hoveredIndex === index ? '#00B0BA' : '#FFFFFF',
+          color: hoveredIndex === index ? '#8A38F5' : '#FFFFFF',
           transition: { duration: 0.2 },
         }}
       >

@@ -124,6 +124,7 @@
 //   );
 // }
 import React from "react";
+import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import Banner1 from "../../assets/pricing-pg/GroupCollage.png";
 import Banner2 from "../../assets/pricing-pg/GroupCollage.png";
@@ -155,7 +156,32 @@ export default function HeroPricing() {
     "24/7 Support Assistance",
     "Cancel Anytime",
   ];
+const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
+  // Generate months for the current year automatically
+  const months = monthNames.map((month) => `${month} ${currentYear}`);
+
+  // Default: Current month/year
+  const defaultMonth = `${monthNames[currentDate.getMonth()]} ${currentYear}`;
+  const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
+  const [isOpen, setIsOpen] = useState(false);
+
+  
   return (
     <div>
       {/* section-1 */}
@@ -201,12 +227,13 @@ export default function HeroPricing() {
   {/* Right Child */}
   <div className="w-[708px] h-[136px] gap-[20px] opacity-100 flex flex-col justify-center text-white">
   {/* Top child: paragraph */}
-  <p className="w-[708px] h-[72px] font-[Inter] font-normal text-[20px] leading-[100%] text-white opacity-100">
+  <p className="w-[708px] h-[72px] font-[Inter] font-normal text-[20px] leading-[140%] text-white opacity-100">
     Trusted by thousands of designers, homeowners, and teams worldwide. Explore real-time usage stats and watch our community transform spaces every day.
   </p>
 
   {/* Bottom child: Button */}
   <div className="w-[158px] h-[44px]">
+    
   <div
     className="w-[158px] h-[44px] rounded-[30px] gap-[10px] px-[30px] py-[10px] flex items-center justify-center"
     style={{
@@ -214,17 +241,24 @@ export default function HeroPricing() {
       border: '1px solid #C22CA299',
     }}
   >
-    {/* Text */}
-    <span className="text-white font-inter font-medium text-[16px] leading-[100%]">
-      Try Now
-    </span>
+    <Link
+  to="/sign-in"
+  className="flex items-center gap-2" // flex row with space between
+>
+  {/* Text */}
+  <span className="text-white font-inter font-medium text-[16px] leading-[100%]">
+    Try Now
+  </span>
 
-    {/* Icon */}
-    <div className="w-[24px] h-[24px]">
-      <img src={arrow} alt="arrow" className="w-full h-full object-contain" />
-    </div>
+  {/* Icon */}
+  <div className="w-[24px] h-[24px]">
+    <img src={arrow} alt="arrow" className="w-full h-full object-contain" />
   </div>
+</Link>
+  </div>
+  
 </div>
+
 
 </div>
 
@@ -233,144 +267,152 @@ export default function HeroPricing() {
  <CreditStats />
 
  {/* GRAPH JSX */}
-<div
-  className="w-full h-[816px] gap-[32px] opacity-100 relative top-[1200px]"
->
-  {/* text div */}
-  <div className="w-[666px] h-[138px] flex flex-col gap-[18px] text-white mx-auto">
-    {/* Top Child - Heading */}
-    <div className="w-full h-[66px]">
-      <h2 className="text-[52px] font-semibold leading-[100%] font-[Lora] text-center">
-        Growing Bigger, Every Day
-      </h2>
-    </div>
-
-    {/* Bottom Child - Subheading */}
-    <div className="w-full h-[54px]">
-      <p className="text-[18px] font-normal leading-[100%] text-center font-[Poppins]">
-        Live graph displaying your credit activity over time, with labeled points such as “Yesterday,” “Today,” and others for easy tracking.
-      </p>
-    </div>
-  </div>
-{/* graph div */}
-<div className="w-full h-auto flex flex-col items-center gap-[8px]">
-
-  {/* Top Child Box */}
-  <div className="w-[1280px] h-[612px] rounded-[20px] border border-[#8A38F599]">
-    <div className="w-full h-full rounded-[20px] bg-[#8A38F51A] shadow-[0px_0px_6px_0px_#00000040] pt-[44px]">
-      {/* TOP BAR HEAD */}
-      <div className="w-[1139px] h-[63px] mx-auto flex justify-between items-center">
-        {/* Left Child */}
-        <div className="w-[372.6px] h-[63px] flex flex-col gap-[12px] items-start justify-center">
-          {/* Top Text Div */}
-          <div className="h-[27px]">
-            <p className="text-white text-[16px] font-medium leading-[100%] font-[Poppins]">
-              Current Date : 26-03-2025
-            </p>
-          </div>
-
-          {/* Bottom Div */}
-          <div className="h-[24px] flex gap-[12px] items-center">
-            {/* Left Child */}
-            <div className="w-[125.3px] h-[24px] flex items-center gap-[4px]">
-              {/* Left Icon (dot) */}
-              <div className="w-[13.3px] h-[13.3px] bg-white rounded-full"></div>
-
-              {/* Right Text */}
-              <div className="w-[108px] h-[24px] flex items-center justify-center">
-                <span className="text-white text-[16px] font-normal leading-[23.27px] font-[Poppins]">
-                  Designs Used
-                </span>
-              </div>
+{/* GRAPH JSX */}
+        <div className="w-full h-[816px] gap-[32px] opacity-100 relative top-[1200px]">
+          {/* Heading */}
+          <div className="w-[666px] h-[138px] flex flex-col gap-[18px] text-white mx-auto">
+            <div className="w-full h-[66px]">
+              <h2 className="text-[52px] font-semibold leading-[100%] font-[Lora] text-center">
+                Growing Bigger, Every Day
+              </h2>
             </div>
-
-            {/* Right Child */}
-            <div className="w-[253.3px] h-[24px] flex items-center gap-[4px]">
-              {/* Gradient Dot */}
-              <div
-                className="w-[13.3px] h-[13.3px] rounded-full"
-                style={{
-                  background: 'linear-gradient(180deg, #8A38F5 0%, #51218F 100%)',
-                }}
-              ></div>
-
-              {/* Right Text */}
-              <div className="w-[236px] h-[24px] flex items-center justify-center">
-                <span className="text-white text-[16px] font-normal leading-[23.27px] font-[Poppins]">
-                  Credits consumed in January
-                </span>
-              </div>
+            <div className="w-full h-auto mb-[32px]">
+              <p className="text-[18px] font-normal leading-[150%] text-center font-[Poppins]">
+                Live graph displaying your credit activity over time, with
+                labeled points such as “Yesterday,” “Today,” and others for easy
+                tracking.
+              </p>
             </div>
           </div>
-        </div>
 
-        {/* Right Child (buttons/icons if any) */}
-        <div className="w-[254px] h-[44px] flex gap-[18px] items-center">
-  {/* Left Div (Gradient Button) */}
-  <div
-    className="w-[200px] h-[44px] flex items-center justify-center gap-[10px] rounded-[30px] border border-[#C22CA299] px-[30px] py-[10px]"
-    style={{
-      background: 'linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)',
-    }}
-  >
-    {/* Text */}
-    <div className="flex items-center gap-[8px]">
-  {/* Text */}
-  <span className="text-white text-[16px] font-medium font-[Inter] leading-[100%]">
-    January 2025
-  </span>
+          {/* Graph Container */}
+          <div className="w-full h-auto flex flex-col items-center gap-[8px]">
+            <div className="w-[1280px] h-[612px] rounded-[20px] border border-[#8A38F599]">
+              <div className="w-full h-full rounded-[20px] bg-[#8A38F51A] shadow-[0px_0px_6px_0px_#00000040] pt-[44px]">
+                <div className="w-[1139px] h-[63px] mx-auto flex justify-between items-center">
+                  {/* Left Info */}
+                  <div className="w-[372.6px] h-[63px] flex flex-col gap-[12px] items-start justify-center">
+                    <div className="h-[27px]">
+                      <p className="text-white text-[16px] font-medium leading-[100%] font-[Poppins]">
+                        Current Date : {currentDate.toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div className="h-[24px] flex gap-[12px] items-center">
+                      <div className="w-[125.3px] h-[24px] flex items-center gap-[4px]">
+                        <div className="w-[13.3px] h-[13.3px] bg-white rounded-full"></div>
+                        <div className="w-[108px] h-[24px] flex items-center justify-center">
+                          <span className="text-white text-[16px] font-normal font-[Poppins]">
+                            Designs Used
+                          </span>
+                        </div>
+                      </div>
+                      <div className="w-[253.3px] h-[24px] flex items-center gap-[4px]">
+                        <div
+                          className="w-[13.3px] h-[13.3px] rounded-full"
+                          style={{
+                            background:
+                              "linear-gradient(180deg, #8A38F5 0%, #51218F 100%)",
+                          }}
+                        ></div>
+                        {/* Right Child */}
+                        <div className="flex items-center gap-[4px]">
+                          {/* Gradient Dot */}
+                          <div
+                            className="w-[13.3px] h-[13.3px] rounded-full flex-shrink-0"
+                            style={{
+                              background:
+                                "linear-gradient(180deg, #8A38F5 0%, #51218F 100%)",
+                            }}
+                          ></div>
 
-  {/* Icon */}
-  <div className="w-[24px] h-[24px] flex items-center justify-center">
-    <img
-      src={scrol}
-      alt="Month Icon"
-      className="w-[18px] h-[9px] top-[8px]"
-    />
-  </div>
-</div>
+                          {/* Text beside dot */}
+                          <span className="text-white text-[16px] font-normal font-[Poppins] whitespace-nowrap">
+                            Credits consumed in {selectedMonth}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-  </div>
+                  {/* Right - Month Selector */}
+                  <div className="flex items-center gap-[18px]">
+                    {/* Month Selector */}
+                    <div className="relative">
+                      <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="w-[200px] h-[44px] flex items-center justify-center gap-[10px] rounded-[30px] border border-[#C22CA299] px-[30px] py-[10px] text-white text-[16px] font-medium font-[Inter]"
+                        style={{
+                          background:
+                            "linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)",
+                        }}
+                      >
+                        {selectedMonth}
+                        <svg
+                          className={`w-[18px] h-[18px] transition-transform duration-300 ${
+                            isOpen ? "rotate-180" : "rotate-0"
+                          }`}
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </button>
 
-  {/* Right Div (Menu Icon Circle) */}
-  <div className="w-[36px] h-[36px] bg-transparent flex items-center justify-center">
-    {/* Menu Icon (3 lines) */}
-    <div className="w-[27px] h-[18px] flex flex-col justify-between">
-      <span className="block h-[2px] w-full bg-white rounded"></span>
-      <span className="block h-[2px] w-full bg-white rounded"></span>
-      <span className="block h-[2px] w-full bg-white rounded"></span>
-    </div>
-  </div>
-</div>
+                      {isOpen && (
+                        <div className="absolute mt-2 w-[200px] bg-[#C22CA2] text-white rounded-lg border border-gray-600 shadow-lg z-50"
+                        >
+                          {months.map((month) => (
+                            <div
+                              key={month}
+                              onClick={() => {
+                                setSelectedMonth(month);
+                                setIsOpen(false);
+                              }}
+                              className="px-4 py-2 hover:bg-[#8A38F5] cursor-pointer"
+                            >
+                              {month}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
-
-      </div>
-    </div>
-  </div>
-<div className="w-full relative flex justify-center -top-[464px]">
-  <div className="w-[1044px] h-[350px]">
-    <img
-      src={GraphImage}
-      alt="Graph"
-      className="w-full h-full object-contain"
-    />
-  </div>
-</div>
-
-
+                    {/* Menu Icon Circle */}
+                    <div className="w-[36px] h-[36px] rounded-full bg-transparent flex items-center justify-center border border-white cursor-pointer">
+                      <div className="w-[27px] h-[18px] flex flex-col justify-between">
+                        <span className="block h-[2px] w-full bg-white rounded"></span>
+                        <span className="block h-[2px] w-full bg-white rounded"></span>
+                        <span className="block h-[2px] w-full bg-white rounded"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full relative flex justify-center -top-[464px]">
+              <div className="w-[1044px] h-[350px]">
+                <img
+                  src={GraphImage}
+                  alt="Graph"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+            </div>
   {/* Bottom Text */}
  <div className="w-[1280px] h-[26px] text-center text-white relative -top-[350px]">
   <p className="font-[Inter] text-[18px] font-normal leading-[100%]">
     *These numbers reflect the real impact of Stackly.Ai developers, teams, and creators building smarter every day.
   </p>
 </div>
-
+</div>
 </div>
 
-</div>
-
-
-    
 <div className="mt-[1210px]"> {/* You can adjust the 200px value as needed */}
   <UiPlans />
 </div>
@@ -381,7 +423,7 @@ export default function HeroPricing() {
 
      <div
   className="
-    h-[497px] text-white py-12 px-4 md:px-16 text-center  
+    h-[478px] text-white py-12 px-4 md:px-16 text-center  
 
     max-[440px]:bg-transparent max-[440px]:flex max-[440px]:flex-col 
     max-[440px]:w-[440px] max-[440px]:h-[486px] 
@@ -440,7 +482,7 @@ export default function HeroPricing() {
            <span
   className="
     w-[295px] h-[64px] text-[22px] leading-[44px] text-center text-white 
-    text-sm font-semibold px-[30px] py-[10px] rounded-[50px] relative top-[55px]
+    text-sm font-semibold px-[30px] py-[10px] rounded-[50px] relative top-[32px]
 
     /* Tablet styles */
     min-[441px]:max-[768px]:w-[207px]
@@ -491,7 +533,7 @@ export default function HeroPricing() {
                 <div key={idx} className="flex items-start gap-2">
                   {/* Square with gradient and transparent check */}
                   <div
-                    className="w-[24px] h-[24px] mt-2 flex items-center justify-center rounded-[5px]"
+                    className="w-[24px] h-[24px] mt-2 ml-7 flex items-center justify-center rounded-[5px]"
                     style={{
                       background: "linear-gradient(180deg, #FBA716 41.67%, #95630D 133.33%)",
                     }}

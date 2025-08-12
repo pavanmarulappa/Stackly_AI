@@ -415,88 +415,154 @@
 //   );
 // }
 
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import BannerImg from "../../assets/pricing-pg/bannerSec2.png";
 import creditBg from "../../assets/pricing-pg/creditBg.png";
 import creditBg2 from "../../assets/pricing-pg/creditBg2.png";
+import bannersec1 from "../../assets/pricing-pg/bannersec1.png";
+import bannersec3 from "../../assets/pricing-pg/bannersec3.png";
+import bannersec4 from "../../assets/pricing-pg/bannersec4.png";
+
 
 const UsageInsights = () => {
+  const [credits, setCredits] = useState(0);
+  const [images, setImages] = useState(0);
+  const sectionRef = useRef(null);
+  const [currentBg, setCurrentBg] = useState(0);
+  const creditBackgrounds = [creditBg, bannersec1, bannersec3, bannersec4];
+
+  const animateCounts = () => {
+    let startTime = null;
+    const endCredits = 10;
+    const endImages = 100;
+    const duration = 2000; // animation speed
+
+    const step = (time) => {
+      if (!startTime) startTime = time;
+      const progress = Math.min((time - startTime) / duration, 1);
+
+      setCredits(Math.floor(progress * endCredits));
+      setImages(Math.floor(progress * endImages));
+
+      if (progress < 1) {
+        requestAnimationFrame(step);
+      }
+    };
+
+    requestAnimationFrame(step);
+  };
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) {
+          animateCounts(); // run when scrolled into view
+        } else {
+          // Reset numbers when scrolled out of view
+          setCredits(0);
+          setImages(0);
+        }
+      },
+      { threshold: 0.5 } // 50% visible triggers animation
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
+    // Background image slider for creditBg
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setCurrentBg((prev) => (prev + 1) % creditBackgrounds.length);
+      }, 3000); // change every 3 seconds
+      return () => clearInterval(interval);
+    }, []);
+
   return (
-<section
-  className="w-full h-[799.01px] absolute top-[468px] opacity-100 bg-no-repeat bg-center bg-cover"
-  style={{
-    backgroundImage: `url(${BannerImg})`,
-  }}
->
-  {/* Your content goes here */}
- <div className="w-[727px] h-[93px] flex flex-col gap-[12px] opacity-100 absolute top-[50px] left-1/2 -translate-x-1/2 items-center justify-center text-center">
-  {/* Top Child: Heading */}
-  <h2 className="text-[52px] font-medium leading-[140%] font-[Lora] bg-gradient-to-r from-[#8A38F5] via-[rgba(255,255,255,0.9)] to-[#8A38F5] bg-clip-text text-transparent">
-    Daily Usage Insights
-  </h2>
+    <section
+      ref={sectionRef}
+      className="w-full h-[799.01px] absolute top-[468px] opacity-100 bg-no-repeat bg-center bg-cover"
+      style={{
+        backgroundImage: `url(${BannerImg})`,
+      }}
+    >
+      {/* Heading */}
+      <div className="w-[727px] h-[93px] flex flex-col gap-[12px] absolute top-[50px] left-1/2 -translate-x-1/2 text-center">
+        <h2 className="text-[52px] font-medium leading-[140%] font-[Lora] bg-gradient-to-r from-[#8A38F5] via-[rgba(255,255,255,0.9)] to-[#8A38F5] bg-clip-text text-transparent">
+          Daily Usage Insights
+        </h2>
+        <p className="text-[18px] font-normal font-[Poppins] text-white">
+          Follow your design journey through today's usage and results
+        </p>
+      </div>
 
-  {/* Bottom Child: Subheading */}
-  <p className="text-[18px] font-normal leading-[100%] font-[Poppins] text-white">
-    Follow your design journey through today's usage and results
-  </p>
-</div>
+      {/* Rotating Credit Background */}
+      <div className="w-[1025px] h-[441px] rounded-[20px] absolute top-[190px] left-1/2 -translate-x-1/2 overflow-hidden relative">
+        <img
+          key={currentBg}
+          src={creditBackgrounds[currentBg]}
+          alt="Credit Background"
+          className="w-full h-full object-cover absolute inset-0 animate-kenburns opacity-0 transition-opacity duration-1000 ease-in-out"
+          style={{ opacity: 1 }}
+        />
+      </div>
 
-<div
-  className="w-[1025px] h-[441px] rounded-[20px] absolute top-[190px] left-1/2 -translate-x-1/2 opacity-100 overflow-hidden"
->
-  <img
-    src={creditBg}
-    alt="Descriptive Alt Text"
-    className="w-full h-full object-cover"
-  />
-</div>
+      {/* Stats */}
+      <div className="w-[776px] h-[205px] gap-[76px] absolute top-[559px] left-1/2 -translate-x-1/2 flex justify-between">
+        {/* Credits */}
+        <div
+          className="w-[350px] h-[205px] rounded-[20px] border border-[#8A38F5] bg-cover bg-center relative"
+          style={{ backgroundImage: `url(${creditBg2})` }}
+        >
+          <div className="absolute top-[91px] left-[33px] flex flex-col gap-[25px]">
+            <h3 className="text-white font-[Lora] text-[32px] font-medium">
+              {credits}+ credits
+            </h3>
+            <p className="text-white font-[Poppins] text-[18px]">
+              Total Credits Used today
+            </p>
+          </div>
+        </div>
 
-
-<div className="w-[776px] h-[205px] gap-[76px] opacity-100 absolute top-[559px] left-1/2 transform -translate-x-1/2 flex justify-between ">
-{/* Left Child Card */}
-<div
-  className="w-[350px] h-[205px] rounded-[20px] border border-solid border-[#8A38F5] border-t-[0.5px] border-r-[1px] border-b-[1px] border-l-[0.5px] bg-cover bg-center relative"
-  style={{ backgroundImage: `url(${creditBg2})` }}
->
-  {/* Main Inner Content */}
-  <div className="w-[222px] h-[82px] gap-[25px] absolute top-[91px] left-[33px] flex flex-col items-start justify-center">
-    
-    {/* Top Text */}
-    <h3 className="text-white font-[Lora] text-[32px] font-medium leading-[100%]">
-      10+ credits
-    </h3>
-
-    {/* Bottom Text */}
-    <p className="text-white font-[Poppins] text-[18px] font-normal leading-[100%] text-center">
-      Total Credits Used today
-    </p>
-  </div>
-</div>
-
-
-  {/* Right Child Card */}
-<div
-  className="w-[350px] h-[205px] rounded-[20px] border border-solid border-[#8A38F5] border-t-[0.5px] border-r-[1px] border-b-[1px] border-l-[0.5px] bg-cover bg-center relative"
-  style={{ backgroundImage: `url(${creditBg2})` }}
->
-  {/* Inner Text Block */}
-  <div className="w-[222px] h-[82px] gap-[25px] absolute top-[91px] left-[33px] flex flex-col justify-center">
-    
-    {/* Top Text */}
-    <h3 className="text-white font-[Lora] text-[32px] font-medium leading-[100%]">
-      85+ images
-    </h3>
-
-    {/* Bottom Text */}
-    <p className="text-white font-[Poppins] text-[18px] font-normal leading-[100%] text-center w-[206px]">
-      Creations Made Today
-    </p>
-  </div>
-</div>
-
-</div>
-
-</section>
+        {/* Images */}
+        <div
+          className="w-[350px] h-[205px] rounded-[20px] border border-[#8A38F5] bg-cover bg-center relative"
+          style={{ backgroundImage: `url(${creditBg2})` }}
+        >
+          <div className="absolute top-[91px] left-[33px] flex flex-col gap-[25px]">
+            <h3 className="text-white font-[Lora] text-[32px] font-medium">
+              {images}+ images
+            </h3>
+            <p className="text-white font-[Poppins] text-[18px] w-[206px]">
+              Creations Made Today
+            </p>
+          </div>
+        </div>
+      </div>
+      <style>
+        {`
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  100% {
+    transform: scale(1.1) translate(-5px, -5px);
+  }
+}
+.animate-kenburns {
+  animation: kenburns 3s ease-in-out forwards;
+}
+`}
+      </style>
+    </section>
   );
 };
 

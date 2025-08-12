@@ -399,7 +399,7 @@ export default function Header() {
           <nav>
   <ul
   className="hidden min-[900px]:flex justify-between self-start
-             w-[477px] h-[32px] opacity-100 list-none font-poppins"
+             w-[477px] h-[32px] opacity-100 list-none poppins-font"
 >
   <div
     className="w-[477px] h-[32px] flex justify-center items-center gap-[4px] px-[8px] opacity-100"
@@ -416,9 +416,9 @@ export default function Header() {
           to={to}
           onClick={() => setShowSideBar(false)}
           className={({ isActive }) =>
-            `flex items-center justify-center no-underline font-semibold text-[16px] leading-[100%]
+            `flex items-center justify-center no-underline text-[16px] leading-[100%]
              w-[124px] h-[46px] px-[8px] py-[12px] rounded-[40px] transition-all duration-200
-             tracking-[0%] font-poppins ${isActive ? "text-[#8A38F5]" : "text-white"}`
+             tracking-[0%] poppins-font ${isActive ? "text-[#8A38F5] font-bold" : "text-white font-normal" }`
           }
           style={({ isActive }) =>
             isActive
@@ -534,7 +534,7 @@ export default function Header() {
             </div>
           ) : (
 <div
-  className="min-[900px]:flex hidden gap-[8px] w-[290px] h-[60px] p-[8px] rounded-[30px] border border-transparent bg-clip-padding relative"
+  className="min-[900px]:flex hidden gap-[8px] w-[290px] h-[60px] p-[8px] rounded-[30px] border-[1px] border-solid border-[#FFFFFF33] bg-clip-padding relative"
   style={{
     background: `
       linear-gradient(92.88deg, rgba(255, 255, 255, 0.1) -0.52%, rgba(0, 176, 186, 0.1) 99.46%) border-box,
@@ -545,13 +545,13 @@ export default function Header() {
     opacity: 1,
   }}
 >
- <NavLink
+<NavLink
   to="/sign-in"
-  className="w-[113px] h-[39px] px-[30px] py-[10px] flex items-center justify-center 
+  className="w-[113px] h-[44px] flex items-center justify-center 
              whitespace-nowrap no-underline rounded-[30px] cursor-pointer
-             bg-[#8A38F533] border border-[#FFFFFF1A] 
+             bg-[#8A38F533] border-[1px] border-solid border-[#FFFFFF33] 
              active:bg-[#007b82] active:text-white
-             text-[#FFFFFF] font-inter font-semibold text-[16px] leading-[100%] tracking-[0%] lora-text"
+             text-white poppins-font font-semibold text-[16px] leading-[100%]"
 >
   Sign In
 </NavLink>
@@ -561,14 +561,14 @@ export default function Header() {
 
     <NavLink
   to="/sign-up"
-  className="w-[153px] h-[44px] px-[30px] py-[10px] gap-[10px] flex items-center justify-center 
-             no-underline rounded-[30px] border border-white 
-             bg-[linear-gradient(93.98deg,rgba(138,56,245,0.7)_3.25%,rgba(194,44,162,0.7)_102.29%)] 
-             text-white text-[16px] font-semibold leading-[100%] cursor-pointer 
-             active:opacity-90 focus:outline-none"
->
-  <span className="lora-text">Sign Up</span>
-  <div className="relative w-[24px] h-[24px]">
+ className="w-[153px] h-[44px] px-[20px] flex items-center justify-center 
+whitespace-nowrap no-underline rounded-[30px] border border-[#FFFFFF33] border-solid
+bg-[linear-gradient(93.98deg,rgba(138,56,245,0.7)_3.25%,rgba(194,44,162,0.7)_102.29%)]
+bg-clip-padding text-white text-[16px] font-semibold leading-[100%] cursor-pointer 
+active:opacity-90 focus:outline-none gap-[8px]">
+
+  <span className="poppins-font whitespace-nowrap">Sign Up</span>
+  <div className="relative w-[24px] h-[24px] flex-shrink-0">
     <img
       src={arrow}
       alt="Arrow"

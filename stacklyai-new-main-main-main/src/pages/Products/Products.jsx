@@ -110,7 +110,7 @@ export default function Products() {
       <HeroProducts />
       {/* <CarouselProducts /> */}
       {/* <DraggableImages /> */}
-      <BasicForm id="form-section" imageValue={selectedImage} />
+      {/* <BasicForm id="form-section" imageValue={selectedImage} /> */}
       <PackageProducts />
      
     </div>

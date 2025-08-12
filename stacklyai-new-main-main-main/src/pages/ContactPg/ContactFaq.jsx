@@ -314,7 +314,7 @@ export default function PricingFaq() {
 
               {/* Answer */}
               {activeIndex === index && (
-                <div className="text-white text-[16px] mt-[10px] leading-[140%] poppins-font w-full">
+                <div className="text-white text-[16px] ml-[90px] mt-[10px] leading-[140%] poppins-font w-[1000px]">
                   {faq.answer}
                 </div>
               )}
