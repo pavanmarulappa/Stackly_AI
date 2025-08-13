@@ -550,7 +550,7 @@ export default function Header() {
   className="w-[113px] h-[44px] flex items-center justify-center 
              whitespace-nowrap no-underline rounded-[30px] cursor-pointer
              bg-[#8A38F533] border-[1px] border-solid border-[#FFFFFF33] 
-             active:bg-[#007b82] active:text-white
+              active:text-white
              text-white poppins-font font-semibold text-[16px] leading-[100%]"
 >
   Sign In

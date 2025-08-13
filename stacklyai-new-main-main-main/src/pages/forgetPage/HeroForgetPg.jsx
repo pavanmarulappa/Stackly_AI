@@ -526,27 +526,33 @@ export default function HeroForgetPg() {
         fontFamily: "'Poppins', sans-serif",
       }}
     >
+      
       <div className="relative w-[740px] h-[419px] flex items-center justify-center z-10">
         {/* Gradient Border Wrapper */}
         {/* Card Content */}
         <div
           className="relative bg-[#00000066] z-10 w-full h-full rounded-[16px] px-6 py-8 flex flex-col items-center justify-center"
-          style={{
-           
-            borderTop: "2px solid",
-            borderImageSlice: 1,
-            borderImageSource: `
-              linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
-              linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
-            `,
-            boxShadow: `
-              0 0 0 1px rgba(138, 56, 245, 0.4),
-              0 0 20px rgba(138, 56, 245, 0.15),
-              inset 0 0 10px rgba(138, 56, 245, 0.15)
-            `,
-            backdropFilter: "blur(8px)",
-          }}
-        >
+           ><div
+    style={{
+      position: "absolute",
+      inset: "0",
+      borderRadius: "inherit",
+      padding: "2px",
+      background: `
+        linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
+        linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
+      `,
+      WebkitMask: `
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0)
+      `,
+      WebkitMaskComposite: "xor",
+      maskComposite: "exclude",
+      pointerEvents: "none",
+      zIndex: "-1"
+    }}
+  ></div>
+       
           {/* Back Arrow */}
           <div className="absolute top-6 left-6">
             <Link to="/sign-in" className="flex items-center gap-2 text-white">

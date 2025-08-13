@@ -89,16 +89,28 @@ const SignupOtp = () => {
           relative bg-[#00000066] w-[740px] h-[480px] rounded-[16px] border-2 
           pt-[32px] pr-[24px] pb-[32px] pl-[24px] flex flex-col items-center gap-[24px]
           backdrop-blur-md 
-          shadow-[0_0_0_1px_rgba(138,56,245,0.4),_0_0_20px_rgba(138,56,245,0.15),_inset_0_0_10px_rgba(138,56,245,0.15)]
         `}
-        style={{
-          borderImageSlice: 1,
-          borderImageSource: `
-            linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
-            linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
-          `,
-        }}
       >
+        <div
+    style={{
+      position: "absolute",
+      inset: "0",
+      borderRadius: "inherit",
+      padding: "2px",
+      background: `
+        linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
+        linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
+      `,
+      WebkitMask: `
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0)
+      `,
+      WebkitMaskComposite: "xor",
+      maskComposite: "exclude",
+      pointerEvents: "none",
+      zIndex: "-1"
+    }}
+  ></div>
         {/* Back Button */}
         <div className="absolute top-6 left-6">
           <Link to="/sign-in" className="flex items-center gap-2 text-white">

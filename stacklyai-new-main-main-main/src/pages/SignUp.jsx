@@ -13,6 +13,7 @@ export default function SignUp({ setUser }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -58,20 +59,38 @@ export default function SignUp({ setUser }) {
       className="w-full min-h-[1024px] flex justify-center items-center bg-black bg-cover bg-center"
       style={{ backgroundImage: `url(${signBg})` }}
     >
-      {/* Main Card */}
-      <div
-        className="
-      w-[740px] h-[869px] 
-      rounded-[16px] border-[2px] border-solid border-[#51218F]
-      flex flex-col items-center gap-[24px]
-      pt-[32px] pr-[24px] pb-[32px] pl-[24px]
-    "
-        style={{
-          background: "transparent",
-          backdropFilter: "blur(90px)",
-          boxShadow: "0px 0px 46px 0px #00000040",
-        }}
-      >
+       {/* Main Card */}
+ <div
+  className="relative w-[740px] h-[869px] rounded-[16px] flex flex-col items-center overflow-hidden"
+  style={{
+    background: "transparent",
+    backdropFilter: "blur(90px)",
+    boxShadow: "0px 0px 46px 0px #00000040",
+    position: "relative",
+    isolation: "isolate" // Creates new stacking context
+  }}
+>
+  {/* Gradient Border - Precise Implementation */}
+  <div
+    style={{
+      position: "absolute",
+      inset: "0",
+      borderRadius: "inherit",
+      padding: "2px",
+      background: `
+        linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
+        linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
+      `,
+      WebkitMask: `
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0)
+      `,
+      WebkitMaskComposite: "xor",
+      maskComposite: "exclude",
+      pointerEvents: "none",
+      zIndex: "-1"
+    }}
+  ></div>
         {/* Back Button */}
         <Link
           to="/"

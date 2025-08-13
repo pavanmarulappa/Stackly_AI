@@ -11,6 +11,7 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
   const { setUserInfo } = useContext(UserContext);
 
@@ -52,15 +53,35 @@ export default function SignIn() {
   className="relative w-full min-h-[1024PX] flex justify-center items-start bg-black bg-cover bg-center"
   style={{ backgroundImage: `url(${signBg})` }}
 >
-  {/* Main Card */}
-  <div
-    className="relative w-[740px] h-[769px] rounded-[16px] border-[2px] border-solid border-[#51218F] mt-[127.5px] flex flex-col items-center"
-    style={{
-      background: "transparent",
-      backdropFilter: "blur(90px)",
-      boxShadow: "0px 0px 46px 0px #00000040",
-    }}
-  >
+  {/* main div */}
+<div
+  className="relative w-[740px] h-[769px] rounded-[16px] mt-[127.5px] flex flex-col items-center"
+  style={{
+    background: "transparent",
+    backdropFilter: "blur(90px)",
+    boxShadow: "0px 0px 46px 0px #00000040",
+    border: "2px solid transparent",
+    borderImage: "linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%), linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)",
+    borderImageSlice: "1",
+    position: "relative"
+  }}
+>
+  {/* Optional: Add pseudo-elements for better gradient visibility */}
+  <div style={{
+    position: "absolute",
+    inset: "-2px",
+    borderRadius: "16px",
+    padding: "2px",
+    background: "linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%), linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)",
+    WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+    WebkitMaskComposite: "xor",
+    maskComposite: "exclude",
+    pointerEvents: "none",
+    zIndex: "-1"
+  }}></div>
+
+
+  
     {/* Back Button */}
     <Link
       to="/"
@@ -133,22 +154,25 @@ export default function SignIn() {
           <div className="flex flex-col justify-between w-[554px] h-[476px]">
             <div className="w-[554px] h-[428px] gap-[32px] opacity-100 ">
               {/* form div */}
-              <form className="w-[554px] h-[216px] flex flex-col gap-[16px] opacity-100">
-                <div className="w-[554px] h-[84px] flex flex-col gap-[8px] opacity-100">
+              <form onSubmit={handleSubmit} 
+              className="w-[554px] h-[216px] flex flex-col gap-[16px] opacity-100">
+                <div className="w-[554px] h-[84px] flex flex-col gap-[8px] opacity-100 relative z-10">
                   {/* Top child label */}
                   <label className="w-full h-[24px] text-white text-[16px] font-normal leading-[100%] font-['Poppins']">
-                    Name
+                    Email
                   </label>
 
                   {/* Bottom child input wrapper */}
-                  <div className="w-[554px] h-[48px] flex items-center px-[12px] gap-[10px] rounded-[12px]  border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
+                  <div className="w-[554px] h-[48px] flex items-center px-[12px] gap-[10px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
                     <input
-                      type="text"
-                      placeholder="John"
+                      type="email"
+                      placeholder="john@example.com"
+                      onChange={(e) =>
+    setFormData((prev) => ({ ...prev, email: e.target.value }))
+  }
                       className="w-[530px] h-[24px] text-[#E0E0E0] text-[16px] font-normal leading-[100%] font-['Poppins'] outline-none border-none bg-transparent"
                     />
                   </div>
-
                 </div>
 
                 <div className="w-[554px] flex flex-col gap-[8px] opacity-100">
@@ -163,19 +187,34 @@ export default function SignIn() {
                       type={showPassword ? "text" : "password"}
                       value={formData.password}
                       onChange={(e) =>
-                        setFormData({ ...formData, password: e.target.value })
-                      }
+      setFormData((prev) => ({ ...prev, password: e.target.value }))
+    }
                       placeholder="******"
                       className="w-full h-[24px] text-[16px] font-normal leading-[100%] font-['Poppins'] text-[#E0E0E0EE] bg-transparent outline-none border-none pr-10"
                     />
 
                     {/* Eye Icon */}
                     <span
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {/* Eye SVG */}
-                    </span>
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="14"
+                    viewBox="0 0 25 15"
+                    fill="none"
+                  >
+                    <path
+                      d="M24.0705 7.51211C21.3277 4.35156 17.5375 0.71875 12.5 0.71875C10.4656 0.71875 8.60078 1.29395 6.63301 2.52305C4.97402 3.56445 3.27266 5.02969 0.935547 7.43945L0.875 7.5L1.28066 7.91777C4.6168 11.3326 7.49883 14.2812 12.5 14.2812C14.71 14.2812 16.8533 13.5607 19.0512 12.0773C20.9221 10.8119 22.5145 9.20742 23.792 7.91172L24.125 7.57871L24.0705 7.51211ZM12.5 12.3438C9.82988 12.3438 7.65625 10.1701 7.65625 7.5C7.65625 4.82988 9.82988 2.65625 12.5 2.65625C15.1701 2.65625 17.3438 4.82988 17.3438 7.5C17.3438 10.1701 15.1701 12.3438 12.5 12.3438Z"
+                      fill="#BEBCBC"
+                    />
+                    <path
+                      d="M12.1609 5.73203C12.1609 5.31426 12.282 4.9207 12.4939 4.59375C10.8895 4.59375 9.59375 5.90156 9.59375 7.51211C9.59375 9.12266 10.8955 10.4244 12.4939 10.4244C14.0924 10.4244 15.4002 9.12266 15.4002 7.51211C15.0732 7.72402 14.6797 7.84512 14.2619 7.84512C13.1055 7.83906 12.1609 6.89453 12.1609 5.73203Z"
+                      fill="#BEBCBC"
+                    />
+                  </svg>
+                </span>
                   </div>
 
                   {/* RFG */}
