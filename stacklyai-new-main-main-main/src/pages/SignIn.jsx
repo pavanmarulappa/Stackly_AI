@@ -15,37 +15,53 @@ export default function SignIn() {
 
   const { setUserInfo } = useContext(UserContext);
 
-  const handleSubmit = async (e) => {
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setError("");
+
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:8000/login",
+  //       {
+  //         email: formData.email,
+  //         password: formData.password,
+  //       },
+  //       { withCredentials: true }
+  //     );
+
+  //     const { userId, email, access_token } = res.data;
+
+  //     // ✅ Save to context (already correct)
+  //     setUserInfo({ userId, email, token: access_token });
+
+  //     // ✅ ALSO save to localStorage
+  //     localStorage.setItem("token", access_token);
+  //     localStorage.setItem("userId", userId);
+  //     localStorage.setItem("userEmail", email);
+
+  //     navigate("/afterhome");
+  //   } catch (err) {
+  //     console.error(err);
+  //     setError("Invalid email or password");
+  //   }
+  // };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
-
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/login",
-        {
-          email: formData.email,
-          password: formData.password,
-        },
-        { withCredentials: true }
-      );
-
-      const { userId, email, access_token } = res.data;
-
-      // ✅ Save to context (already correct)
-      setUserInfo({ userId, email, token: access_token });
-
-      // ✅ ALSO save to localStorage
-      localStorage.setItem("token", access_token);
-      localStorage.setItem("userId", userId);
-      localStorage.setItem("userEmail", email);
-
-      navigate("/afterhome");
-    } catch (err) {
-      console.error(err);
-      setError("Invalid email or password");
+    if (
+      formData.email === "sample@gmail.com" &&
+      formData.password === "12345"
+    ) {
+      setUserInfo({
+        userName: "Sample User",
+        userId: "id2332451",
+        email: "sample@gmail.com",
+      });
+      navigate("/");
+    } else {
+      alert("Wrong credentials!");
     }
   };
-
 
   return (
     

@@ -555,10 +555,6 @@ export default function Header() {
 >
   Sign In
 </NavLink>
-
-
-
-
     <NavLink
   to="/sign-up"
  className="w-[153px] h-[44px] px-[20px] flex items-center justify-center 
