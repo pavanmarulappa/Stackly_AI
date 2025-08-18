@@ -493,6 +493,8 @@ export default function Footer() {
               )}
             </ul>
           </div>
+
+          
           {/* Terms & Policy Mobile */}
           <div className="flex flex-col gap-[8px]">
             <h4 className="text-[#007b82] text-[14px] font-semibold leading-[24px] tracking-[0.3px] font-['Inter']">
