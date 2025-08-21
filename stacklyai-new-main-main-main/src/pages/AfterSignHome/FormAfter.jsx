@@ -1,380 +1,3 @@
-// import React, { useContext, useRef, useState } from "react";
-// import { UserContext } from "../../context/UserContext";
-// import { useNavigate } from "react-router-dom";
-// import Interior from "../../assets/product-pg/Vector.png";
-// import Home from "../../assets/product-pg/home.png";
-// import Tree from "../../assets/product-pg/tree.png";
-// import Lock from "../../assets/product-pg/lock.png";
-// import Galley from "../../assets/product-pg/gallery.png";
-// import I from "../../assets/product-pg/i.png";
-// import Magic from "../../assets/product-pg/magic.png";
-
-// export default function FormAfter() {
-//   const { userInfo } = useContext(UserContext);
-//   const navigate = useNavigate();
-//   const inpRef = useRef(null);
-
-//   const [activeTab, setActiveTab] = useState("Interiors");
-//   const [formData, setFormData] = useState({
-//     buildingType: "",
-//     roomType: "",
-//     roomStyle: "",
-//     noOfDesign: "1",
-//     aiTouch: "Low",
-//   });
-//   const [imgURL, setImgURL] = useState(null);
-
-//   const tabs = [
-//     { name: "Interiors", icon: Interior },
-//     { name: "Exteriors", icon: Home },
-//     { name: "Outdoors", icon: Tree },
-//     // { name: "Upgrade to Unlock", icon: Lock },
-//   ];
-
-//   const roomTypes = {
-//     Interiors: [
-//       "Living room",
-//       "Bedroom",
-//       "Kitchen",
-//       "Dining Room",
-//       "Study Room",
-//       "Home Office",
-//       "Family Room",
-//       "Kids Room",
-//       "Balcony",
-//     ],
-//     Exteriors: [
-//       "Front Yard",
-//       "Backyard",
-//       "Garden",
-//       "Patio",
-//       "Deck",
-//       "Pool Area",
-//       "Driveway",
-//     ],
-//     Outdoors: [
-//       "Park",
-//       "Camping Site",
-//       "Beach",
-//       "Mountain View",
-//       "Forest",
-//       "Lake Side",
-//     ],
-//   };
-
-//   const styles = [
-//     "Modern",
-//     "Tropical",
-//     "Rustic",
-//     "Tribal",
-//     "Cyberpunk",
-//     "Zen",
-//     "Japanese Design",
-//     "Biophilic",
-//     "Christmas",
-//     "Bohemian",
-//     "Contemporary",
-//     "Maximalist",
-//     "Vintage",
-//     "Baroque",
-//     "Farmhouse",
-//     "Minimalist",
-//     "Gaming Room",
-//     "French Country",
-//     "Art Deco",
-//     "Art Nouveau",
-//     "Halloween",
-//     "Ski Chalet",
-//     "Sketch",
-//     "Scandinavian",
-//     "Industrial",
-//     "Neoclassic",
-//     "Medieval",
-//     "Shabby Chic",
-//     "Eclectic",
-//     "Asian Traditional",
-//     "Hollywood Glam",
-//     "Western Traditional",
-//     "Transitional",
-//   ];
-
-//   const changeImage = (e) => {
-//     // if (!userInfo.userId) {
-//     //   return navigate("/sign-in");
-//     // }
-//     const file = e.target.files[0];
-//     if (file) {
-//       const preview = URL.createObjectURL(file);
-//       setImgURL(preview);
-//     }
-//   };
-
-//   const handleDragOver = (e) => {
-//     e.preventDefault();
-//   };
-
-//   const handleDrop = (e) => {
-//     e.preventDefault();
-//     // if (!userInfo.userId) {
-//     //   return navigate("/sign-in");
-//     // }
-//     const file = e.dataTransfer.files[0];
-
-//     if (file && file.type.startsWith("image/")) {
-//       const preview = URL.createObjectURL(file);
-//       setImgURL(preview);
-//     } else {
-//       alert("Please drop only image files.");
-//     }
-//   };
-
-//   const handleChange = (value, key) => {
-//     setFormData((prev) => {
-//       return { ...prev, [key]: value };
-//     });
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     if (!userInfo.userId) {
-//       return navigate("/sign-in");
-//     }
-//     if (
-//       formData.aiTouch &&
-//       formData.noOfDesign &&
-//       formData.roomStyle &&
-//       formData.roomType &&
-//       formData.buildingType &&
-//       imgURL
-//     ) {
-//       console.log("Form Data:", formData);
-//       console.log("Image URL:", imgURL);
-//       // Here you would typically send the data to your backend
-//       alert("Design generation started!");
-//       // Reset form
-//       setFormData({
-//         buildingType: "",
-//         roomType: "",
-//         roomStyle: "",
-//         noOfDesign: "1",
-//         aiTouch: "Low",
-//       });
-//       setImgURL(null);
-//     } else {
-//       alert("Please fill out all the fields!");
-//     }
-//   };
-
-//   return (
-//     //add some responsive
-
-//     <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
-//       {/* Header */}
-//       <div className="w-full max-w-4xl text-center space-y-2">
-//         <h1 className="text-[clamp(2rem,5vw,3rem)] font-semibold text-white leading-snug">
-//           Let AI Style It
-//         </h1>
-//         <p className="text-[clamp(1rem,2.5vw,1.5rem)] font-medium text-white leading-snug">
-//           Upload a photo to begin your AI-powered room design
-//         </p>
-//       </div>
-
-//       {/* Tabs */}
-//       <div className="w-full max-w-6xl flex flex-wrap justify-center items-center gap-4">
-//         {tabs.map((tab) => (
-//           <div
-//             key={tab.name}
-//             className="w-[clamp(120px,15vw,200px)] max-w-[200px] h-[clamp(100px,12vh,128px)] flex flex-col justify-center items-center gap-2 cursor-pointer"
-//             // onClick={() => {
-//             //   setActiveTab(tab.name);
-
-//             //   switch (tab.name) {
-//             //     case "Interiors":
-//             //       navigate("/FormAfter");
-//             //       break;
-//             //     case "Exteriors":
-//             //       navigate("/Exteriorform");
-//             //       break;
-//             //     case "Outdoors":
-//             //       navigate("/Outdoorform");
-//             //       break;
-//             //     default:
-//             //       break;
-//             //   }
-//             // }}
-//           >
-//             <div
-//               className={`w-[clamp(60px,6vw,77px)] aspect-square border-2 p-2 flex justify-center items-center rounded-full transition-all duration-200 ${
-//                 activeTab === tab.name
-//                   ? "border-white bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82]"
-//                   : "border-[#FFFFFF1A] bg-[#FFFFFF1A] hover:border-blue-300"
-//               }`}
-//             >
-//               <img
-//                 src={tab.icon}
-//                 alt={tab.name}
-//                 className="w-full h-auto max-w-[60%] max-h-[60%] object-contain"
-//               />
-//             </div>
-//             <p className="text-white text-[clamp(0.9rem,1.5vw,1.4rem)] font-semibold text-center">
-//               {tab.name}
-//             </p>
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Form Section */}
-//       <div className="w-full max-w-7xl flex flex-col xl:flex-row gap-10 items-start justify-between">
-//         {/* Upload */}
-//         <div className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4">
-//           <div
-//             className="w-full aspect-[4/3] max-h-[70vh] border-2 border-dashed border-white rounded-xl flex justify-center items-center cursor-pointer"
-//             onClick={() => inpRef.current.click()}
-//             onDragOver={handleDragOver}
-//             onDrop={handleDrop}
-//           >
-//             {imgURL ? (
-//               <img
-//                 src={imgURL}
-//                 alt="Preview"
-//                 className="w-full h-full object-cover rounded-xl"
-//               />
-//             ) : (
-//               <div className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2">
-//                 <div className="w-[clamp(40px,5vw,70px)] aspect-square rounded-full p-2 bg-[#FFFFFF1A] flex justify-center items-center">
-//                   <img src={Galley} alt="gallery" className="w-full h-auto" />
-//                 </div>
-//                 <p className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug">
-//                   Drag & drop or click to upload a photo
-//                 </p>
-//               </div>
-//             )}
-//             <input
-//               type="file"
-//               ref={inpRef}
-//               onChange={changeImage}
-//               accept="image/*"
-//               className="hidden"
-//             />
-//           </div>
-
-//           <div className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] flex justify-around items-center cursor-pointer">
-//             <div className="w-[24px] h-[24px]">
-//               <img src={I} alt="i" />
-//             </div>
-//             <div className="w-[93px] h-[19px] text-[16px] font-[medium] leading-[100%] text-center text-white">
-//               Photo guide
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Form Controls */}
-//         <form
-//           onSubmit={handleSubmit}
-//           className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
-//         >
-//           {/* Building Type */}
-//           <div className="space-y-2">
-//             <label className="text-white text-lg">Choose Building Type</label>
-//             <div className="flex flex-col sm:flex-row gap-4">
-//               {["Commercial", "Residential"].map((type) => (
-//                 <div
-//                   key={type}
-//                   className={`flex-1 flex justify-between items-center px-4 py-2 rounded-md cursor-pointer ${
-//                     formData.buildingType === type
-//                       ? "bg-white text-[#007B82]"
-//                       : "bg-[#00000033] text-[#FFFFFF80]"
-//                   }`}
-//                   onClick={() => handleChange(type, "buildingType")}
-//                 >
-//                   <span>{type}</span>
-//                   <input
-//                     type="radio"
-//                     checked={formData.buildingType === type}
-//                     onChange={() => {}}
-//                   />
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-
-//           {/* Dynamic Fields */}
-//           {[
-//             {
-//               label: "Select Room Type",
-//               name: "roomType",
-//               options: roomTypes[activeTab],
-//             },
-//             { label: "Pick a Style", name: "roomStyle", options: styles },
-//             {
-//               label: "Number of designs",
-//               name: "noOfDesign",
-//               options: Array.from({ length: 9 }, (_, i) => i + 1),
-//             },
-//           ].map((field) => (
-//             <div key={field.name} className="space-y-2">
-//               <label className="text-white text-lg">{field.label}</label>
-//               <select
-//                 name={field.name}
-//                 value={formData[field.name]}
-//                 onChange={(e) => handleChange(e.target.value, field.name)}
-//                 className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-//               >
-//                 <option value="">Select {field.name}</option>
-//                 {field.options.map((option) => (
-//                   <option key={option} value={option}>
-//                     {option}
-//                   </option>
-//                 ))}
-//               </select>
-//             </div>
-//           ))}
-
-//           {/* AI Strength */}
-//           <div className="space-y-2">
-//             <label className="text-white text-lg">AI Styling Strength</label>
-//             <div className="flex flex-wrap gap-3">
-//               {["Very Low", "Low", "Medium", "High"].map((level) => (
-//                 <div
-//                   key={level}
-//                   className={`flex-1 min-w-[120px] px-4 py-2 rounded-md cursor-pointer text-center ${
-//                     formData.aiTouch === level
-//                       ? "bg-white text-[#007B82]"
-//                       : "bg-[#00000033] text-[#FFFFFF80]"
-//                   }`}
-//                   onClick={() => handleChange(level, "aiTouch")}
-//                 >
-//                   {level}
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-//         </form>
-//       </div>
-//       <div
-//         className="w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
-//         style={{
-//           backgroundImage: `
-//         linear-gradient(to right, #007c82 0%,rgb(4, 68, 75),rgb(3, 89, 94) 100%)
-
-//         `,
-//         }}
-//       >
-//         <button
-//           type="submit"
-//           className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
-//         >
-//           <span>
-//             <img src={Magic} alt="magic" />
-//           </span>
-//           Generate Design
-//         </button>
-//       </div>
-//     </section>
-//   );
-// }
-
-//Form.jsx
 import React, { useContext, useRef, useState, useEffect } from "react";
 import { UserContext } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -389,10 +12,11 @@ import axios from "axios";
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { FormDataContext } from "../../context/FormDataContext";
-
-const CloseIcon =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E";
-
+import Frame from "../../assets/home/Frame.png";
+import CanvasImg from "../../assets/afterHome/CanvasImg.png";
+import CanvasUplod from "../../assets/afterHome/CanvasUplod.png";
+import Upload from "../../assets/home/upload.png";
+const CloseIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E";
 
 export default function Form({ selectedImage }) {
   const { userInfo } = useContext(UserContext);
@@ -406,9 +30,11 @@ export default function Form({ selectedImage }) {
   const [originalImageUrl, setOriginalImageUrl] = useState(null);
   const backendBaseUrl = "http://localhost:8000";
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [visibleRange, setVisibleRange] = useState({ start: 0, end: 8 });
+  const [strength, setStrength] = useState("LOW");
 
   const [formData, setFormData] = useState({
-    buildingType: "",
+    // buildingType: "",
     roomType: "",
     roomStyle: "",
     numDesigns: "1",
@@ -427,19 +53,6 @@ export default function Form({ selectedImage }) {
 
   const roomTypes = {
     Interiors: [
-      "Living room", "Bedroom", "Kitchen", "Home office", "Dining room",
-      "Study room", "Family room", "Kid room", "Balcony",
-    ],
-    Exteriors: ["Front side", "Back side", "Left side", "Right side"],
-    Outdoors: [
-      "Front Yard", "Backyard", "Balcony", "Terrace/Rooftop",
-      "Driveway/Parking Area", "Walkway/Path", "Lounge", "Porch",
-      "Fence", "Garden",
-    ],
-  };
-
-  const styles = {
-    Interiors: [
       "classic", "modern", "minimal", "scandinavian", "contemporary",
       "industrial", "japandi", "bohemian", "coastal", "modern luxury",
       "tropical resort", "japanese zen",
@@ -453,6 +66,19 @@ export default function Form({ selectedImage }) {
       "modern", "contemporary", "traditional", "rustic",
       "scandinavian", "classic garden", "coastal outdoor",
       "farmhouse", "cottage garden", "industrial", "beach",
+    ],
+  };
+
+  const styles = {
+    Interiors: [
+      "Living room", "Bedroom", "Kitchen", "Home office", "Dining room",
+      "Study room", "Family room", "Kid room", "Balcony",
+    ],
+    Exteriors: ["Front side", "Back side", "Left side", "Right side"],
+    Outdoors: [
+      "Front Yard", "Backyard", "Balcony", "Terrace/Rooftop",
+      "Driveway/Parking Area", "Walkway/Path", "Lounge", "Porch",
+      "Fence", "Garden",
     ],
   };
 
@@ -494,16 +120,44 @@ export default function Form({ selectedImage }) {
       alert("Please upgrade your account to access this feature");
     } else {
       setActiveTab(tabName);
+      setVisibleRange({ start: 0, end: 8 });
       setFormData({
-        buildingType: "",
+        // buildingType: "",
         roomType: "",
         roomStyle: "",
         numDesigns: "1",
-        aiStrength: "Low",
+        aiStrength: "low",
         houseAngle: "",
         spaceType: "",
       });
     }
+  };
+
+  const handleNext = () => {
+    const currentStyles = styles[activeTab];
+    const newEnd = Math.min(visibleRange.end + 1, currentStyles.length);
+    const newStart = newEnd > visibleRange.end ? visibleRange.start + 1 : visibleRange.start;
+
+    setVisibleRange({
+      start: newStart,
+      end: newEnd
+    });
+  };
+
+  const handlePrev = () => {
+    const newStart = Math.max(visibleRange.start - 1, 0);
+    const newEnd = newStart < visibleRange.start ? visibleRange.end - 1 : visibleRange.end;
+
+    setVisibleRange({
+      start: newStart,
+      end: newEnd
+    });
+  };
+
+  const getPositionClass = () => {
+    if (strength === "LOW") return "left-0";
+    if (strength === "MEDIUM") return "left-1/2 -translate-x-1/2";
+    if (strength === "HIGH") return "right-0";
   };
 
   const toBase64 = (file) => new Promise((resolve, reject) => {
@@ -551,7 +205,7 @@ export default function Form({ selectedImage }) {
       switch (activeTab) {
         case "Interiors":
           endpoint = "generate-interior-design";
-          formDataToSend.append("building_type", formData.buildingType);
+          // formDataToSend.append("building_type", formData.buildingType);
           formDataToSend.append("room_type", formData.roomType);
           typeDetail = formData.roomType;
           break;
@@ -584,32 +238,38 @@ export default function Form({ selectedImage }) {
       }
 
       if (response.data.success) {
-        const designs = Array.isArray(response.data.designs)
-          ? response.data.designs.map(url => ({
-            url: url.startsWith("http") ? url : backendBaseUrl + url,
-            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-          }))
-          : [];
+  const designs = Array.isArray(response.data.designs)
+    ? response.data.designs.map(url => ({
+        url: url.startsWith("http") ? url : backendBaseUrl + url,
+        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      }))
+    : [];
 
-        const base64Image = await toBase64(imgFile);
+  const base64Image = await toBase64(imgFile);
 
-        const navState = {
-          originalImage: base64Image,
-          uploadedFile: imgFile,
-          generatedImages: designs,
-          formData: {
-            userId: userId,
-            category: activeTab.toLowerCase(),
-            typeDetail: typeDetail,
-            style: formData.roomStyle,
-            aiStrength: formData.aiStrength,
-            numDesigns: formData.numDesigns
-          }
-        };
+  if (formData.numDesigns === "1") {
+    // Show generated image on the same page
+    setGeneratedImages(designs);
+  } else {
+    // Redirect to /ImageGeneration with state
+    const navState = {
+      originalImage: base64Image,
+      uploadedFile: imgFile,
+      generatedImages: designs,
+      formData: {
+        userId: userId,
+        category: activeTab.toLowerCase(),
+        typeDetail: typeDetail,
+        style: formData.roomStyle,
+        aiStrength: formData.aiStrength,
+        numDesigns: formData.numDesigns
+      }
+    };
 
-        localStorage.setItem("imageGenState", JSON.stringify(navState));
-        navigate("/ImageGeneration", { state: navState });
-      } else {
+    localStorage.setItem("imageGenState", JSON.stringify(navState));
+    navigate("/ImageGeneration", { state: navState });
+  }
+} else {
         throw new Error(response.data.message || "Design generation failed");
       }
     } catch (error) {
@@ -634,98 +294,254 @@ export default function Form({ selectedImage }) {
   }, [selectedImage]);
 
   return (
-    <section className="w-full min-h-screen pb-[50px] px-6 sm:px-10 py-10 flex flex-col justify-start items-center gap-y-10 bg-gradient-to-l from-[#002628] to-[#00646A] overflow-hidden">
+    <section
+      className="w-full h-[1268px] bg-black opacity-100 -mt-[82px] pt-[82px] overflow-hidden"
+      style={{ transform: "rotate(0deg)" }}
+    >
       {/* Header */}
-      <div
-        className="w-full max-w-4xl text-center space-y-2
-             max-[440px]:w-[400px] max-[440px]:h-[53px] 
-             max-[440px]:gap-[16px] max-[440px]:opacity-100"
-      >
-
-        <h1
-          className="text-[clamp(2rem,5vw,3rem)] font-semibold text-white leading-snug 
-             max-[440px]:w-[400px] max-[440px]:h-[22px] 
-             max-[440px]:text-[18px] max-[440px]:font-semibold 
-             max-[440px]:leading-[100%] max-[440px]:text-center max-[440px]:opacity-100"
-        >
-          Let AI Style It
+      <div className="flex flex-col items-center justify-center mt-[75px] gap-[16px]">
+        {/* Top text */}
+        <h1 className="text-center text-[28px] sm:text-[34px] font-[400] leading-[100%] text-white lora-text">
+          Elevate Your Space with{" "}
+          <span
+            className="bg-clip-text text-transparent lora-text"
+            style={{
+              backgroundImage: "linear-gradient(90deg, #8A38F5 0%, #C22CA2 97.12%)",
+            }}
+          >
+            AI
+          </span>
         </h1>
 
-        <p
-          className="text-[clamp(1rem,2.5vw,1.5rem)] font-medium text-white leading-snug
-             max-[440px]:w-[400px] max-[440px]:h-[17px] 
-             max-[440px]:text-[14px] max-[440px]:font-normal 
-             max-[440px]:leading-[100%] max-[440px]:text-center max-[440px]:opacity-100"
+        {/* Middle text */}
+        <div
+          className="text-[16px] sm:text-[18px] text-[#6D6D6D] text-center"
+          style={{
+            fontFamily: "'Poppins', sans-serif",
+            fontWeight: 400,
+            lineHeight: "140%",
+          }}
         >
-          Upload a photo to begin your AI-powered {activeTab.toLowerCase()} design
-        </p>
+          Upload a photo and let AI create a stunning makeover
+        </div>
 
+        {/* Bottom text */}
+        <div
+          className="text-[14px] sm:text-[16px] text-white text-center"
+          style={{
+            fontFamily: "'Poppins', sans-serif",
+            fontWeight: 400,
+            lineHeight: "140%",
+          }}
+        >
+          Free Trial ( 9 of 10 renders left)
+        </div>
       </div>
-
       {/* Tabs */}
-      <div
-        className="w-full max-w-6xl flex flex-wrap justify-center items-center gap-4
-             max-[440px]:w-[230px] max-[440px]:h-[60px] max-[440px]:gap-[31px] max-[440px]:opacity-100"
-      >
+      <div className="w-full max-w-[352px] h-[84px] flex gap-[20px] sm:gap-[72px] mx-auto mt-8">
 
         {tabs.map((tab) => (
           <div
             key={tab.name}
-            className="w-[clamp(120px,15vw,200px)] max-w-[200px] h-[clamp(100px,12vh,128px)] flex flex-col justify-center items-center gap-2 cursor-pointer
-             max-[440px]:w-[56px] max-[440px]:h-[60px] max-[440px]:gap-[12px] max-[440px]:opacity-100"
+            className="w-full h-[84px] flex flex-col gap-[8px] opacity-100"
             onClick={() => handleTabChange(tab.name)}
           >
 
             <div
-              className={`w-[clamp(60px,6vw,77px)] aspect-square border-2 p-2 flex justify-center items-center rounded-full transition-all duration-200
-              max-[440px]:w-[32px] max-[440px]:h-[32px]
-              max-[440px]:gap-[4.5px] max-[440px]:px-[9px] max-[440px]:py-[10.8px]
-              max-[440px]:rounded-[40.5px] max-[440px]:border-[0.9px] max-[440px]:opacity-100
-              ${activeTab === tab.name
-                  ? "border-white bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82]"
-                  : "border-[#FFFFFF1A] bg-[#FFFFFF1A] hover:border-blue-300"
+              className={`w-[52px] h-[52px] rounded-full border-[2px] border-solid border-[#FFFFFF] shadow-[0_0_8px_#8A38F580] bg-gradient-to-b from-[#8120FF] to-[#4D1399] mx-auto flex items-center justify-center
+    max-[440px]:w-[32px] max-[440px]:h-[32px]
+    max-[440px]:rounded-full max-[440px]:border-[0.9px] max-[440px]:opacity-100
+    ${activeTab === tab.name
+                  ? "border-white bg-gradient-to-l from-[#7A1FF133]  to-[#8120FF]"
+                  : "border-[#8A38F533] bg-[#8A38F533] hover:border-blue-300"
                 }`}
             >
-
               <img
                 src={tab.icon}
                 alt={tab.name}
-                className="w-full h-auto max-w-[60%] max-h-[60%] object-contain
-             max-[440px]:w-[17.97px] max-[440px]:h-[13.07px] max-[440px]:opacity-100"
+                className="w-[26px] h-[19px] object-contain
+               max-[440px]:w-[17.97px] max-[440px]:h-[13.07px] max-[440px]:opacity-100"
               />
-
             </div>
-            <p className="text-white text-[clamp(0.9rem,1.5vw,1.4rem)] font-semibold text-center
-              max-[440px]:w-[56px] max-[440px]:h-[17px] max-[440px]:text-[12px] max-[440px]:leading-[140%] max-[440px]:opacity-100">
+            <p
+              className="
+    text-white 
+    font-[500] font-poppins text-[16px] leading-[100%] tracking-[0%] text-center
+    w-[66px] h-[24px] 
+    max-[440px]:w-[56px] max-[440px]:h-[17px] max-[440px]:text-[12px] max-[440px]:leading-[140%] max-[440px]:opacity-100
+  "
+            >
               {tab.name}
             </p>
 
           </div>
         ))}
       </div>
+       <div className="w-full h-[32px] opacity-100 rotate-0 flex justify-center items-center mt-10">
+      <div className="w-[1080px] h-[32px] opacity-100 rotate-0 bg-black flex items-center relative overflow-hidden">
+        <div
+          className="flex gap-[28px] transition-transform duration-300"
+          style={{
+            transform: `translateX(-${visibleRange.start * (100 / 8)}%)`,
+            width: `${Math.ceil(styles[activeTab].length / 8) * 100}%`,
+            marginRight: '16px',
+          }}
+        >
+          {[...Array(3)].map((_, copyIndex) => (
+            <React.Fragment key={`copy-${copyIndex}`}>
+              {styles[activeTab].map((style) => (
+                <span
+                  key={`${style}-${copyIndex}`}
+                  className={`text-white text-sm cursor-pointer px-4 py-1 rounded-full whitespace-nowrap flex-shrink-0 ${
+                    formData.roomType === style.toLowerCase()
+                      ? 'bg-white/10 border-white'
+                      : 'bg-[#0B0B0B] border-[#6D6D6D]'
+                  }`}
+                  style={{ border: "1px solid" }}
+                  onClick={() => handleChange(style.toLowerCase(), "roomType")}
+                >
+                  {style}
+                </span>
+              ))}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+   
 
+        {/* Next button moved to parent div with proper spacing */}
+        <button
+          className="ml-4 flex items-center justify-center rounded-full transition"
+          onClick={handleNext}
+          style={{
+            width: "32px",
+            height: "32px",
+            opacity: 1,
+            borderRadius: "40px",
+            borderWidth: "1px",
+            background: "#7A1FF133",
+            border: "1px solid #FFFFFF",
+            boxShadow: "0px 0px 8px 0px #8A38F51F",
+          }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            style={{
+              width: "12px",   // bigger size
+              height: "12px",
+            }}
+          >
+            <path
+              d="M9 5l7 7-7 7"
+              fill="none"
+              stroke="white"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
+      </div>
+      {/* upload box 2 */}
+      <div className="w-[590px] h-[474px] opacity-100 absolute right-0 top-1/2 transform -translate-y-1/2 bg-black flex flex-col gap-[24px] mr-8 mt-[220px]">
+        {/* content-1 */}
+        <div className="w-[590px] h-[22px] text-white font-poppins font-medium text-[16px] leading-[140%]">
+          Generated Image
+        </div>
+        {/* content-2 */}
+        <div className="w-[590px] h-[358px] rounded-[8px] border border-dashed border-[#6D6D6D] bg-[#6D6D6D1A] relative">
 
+          <div className="w-[590px] h-[350px] rounded-[8px] relative flex items-center justify-center overflow-hidden">
+  {generatedImages.length > 0 ? (
+    <img
+      src={generatedImages[0].url}
+      alt="Generated"
+      className="max-w-full max-h-full object-contain rounded-lg"
+    />
+  ) : (
+    <div className="w-[52px] h-[52px] rounded-[40px] bg-white/10 flex items-center justify-center">
+      <img src={CanvasImg} alt="Canvas" className="w-[26px] h-[26px] object-contain" />
+    </div>
+  )}
+</div>
+
+        </div>
+        {/* content-3 */}
+        <div className="w-[590px] h-[44px] flex gap-[24px] opacity-100">
+
+          {/* Left child div */}
+          <button
+            type="submit"
+            className="w-[283px] h-[44px] rounded-[30px] border border-[#C22CA299] flex items-center justify-center gap-[8px] px-[30px] py-[10px] transition-all duration-300 hover:scale-105 hover:shadow-lg hover:brightness-110"
+            style={{
+              background: "linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)",
+            }}
+          >
+            <span className="text-white text-[16px] font-poppins font-normal leading-[100%]">
+              Create Again
+            </span>
+            <img
+              src={Frame}
+              alt="Frame Icon"
+              className="w-[24px] h-[24px] object-contain transition-transform duration-300 group-hover:rotate-12"
+            />
+          </button>
+          {/* Right child div */}
+          <button
+            type="button"
+            className="w-[283px] h-[44px] rounded-[30px] border border-[#8A38F5] flex items-center justify-center gap-[8px] px-[30px] py-[10px] bg-[#8A38F580] group relative overflow-hidden transition-all duration-300 hover:bg-gradient-to-r hover:from-[#8A38F5] hover:to-[#C22CA2] hover:scale-105 hover:shadow-lg"
+          >
+            <span className="text-white text-[16px] font-poppins font-normal leading-[100%] transition-colors duration-300 z-[10]">
+              Download
+            </span>
+
+            <img
+              src={CanvasUplod}
+              alt="Frame Icon"
+              className="w-[24px] h-[24px] object-contain z-[10]"
+            />
+          </button>
+        </div>
+      </div>
       {/* Form Section */}
-      <div className="w-full max-w-7xl  flex flex-col xl:flex-row gap-10 items-start justify-between">
+      <div className="flex flex-col xl:flex-row items-start justify-between ml-10 mt-20 
+                w-[590px] h-[686px] gap-6 opacity-100 rotate-0">
+
         {/* Upload Box */}
-      <div
-  className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4
+        <div
+          className="w-full xl:w-1/2 max-w-xl flex flex-col items-center gap-4 ml-[190px]
              max-[440px]:w-[329px] max-[440px]:h-[341.547px] max-[440px]:gap-[16px] max-[440px]:opacity-100 
              max-[440px]:mx-auto max-[440px]:justify-center max-[440px]:items-center"
->
+        >
+          <div className="w-[590px] h-[22px] text-white font-poppins font-medium text-[16px] leading-[140%] flex items-center pl-4">
+            Upload Image
+          </div>
 
           <div
-            className="w-full aspect-[4/3] max-h-[70vh] rounded-xl bg-[#002D30] flex justify-center items-center cursor-pointer relative"
+            className="
+    w-[590px] h-[358px] 
+    flex justify-center items-center 
+    cursor-pointer relative 
+    rounded-[8px] 
+    border border-dashed
+  "
           >
             <div
-  className="w-full h-full border-2 border-dashed border-white rounded-xl flex justify-center items-center relative
-             max-[440px]:w-[329px] max-[440px]:h-[285.547px] max-[440px]:px-[50.69px] max-[440px]:py-[96.22px]
-             max-[440px]:rounded-[6.21px] max-[440px]:border-[0.52px] max-[440px]:border-white max-[440px]:border-dashed"
-  onClick={() => inpRef.current.click()}
-  onDragOver={handleDragOver}
-  onDrop={handleDrop}
->
-
+              className="w-full h-full flex justify-center items-center relative
+             max-[440px]:w-[329px] max-[440px]:h-[285.547px] max-[440px]:px-[50.69px] max-[440px]:py-[96.22px]"
+              onClick={() => inpRef.current.click()}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              style={{
+                background: "#6D6D6D1A",
+                borderColor: "#6D6D6D",
+                borderWidth: "1px",
+                borderRadius: "8px",
+                borderStyle: "dashed",
+                opacity: 1,
+              }}
+            >
               {imgURL ? (
                 <>
                   {!isImageLoaded && (
@@ -796,32 +612,30 @@ export default function Form({ selectedImage }) {
                   )}
                 </>
               ) : (
-                  <div
-                    className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2
-                    max-[440px]:w-[145px] max-[440px]:h-[81px] max-[440px]:opacity-100"
-                  >
-
                 <div
-                      className="w-[70px] h-[70px] rounded-full bg-white/10 shadow-md flex justify-center items-center
+                  className="w-[clamp(180px,25vw,280px)] flex flex-col items-center gap-2
+                    max-[440px]:w-[145px] max-[440px]:h-[81px] max-[440px]:opacity-100"
+                >
+
+                  <div
+                    className="w-[37px] h-[28px]  flex justify-center items-center
              max-[440px]:w-[36px] max-[440px]:h-[36px] max-[440px]:px-[9.31px] max-[440px]:py-[8.28px] 
              max-[440px]:rounded-[20.69px] max-[440px]:opacity-100"
-                    >
-                      <img
-                        src={Galley}
-                        alt="gallery"
-                        className="w-[38px] h-[38px] object-contain 
+                  >
+                    <img
+                      src={Upload}
+                      alt="gallery"
+                      className="w-[38px] h-[38px] object-contain 
                max-[440px]:w-[16.23px] max-[440px]:h-[13.01px] max-[440px]:opacity-100"
-                      />
-                    </div>
+                    />
+                  </div>
 
-                 <p
-  className="text-[#FFFFFFB2] text-center text-[clamp(0.9rem,2vw,1.5rem)] leading-snug 
-             max-[440px]:w-[153px] max-[440px]:h-[40px] max-[440px]:text-[14px] 
-             max-[440px]:leading-[140%] max-[440px]:font-normal max-[440px]:opacity-100"
->
-  Drag & drop or click to upload a photo
-</p>
-
+                  <p
+                    className="w-[162px] h-[44px] text-white/70 text-center font-poppins font-normal 
+             text-[16px] leading-[140%] tracking-[0] opacity-100"
+                  >
+                    Drag & drop or click to upload a photo
+                  </p>
                 </div>
               )}
               <input
@@ -834,259 +648,194 @@ export default function Form({ selectedImage }) {
               />
             </div>
           </div>
-
-          {/* Photo Guide */}
-          <div
-            className="w-[147px] h-[40px] rounded-[6px] border-[1.5px] border-solid border-white px-[10px] py-[8px] 
-             flex justify-around items-center cursor-pointer hover:bg-white/10 transition-colors
-             max-[440px]:w-[135px] max-[440px]:h-[40px] max-[440px]:gap-[10px] 
-             max-[440px]:px-[10px] max-[440px]:py-[8px] max-[440px]:rounded-[6px] 
-             max-[440px]:border-[1.5px] max-[440px]:opacity-100"
+          <form
+            onSubmit={handleSubmit}
+            className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
           >
+            {/* Building Type (only for Interior) */}
+            {activeTab === "Interiors" && (
+              <div className="space-y-2">
 
+              </div>
+            )}
+            {/* Room Type & Number of Designs in One Line */}
             <div
-              className="w-[24px] h-[24px] 
-             max-[440px]:w-[24px] max-[440px]:h-[24px] max-[440px]:opacity-100"
+              className="flex max-[440px]:flex-col w-[590px] h-[96px] opacity-100 gap-[18px]  ml-[-210px]"
+              style={{ transform: "rotate(0deg)" }}
             >
-              <img src={I} alt="i" />
+              {/* Select Room Type */}
+
+              <div
+                className="space-y-2 relative w-[286px] h-[76px] opacity-100 flex flex-col gap-[12px]"
+                style={{ transform: "rotate(0deg)" }}
+              >
+                <label
+                  className="
+    text-white 
+    text-[16px] 
+    max-[440px]:text-[14px] 
+    font-poppins 
+    font-normal 
+    leading-[140%] 
+    w-[286px] 
+    h-[22px] 
+    opacity-100 
+    tracking-[0]
+  "
+                >
+                  {activeTab === "Interiors"
+                    ? "Select Room Style"
+                    : activeTab === "Exteriors"
+                      ? "Select House Angle"
+                      : "Select Space"}
+                </label>
+
+                <div className="relative w-[286px]">
+                  <select
+                    name="roomType"
+                    value={formData.roomStyle}
+                    onChange={(e) => handleChange(e.target.value, "roomStyle")}
+                    className="
+      w-full h-[42px]
+      rounded bg-[#781EED33] text-white cursor-pointer
+      px-4 pr-10 py-2 appearance-none
+      focus:outline-none focus:ring-2 focus:ring-[#781EED]
+    "
+                    required
+                  >
+                    <option value="" className="text-black">
+                      Select Room Style
+                    </option>
+                    {roomTypes[activeTab].map((room) => (
+                      <option key={room} value={room.toLowerCase()} className="text-black">
+                        {room}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Dropdown arrow */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                    <svg
+                      className="h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 
+        111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 
+        010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* Number of Designs */}
+              <div className="space-y-2 relative w-[286px] h-[76px] flex flex-col gap-[12px]">
+                <label className="w-[286px] h-[22px] text-white text-[16px] max-[440px]:text-[14px] font-poppins font-normal leading-[140%] tracking-[0] opacity-100">
+                  Number of Designs
+                </label>
+                <div className="relative w-[286px]">
+                  <select
+                    name="numDesigns"
+                    value={formData.numDesigns}
+                    onChange={(e) => handleChange(e.target.value, "numDesigns")}
+                    className="
+        w-full h-[42px]
+        rounded bg-[#781EED33] text-white cursor-pointer
+        px-4 pr-10 py-2 appearance-none
+        focus:outline-none focus:ring-2 focus:ring-[#781EED]
+      "
+                    required
+                  >
+                    {/* Placeholder option (same style as Room Type) */}
+                    <option value="" className="text-black">
+                      Number of designs
+                    </option>
+                    {[...Array(12).keys()].map((num) => (
+                      <option key={num + 1} value={num + 1} className="text-black">
+                        {num + 1}
+                      </option>
+                    ))}
+                  </select>
+                  {/* Dropdown arrow */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                    <svg
+                      className="h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 
+          111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 
+          010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
+            {/* AI Strength */}
+<div className="w-[590px] h-[84px] flex flex-col gap-[12px] opacity-100 rotate-0  ml-[-210px]">
+  <label className="text-white text-lg">AI Styling Strength</label>
 
-            <div
-              className="w-[93px] h-[19px] text-[16px] font-medium leading-[100%] text-center text-white 
-             max-[440px]:w-[81px] max-[440px]:h-[17px] max-[440px]:text-[14px] max-[440px]:font-medium max-[440px]:opacity-100"
-            >
-              Photo guide
-            </div>
-
-          </div>
-        </div>
-        {/* Form Controls */}
-        <form
-          onSubmit={handleSubmit}
-          className="w-full xl:w-1/2 max-w-xl flex flex-col gap-6"
-        >
-          {/* Building Type (only for Interior) */}
-          {activeTab === "Interiors" && (
-  <div className="space-y-2">
-    <label className="text-white text-lg max-[440px]:text-sm">Choose Building Type</label>
-    <div className="flex flex-col sm:flex-row gap-4 max-[440px]:flex-row max-[440px]:gap-2">
-      {["Commercial", "Residential"].map((type) => (
-        <div
-          key={type}
-          className={`flex-1 flex justify-between items-center px-4 py-2 rounded-md cursor-pointer
-            ${
-              formData.buildingType === type.toLowerCase()
-                ? "bg-white text-[#007B82]"
-                : "bg-[#00000033] text-[#FFFFFF80]"
-            }
-            max-[440px]:px-2 max-[440px]:py-1 max-[440px]:text-xs max-[440px]:text-[10px] max-[440px]:h-[35px]
-          `}
-          onClick={() => handleChange(type.toLowerCase(), "buildingType")}
-        >
-          <span className="max-[440px]:text-[11px]">{type}</span>
-          <input
-            type="radio"
-            checked={formData.buildingType === type.toLowerCase()}
-            onChange={() => {}}
-            className="max-[440px]:w-[12px] max-[440px]:h-[12px]"
-          />
-        </div>
-      ))}
-    </div>
-  </div>
-)}
-
-
-          {/* Room Type (dynamic label based on tab) */}
-          {/* <div className="space-y-2">
-            <label className="text-white text-lg">
-              {activeTab === "Interiors"
-                ? "Select Room Type"
-                : activeTab === "Exteriors"
-                  ? "Select House Angle"
-                  : "Select Space"}
-            </label>
-            <select
-              name="roomType"
-              value={formData.roomType}
-              onChange={(e) => handleChange(e.target.value, "roomType")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-              required
-            >
-              <option value="">Select an option</option>
-              {roomTypes[activeTab].map((room) => (
-                <option key={room} value={room.toLowerCase()}>
-                  {room}
-                </option>
-              ))}
-            </select>
-          </div> */}
-
-          {/* Style Selection */}
-          {/* <div className="space-y-2">
-            <label className="text-white text-lg">Select Style</label>
-            <select
-              name="roomStyle"
-              value={formData.roomStyle}
-              onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-              required
-            >
-              <option value="">Select a style</option>
-              {styles[activeTab].map((style) => (
-                <option key={style} value={style.toLowerCase()}>
-                  {style.charAt(0).toUpperCase() + style.slice(1)}
-                </option>
-              ))}
-            </select>
-        </div> */}
-
-      {/* Number of designs */}
-      {/* <div className="space-y-2">
-            <label className="text-white text-lg">Number of Designs</label>
-            <select
-              name="numDesigns"
-              value={formData.numDesigns}
-              onChange={(e) => handleChange(e.target.value, "numDesigns")}
-              className="w-full p-3 rounded-md bg-white text-[#007B82] cursor-pointer"
-            >
-              {[...Array(12).keys()].map((num) => (
-                <option key={num + 1} value={num + 1}>
-                  {num + 1}
-                </option>
-              ))}
-            </select>
-          </div> */}
-      {/* Room Type Dropdown */}
-      <div className="space-y-2 relative">
-        <label className="text-white text-lg">
-          {activeTab === "Interiors"
-            ? "Select Room Type"
-            : activeTab === "Exteriors"
-              ? "Select House Angle"
-              : "Select Space"}
-        </label>
-        <div className="relative">
-          <select
-            name="roomType"
-            value={formData.roomType}
-            onChange={(e) => handleChange(e.target.value, "roomType")}
-            className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent"
-            required
-          >
-            <option value="">Select an option</option>
-            {roomTypes[activeTab].map((room) => (
-              <option key={room} value={room.toLowerCase()}>
-                {room}
-              </option>
-            ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-            <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-     {/* Style & Number of Designs – Side by Side on Mobile */}
-<div className="max-[440px]:flex max-[440px]:flex-wrap max-[440px]:gap-[12px]">
-  {/* Style Selection Dropdown */}
-  <div className="space-y-2 relative max-[440px]:w-[172px]">
-    <label className="text-white text-lg max-[440px]:text-[14px]">Select Style</label>
-    <div className="relative">
-      <select
-        name="roomStyle"
-        value={formData.roomStyle}
-        onChange={(e) => handleChange(e.target.value.toLowerCase(), "roomStyle")}
-        className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent 
-                   max-[440px]:h-[40px] max-[440px]:p-[10px] max-[440px]:pr-[36px] max-[440px]:text-[14px] max-[440px]:rounded-[4px]"
-        required
-      >
-        <option value="">Select a style</option>
-        {styles[activeTab].map((style) => (
-          <option key={style} value={style.toLowerCase()}>
-            {style.charAt(0).toUpperCase() + style.slice(1)}
-          </option>
-        ))}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-        <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-        </svg>
-      </div>
+  {/* Slider with Circle */}
+  <div className="relative w-full h-[8px] rounded-[16px] bg-[#6D6D6D33]">
+    <div
+      className={`absolute top-1/2 -translate-y-1/2 w-[24px] h-[24px] rounded-[30px] 
+        bg-gradient-to-tr from-[#8A38F5] to-[#C22CA2] flex items-center justify-center transition-all duration-500
+        ${formData.aiStrength === "low" ? "left-0" : formData.aiStrength === "medium" ? "left-1/2" : "right-0"}`}
+    >
+      <img
+        src={Frame}
+        alt="icon"
+        className="w-[12px] h-[12px] border border-white rounded-[2px]"
+      />
     </div>
   </div>
 
-  {/* Number of Designs Dropdown */}
-  <div className="space-y-2 relative max-[440px]:w-[172px]">
-    <label className="text-white text-lg max-[440px]:text-[14px]">Number of Designs</label>
-    <div className="relative">
-      <select
-        name="numDesigns"
-        value={formData.numDesigns}
-        onChange={(e) => handleChange(e.target.value, "numDesigns")}
-        className="w-full p-3 pr-10 rounded-md bg-white text-[#007B82] cursor-pointer appearance-none focus:outline-none focus:ring-2 focus:ring-[#007B82] focus:border-transparent 
-                   max-[440px]:h-[40px] max-[440px]:p-[10px] max-[440px]:pr-[36px] max-[440px]:text-[14px] max-[440px]:rounded-[4px]"
+  {/* Labels */}
+  <div className="flex justify-between w-full mt-2">
+    {["Low", "Medium", "High"].map((level) => (
+      <span
+        key={level}
+        className={`text-white text-sm cursor-pointer ${
+          formData.aiStrength === level.toLowerCase() ? "font-semibold" : "font-normal"
+        }`}
+        onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
       >
-        {[...Array(12).keys()].map((num) => (
-          <option key={num + 1} value={num + 1}>
-            {num + 1}
-          </option>
-        ))}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-        <svg className="h-5 w-5 text-[#007B82]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-        </svg>
-      </div>
-    </div>
+        {level}
+      </span>
+    ))}
   </div>
 </div>
+            
+          </form>
+        </div >
 
-      {/* AI Strength */}
-      <div className="space-y-2">
-        <label className="text-white text-lg">AI Styling Strength</label>
-        <div className="flex flex-wrap gap-3">
-          {["Very Low", "Low", "Medium", "High"].map((level) => (
-            <div
-              key={level}
-              className={`flex-1 min-w-[120px] px-4 py-2 rounded-md cursor-pointer text-center ${formData.aiStrength === level.toLowerCase()
-                ? "bg-white text-[#007B82]"
-                : "bg-[#00000033] text-[#FFFFFF80]"
-                }`}
-              onClick={() => handleChange(level.toLowerCase(), "aiStrength")}
-            >
-              {level}
-            </div>
-          ))}
-        </div>
       </div>
-    </form>
-      </div >
-
-    {/* Generate Button */ }
-
-    < div
-  className = "w-full max-w-[899px] min-h-[67px] rounded-[8px] border border-[#FFFFFF4D] flex justify-center items-center cursor-pointer"
-  style = {{
-    backgroundImage:
-    "linear-gradient(to right, #007c82 0%, rgb(4, 68, 75), rgb(3, 89, 94) 100%)",
-        }
-}
-
+      {/* Form Controls */}
+      <button
+        type="submit"
+        onClick={handleSubmit}
+        className="w-[590px] h-[44px] flex items-center justify-center gap-[10px] 
+             rounded-[30px] border border-white/50 px-[30px] py-[10px] 
+             bg-gradient-to-r from-[rgba(138,56,245,0.5)] to-[rgba(194,44,162,0.5)] 
+             text-white font-poppins font-normal text-[16px] leading-[100%]
+             hover:opacity-90 transition -mt-8  ml-[95px]"
       >
-  <button
-    type="submit"
-    onClick={handleSubmit}
-    className="w-[200px] min-h-[35px] flex justify-center items-center gap-[10px] text-[20px] font-bold leading-[35px] tracking-[0.5px] text-center text-white"
-  >
-    <span>
-      <img src={Magic} alt="magic" />
-    </span>
-    Generate Design
-  </button>
-      </div >
+        <span>Create magic</span>
+        <img
+          src={Frame}
+          alt="icon"
+          className="w-[24px] h-[24px] opacity-100"
+        />
+      </button>
     </section >
   );
 }

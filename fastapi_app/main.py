@@ -251,24 +251,27 @@ app.include_router(forgot_password_router)
 app.include_router(api.router)
 
 BASE_DIR = Path(__file__).parent.parent  # Goes up one level from fastapi_app/
-
-# Define paths
 uploads_path = BASE_DIR / "fastapi_app" / "uploads"
 generated_path = BASE_DIR / "fastapi_app" / "generated"
-
-# Create folders if they don't exist
+# Absolute paths
+GENERATED_PATH = BASE_DIR / "fastapi_app" / "generated"
+UPLOADS_PATH = BASE_DIR / "fastapi_app" / "uploads"
+MEDIA_PATH = BASE_DIR / "fastapi_app" / "media"
+STATIC_PATH = BASE_DIR / "fastapi_app" / "static"
 uploads_path.mkdir(parents=True, exist_ok=True)
 generated_path.mkdir(parents=True, exist_ok=True)
+# Ensure folders exist
+GENERATED_PATH.mkdir(parents=True, exist_ok=True)
+UPLOADS_PATH.mkdir(parents=True, exist_ok=True)
+MEDIA_PATH.mkdir(parents=True, exist_ok=True)
+STATIC_PATH.mkdir(parents=True, exist_ok=True)
 
-# Static mounts
-app.mount("/static", StaticFiles(directory="fastapi_app/static"), name="static")
-app.mount("/media", StaticFiles(directory="fastapi_app/media"), name="media")
-
+# Mount static files
+app.mount("/static", StaticFiles(directory=STATIC_PATH), name="static")
+app.mount("/media/generated", StaticFiles(directory=GENERATED_PATH), name="generated")
+app.mount("/media/uploads", StaticFiles(directory=UPLOADS_PATH), name="uploads")
 app.mount("/static_uploads", StaticFiles(directory=uploads_path), name="static_uploads")
 app.mount("/static_generated", StaticFiles(directory=generated_path), name="static_generated")
-
-invoices_path = os.path.join("fastapi_app", "generated_invoices")
-app.mount("/generated_invoices", StaticFiles(directory=invoices_path), name="invoices")
 
 # Routes
 @app.get("/")

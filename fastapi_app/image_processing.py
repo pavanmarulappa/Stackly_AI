@@ -61,11 +61,6 @@ HEADERS = {
 }
         
 
-# Enums for frontend options
-# class BuildingType(str, Enum):
-#     COMMERCIAL = "commercial"
-#     RESIDENTIAL = "residential"
-
 class RoomType(str, Enum):
     LIVING_ROOM = "living room"
     BEDROOM = "bedroom"
@@ -100,56 +95,7 @@ class AIStylingStrength(str, Enum):
 
 
 # Style configurations for interior
-"""STYLE_CONFIGS = {
-    "classic": {
-        "prompt": "Classic {room_type} in a {building_type} with traditional furniture, ornate details, rich fabrics, elegant lighting, {style} style",
-        "negative_prompt": "modern, minimalist, industrial, futuristic"
-    },
-    "modern": {
-        "prompt": "Modern {room_type} in a {building_type} with clean lines, contemporary furniture, neutral palette, designer lighting, {style} style",
-        "negative_prompt": "traditional, ornate, rustic, vintage"
-    },
-    "minimal": {
-        "prompt": "Minimalist {room_type} in a {building_type} with clean lines, functional furniture, monochromatic palette, open space, {style} style",
-        "negative_prompt": "cluttered, ornate, traditional, heavy"
-    },
-    "scandinavian": {
-        "prompt": "Scandinavian {room_type} in a {building_type} with light wood, clean lines, functional furniture, natural light, hygge aesthetic, {style} style",
-        "negative_prompt": "ornate, dark, heavy, cluttered"
-    },
-    "contemporary": {
-        "prompt": "Contemporary {room_type} in a {building_type} with clean lines, mixed materials, neutral colors, designer lighting, {style} style",
-        "negative_prompt": "traditional, rustic, vintage, ornate"
-    },
-    "industrial": {
-        "prompt": "Industrial {room_type} in a {building_type} with exposed brick, metal accents, open space, modern lighting, urban style, {style} style",
-        "negative_prompt": "traditional, floral, rustic, country"
-    },
-    "japandi": {
-        "prompt": "Japandi {room_type} in a {building_type} with minimal decor, natural materials, neutral colors, zen atmosphere, {style} style",
-        "negative_prompt": "cluttered, ornate, bright colors, western"
-    },
-    "bohemian": {
-        "prompt": "Bohemian {room_type} in a {building_type} with eclectic mix of patterns, textures, plants, warm lighting, {style} style",
-        "negative_prompt": "minimalist, sterile, modern"
-    },
-    "coastal": {
-        "prompt": "Coastal {room_type} in a {building_type} with light colors, natural textures, nautical elements, airy atmosphere, {style} style",
-        "negative_prompt": "dark, heavy, urban, industrial"
-    },
-    "modern luxury": {
-        "prompt": "Luxury modern {room_type} in a {building_type} with designer furniture, premium materials, elegant lighting, 8K professional interior, {style} style",
-        "negative_prompt": "cheap, cluttered, outdated, poor lighting"
-    },
-    "tropical resort": {
-        "prompt": "Tropical {room_type} in a {building_type} with canopy bed, natural materials, lush greenery, resort-style luxury, {style} style",
-        "negative_prompt": "urban, industrial, minimalist"
-    },
-    "japanese zen": {
-        "prompt": "Japanese zen {room_type} in a {building_type} with tatami mats, shoji screens, minimal decor, peaceful atmosphere, {style} style",
-        "negative_prompt": "western, cluttered, bright colors"
-    }
-}"""
+
 STYLE_CONFIGS = {
     "classic": {
         "prompt": "Elegant {room_type} with traditional furniture, ornate details, rich fabrics, warm lighting, {style} aesthetic. High-quality materials, symmetrical composition, timeless elegance, sophisticated ambiance, professional interior photography",
@@ -537,6 +483,7 @@ async def generate_more_designs(
         uploads_path.mkdir(parents=True, exist_ok=True)
         generated_path.mkdir(parents=True, exist_ok=True)
 
+        # --- Step 1: User & Subscription ---
         try:
             user = await sync_to_async(UserData.objects.get)(id=user_id)
             subscription = await sync_to_async(UserSubscription.objects.filter(user=user).first)()
@@ -545,6 +492,7 @@ async def generate_more_designs(
         except UserData.DoesNotExist:
             raise HTTPException(status_code=404, detail="User not found")
 
+        # --- Step 2: Credit Check ---
         remaining_credits = subscription.total_credits - subscription.used_credits
         if remaining_credits < num_images:
             raise HTTPException(
@@ -556,134 +504,128 @@ async def generate_more_designs(
                 }
             )
 
+        # --- Step 3: Save uploaded image ---
         file_ext = os.path.splitext(uploaded_image.filename)[1].lower()
         if file_ext not in ['.jpg', '.jpeg', '.png']:
             raise HTTPException(status_code=400, detail="Only JPG and PNG images are allowed")
 
         original_filename = f"more_{uuid.uuid4().hex}{file_ext}"
         original_path = uploads_path / original_filename
+        with open(original_path, "wb") as f:
+            shutil.copyfileobj(uploaded_image.file, f)
 
-        try:
-            with open(original_path, "wb") as f:
-                shutil.copyfileobj(uploaded_image.file, f)
+        # Resize for Stability API
+        image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
 
-            image_bytes, _ = await resize_to_allowed_dimensions(str(original_path))
+        # --- Step 4: Prompt setup ---
+        if category == "interiors":
+            if style not in STYLE_CONFIGS:
+                raise HTTPException(status_code=400, detail="Invalid style for interior design")
+            config = STYLE_CONFIGS[style]
+            prompt = config["prompt"].format(room_type=type_detail, style=style)
+            negative_prompt = config["negative_prompt"]
+        elif category == "exteriors":
+            prompt = f"{style} style house {type_detail} view, modern architecture, HD rendering"
+            negative_prompt = "low quality, blurry, sketch, painting"
+        else:  # outdoors
+            prompt = f"{style} style {type_detail}, professional landscape design, natural elements, clean look"
+            negative_prompt = "cluttered, dark, blurry, low quality"
 
-            if category == "interiors":
-                if style not in STYLE_CONFIGS:
-                    raise HTTPException(status_code=400, detail="Invalid style for interior design")
+        params = STRENGTH_CONFIG[ai_strength.lower()]
 
-                config = STYLE_CONFIGS[style]
-                prompt = config["prompt"].format(
-                    room_type=type_detail,
-                    # building_type="residential",
-                    style=style
-                )
-                negative_prompt = config["negative_prompt"]
-            elif category == "exteriors":
-                prompt = f"{style} style house {type_detail} view, modern architecture, HD rendering"
-                negative_prompt = "low quality, blurry, sketch, painting"
-            else:
-                prompt = f"{style} style {type_detail}, professional landscape design, natural elements, clean look"
-                negative_prompt = "cluttered, dark, blurry, low quality"
-
-            params = STRENGTH_CONFIG[ai_strength.lower()]
-
-            generated_filenames = []
-            for _ in range(num_images):
-                files = {
-                    "init_image": ("input.png", BytesIO(image_bytes), "image/png"),
-                }
-                data = {
-                    "init_image_mode": "IMAGE_STRENGTH",
-                    "image_strength": str(params["image_strength"]),
-                    "text_prompts[0][text]": prompt,
-                    "text_prompts[0][weight]": "1.2",
-                    "text_prompts[1][text]": negative_prompt,
-                    "text_prompts[1][weight]": "-1.0",
-                    "cfg_scale": str(params["cfg_scale"]),
-                    "samples": "1",
-                    "steps": str(params["steps"]),
-                    "seed": str(random.randint(0, 100000)),
-                    "style_preset": "photographic"
-                }
-
-                response = requests.post(
-                    STABILITY_API_URL,
-                    headers=HEADERS,
-                    files=files,
-                    data=data,
-                    timeout=45
-                )
-                response.raise_for_status()
-
-                result = response.json()
-                artifact = result["artifacts"][0]
-                filename = f"more_{uuid.uuid4().hex}.png"
-                out_path = generated_path / filename
-
-                with open(out_path, "wb") as f:
-                    f.write(base64.b64decode(artifact["base64"]))
-                    
-                # ✅ Watermark only for basic users
-                if subscription.current_plan == "basic":
-                    add_watermark_to_image(str(out_path))
-
-                generated_filenames.append(filename)
-
-            @sync_to_async
-            def save_to_db():
-                with transaction.atomic():
-                    existing_entries = UserDesignHistory.objects.filter(user=user).order_by('created_at')
-                    excess = existing_entries.count() + len(generated_filenames) - 10
-                    if excess > 0:
-                        for old_entry in existing_entries[:excess]:
-                            old_uploaded_path = BASE_DIR / "fastapi_app" / "uploads" / os.path.basename(old_entry.uploaded_image.name)
-                            old_generated_path = BASE_DIR / "fastapi_app" / "generated" / os.path.basename(old_entry.generated_image.name)
-
-                            if old_uploaded_path.exists():
-                                os.remove(old_uploaded_path)
-                            if old_generated_path.exists():
-                                os.remove(old_generated_path)
-                            old_entry.delete()
-
-                    for fname in generated_filenames:
-                        UserDesignHistory.objects.create(
-                            user=user,
-                            uploaded_image=f"uploads/{original_filename}",
-                            generated_image=f"generated/{fname}"
-                        )
-
-                    subscription.used_credits += num_images
-                    subscription.total_credits_used_all_time += num_images
-                    subscription.save()
-
-                    today = date.today()
-                    credit_entry, created = CreditUsage.objects.get_or_create(
-                        user=user,
-                        date=today,
-                        defaults={"credits_used": num_images}
-                    )
-                    if not created:
-                        credit_entry.credits_used += num_images
-                        credit_entry.save()
-
-            await save_to_db()
-
-            return {
-                "success": True,
-                "designs": [f"/static_generated/{f}" for f in generated_filenames],
-                "credits": {
-                    "remaining": subscription.balance_credits,
-                    "used": subscription.used_credits,
-                    "total": subscription.total_credits
-                },
-                "message": f"Successfully generated {num_images} additional designs"
+        # --- Step 5: Generate Images ---
+        generated_filenames = []
+        for _ in range(num_images):
+            files = {"init_image": ("input.png", BytesIO(image_bytes), "image/png")}
+            data = {
+                "init_image_mode": "IMAGE_STRENGTH",
+                "image_strength": str(params["image_strength"]),
+                "text_prompts[0][text]": prompt,
+                "text_prompts[0][weight]": "1.2",
+                "text_prompts[1][text]": negative_prompt,
+                "text_prompts[1][weight]": "-1.0",
+                "cfg_scale": str(params["cfg_scale"]),
+                "samples": "1",
+                "steps": str(params["steps"]),
+                "seed": str(random.randint(0, 100000)),
+                "style_preset": "photographic"
             }
 
-        finally:
-            if original_path.exists():
-                original_path.unlink()
+            response = requests.post(
+                STABILITY_API_URL,
+                headers=HEADERS,
+                files=files,
+                data=data,
+                timeout=45
+            )
+            response.raise_for_status()
+
+            result = response.json()
+            artifact = result["artifacts"][0]
+            file_uuid = uuid.uuid4().hex
+            filename = f"more_{file_uuid}.png"
+            out_path = generated_path / filename
+
+            with open(out_path, "wb") as f:
+                f.write(base64.b64decode(artifact["base64"]))
+
+            # ✅ Watermark only for basic users
+            if subscription.current_plan == "basic":
+                add_watermark_to_image(str(out_path))
+
+            generated_filenames.append(filename)
+
+        # --- Step 6: Save to DB ---
+        @sync_to_async
+        def save_to_db():
+            with transaction.atomic():
+                existing_entries = UserDesignHistory.objects.filter(user=user).order_by('created_at')
+                excess = existing_entries.count() + len(generated_filenames) - 10
+                if excess > 0:
+                    for old_entry in existing_entries[:excess]:
+                        old_uploaded_path = BASE_DIR / "fastapi_app" / "uploads" / os.path.basename(old_entry.uploaded_image.name)
+                        old_generated_path = BASE_DIR / "fastapi_app" / "generated" / os.path.basename(old_entry.generated_image.name)
+                        if old_uploaded_path.exists():
+                            os.remove(old_uploaded_path)
+                        if old_generated_path.exists():
+                            os.remove(old_generated_path)
+                        old_entry.delete()
+
+                # ✅ Save uploaded + generated images
+                for fname in generated_filenames:
+                    UserDesignHistory.objects.create(
+                        user=user,
+                        uploaded_image=f"uploads/{original_filename}",   # uploaded image
+                        generated_image=f"generated/{fname}"             # generated image
+                    )
+
+                subscription.used_credits += num_images
+                subscription.total_credits_used_all_time += num_images
+                subscription.save()
+
+                today = date.today()
+                credit_entry, created = CreditUsage.objects.get_or_create(
+                    user=user,
+                    date=today,
+                    defaults={"credits_used": num_images}
+                )
+                if not created:
+                    credit_entry.credits_used += num_images
+                    credit_entry.save()
+
+        await save_to_db()
+
+        return {
+            "success": True,
+            "uploaded_image": f"/static_uploads/{original_filename}",   # ✅ uploaded file
+            "designs": [f"/static_generated/{f}" for f in generated_filenames],
+            "credits": {
+                "remaining": subscription.balance_credits,
+                "used": subscription.used_credits,
+                "total": subscription.total_credits
+            },
+            "message": f"Successfully generated {num_images} additional designs"
+        }
 
     except HTTPException:
         raise
@@ -692,7 +634,7 @@ async def generate_more_designs(
             status_code=500,
             detail=f"Unexpected error generating more designs: {str(e)}"
         )
-        
+
 #updated db interior
 """@router.post("/generate-interior-design/")
 async def generate_design(

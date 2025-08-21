@@ -303,7 +303,9 @@ export default function SignUp({ setUser }) {
               <div className="w-[191.5px] h-px bg-[#B0B0B0]" />
             </div>
 
-            <div className="w-[554px] h-[44px] flex items-center justify-center gap-4 mt-6 opacity-100">
+            
+          </form>
+          <div className="w-[554px] h-[44px] flex items-center justify-center gap-4 mt-6 opacity-100">
               <div className="w-[202px] h-[44px] flex justify-between items-center">
                 <a href="http://localhost:8000/login/google">
                   <button
@@ -416,7 +418,6 @@ export default function SignUp({ setUser }) {
               </div>
 
             </div>
-          </form>
         </div>
         {/* Bottom child content at bottom */}
         <div className="w-full flex justify-center items-center opacity-100 mt-14">

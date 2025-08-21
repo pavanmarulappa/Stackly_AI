@@ -351,12 +351,26 @@ import {
 export default function Footer() {
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 441);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 441);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+useEffect(() => {
+  const checkAuth = () => {
+    const userId = localStorage.getItem("userId");
+    const userInfo = localStorage.getItem("userInfo");
+    setIsLoggedIn(!!(userId && userInfo));
+  };
+
+  // Run on mount + whenever route changes
+  checkAuth();
+
+  // Listen for changes in localStorage (e.g., login/logout from other tabs)
+  window.addEventListener("storage", checkAuth);
+
+  return () => {
+    window.removeEventListener("storage", checkAuth);
+  };
+}, [location.pathname]);
+
 
   const hiddenRoutes = [
     "/sign-up",
@@ -370,9 +384,6 @@ export default function Footer() {
     "/HeroForgetPg",
   ];
 
-  // Assuming a simple check for logged-in state (modify as per your auth logic)
-  const isLoggedIn = true; // Replace with actual auth check, e.g., useAuth()
-
   if (hiddenRoutes.includes(location.pathname)) {
     return null;
   }
@@ -380,6 +391,8 @@ export default function Footer() {
   return (
     <footer className="w-full h-auto flex justify-center items-center flex-col mt-0 shadow-lg bg-black">
       <div className="max-w-full mx-auto grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-10 mt-10 lg:mx-20 md:mx-12 sm:mx-10 max-[440px]:flex max-[440px]:flex-col max-[440px]:w-[400px] max-[440px]:min-h-[427px] max-[440px]:gap-[24px] max-[440px]:px-4">
+        
+        {/* Logo & About */}
         <div className="mr-5 max-[440px]:flex max-[440px]:flex-col max-[440px]:w-[296px] max-[440px]:min-h-[148px] max-[440px]:gap-[12px]">
           <img
             src={logo}
@@ -407,30 +420,36 @@ export default function Footer() {
           </div>
         </div>
 
-        <div>
-          <h4 className="font-bold ml-12 text-[18px] mb-4 text-[#FFFFFF] max-[440px]:hidden">
-            Quick links
-          </h4>
-          <ul className="text-[16px] ml-12 leading-[40px] spacing-[0.3px] text-[#FFFFFF] max-[440px]:hidden">
-            <li><a href="/">Home</a></li>
-            {isLoggedIn ? (
-              <>
-                <li><a href="/products">My Spaces</a></li>
-                <li><a href="/pricing">Inspirations</a></li>
-                <li><a href="/api">FAQs</a></li>
-                <li><a href="/contact">Contact Us</a></li>
-              </>
-            ) : (
-              <>
-                <li><a href="/products">Feature</a></li>
-                <li><a href="/pricing">Pricing</a></li>
-                <li><a href="/api">API</a></li>
-                <li><a href="/contact">Contact Us</a></li>
-              </>
-            )}
-          </ul>
-        </div>
+        {/* Quick Links (Desktop) */}
+<div>
+  <h4 className="font-bold ml-12 text-[18px] mb-4 text-[#FFFFFF] max-[440px]:hidden">
+    Quick links
+  </h4>
+  <ul className="text-[16px] ml-12 leading-[40px] spacing-[0.3px] text-[#FFFFFF] max-[440px]:hidden">
+    {/* Dynamic first link */}
+    <li>
+      <a href={isLoggedIn ? "/canvas" : "/"}>{isLoggedIn ? "Canvas" : "Home"}</a>
+    </li>
 
+    {isLoggedIn ? (
+      <>
+        <li><a href="/products">My Spaces</a></li>
+        <li><a href="/pricing">Inspirations</a></li>
+        <li><a href="/api">FAQs</a></li>
+        <li><a href="/contact">Contact Us</a></li>
+      </>
+    ) : (
+      <>
+        <li><a href="/products">Feature</a></li>
+        <li><a href="/pricing">Pricing</a></li>
+        <li><a href="/api">API</a></li>
+        <li><a href="/contact">Contact Us</a></li>
+      </>
+    )}
+  </ul>
+</div>
+
+        {/* Terms & Policy */}
         <div>
           <h4 className="font-bold ml-4 text-[18px] mb-4 text-[#FFFFFF] max-[440px]:hidden">
             Terms & Policy
@@ -442,8 +461,9 @@ export default function Footer() {
           </ul>
         </div>
 
+        {/* Contact */}
         <div className="max-[440px]:flex ml-12 max-[440px]:flex-col max-[440px]:w-[193px] max-[440px]:-ml-[0px] max-[440px]:mt-[160px] max-[440px]:gap-[2px]">
-          <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF] max-[440px]:text-[14px]   max-[440px]:mb-0 max-[440px]:leading-[24px] max-[440px]:tracking-[0.3px] max-[440px]:font-semibold font-['Inter']">
+          <h4 className="font-bold text-[18px] mb-4 text-[#FFFFFF] max-[440px]:text-[14px] max-[440px]:mb-0 max-[440px]:leading-[24px] max-[440px]:tracking-[0.3px] max-[440px]:font-semibold font-['Inter']">
             Contact Us
           </h4>
           <div className="text-[16px] leading-[40px] tracking-[0.3px] text-[#FFFFFF] max-[440px]:text-[14px] max-[440px]:leading-[20px]">
@@ -480,9 +500,9 @@ export default function Footer() {
               <li className="h-[17px]"><a href="/">Home</a></li>
               {isLoggedIn ? (
                 <>
-                  <li className="h-[17px]"><a href="/my-space">My Space</a></li>
-                  <li className="h-[17px]"><a href="/my-faq">My FAQ</a></li>
-                  <li className="h-[17px]"><a href="/profile">Profile</a></li>
+                  <li className="h-[17px]"><a href="/products">My Spaces</a></li>
+                  <li className="h-[17px]"><a href="/pricing">Inspirations</a></li>
+                  <li className="h-[17px]"><a href="/api">FAQs</a></li>
                 </>
               ) : (
                 <>
@@ -494,7 +514,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          
           {/* Terms & Policy Mobile */}
           <div className="flex flex-col gap-[8px]">
             <h4 className="text-[#007b82] text-[14px] font-semibold leading-[24px] tracking-[0.3px] font-['Inter']">
@@ -509,8 +528,10 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Divider */}
       <div className="w-[1300px] h-[2px] flex justify-center items-center bg-[#007B8233] sm:m-5 m-10 max-[440px]:w-[385px] max-[440px]:h-[1px] max-[440px]:rotate-0"></div>
 
+      {/* Copyright */}
       <div className="text-center text-[#FFFFFF] text-[16px] leading-[16px] tracking-[0.26px] text-xs mt-4 mb-10 max-[440px]:w-[400px] max-[440px]:h-[24px] max-[440px]:font-['Inter'] max-[440px]:font-normal max-[440px]:text-[16px] max-[440px]:leading-[16px] max-[440px]:tracking-[0.26px]">
         &copy; 2023 Stackly AI | All Rights Reserved
       </div>

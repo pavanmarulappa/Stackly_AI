@@ -1,5 +1,3 @@
-// AfterProducts 
-
 import AfterForm from "../AfterSignHome/FormAfter";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
@@ -55,14 +53,14 @@ export default function AfterProducts() {
   return (
     <div>
       <HeroAfterProducts />
-      <AfterCarouselProducts />
-      <AfterDraggableImagesProducts />
+      {/* <AfterCarouselProducts />
+      <AfterDraggableImagesProducts /> */}
       {/* <AfterForm
         id="AfterForm-section"
         imageValue={selectedImage}
         selectedRoom={selectedRoom}
       /> */}
-      <AfterPackageProducts />
+      {/* <AfterPackageProducts /> */}
     </div>
   );
 }

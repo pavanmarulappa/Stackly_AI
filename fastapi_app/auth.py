@@ -290,6 +290,12 @@ from fastapi.logger import logger
 import random, string, time
 import smtplib, secrets
 from email.message import EmailMessage
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel
+from typing import List
+from datetime import datetime
+
+from asgiref.sync import sync_to_async
 
 
 # Setup
@@ -297,7 +303,7 @@ load_dotenv()
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "my_project.settings")
 django_setup()
 
-from appln.models import UserData, UserSubscription, APIKeyManager
+from appln.models import UserData, UserSubscription, APIKeyManager, UserDesignHistory
 
 # Auth0 config
 AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
@@ -766,6 +772,30 @@ def get_me(user=Depends(get_current_user)):
     return {
         "userId": user.id,
         "email": user.email,
-        #"firstName": user.first_name,
-        #"lastName": user.last_name,
+       
     }
+
+class DesignResponse(BaseModel):
+    id: int
+    uploaded_image: str
+    generated_image: str
+    created_at: datetime
+
+    class Config:
+        orm_mode = True
+
+# Convert ImageFieldFile to URL string
+def serialize_design(design: UserDesignHistory):
+    return {
+        "id": design.id,
+        "uploaded_image": f"/media/{design.uploaded_image.name}" if design.uploaded_image else "",
+        "generated_image": f"/media/{design.generated_image.name}" if design.generated_image else "",
+        "created_at": design.created_at
+    }
+
+@router.get("/designs", response_model=List[DesignResponse])
+async def get_user_designs(user=Depends(get_current_user)):
+    designs_qs = await sync_to_async(list)(
+        UserDesignHistory.objects.filter(user=user).order_by("-created_at")
+    )
+    return [serialize_design(d) for d in designs_qs]
