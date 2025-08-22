@@ -297,6 +297,7 @@ from datetime import datetime
 from fastapi import Query
 from urllib.parse import quote
 
+
 from asgiref.sync import sync_to_async
 
 
@@ -705,6 +706,7 @@ async def handle_provider_signup_login(email: str, first_name: str, last_name: s
 
         user, created = await process_user()
         token = create_access_token(data={"sub": user.email or user.userid, "user_id": user.id})
+        refresh_token = create_refresh_token(data={"sub": user.email or user.userid, "user_id": user.id})
         logger.info(f"User processed: id={user.id}, email={user.email}, token={token}")
 
         redirect_url = (
@@ -713,6 +715,7 @@ async def handle_provider_signup_login(email: str, first_name: str, last_name: s
             f"&userId={user.id}"
             f"&email={quote(user.email or '')}"
             f"&token={quote(token)}"
+            f"&refreshToken={quote(refresh_token)}"
         )
         logger.info(f"Redirecting to: {redirect_url}")
         return RedirectResponse(url=redirect_url, status_code=302)
@@ -739,7 +742,8 @@ async def apple_signup(userid: str):
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 auth_scheme = HTTPBearer()
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
+REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 def create_access_token(data: dict):
     to_encode = data.copy()
@@ -748,6 +752,12 @@ def create_access_token(data: dict):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+def create_refresh_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    to_encode.update({"exp": expire, "type": "refresh"})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
 
 async def verify_token(token: str = Depends(oauth2_scheme)):
     try:
@@ -771,9 +781,28 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(a
         user = await sync_to_async(UserData.objects.get)(id=user_id)
         print(f"Authenticated user: {user.id}, email: {user.email}")
         return user
-    except (jwt.PyJWTError, UserData.DoesNotExist) as e:
+    except (JWTError, UserData.DoesNotExist) as e:
         print(f"Authentication error: {str(e)}")
         raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+@router.post("/refresh")
+async def refresh_token(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+    token = credentials.credentials
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("type") != "refresh":
+            raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+        user_id = payload.get("user_id")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid refresh token payload")
+
+        # Issue new access token
+        new_access_token = create_access_token({"user_id": user_id, "sub": payload.get("sub")})
+        return {"access_token": new_access_token, "token_type": "bearer"}
+    
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Refresh token expired or invalid")
 
 @router.get("/me")
 async def get_me(user=Depends(get_current_user)):
