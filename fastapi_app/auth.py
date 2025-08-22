@@ -294,6 +294,8 @@ from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from typing import List
 from datetime import datetime
+from fastapi import Query
+from urllib.parse import quote
 
 from asgiref.sync import sync_to_async
 
@@ -321,6 +323,8 @@ ALGORITHM = os.getenv("ALGORITHM")
 
 
 router = APIRouter()
+auth_scheme = HTTPBearer()
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -586,6 +590,7 @@ async def login(user_data: LoginUser):
 async def auth_callback(request: Request):
     code = request.query_params.get("code")
     if not code:
+        logger.error("Authorization code not found")
         raise HTTPException(status_code=400, detail="Authorization code not found")
 
     token_url = f"https://{AUTH0_DOMAIN}/oauth/token"
@@ -601,6 +606,7 @@ async def auth_callback(request: Request):
     token_info = response.json()
     access_token = token_info.get('access_token')
     if not access_token:
+        logger.error("Token exchange failed")
         raise HTTPException(status_code=400, detail="Token exchange failed")
 
     user_info_url = f"https://{AUTH0_DOMAIN}/userinfo"
@@ -609,6 +615,7 @@ async def auth_callback(request: Request):
 
     sub = user_info.get('sub')
     if not sub:
+        logger.error("Auth0 user info missing 'sub'")
         raise HTTPException(status_code=400, detail="Auth0 user info missing 'sub'")
 
     provider = sub.split('|')[0]
@@ -617,24 +624,31 @@ async def auth_callback(request: Request):
     first_name = user_info.get('given_name') or user_info.get('name') or ""
     last_name = user_info.get('family_name') or ""
 
+    logger.info(f"Auth0 callback: provider={provider}, user_id={user_id}, email={email}")
+
     if provider == "google-oauth2":
         if not email:
+            logger.error("Google login failed: email not provided")
             raise HTTPException(status_code=400, detail="Google login failed: email not provided")
         return await handle_provider_signup_login(email=email, first_name=first_name, last_name=last_name, provider="google", user_id=None)
     elif provider == "facebook":
         if not user_id or not first_name:
+            logger.error("Facebook login missing required info")
             raise HTTPException(status_code=400, detail="Facebook login missing required info")
         return await handle_provider_signup_login(email=None, first_name=first_name, last_name=last_name, provider="facebook", user_id=user_id)
     elif provider == "apple":
         if not user_id:
+            logger.error("Apple login missing user ID")
             raise HTTPException(status_code=400, detail="Apple login missing user ID")
         return await handle_provider_signup_login(email=None, first_name=None, last_name=None, provider="apple", user_id=user_id)
     else:
+        logger.error(f"Unsupported provider: {provider}")
         raise HTTPException(status_code=400, detail="Unsupported provider")
-
 
 async def handle_provider_signup_login(email: str, first_name: str, last_name: str, provider: str, user_id: str = None):
     try:
+        logger.info(f"Processing {provider} login: email={email}, user_id={user_id}")
+        
         @sync_to_async
         def process_user():
             with transaction.atomic():
@@ -670,11 +684,6 @@ async def handle_provider_signup_login(email: str, first_name: str, last_name: s
                         userid=user.userid,
                         name=" ".join(filter(None, [user.first_name, user.last_name])).strip(),
                         current_plan='basic',
-                        duration=None,
-                        original_price=0.00,
-                        discount_price=0.00,
-                        plan_expiring_date=None,
-                        renews_on=None,
                         total_credits=10,
                         used_credits=0,
                         total_credits_used_all_time=0
@@ -688,26 +697,25 @@ async def handle_provider_signup_login(email: str, first_name: str, last_name: s
                         credits_remaining=10,
                         monthly_credits=10,
                         created_at=datetime.utcnow(),
-                        updated_at=None,  
+                        updated_at=None,
                         is_active=True,
                         usage_count=0
                     )
                 return user, created
 
         user, created = await process_user()
-
         token = create_access_token(data={"sub": user.email or user.userid, "user_id": user.id})
+        logger.info(f"User processed: id={user.id}, email={user.email}, token={token}")
 
-        response = RedirectResponse(url=FRONTEND_HOME_URL, status_code=302)
-        response.set_cookie(
-            key="access_token",
-            value=token,
-            httponly=True,
-            secure=True,
-            samesite="lax",
-            max_age=ACCESS_TOKEN_EXPIRE_MINUTES * 60
+        redirect_url = (
+            f"{FRONTEND_HOME_URL}"
+            f"?authSuccess=true"
+            f"&userId={user.id}"
+            f"&email={quote(user.email or '')}"
+            f"&token={quote(token)}"
         )
-        return response
+        logger.info(f"Redirecting to: {redirect_url}")
+        return RedirectResponse(url=redirect_url, status_code=302)
 
     except Exception as e:
         logger.error(f"{provider} login error: {str(e)}")
@@ -752,7 +760,6 @@ async def verify_token(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=401, detail="Invalid or expired token")
 
 
-
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
     token = credentials.credentials
     try:
@@ -762,40 +769,90 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(a
             raise HTTPException(status_code=401, detail="Invalid token")
         
         user = await sync_to_async(UserData.objects.get)(id=user_id)
+        print(f"Authenticated user: {user.id}, email: {user.email}")
         return user
-
-    except (JWTError, UserData.DoesNotExist):
+    except (jwt.PyJWTError, UserData.DoesNotExist) as e:
+        print(f"Authentication error: {str(e)}")
         raise HTTPException(status_code=401, detail="Invalid or expired token")
-    
+
 @router.get("/me")
-def get_me(user=Depends(get_current_user)):
+async def get_me(user=Depends(get_current_user)):
+    print(f"Fetching user info for user: {user.id}")
     return {
         "userId": user.id,
         "email": user.email,
-       
     }
+# async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(auth_scheme)):
+#     token = credentials.credentials
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         user_id = payload.get("user_id")
+#         if user_id is None:
+#             raise HTTPException(status_code=401, detail="Invalid token")
+        
+#         user = await sync_to_async(UserData.objects.get)(id=user_id)
+#         return user
+
+#     except (JWTError, UserData.DoesNotExist):
+#         raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+# @router.get("/me")
+# def get_me(user=Depends(get_current_user)):
+#     return {
+#         "userId": user.id,
+#         "email": user.email,
+       
+#     }
+
+
 
 class DesignResponse(BaseModel):
     id: int
     uploaded_image: str
     generated_image: str
     created_at: datetime
+    is_favorite: bool
+    category: str
 
     class Config:
         orm_mode = True
 
-# Convert ImageFieldFile to URL string
 def serialize_design(design: UserDesignHistory):
     return {
         "id": design.id,
         "uploaded_image": f"/media/{design.uploaded_image.name}" if design.uploaded_image else "",
         "generated_image": f"/media/{design.generated_image.name}" if design.generated_image else "",
-        "created_at": design.created_at
+        "created_at": design.created_at,
+        "is_favorite": design.is_favorite,
+        "category": design.category
     }
 
+
 @router.get("/designs", response_model=List[DesignResponse])
-async def get_user_designs(user=Depends(get_current_user)):
-    designs_qs = await sync_to_async(list)(
-        UserDesignHistory.objects.filter(user=user).order_by("-created_at")
-    )
+async def get_user_designs(
+    user=Depends(get_current_user),
+    category: str | None = Query(None, enum=["interiors", "exteriors", "outdoors"]),
+    is_favorite: bool | None = Query(None)
+):
+    print(f"Fetching designs for user: {user.id}")
+    query = UserDesignHistory.objects.filter(user=user)
+    if category:
+        query = query.filter(category=category)
+    if is_favorite is not None:
+        query = query.filter(is_favorite=is_favorite)
+    designs_qs = await sync_to_async(list)(query.order_by("-created_at")[:10])
+    print(f"Found {len(designs_qs)} designs")
     return [serialize_design(d) for d in designs_qs]
+
+@router.patch("/designs/{design_id}/favorite", response_model=dict)
+async def toggle_favorite_design(design_id: int, user=Depends(get_current_user)):
+    print(f"PATCH /designs/{design_id}/favorite for user: {user.id}")
+    try:
+        design = await sync_to_async(UserDesignHistory.objects.get)(id=design_id, user=user)
+        design.is_favorite = not design.is_favorite
+        await sync_to_async(design.save)()
+        print(f"✅ Updated design {design_id} to is_favorite: {design.is_favorite}")
+        return {"id": design.id, "is_favorite": design.is_favorite}
+    except ObjectDoesNotExist:
+        print(f"❌ Design {design_id} not found for user {user.id}")
+        raise HTTPException(status_code=404, detail="Design not found")

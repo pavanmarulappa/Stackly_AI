@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logoImg from "../assets/Logo1.png";
 import signBg from "../assets/signBg.png";
 import LeftArrow from "../assets/LeftArrow.png";
@@ -12,8 +12,22 @@ export default function SignUp({ setUser }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
+  const location = useLocation();
   const navigate = useNavigate();
   
+useEffect(() => {
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get("token");
+  const userId = queryParams.get("userId");
+  const email = queryParams.get("email");
+
+  if (token && userId && email) {
+    const userData = { userId, email, token };
+    setUserInfo(userData);
+    localStorage.setItem("userInfo", JSON.stringify(userData));
+    navigate("/", { replace: true });
+  }
+}, [location.search]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

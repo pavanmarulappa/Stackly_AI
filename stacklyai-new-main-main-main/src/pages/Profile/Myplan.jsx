@@ -233,75 +233,84 @@ export default function Myplan() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userId = localStorage.getItem('userId');
-        const token = localStorage.getItem('token');
+  const fetchData = async () => {
+    try {
+      let userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
 
-        if (!token) throw new Error('No authentication token found');
-        if (!userId) throw new Error('No user ID found');
-
-        // Fetch profile data
-        const profileResponse = await axios.get('http://localhost:8000/profile', {
-          params: { userid: userId },
-          headers: {
-            Authorization: `Bearer ${token}`
+      // If no direct userId, fallback to userInfo
+      if (!userId) {
+        const userInfoRaw = localStorage.getItem("userInfo");
+        if (userInfoRaw) {
+          try {
+            const userInfo = JSON.parse(userInfoRaw);
+            userId = userInfo.userId || userInfo.id;
+          } catch (err) {
+            console.warn("Failed to parse userInfo from localStorage", err);
           }
-        });
+        }
+      }
 
-        const profilePicUrl = profileResponse.data.profile_pic
-          ? (profileResponse.data.profile_pic.startsWith('/media/profile_pics')
+      if (!token) throw new Error("No authentication token found");
+      if (!userId) throw new Error("No user ID found in storage");
+
+      // Fetch profile data
+      const profileResponse = await axios.get("http://localhost:8000/profile", {
+        params: { userid: userId },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const profilePicUrl = profileResponse.data.profile_pic
+        ? (profileResponse.data.profile_pic.startsWith("/media/profile_pics")
             ? `http://localhost:8000${profileResponse.data.profile_pic}`
             : profileResponse.data.profile_pic)
-          : Pimage;
+        : Pimage;
 
-        setProfileData(prev => ({
-          ...prev,
-          first_name: profileResponse.data.first_name || '',
-          last_name: profileResponse.data.last_name || '',
-          email: profileResponse.data.email || '',
-          phone_number: profileResponse.data.phone_number || '',
-          profile_pic: profileResponse.data.profile_pic,
-          previewImage: profilePicUrl
-        }));
+      setProfileData((prev) => ({
+        ...prev,
+        first_name: profileResponse.data.first_name || "",
+        last_name: profileResponse.data.last_name || "",
+        email: profileResponse.data.email || "",
+        phone_number: profileResponse.data.phone_number || "",
+        profile_pic: profileResponse.data.profile_pic,
+        previewImage: profilePicUrl,
+      }));
 
-        // Fetch subscription data
-        const subscriptionResponse = await axios.get('http://localhost:8000/subscription', {
-          params: { userid: userId },
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
+      // Fetch subscription data
+      const subscriptionResponse = await axios.get("http://localhost:8000/subscription", {
+        params: { userid: userId },
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        const subData = subscriptionResponse.data;
+      const subData = subscriptionResponse.data;
 
-        setSubscriptionData({
-          current_plan: subData.current_plan || 'Basic',
-          duration: subData.duration || 'Monthly',
-          original_price: subData.original_price || 0,
-          discount_price: subData.discount_price || null,
-          total_credits: subData.total_credits || 0,
-          used_credits: subData.used_credits || 0,
-          balance_credits: (subData.total_credits || 0) - (subData.used_credits || 0),
-          renews_on: subData.renews_on || null,
-        });
+      setSubscriptionData({
+        current_plan: subData.current_plan || "Basic",
+        duration: subData.duration || "Monthly",
+        original_price: subData.original_price || 0,
+        discount_price: subData.discount_price || null,
+        total_credits: subData.total_credits || 0,
+        used_credits: subData.used_credits || 0,
+        balance_credits: (subData.total_credits || 0) - (subData.used_credits || 0),
+        renews_on: subData.renews_on || null,
+      });
 
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError(err.response?.data?.detail || 'Failed to load data');
-        toast.error(err.response?.data?.detail || 'Failed to load profile data');
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError(err.response?.data?.detail || "Failed to load data");
+      toast.error(err.response?.data?.detail || "Failed to load profile data");
 
-        if (err.response?.status === 401) {
-          localStorage.removeItem('token');
-          window.location.href = '/login';
-        }
-      } finally {
-        setLoading(false);
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
       }
-    };
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   if (loading) {
     return (

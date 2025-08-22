@@ -180,6 +180,7 @@
 //   );
 // }
 
+//App.jsx
 import React, { useContext } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
@@ -235,9 +236,10 @@ import HelpCenter from "./pages/Profile/HelpCenter";
 import ExteriorForm from "./pages/AfterSignHome/ExteriorForm";
 import OutdoorForm from "./pages/AfterSignHome/OutdoorForm";
 import ImageGeneration from "./pages/Products/ImageGeneration";
-
+import AuthCallback from "./components/AuthCallback";
 export default function App() {
-  const { userInfo, loading } = useContext(UserContext);
+  const { userInfo, setUserInfo, loading } = useContext(UserContext);
+  
   console.log("App.jsx userInfo:", userInfo);
 
   if (loading) return <div className="text-center p-8">Loading...</div>;
@@ -299,7 +301,7 @@ export default function App() {
         <Route path="/exteriorform" element={<ExteriorForm />} />
         <Route path="/outdoorform" element={<OutdoorForm />} />
         <Route path="/ImageGeneration" element={<ImageGeneration />}/>
-
+        <Route path="/auth-callback" element={<AuthCallback setUserInfo={setUserInfo} />} />
         {/* Catch-all fallback for debugging */}
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>

@@ -57,7 +57,13 @@ export default function HeroAfterHome() {
         <Form selectedImage={selectedImage} />
       </div>
 
-
+<DraggableAfter
+        formRef={formAfterRef}
+        setSelectedImage={(img) => {
+          setSelectedImage(null); // Force reset
+          setTimeout(() => setSelectedImage(img), 10); // Then set actual image
+        }}
+      />
    
     </div>
   );

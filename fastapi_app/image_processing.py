@@ -300,13 +300,13 @@ async def generate_design_variation(
 async def generate_design(
     user_id: str = Form(...),
     image: UploadFile = File(...),
-    # building_type: str = Form(...),
     room_type: str = Form(...),
     design_style: str = Form(...),
     ai_strength: str = Form("medium"),
     num_designs: int = Form(1, ge=1, le=6)
 ):
     try:
+        # Move these imports to the top level of your file instead of inside the function
         from django.utils import timezone
         from datetime import date
         from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
@@ -332,8 +332,9 @@ async def generate_design(
                     "message": "Not enough credits",
                     "available": remaining_credits,
                     "required": num_designs
-        }
-        )
+                }
+            )
+        
         # Step 3: Process Original Image
         try:
             file_ext = os.path.splitext(image.filename)[1].lower()
@@ -355,7 +356,6 @@ async def generate_design(
             design_config = {
                 "style": design_style.lower(),
                 "room_type": room_type.lower(),
-                # "building_type": building_type.lower(),
             }
 
             tasks = [
@@ -368,14 +368,14 @@ async def generate_design(
                 await sync_to_async(os.remove)(original_path)
             raise HTTPException(status_code=500, detail=f"Design generation failed: {str(e)}")
 
-        # Step 5: Save Generated Images (file system only, not DB yet)
+        # Step 5: Save Generated Images
         generated_filenames = []
         try:
             for result in results:
                 filename = f"generated_{uuid.uuid4().hex}.png"
                 filepath = generated_path / filename
                 await sync_to_async(lambda: open(filepath, "wb").write(base64.b64decode(result["base64"])))()
-                #Water mark for basic user
+                # Water mark for basic user
                 if subscription.current_plan == "basic":
                     await sync_to_async(add_watermark_to_image)(str(filepath))
                 generated_filenames.append(filename)
@@ -397,7 +397,6 @@ async def generate_design(
 
                     if excess > 0:
                         for old_entry in existing_entries[:excess]:
-                            # Correct paths based on your project folder structure
                             old_uploaded_path = BASE_DIR / "fastapi_app" / "uploads" / os.path.basename(old_entry.uploaded_image.name)
                             old_generated_path = BASE_DIR / "fastapi_app" / "generated" / os.path.basename(old_entry.generated_image.name)
 
@@ -413,13 +412,14 @@ async def generate_design(
                         UserDesignHistory.objects.create(
                             user=user,
                             uploaded_image=f"uploads/{original_filename}",
-                            generated_image=f"generated/{filename}"
+                            generated_image=f"generated/{filename}",
+                            category="interiors"  # Fixed: use string literal
                         )
-
                     subscription.used_credits += num_designs
                     subscription.total_credits_used_all_time += num_designs
                     subscription.save()
 
+                    # Use datetime.date.today() with full module path to avoid scope issues
                     today = date.today()
                     credit_entry, created = CreditUsage.objects.get_or_create(
                         user=user,
@@ -446,7 +446,7 @@ async def generate_design(
             "original_image": f"/static_uploads/{original_filename}",
             "designs": [f"/static_generated/{f}" for f in generated_filenames],
             "credits": {
-                "remaining": subscription.balance_credits,
+                "remaining": subscription.total_credits - subscription.used_credits,
                 "used": subscription.used_credits,
                 "total": subscription.total_credits
             },
@@ -457,6 +457,7 @@ async def generate_design(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
+
     
 @router.post("/generate/more-designs")
 async def generate_more_designs(
@@ -472,7 +473,7 @@ async def generate_more_designs(
         from datetime import date
         from appln.models import UserData, UserSubscription, UserDesignHistory, CreditUsage
 
-        if category not in {"interiors", "exteriors", "outdoors"}:
+        if category not in {"interior", "exterior", "outdoor"}:
             raise HTTPException(status_code=400, detail="Invalid category. Must be 'interiors', 'exteriors', or 'outdoors'")
 
         if ai_strength.lower() not in STRENGTH_CONFIG:
@@ -596,7 +597,8 @@ async def generate_more_designs(
                     UserDesignHistory.objects.create(
                         user=user,
                         uploaded_image=f"uploads/{original_filename}",   # uploaded image
-                        generated_image=f"generated/{fname}"             # generated image
+                        generated_image=f"generated/{fname}",
+                        category=category
                     )
 
                 subscription.used_credits += num_images
@@ -1269,7 +1271,8 @@ async def generate_exterior_design(
                         UserDesignHistory.objects.create(
                             user=user,
                             uploaded_image=f"uploads/{original_filename}",
-                            generated_image=f"generated/{filename}"
+                            generated_image=f"generated/{filename}",
+                            category="exteriors"
                         )
 
                     subscription.used_credits += num_designs
@@ -1688,7 +1691,8 @@ async def generate_outdoor_design(
                         UserDesignHistory.objects.create(
                             user=user,
                             uploaded_image=f"uploads/{original_filename}",
-                            generated_image=f"generated/{filename}"
+                            generated_image=f"generated/{filename}",
+                            category="outdoors"
                         )
 
                     subscription.used_credits += num_designs

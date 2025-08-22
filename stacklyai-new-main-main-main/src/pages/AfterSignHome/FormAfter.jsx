@@ -167,131 +167,147 @@ export default function Form({ selectedImage }) {
     reader.onerror = (err) => reject(err);
   });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setProgress(0);
+  const handleSubmit = async (e) => { 
+  e.preventDefault();
+  setIsLoading(true);
+  setProgress(0);
 
-    const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return prev;
-        }
-        return prev + 10;
-      });
-    }, 1000);
-
-    try {
-      if (!imgFile) throw new Error("Please upload an image first!");
-
-      const formDataToSend = new FormData();
-      formDataToSend.append("image", imgFile);
-      formDataToSend.append("design_style", formData.roomStyle);
-      formDataToSend.append("ai_strength", formData.aiStrength);
-      formDataToSend.append("num_designs", formData.numDesigns.toString());
-
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        alert("User not logged in.");
-        setIsLoading(false);
-        return;
+  const progressInterval = setInterval(() => {
+    setProgress(prev => {
+      if (prev >= 90) {
+        clearInterval(progressInterval);
+        return prev;
       }
-      formDataToSend.append("user_id", userId);
+      return prev + 10;
+    });
+  }, 1000);
 
-      let endpoint = "";
-      let typeDetail = "";
+  try {
+    if (!imgFile) throw new Error("Please upload an image first!");
 
-      switch (activeTab) {
-        case "Interiors":
-          endpoint = "generate-interior-design";
-          // formDataToSend.append("building_type", formData.buildingType);
-          formDataToSend.append("room_type", formData.roomType);
-          typeDetail = formData.roomType;
-          break;
-        case "Exteriors":
-          endpoint = "generate-exterior-design";
-          formDataToSend.append("house_angle", formData.roomType);
-          typeDetail = formData.roomType;
-          break;
-        case "Outdoors":
-          endpoint = "generate-outdoor-design";
-          formDataToSend.append("space_type", formData.roomType);
-          typeDetail = formData.roomType;
-          break;
+    const formDataToSend = new FormData();
+    formDataToSend.append("image", imgFile);
+    formDataToSend.append("design_style", formData.roomStyle);
+    formDataToSend.append("ai_strength", formData.aiStrength);
+    formDataToSend.append("num_designs", formData.numDesigns.toString());
+
+    // ✅ Safe userId fetch
+    let userId = localStorage.getItem("userId");
+    if (!userId) {
+      try {
+        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        userId = userInfo?.userId || null;
+      } catch {
+        userId = null;
       }
+    }
 
-      const response = await axios.post(
-        `http://localhost:8000/api/${endpoint}/`,
-        formDataToSend,
-        {
-          onUploadProgress: (progressEvent) => {
-            const uploadPercent = Math.round((progressEvent.loaded * 50) / progressEvent.total);
-            setProgress(uploadPercent);
-          },
-        }
-      );
-
-      for (let i = 50; i <= 100; i += 10) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setProgress(i);
-      }
-
-      if (response.data.success) {
-  const designs = Array.isArray(response.data.designs)
-    ? response.data.designs.map(url => ({
-        url: url.startsWith("http") ? url : backendBaseUrl + url,
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-      }))
-    : [];
-
-  const base64Image = await toBase64(imgFile);
-
-  if (formData.numDesigns === "1") {
-    // Show generated image on the same page
-    setGeneratedImages(designs);
-  } else {
-    // Redirect to /ImageGeneration with state
-    const navState = {
-      originalImage: base64Image,
-      uploadedFile: imgFile,
-      generatedImages: designs,
-      formData: {
-        userId: userId,
-        category: activeTab.toLowerCase(),
-        typeDetail: typeDetail,
-        style: formData.roomStyle,
-        aiStrength: formData.aiStrength,
-        numDesigns: formData.numDesigns
-      }
-    };
-
-    localStorage.setItem("imageGenState", JSON.stringify(navState));
-    navigate("/ImageGeneration", { state: navState });
-  }
-} else {
-        throw new Error(response.data.message || "Design generation failed");
-      }
-    } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || "Failed to connect to server";
-      alert(`Error: ${errorMessage}`);
-    } finally {
-      clearInterval(progressInterval);
+    if (!userId) {
+      alert("User not logged in.");
       setIsLoading(false);
+      return;
     }
-  };
 
-  useEffect(() => {
-    if (selectedImage) {
-      setImgURL(selectedImage); // Display in upload box
-      fetch(selectedImage)
-        .then(res => res.blob())
-        .then(blob => {
-          const file = new File([blob], "previous-image.png", { type: blob.type });
-          setImgFile(file); // Set as upload file
-        });
+    formDataToSend.append("user_id", userId);
+
+    let endpoint = "";
+    let typeDetail = "";
+
+    switch (activeTab) {
+      case "Interiors":
+        endpoint = "generate-interior-design";
+        formDataToSend.append("room_type", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+      case "Exteriors":
+        endpoint = "generate-exterior-design";
+        formDataToSend.append("house_angle", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+      case "Outdoors":
+        endpoint = "generate-outdoor-design";
+        formDataToSend.append("space_type", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+      default:
+        throw new Error("Invalid design category selected.");
     }
-  }, [selectedImage]);
+
+    const response = await axios.post(
+      `http://localhost:8000/api/${endpoint}/`,
+      formDataToSend,
+      {
+        onUploadProgress: (progressEvent) => {
+          const uploadPercent = Math.round((progressEvent.loaded * 50) / progressEvent.total);
+          setProgress(uploadPercent);
+        },
+      }
+    );
+
+    for (let i = 50; i <= 100; i += 10) {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setProgress(i);
+    }
+
+    if (response.data.success) {
+      const designs = Array.isArray(response.data.designs)
+        ? response.data.designs.map(url => ({
+            url: url.startsWith("http") ? url : backendBaseUrl + url,
+            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+          }))
+        : [];
+
+      const base64Image = await toBase64(imgFile);
+
+      if (formData.numDesigns === "1") {
+        // Show generated image on the same page
+        setGeneratedImages(designs);
+      } else {
+        // Redirect to /ImageGeneration with state
+        const navState = {
+          originalImage: base64Image,
+          uploadedFile: imgFile,
+          generatedImages: designs,
+          formData: {
+            userId: userId,
+            category: activeTab.toLowerCase(),
+            typeDetail: typeDetail,
+            style: formData.roomStyle,
+            aiStrength: formData.aiStrength,
+            numDesigns: formData.numDesigns
+          }
+        };
+
+        localStorage.setItem("imageGenState", JSON.stringify(navState));
+        navigate("/ImageGeneration", { state: navState });
+      }
+    } else {
+      throw new Error(response.data.message || "Design generation failed");
+    }
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.message || "Failed to connect to server";
+    alert(`Error: ${errorMessage}`);
+  } finally {
+    clearInterval(progressInterval);
+    setIsLoading(false);
+  }
+};
+
+// ✅ Keep selected image + safe fallback for profile picture
+useEffect(() => {
+  if (selectedImage) {
+    setImgURL(selectedImage); // Display in upload box
+    fetch(selectedImage)
+      .then(res => res.blob())
+      .then(blob => {
+        const file = new File([blob], "previous-image.png", { type: blob.type });
+        setImgFile(file); // Set as upload file
+      })
+      .catch(() => {
+        console.error("Failed to load selected image.");
+      });
+  }
+}, [selectedImage]);
 
   return (
     <section

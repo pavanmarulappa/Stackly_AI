@@ -1,5 +1,6 @@
-import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+//signin.jsx
+import React, { useState, useContext, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import logoImg from "../assets/Logo1.png";
@@ -11,9 +12,23 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-
+  const location = useLocation(); // to read URL query params
   const { setUserInfo } = useContext(UserContext);
+
+  // ✅ Detect Auth0 login callback
+  useEffect(() => {
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get("token");
+  const userId = queryParams.get("userId");
+  const email = queryParams.get("email");
+
+  if (token && userId && email) {
+    const userData = { userId, email, token };
+    setUserInfo(userData);
+    localStorage.setItem("userInfo", JSON.stringify(userData));
+    navigate("/", { replace: true });
+  }
+}, [location.search]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,37 +46,20 @@ export default function SignIn() {
 
       const { userId, email, access_token } = res.data;
 
-      // ✅ Save to context (already correct)
+      // Save to context
       setUserInfo({ userId, email, token: access_token });
 
-      // ✅ ALSO save to localStorage
+      // Save to localStorage
       localStorage.setItem("token", access_token);
       localStorage.setItem("userId", userId);
       localStorage.setItem("userEmail", email);
 
-      navigate("/afterhome");
+      navigate("/");
     } catch (err) {
       console.error(err);
       setError("Invalid email or password");
     }
   };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (
-  //     formData.email === "sample@gmail.com" &&
-  //     formData.password === "12345"
-  //   ) {
-  //     setUserInfo({
-  //       userName: "Sample User",
-  //       userId: "id2332451",
-  //       email: "sample@gmail.com",
-  //     });
-  //     navigate("/");
-  //   } else {
-  //     alert("Wrong credentials!");
-  //   }
-  // };
 
   return (
     
@@ -263,8 +261,6 @@ export default function SignIn() {
 >
   Sign In
 </button>
-
-
                 <div className="w-[554px] h-[24px] flex items-center justify-between gap-[18px] mt-8 opacity-100">
                   {/* Left Line */}
                   <div className="w-[191.5px] h-px bg-[#B0B0B0]" />
@@ -278,11 +274,8 @@ export default function SignIn() {
                   <div className="w-[191.5px] h-px bg-[#B0B0B0]" />
                 </div>
 
-
-
-
-
-                <div className="w-[554px] h-[44px] flex items-center justify-center gap-4 mt-6 opacity-100">
+              </form>
+              <div className="w-[554px] h-[44px] flex items-center justify-center gap-4 mt-[160px] opacity-100">
                   <div className="w-[202px] h-[44px] flex justify-between items-center">
                     <a href="http://localhost:8000/login/google">
                       <button
@@ -335,7 +328,6 @@ export default function SignIn() {
                         shadow-[0px_2px_4px_0px_#00000014] p-[10px] flex items-center justify-center gap-[10px] cursor-pointer
                       "
                       >
-
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -393,17 +385,12 @@ export default function SignIn() {
                       </button>
                     </a>
                   </div>
-
                 </div>
-
-              </form>
-
             </div>
             {/* Other content above (e.g., form fields, etc.) */}
             <div className="flex flex-col gap-6">
               {/* Place other elements here */}
             </div>
-
             {/* Bottom child content at bottom */}
             <div className="w-full flex justify-center items-center opacity-100">
               <div className="flex items-center gap-[4px]">
@@ -411,7 +398,6 @@ export default function SignIn() {
                 <span className="text-[#B0B0B0] text-[16px] font-normal leading-[100%] font-['Poppins']">
                   Don’t have an account?
                 </span>
-
                 {/* Right Link */}
                 <a
                   href="/sign-up"
@@ -419,13 +405,11 @@ export default function SignIn() {
                 >
                   Sign Up
                 </a>
-
               </div>
             </div>
           </div>
         </div>
   </div>
 </section>
-
   );
 }

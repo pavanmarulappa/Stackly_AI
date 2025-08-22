@@ -221,17 +221,26 @@ class ApiAccessRequest(models.Model):
     def __str__(self):
         return f"{self.full_name} ({self.email})"
     
-
 class UserDesignHistory(models.Model):
     user = models.ForeignKey('UserData', on_delete=models.CASCADE)
-    # Save to fastapi_app/uploads/
     uploaded_image = models.ImageField(upload_to='uploads/')
-    # Save to fastapi_app/generated/
     generated_image = models.ImageField(upload_to='generated/')
+    category = models.CharField(
+        max_length=50,
+        choices=[
+            ("interiors", "Interiors"),
+            ("exteriors", "Exteriors"),
+            ("outdoors", "Outdoors"),
+        ],
+        default="interiors"
+    )
+    is_favorite = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.email} - {self.created_at}"
+        return f"{self.user.email} - {self.category} - {self.created_at}"
+
+
     
 class CreditUsage(models.Model):
     user = models.ForeignKey('UserData', on_delete=models.CASCADE)

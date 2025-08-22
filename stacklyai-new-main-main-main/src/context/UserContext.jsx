@@ -17,12 +17,9 @@
 //   );
 // }
 
-
 //UserContext.jsx
 import React, { createContext, useState, useEffect } from "react";
-
 export const UserContext = createContext();
-
 export default function UserContextProvider({ children }) {
   const [userInfo, setUserInfoState] = useState({
     userId: null,
@@ -45,7 +42,7 @@ export default function UserContextProvider({ children }) {
   const fetchCurrentUser = async () => {
     try {
       const token = localStorage.getItem("token");
-      
+
       if (!token) {
         clearUserInfo();
         return;
@@ -54,10 +51,10 @@ export default function UserContextProvider({ children }) {
       const response = await fetch("http://localhost:8000/me", {
         method: "GET",
         headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        credentials: "include"
+        credentials: "include",
       });
 
       if (response.ok) {
@@ -65,10 +62,9 @@ export default function UserContextProvider({ children }) {
         const userData = {
           userId: data.id || null,
           email: data.email || "",
-          token: token || ""
+          token,
         };
-        setUserInfoState(userData);
-        localStorage.setItem("userInfo", JSON.stringify(userData));
+        setUserInfo(userData);
       } else {
         clearUserInfo();
       }
@@ -80,6 +76,20 @@ export default function UserContextProvider({ children }) {
     }
   };
 
+  const setUserInfo = (userData) => {
+    const fullUserData = {
+      ...userData,
+      token: userData.token || localStorage.getItem("token") || "",
+    };
+    setUserInfoState(fullUserData);
+    localStorage.setItem("userInfo", JSON.stringify(fullUserData));
+
+    // Keep token in sync separately (helps with fetch calls)
+    if (fullUserData.token) {
+      localStorage.setItem("token", fullUserData.token);
+    }
+  };
+
   const clearUserInfo = () => {
     setUserInfoState({
       userId: null,
@@ -88,29 +98,16 @@ export default function UserContextProvider({ children }) {
     });
     localStorage.removeItem("userInfo");
     localStorage.removeItem("token");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("userEmail");
-  };
-
-  const setUserInfo = (userData) => {
-    const fullUserData = {
-      ...userData,
-      token: userData.token || localStorage.getItem("token") || ""
-    };
-    setUserInfoState(fullUserData);
-    localStorage.setItem("userInfo", JSON.stringify(fullUserData));
-    if (userData.token) {
-      localStorage.setItem("token", userData.token);
-    }
   };
 
   return (
     <UserContext.Provider
-      value={{ userInfo, setUserInfo, loading, clearUserInfo }}
+      value={{ userInfo, setUserInfo, clearUserInfo, loading }}
     >
       {children}
     </UserContext.Provider>
   );
 }
+
 
 

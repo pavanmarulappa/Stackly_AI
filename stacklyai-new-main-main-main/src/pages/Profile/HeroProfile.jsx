@@ -286,53 +286,63 @@ export default function HeroProfile() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   //HeroProfile.jsx
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userId = localStorage.getItem('userId');
-        const token = localStorage.getItem('token');
+  const fetchUserData = async () => {
+    try {
+      let userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
 
-        if (!token) {
-          throw new Error('No authentication token found');
-        }
-
-        if (!userId) {
-          throw new Error('No user ID found');
-        }
-
-        const response = await axios.get('http://localhost:8000/profile', {
-          params: { userid: userId },
-          headers: {
-            Authorization: `Bearer ${token}`
+      // If no direct userId, try from userInfo
+      if (!userId) {
+        const userInfoRaw = localStorage.getItem("userInfo");
+        if (userInfoRaw) {
+          try {
+            const userInfo = JSON.parse(userInfoRaw);
+            userId = userInfo.userId || userInfo.id; // fallback if key is different
+          } catch (err) {
+            console.warn("Failed to parse userInfo from localStorage", err);
           }
-        });
-
-        setUserData(prev => ({
-          ...prev,
-          first_name: response.data.first_name || '',
-          last_name: response.data.last_name || '',
-          email: response.data.email || '',
-          phone_number: response.data.phone_number || '',
-          //previewImage: response.data.profile_pic || Pimage
-          previewImage: response.data.profile_pic
-            ? `http://localhost:8000${response.data.profile_pic}`
-            : Pimage
-        }));
-
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        toast.error(error.response?.data?.detail || 'Failed to load profile data');
-
-        if (error.response?.status === 401) {
-          localStorage.removeItem('token');
-          navigate('/login');
         }
-      } finally {
-        setLoading(false);
       }
-    };
 
-    fetchUserData();
-  }, []);
+      if (!token) {
+        throw new Error("No authentication token found");
+      }
+      if (!userId) {
+        throw new Error("No user ID found in storage");
+      }
+
+      const response = await axios.get("http://localhost:8000/profile", {
+        params: { userid: userId },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setUserData((prev) => ({
+        ...prev,
+        first_name: response.data.first_name || "",
+        last_name: response.data.last_name || "",
+        email: response.data.email || "",
+        phone_number: response.data.phone_number || "",
+        previewImage: response.data.profile_pic
+          ? `http://localhost:8000${response.data.profile_pic}`
+          : Pimage,
+      }));
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      toast.error(error.response?.data?.detail || "Failed to load profile data");
+
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchUserData();
+}, []);
 
 
   // Rest of your code remains the same...
