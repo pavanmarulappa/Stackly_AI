@@ -1,32 +1,25 @@
 import React from "react";
-import TotalCreditsImg from "../../assets/pricing-pg/img1.jpg"; // Replace with your first image
-import TodaysUsageImg from "../../assets/pricing-pg/img2.jpg"; // Replace with your first image
+
 
 
 export default function AfterCreditStats() {
   return (
-    <section className="w-full min-h-[882px] bg-[white] flex flex-col justify-center items-center gap-[50px]">
-      <div className="w-[100%] max-w-[719px] min-h-[31px] text-[26px] font-semibold leading-[100%] text-center text-[#2a2a2a] mt-[200px]">"Powering Millions of Actions — And Growing Every Day!"</div>
+   <section className="relative w-full min-h-[815px] bg-black flex flex-col justify-center items-center gap-[50px]">
+<div
+  className="absolute top-[44px] left-1/2 -translate-x-1/2 w-[147px] h-[36px] flex items-center justify-center rounded-[20px] px-2.5 py-1.5"
+  style={{
+    border: "1px solid #8A38F5", // visible border
+    borderRadius: "20px",
 
-      <div className=" w-full flex justify-evenly">
-        <div>
-            <div className="max-w-[250px] min-h-[34px] font-semibold text-[28px] leading-[100%] text-center text-[black] relative top-[70px] left-[10px] " >Total Credits Used</div>
-            <img src={TotalCreditsImg} alt="" />
-            <div className="w-[140px] max-w-[140px] min-h-[140px] rounded-[50%] font-bold text-[52px] leadimg-[60px]  text-black shadow-[0_3px_20px_0px] shadow-black flex justify-center items-center relative top-[-350px] left-[300px] bg-[white]">10+</div>
-            <div className="w-[100%] max-w-[441px] min-h-[22px] font-medium text-[18px] leading-[100%] text-[#2a2a2a] relative top-[-120px] left-[20px]">“Over 10+ Million Credits Used by Our Community!”</div>
-        </div>
-
-        <div>
-            <div className="max-w-[250px] min-h-[34px] font-semibold text-[28px] leading-[100%] text-center text-[black] relative top-[70px] left-[10px]" >Today's Usage</div>
-            <img src={TodaysUsageImg} alt="" />
-            <div className="w-[140px] max-w-[140px] min-h-[140px] rounded-[50%] font-bold text-[52px] leadimg-[60px]  text-black shadow-[0_3px_20px_0] shadow-black flex justify-center items-center relative top-[-350px] left-[300px] bg-[white]">85+</div>
-            <div className="w-[100%] max-w-[441px] min-h-[22px] font-medium text-[18px] leading-[100%] text-[#2a2a2a] relative top-[-120px] left-[20px]">“85,000 Credits Used Today — and Counting!”</div>
-
-        </div>
+  }}
+>
+  <span className="text-white text-[16px] font-normal text-center">
+    For Personals
+  </span>
+</div>
 
 
-      </div>
-    </section>
+</section>
+
   );
 }
-

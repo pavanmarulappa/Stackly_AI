@@ -1,4 +1,5 @@
 import React from "react";
+import BG3 from "../../assets/afterHome/APIAfterLogin3.png";
 
 const plans = [
   {
@@ -23,44 +24,81 @@ const plans = [
 
 const AfterPlan = () => {
   return (
-    <div className="w-full  flex flex-col items-center px-4 py-10 pb-[100px] bg-white">
-      {/* Heading */}
-      <h2 className="text-[44px] h-[64px] font-bold text-center leading-[64px] py-[20px]">
-        <span className="text-[#00c6be]">API</span> Access Based on Your Plan
-      </h2>
+     <div
+      className="w-full flex flex-col items-center px-4 py-10 pb-[100px] bg-white bg-no-repeat bg-cover bg-center"
+      style={{ backgroundImage: `url(${BG3})` }}
+    >
+    <h2 className="w-[1270px] h-[31px] text-center font-medium text-[24px] leading-[100%]">
+  <span className="text-[#8A38F5]  lora-text">API</span>
+  <span className="text-white  lora-text" > Access Based on Your Plan</span>
+</h2>
+
+
 
       {/* Table */}
-      <div className="w-[1280px] min-h-[433px] rounded-[20px] border-[1px] border-solid border-[#007B82] top-10 relative overflow-hidden">
-        <table className="w-[1280px] h-[433px] text-center text-sm md:text-base text-[#2A2A2A] border-collapse outline-none  rounded-bl-[20px] rounded-br-[20px]">
-          <thead className="w-[1280px] min-h-[83px] rounded-tl-[20px] rounded-tr-[20px] bg-[#00B0BA1F]  ">
+      <div className="w-[1270px] min-h-[254px] rounded-[20px] top-10 relative overflow-hidden">
+        <table className="w-[1270px] h-[254px] text-center text-sm md:text-base text-[#2A2A2A] border-collapse outline-none  rounded-bl-[20px] rounded-br-[20px]">
+          <thead
+            className="w-[1270px] min-h-[62px] rounded-tl-[20px] rounded-tr-[20px]"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(138, 56, 245, 0.2) 0%, rgba(194, 44, 162, 0.12) 124.19%)",
+            }}
+          >
             <tr>
-              <th className="px-6 py-4  border-r border-[#E0E0E0] text-[24px] font-bold">
+              <th
+                className="w-[73px] h-[30px] px-6 py-4 border-r border-[#E0E0E0] 
+             text-center font-poppins font-medium text-[20px] leading-[100%] 
+             tracking-[0%] text-white"
+              >
                 Plan
               </th>
-              <th className="px-6 py-4 text-[24px] font-bold border-r border-[#E0E0E0]">
+
+              <th
+                className="w-[177px] h-[30px] px-6 py-4 border-r border-[#E0E0E0] 
+             text-center font-poppins font-medium text-[20px] leading-[100%] 
+             tracking-[0%] text-white"
+              >
                 API Keys Included
               </th>
-              <th className="px-6 py-4 text-[24px] font-bold  border-r border-[#E0E0E0]">
+
+              <th
+                className="w-[159px] h-[30px] px-6 py-4 border-r border-[#E0E0E0] 
+             text-center font-poppins font-medium text-[20px] leading-[100%] 
+             tracking-[0%] text-white"
+              >
                 Monthly Credits
               </th>
-              <th className="px-6 py-4 text-[24px] font-bold  border-r border-[#E0E0E0]">Usage Scenario</th>
+
+              <th
+                className="w-[351px] h-[30px] px-6 py-4 border-r border-[#E0E0E0] 
+             text-center font-poppins font-medium text-[20px] leading-[100%] 
+             tracking-[0%] text-white"
+              >
+                Usage Scenario
+              </th>
+
             </tr>
           </thead>
-          <tbody className="gradient-bg">
-            {plans.map((plan, idx) => (
+        <tbody
+  className="gradient-bg"
+  style={{
+    background: "#FFFFFF1F",
+    border: "1px solid #000000",
+  }}
+>
+              {plans.map((plan, idx) => (
               // <tr key={idx} className="border-t border-[#E0E0E0]">
-               <tr key={idx} className="border-t" style={{ borderBottom: "1px solid rgba(0, 0, 0, 0.06)", }}>
-                <td className="px-6 py-4 text-[24px] ">
-                  {plan.name}
-                </td>
-                <td className="px-6 py-4 text-[24px]">
-                  {plan.keys}
-                </td>
-                <td className="px-6 py-4 text-[24px] font-bold">
-                  {plan.credits}
-                </td>
-                <td className="px-6 py-4 text-[24px] font-bold">{plan.usage}</td>
-              </tr>
+             <tr
+  key={idx}
+  className="border-t"
+  style={{ borderBottom: "1px solid #000000" }}
+>
+  <td className="px-6 py-4 text-[16px]">{plan.name}</td>
+  <td className="px-6 py-4 text-[16px]">{plan.keys}</td>
+  <td className="px-6 py-4 text-[16px] font-bold">{plan.credits}</td>
+  <td className="px-6 py-4 text-[16px] font-bold">{plan.usage}</td>
+</tr>
             ))}
           </tbody>
         </table>

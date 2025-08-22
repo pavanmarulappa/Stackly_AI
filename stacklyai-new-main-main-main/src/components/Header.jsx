@@ -50,7 +50,7 @@ export default function Header() {
         { to: "/", label: "Canvas" },
         { to: "/products", label: "My Spaces" },
         { to: "/pricing", label: "Inspirations" },
-        { to: "/api", label: "FAQs" },
+        { to: "/api", label: "API" },
         { to: "/contact", label: "Contact Us" },
       ]
     : [

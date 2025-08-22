@@ -435,7 +435,7 @@ useEffect(() => {
       <>
         <li><a href="/products">My Spaces</a></li>
         <li><a href="/pricing">Inspirations</a></li>
-        <li><a href="/api">FAQs</a></li>
+        <li><a href="/api">API</a></li>
         <li><a href="/contact">Contact Us</a></li>
       </>
     ) : (
