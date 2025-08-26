@@ -185,6 +185,8 @@ import React, { useContext } from "react";
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import { UserContext } from "./context/UserContext";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Common Components
 import Header from "./components/Header";
@@ -307,6 +309,7 @@ export default function App() {
       </Routes>
 
       <Footer />
+      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>
  </>
   );

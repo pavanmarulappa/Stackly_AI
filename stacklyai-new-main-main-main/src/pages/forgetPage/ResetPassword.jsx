@@ -696,23 +696,25 @@
 //   );
 // }
 
-import React, { useState, useEffect } from 'react';
-import close from '../../assets/forgetPg/close.png';
-import Arrow from '../../assets/forgetPg/arrow.png';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import close from "../../assets/forgetPg/close.png";
+import Arrow from "../../assets/forgetPg/arrow.png";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import logoImg from "/src/assets/Logo.png";
 import BgImage from "../../assets/forgetPg/ForgotPassword.png";
 
 export default function ResetPassword() {
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState(45);
 
   const navigate = useNavigate();
 
+  // ⏱ countdown for resend
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => setTimer((t) => t - 1), 1000);
@@ -722,35 +724,46 @@ export default function ResetPassword() {
 
   const handleResetPassword = async () => {
     if (!newPassword || !confirmPassword) {
-      setError("Both fields are required");
+      toast.error("Both fields are required", { autoClose: 1500 });
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match", { autoClose: 1500 });
       return;
     }
 
     setLoading(true);
     try {
       const response = await axios.post(
-        'http://localhost:8000/forget-password/reset-password',
+        "http://localhost:8000/forget-password/reset-password",
         {
           new_password: newPassword,
           confirm_password: confirmPassword,
         }
       );
-      console.log(response.data);
-      navigate('/ResetPopup'); // redirect on success
+
+      toast.success("Password reset successfully!", { autoClose: 1500 });
+
+      setTimeout(() => {
+        navigate("/ResetPopup"); // redirect after success
+      }, 1200);
     } catch (err) {
-      if (err.response) {
-        setError(err.response.data.detail || 'Failed to reset password');
-      } else {
-        setError('Something went wrong');
-      }
+      const msg =
+        err.response?.data?.detail || "Failed to reset password. Try again!";
+      toast.error(msg, { autoClose: 2000 });
     } finally {
       setLoading(false);
     }
   };
+
+  // ℹ️ Example: show info toast if timer is running
+  useEffect(() => {
+    if (timer === 45) {
+      toast.info("You can request a new OTP after the timer ends", {
+        autoClose: 2500,
+      });
+    }
+  }, []);
 
   return (
     <div
@@ -761,29 +774,28 @@ export default function ResetPassword() {
       }}
     >
       <div className="relative w-[740px] h-[460px] flex items-center justify-center z-10">
-        <div
-          className="relative bg-[#00000066] z-10 w-full h-full rounded-[16px] px-6 py-8 flex flex-col items-center justify-center"
-        >
+        <div className="relative bg-[#00000066] z-10 w-full h-full rounded-[16px] px-6 py-8 flex flex-col items-center justify-center">
           <div
-    style={{
-      position: "absolute",
-      inset: "0",
-      borderRadius: "inherit",
-      padding: "2px",
-      background: `
-        linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
-        linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
-      `,
-      WebkitMask: `
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0)
-      `,
-      WebkitMaskComposite: "xor",
-      maskComposite: "exclude",
-      pointerEvents: "none",
-      zIndex: "-1"
-    }}
-  ></div>
+            style={{
+              position: "absolute",
+              inset: "0",
+              borderRadius: "inherit",
+              padding: "2px",
+              background: `
+                linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
+                linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
+              `,
+              WebkitMask: `
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0)
+              `,
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+              pointerEvents: "none",
+              zIndex: "-1",
+            }}
+          ></div>
+
           {/* Back Arrow */}
           <div className="absolute top-6 left-6">
             <Link to="/Otp" className="flex items-center gap-2 text-white">
@@ -803,15 +815,13 @@ export default function ResetPassword() {
             Create a strong new password for your account.
           </p>
 
+          {/* Form */}
           <div className="flex flex-col items-start gap-3 mt-6">
             <label className="text-white text-[15px]">New Password</label>
             <input
               type="password"
               value={newPassword}
-              onChange={(e) => {
-                setNewPassword(e.target.value);
-                setError("");
-              }}
+              onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter new password"
               className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border-[1px] border-solid border-[#FFFFFF33] text-white placeholder-gray-400 text-sm"
             />
@@ -820,39 +830,30 @@ export default function ResetPassword() {
             <input
               type="password"
               value={confirmPassword}
-              onChange={(e) => {
-                setConfirmPassword(e.target.value);
-                setError("");
-              }}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter password"
               className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border-[1px] border-solid border-[#FFFFFF33] text-white placeholder-gray-400 text-sm"
             />
 
-            {error && (
-              <div className="text-red-500 text-sm text-center mt-1">
-                {error}
-              </div>
-            )}
-
             <button
               onClick={handleResetPassword}
               disabled={loading}
-              className="w-[554px] h-[45px] rounded-full text-white font-medium mt-3 transition-all duration-300 hover:opacity-90 disabled:opacity-60"
-              style={{
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "30px",
-                background: "rgba(138, 56, 245, 0.2)",
-              }}
+              className={`${loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-[#8A38F580] hover:scale-105"
+                } bg-[#8A38F533] text-white font-medium w-[554px] h-[45px] mt-3 rounded-[30px] border border-[#FFFFFF1A] transition-all duration-300`}
             >
               {loading ? "Resetting..." : "Reset Password"}
             </button>
           </div>
-          <p className="text-[#F7F7FF80] text-[14px] text-center mt-4 font-normal">
+
+          {/* Timer */}
+          {/* <p className="text-[#F7F7FF80] text-[14px] text-center mt-4 font-normal">
             Didn’t receive the code?{" "}
             <span className="text-[#FF45EC] font-medium">
               Resend in {timer < 10 ? `00:0${timer}` : `00:${timer}`}
             </span>
-          </p>
+          </p> */}
         </div>
       </div>
     </div>

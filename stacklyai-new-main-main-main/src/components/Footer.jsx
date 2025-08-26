@@ -381,7 +381,7 @@ useEffect(() => {
     "/ResetPassword",
     "/ResetPopup",
     "/SignUpPopup",
-    "/HeroForgetPg",
+    "/heroforgetpg",
   ];
 
   if (hiddenRoutes.includes(location.pathname)) {

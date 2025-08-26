@@ -1,8 +1,10 @@
-//signin.jsx
+// signin.jsx
 import React, { useState, useContext, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";  // ✅ import toast
+import "react-toastify/dist/ReactToastify.css";          // ✅ import CSS
 import logoImg from "../assets/Logo1.png";
 import signBg from "../assets/signBg.png";
 import LeftArrow from "../assets/LeftArrow.png";
@@ -10,31 +12,38 @@ import LeftArrow from "../assets/LeftArrow.png";
 export default function SignIn() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const location = useLocation(); // to read URL query params
+  const location = useLocation();
+  const [loading, setLoading] = useState(false);
   const { setUserInfo } = useContext(UserContext);
 
   // ✅ Detect Auth0 login callback
-  useEffect(() => {
-  const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get("token");
-  const userId = queryParams.get("userId");
-  const email = queryParams.get("email");
+   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+    const userId = queryParams.get("userId");
+    const email = queryParams.get("email");
 
-  if (token && userId && email) {
-    const userData = { userId, email, token };
-    setUserInfo(userData);
-    localStorage.setItem("userInfo", JSON.stringify(userData));
-    navigate("/", { replace: true });
-  }
-}, [location.search]);
+    if (token && userId && email) {
+      const userData = { userId, email, token };
+      setUserInfo(userData);
+      localStorage.setItem("userInfo", JSON.stringify(userData));
+      toast.success("Login successful 🎉"); // ✅ Toast for social login
+      navigate("/", { replace: true });
+    }
+  }, [location.search]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+
+    if (!formData.email || !formData.password) {
+      toast.error("Please enter both email and password");
+      return;
+    }
 
     try {
+      setLoading(true); // ✅ Start loading
+
       const res = await axios.post(
         "http://localhost:8000/login",
         {
@@ -46,85 +55,101 @@ export default function SignIn() {
 
       const { userId, email, access_token } = res.data;
 
-      // Save to context
       setUserInfo({ userId, email, token: access_token });
 
-      // Save to localStorage
       localStorage.setItem("token", access_token);
       localStorage.setItem("userId", userId);
       localStorage.setItem("userEmail", email);
 
+      toast.success("Login successful 🎉"); // ✅ Success toast
       navigate("/");
     } catch (err) {
       console.error(err);
-      setError("Invalid email or password");
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.detail ||
+        "Invalid email or password";
+      toast.error(msg);
+    } finally {
+      setLoading(false); // ✅ Stop loading after request
     }
   };
 
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (
+  //     formData.email === "sample@gmail.com" &&
+  //     formData.password === "12345"
+  //   ) {
+  //     setUserInfo({
+  //       userName: "Sample User",
+  //       userId: "id2332451",
+  //       email: "sample@gmail.com",
+  //     });
+  //     navigate("/");
+  //   } else {
+  //     alert("Wrong credentials!");
+  //   }
+  // };
+
   return (
-    
-<section
-  className="relative w-full min-h-[1024PX] flex justify-center items-start bg-black bg-cover bg-center"
-  style={{ backgroundImage: `url(${signBg})` }}
->
-  {/* main div */}
-<div
-  className="relative w-[740px] h-[769px] rounded-[16px] mt-[127.5px] flex flex-col items-center"
-  style={{
-    background: "transparent",
-    backdropFilter: "blur(90px)",
-    boxShadow: "0px 0px 46px 0px #00000040",
-    border: "2px solid transparent",
-    borderImage: "linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%), linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)",
-    borderImageSlice: "1",
-    position: "relative"
-  }}
->
-  {/* Optional: Add pseudo-elements for better gradient visibility */}
-  <div style={{
-    position: "absolute",
-    inset: "-2px",
-    borderRadius: "16px",
-    padding: "2px",
-    background: "linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%), linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)",
-    WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
-    WebkitMaskComposite: "xor",
-    maskComposite: "exclude",
-    pointerEvents: "none",
-    zIndex: "-1"
-  }}></div>
-
-
-  
-    {/* Back Button */}
-    <Link
-      to="/"
-      className="absolute flex items-center gap-[12px] w-[174px] h-[32px] top-[20px] left-[20px] cursor-pointer"
+    <section
+      className="relative w-full min-h-[1024px] flex justify-center items-start bg-black bg-cover bg-center"
+      style={{ backgroundImage: `url(${signBg})` }}
     >
+      {/* main div */}
       <div
-        className="w-[32px] h-[32px] rounded-full border border-[#8A38F533] backdrop-blur-[90px] flex items-center justify-center"
-        style={{ background: "#8A38F533" }}
+        className="relative w-[740px] h-[769px] rounded-[16px] mt-[127.5px] flex flex-col items-center"
+        style={{
+          background: "transparent",
+          backdropFilter: "blur(90px)",
+          boxShadow: "0px 0px 46px 0px #00000040",
+          border: "2px solid transparent",
+          borderImage:
+            "linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%), linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)",
+          borderImageSlice: "1",
+          position: "relative",
+        }}
       >
-        <img src={LeftArrow} alt="Back" className="w-[16px] h-[16px]" />
-      </div>
+        <div
+          style={{
+            position: "absolute",
+            inset: "-2px",
+            borderRadius: "16px",
+            padding: "2px",
+            background:
+              "linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%), linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)",
+            WebkitMask:
+              "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+            WebkitMaskComposite: "xor",
+            maskComposite: "exclude",
+            pointerEvents: "none",
+            zIndex: "-1",
+          }}
+        ></div>
 
-      <div
-        className="text-white text-[18px] font-normal font-poppins leading-[100%]"
-      >
-        Back to home
-      </div>
-    </Link>
+        {/* Back Button */}
+        <Link
+          to="/"
+          className="absolute flex items-center gap-[12px] w-[174px] h-[32px] top-[20px] left-[20px] cursor-pointer"
+        >
+          <div
+            className="w-[32px] h-[32px] rounded-full border border-[#8A38F533] backdrop-blur-[90px] flex items-center justify-center"
+            style={{ background: "#8A38F533" }}
+          >
+            <img src={LeftArrow} alt="Back" className="w-[16px] h-[16px]" />
+          </div>
+
+          <div className="text-white text-[18px] font-normal font-poppins leading-[100%]">
+            Back to home
+          </div>
+        </Link>
 
         {/* Centered Sign-In Content */}
         <div className="flex flex-col items-center gap-8 w-[692px] h-[649px] mt-[60px]">
           {/* Top child */}
           <div className="flex flex-col items-center gap-8 w-[501px] h-[141px]">
-
-            {/* 🔼 Top Image Div */}
-            <div
-              className="w-[230px] h-[44px] opacity-100"
-              style={{ transform: "rotate(0deg)" }}
-            >
+            <div className="w-[230px] h-[44px]">
               <img
                 src={logoImg}
                 alt="Logo"
@@ -132,12 +157,7 @@ export default function SignIn() {
               />
             </div>
 
-            {/* 🔽 Bottom Div */}
-            <div
-              className="w-[501px] h-[65px] flex flex-col items-center gap-[4px] opacity-100"
-              style={{ transform: "rotate(0deg)" }}
-            >
-              {/* 🔼 Top Child Div */}
+            <div className="w-[501px] h-[65px] flex flex-col items-center gap-[4px]">
               <div className="w-[501px] h-[38px]">
                 <p
                   className="text-center text-[28px] font-normal leading-[100%]"
@@ -150,7 +170,6 @@ export default function SignIn() {
                 </p>
               </div>
 
-              {/* 🔽 Bottom Child Div */}
               <div className="w-[501px] h-[23px]">
                 <p
                   className="text-center text-[16px] font-normal leading-[100%]"
@@ -163,118 +182,137 @@ export default function SignIn() {
                 </p>
               </div>
             </div>
-         </div>
-         {/* MAIN Bottom child */}
+          </div>
+
+          {/* MAIN Bottom child */}
           <div className="flex flex-col justify-between w-[554px] h-[476px]">
-            <div className="w-[554px] h-[428px] gap-[32px] opacity-100 ">
+            <div className="w-[554px] h-[428px] gap-[32px]">
               {/* form div */}
-              <form onSubmit={handleSubmit} 
-              className="w-[554px] h-[216px] flex flex-col gap-[16px] opacity-100">
-                <div className="w-[554px] h-[84px] flex flex-col gap-[8px] opacity-100 relative z-10">
-                  {/* Top child label */}
-                  <label className="w-full h-[24px] text-white text-[16px] font-normal leading-[100%] font-['Poppins']">
+              <form
+                onSubmit={handleSubmit}
+                className="w-[554px] h-[216px] flex flex-col gap-[16px]"
+              >
+                <div className="w-[554px] h-[84px] flex flex-col gap-[8px]">
+                  <label className="text-white text-[16px] font-['Poppins']">
                     Email
                   </label>
-
-                  {/* Bottom child input wrapper */}
-                  <div className="w-[554px] h-[48px] flex items-center px-[12px] gap-[10px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
+                  <div className="w-[554px] h-[48px] flex items-center px-[12px] gap-[10px] rounded-[12px] border border-[#FFFFFF33] bg-[#FFFFFF1F]">
                     <input
                       type="email"
                       placeholder="john@example.com"
+                      value={formData.email}
                       onChange={(e) =>
-    setFormData((prev) => ({ ...prev, email: e.target.value }))
-  }
-                      className="w-[530px] h-[24px] text-[#E0E0E0] text-[16px] font-normal leading-[100%] font-['Poppins'] outline-none border-none bg-transparent"
+                        setFormData((prev) => ({
+                          ...prev,
+                          email: e.target.value,
+                        }))
+                      }
+                      className="w-[530px] h-[24px] text-[#E0E0E0] text-[16px] font-['Poppins'] outline-none border-none bg-transparent"
                     />
                   </div>
                 </div>
 
-                <div className="w-[554px] flex flex-col gap-[8px] opacity-100">
-                  {/* Label */}
-                  <div className="h-[24px] text-white text-[16px] font-normal leading-[100%] font-['Poppins']">
+                <div className="w-[554px] flex flex-col gap-[8px]">
+                  <div className="text-white text-[16px] font-['Poppins']">
                     Password
                   </div>
-
-                  {/* Input Field */}
-                  <div className="relative h-[48px] flex items-center justify-between px-4 py-3 rounded-[12px]  border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F]">
+                  <div className="relative h-[48px] flex items-center justify-between px-4 py-3 rounded-[12px] border border-[#FFFFFF33] bg-[#FFFFFF1F]">
                     <input
                       type={showPassword ? "text" : "password"}
                       value={formData.password}
                       onChange={(e) =>
-      setFormData((prev) => ({ ...prev, password: e.target.value }))
-    }
+                        setFormData((prev) => ({
+                          ...prev,
+                          password: e.target.value,
+                        }))
+                      }
                       placeholder="******"
-                      className="w-full h-[24px] text-[16px] font-normal leading-[100%] font-['Poppins'] text-[#E0E0E0EE] bg-transparent outline-none border-none pr-10"
+                      className="w-full text-[16px] font-['Poppins'] text-[#E0E0E0EE] bg-transparent outline-none border-none pr-10"
                     />
-
                     {/* Eye Icon */}
-                    <span
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="14"
-                    viewBox="0 0 25 15"
-                    fill="none"
-                  >
-                    <path
-                      d="M24.0705 7.51211C21.3277 4.35156 17.5375 0.71875 12.5 0.71875C10.4656 0.71875 8.60078 1.29395 6.63301 2.52305C4.97402 3.56445 3.27266 5.02969 0.935547 7.43945L0.875 7.5L1.28066 7.91777C4.6168 11.3326 7.49883 14.2812 12.5 14.2812C14.71 14.2812 16.8533 13.5607 19.0512 12.0773C20.9221 10.8119 22.5145 9.20742 23.792 7.91172L24.125 7.57871L24.0705 7.51211ZM12.5 12.3438C9.82988 12.3438 7.65625 10.1701 7.65625 7.5C7.65625 4.82988 9.82988 2.65625 12.5 2.65625C15.1701 2.65625 17.3438 4.82988 17.3438 7.5C17.3438 10.1701 15.1701 12.3438 12.5 12.3438Z"
-                      fill="#BEBCBC"
-                    />
-                    <path
-                      d="M12.1609 5.73203C12.1609 5.31426 12.282 4.9207 12.4939 4.59375C10.8895 4.59375 9.59375 5.90156 9.59375 7.51211C9.59375 9.12266 10.8955 10.4244 12.4939 10.4244C14.0924 10.4244 15.4002 9.12266 15.4002 7.51211C15.0732 7.72402 14.6797 7.84512 14.2619 7.84512C13.1055 7.83906 12.1609 6.89453 12.1609 5.73203Z"
-                      fill="#BEBCBC"
-                    />
-                  </svg>
-                </span>
+ <span
+  className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-white transition-all duration-300"
+  onClick={() => setShowPassword(!showPassword)}
+>
+  {showPassword ? (
+    // Eye Open
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-6 h-6 text-white hover:text-purple-300 transition-colors duration-300"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+      />
+    </svg>
+  ) : (
+    // Eye Closed
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="w-6 h-6 text-white hover:text-purple-300 transition-colors duration-300"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={1.5}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+      />
+    </svg>
+  )}
+</span>
+
                   </div>
 
-                  {/* RFG */}
+                  {/* Remember / Forgot */}
                   <div className="h-[24px] flex justify-between items-center">
-                    {/* Remember Me */}
-                    <div className="flex items-center gap-2 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
                       <input type="checkbox" className="w-4 h-4" />
-                      <span className="text-white text-[16px] font-normal leading-none font-['Poppins']">
+                      <span className="text-white text-[16px] font-['Poppins']">
                         Remember me
                       </span>
                     </div>
-
-                    {/* Forgot Password */}
-                    <Link to= "/heroforgetpg">
-                    <div className="flex justify-end items-center">
-                      <span className="text-white text-[16px] font-normal leading-[100%] underline font-['Poppins'] cursor-pointer">
+                    <Link to="/heroforgetpg">
+                      <span className="text-white text-[16px] underline font-['Poppins'] cursor-pointer">
                         Forgot Password?
                       </span>
-                    </div>
                     </Link>
                   </div>
                 </div>
 
-                <button
+               <button
   type="submit"
-  className="bg-[#8A38F533] border border-[#FFFFFF1A] text-base text-white cursor-pointer font-bold
-             w-[554px] h-[48px] gap-[10px] rounded-[30px]  border-[1px] border-solid border-[#FFFFFF33]
-             pt-[10px] pr-[30px] pb-[10px] pl-[30px]
-             hover:bg-[#8A38F580] hover:scale-105 transition-all duration-300 ease-in-out"
+  disabled={loading} // ✅ Disable while loading
+  className={`${
+    loading ? "opacity-50 cursor-not-allowed" : "hover:bg-[#8A38F580] hover:scale-105"
+  } bg-[#8A38F533] text-white font-bold w-[554px] py-3 rounded-[30px] border border-[#FFFFFF33] transition-all`}
 >
-  Sign In
+  {loading ? "Signing in..." : "Sign In"} {/* ✅ Change text */}
 </button>
-                <div className="w-[554px] h-[24px] flex items-center justify-between gap-[18px] mt-8 opacity-100">
-                  {/* Left Line */}
-                  <div className="w-[191.5px] h-px bg-[#B0B0B0]" />
 
-                  {/* Middle Text */}
-                  <div className="w-[135px] h-[24px] text-[#B0B0B0] text-[16px] font-medium leading-[100%] font-['Poppins'] text-center">
+
+                <div className="w-[554px] flex items-center justify-between mt-8">
+                  <div className="w-[191.5px] h-px bg-[#B0B0B0]" />
+                  <div className="text-[#B0B0B0] text-[16px] font-['Poppins'] text-center">
                     Or Continue with
                   </div>
-
-                  {/* Right Line */}
                   <div className="w-[191.5px] h-px bg-[#B0B0B0]" />
                 </div>
-
               </form>
+
+              {/* OAuth Buttons */}
               <div className="w-[554px] h-[44px] flex items-center justify-center gap-4 mt-[160px] opacity-100">
                   <div className="w-[202px] h-[44px] flex justify-between items-center">
                     <a href="http://localhost:8000/login/google">
@@ -387,21 +425,15 @@ export default function SignIn() {
                   </div>
                 </div>
             </div>
-            {/* Other content above (e.g., form fields, etc.) */}
-            <div className="flex flex-col gap-6">
-              {/* Place other elements here */}
-            </div>
-            {/* Bottom child content at bottom */}
-            <div className="w-full flex justify-center items-center opacity-100">
+            {/* Bottom signup link */}
+            <div className="w-full flex justify-center items-center">
               <div className="flex items-center gap-[4px]">
-                {/* Left Text */}
-                <span className="text-[#B0B0B0] text-[16px] font-normal leading-[100%] font-['Poppins']">
+                <span className="text-[#B0B0B0] text-[16px] font-['Poppins']">
                   Don’t have an account?
                 </span>
-                {/* Right Link */}
                 <a
                   href="/sign-up"
-                  className="text-[#C22CA2] text-[16px] font-medium leading-[100%] underline font-['Poppins'] cursor-pointer"
+                  className="text-[#C22CA2] text-[16px] underline font-['Poppins']"
                 >
                   Sign Up
                 </a>
@@ -409,7 +441,10 @@ export default function SignIn() {
             </div>
           </div>
         </div>
-  </div>
-</section>
+      </div>
+
+      {/* ✅ Toast container */}
+      {/* <ToastContainer position="top-right" autoClose={3000} theme="dark" /> */}
+    </section>
   );
 }

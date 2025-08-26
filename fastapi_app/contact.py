@@ -141,7 +141,7 @@ class ContactForm(BaseModel):
     last_name: str
     email: EmailStr
     contact_number: str
-    subject: str
+    # subject: str
     message: constr(max_length=500)
     source: str = Field(default="contact_us")
 
@@ -153,7 +153,7 @@ def submit_contact_form(data: ContactForm):
         last_name=data.last_name,
         email=data.email,
         contact_number=data.contact_number,
-        subject=data.subject,
+        # subject=data.subject,
         message=data.message,
         source=data.source
     )

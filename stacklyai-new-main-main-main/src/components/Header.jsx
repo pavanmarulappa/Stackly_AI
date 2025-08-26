@@ -181,6 +181,7 @@ export default function Header() {
                     localStorage.removeItem('user');
                     localStorage.removeItem('userId');
                     localStorage.removeItem('userInfo');
+                    localStorage.removeItem('userEmail');
                     localStorage.removeItem('persist:root');
                     // Redirect to login
                     navigate("/sign-in");

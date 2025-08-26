@@ -39,7 +39,7 @@ class ContactUs(models.Model):
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
     contact_number = models.CharField(max_length=15)
-    subject = models.CharField(max_length=30)
+    # subject = models.CharField(max_length=30)
     message = models.TextField()
     source = models.CharField(max_length=20, default='contact_us')
     submitted_at = models.DateTimeField(auto_now_add=True)

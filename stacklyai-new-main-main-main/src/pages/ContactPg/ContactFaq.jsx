@@ -214,10 +214,11 @@ export default function PricingFaq() {
             hover:opacity-90
           "
               style={faqCategory === 0 ? activeStyle : inactiveStyle}
+              onClick={() => setFaqCategory(0)}
             >
               <button
                 className="w-full h-full px-2 text-[16px] font-medium rounded-[30px] flex items-center justify-center whitespace-nowrap"
-                onClick={() => setFaqCategory(0)}
+                
               >
                 Get to Know Stackly
               </button>
@@ -244,10 +245,11 @@ export default function PricingFaq() {
             hover:opacity-90
           "
               style={faqCategory === 1 ? activeStyle : inactiveStyle}
+              onClick={() => setFaqCategory(1)}
             >
               <button
                 className="w-full h-full px-2 text-[16px] font-medium rounded-[30px] flex items-center justify-center whitespace-nowrap"
-                onClick={() => setFaqCategory(1)}
+                
               >
                 Plans & Pricing
               </button>
@@ -274,10 +276,11 @@ export default function PricingFaq() {
             hover:opacity-90
           "
               style={faqCategory === 2 ? activeStyle : inactiveStyle}
+               onClick={() => setFaqCategory(2)}
             >
               <button
                 className="w-full h-full px-2 text-[16px] font-medium rounded-[30px] flex items-center justify-center whitespace-nowrap"
-                onClick={() => setFaqCategory(2)}
+               
               >
                 API Integration
               </button>
@@ -335,15 +338,27 @@ export default function PricingFaq() {
         {/* View All Button */}
         {/* View All Button */}
         {currentCategoryCount > 4 && (
-          <div className="mt-6 mb-[-3px]">
-            <button
-              onClick={handleViewAll}
-              className="px-6 py-2 bg-transparent border border-[#007B82] text-[#FFFFFF] text-[14px] underline rounded-lg hover:text-white transition-colors duration-300"
-            >
-              {visibleCount >= currentCategoryCount ? "Show Less" : "View All"}
-            </button>
-          </div>
-        )}
+  <div className="mt-6 mb-[-3px] flex justify-center">
+    <button
+      onClick={handleViewAll}
+      className="
+  px-6 py-2 rounded-lg font-semibold text-[14px] text-white
+  bg-[#1F0D3B] 
+  shadow-md hover:bg-gradient-to-r hover:from-[#8A38F5] hover:to-[#C22CA2]
+  hover:scale-105 transition-all duration-300
+  relative
+  before:absolute before:inset-0 before:rounded-lg before:border-2 before:border-gradient-to-r before:from-[#8A38F5] before:to-[#C22CA2] before:pointer-events-none
+"
+      style={{
+        borderImageSlice: 1,
+        borderImageSource: 'linear-gradient(90deg, #8A38F5, #C22CA2)',
+      }}
+    >
+      {visibleCount >= currentCategoryCount ? "Show Less" : "View All"}
+    </button>
+  </div>
+)}
+
       </div>
       <style>
         {`

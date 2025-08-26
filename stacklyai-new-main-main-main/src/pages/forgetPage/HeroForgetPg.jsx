@@ -487,32 +487,39 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify"; // ✅ Import toast
+import "react-toastify/dist/ReactToastify.css"; // ✅ Ensure styles are loaded
 import Arrow from "../../assets/forgetPg/arrow1.png";
 import BgImage from "../../assets/forgetPg/ForgotPassword.png"; // import the background image
 
 export default function HeroForgetPg() {
   const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSendOTP = async () => {
     if (!email.includes("@") || !email.includes(".")) {
-      setError("Please enter a valid email address");
+      toast.error("Please enter a valid email address", { autoClose: 1500 });
       return;
     }
 
     setIsLoading(true);
-    setError("");
 
     try {
       await axios.post("http://localhost:8000/forget-password/send-otp", {
         email,
       });
+
       localStorage.setItem("resetEmail", email);
-      navigate("/Otp", { state: { email } });
+
+      toast.success("OTP sent successfully!", { autoClose: 1500 });
+
+      setTimeout(() => {
+        navigate("/Otp", { state: { email } });
+      }, 1200); // delay so success toast appears
     } catch (err) {
-      setError(err.response?.data?.detail || "Error sending OTP");
+      const msg = err.response?.data?.detail || "Error sending OTP";
+      toast.error(msg, { autoClose: 1500 });
     } finally {
       setIsLoading(false);
     }
@@ -526,33 +533,32 @@ export default function HeroForgetPg() {
         fontFamily: "'Poppins', sans-serif",
       }}
     >
-      
       <div className="relative w-[740px] h-[419px] flex items-center justify-center z-10">
-        {/* Gradient Border Wrapper */}
         {/* Card Content */}
         <div
           className="relative bg-[#00000066] z-10 w-full h-full rounded-[16px] px-6 py-8 flex flex-col items-center justify-center"
-           ><div
-    style={{
-      position: "absolute",
-      inset: "0",
-      borderRadius: "inherit",
-      padding: "2px",
-      background: `
-        linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
-        linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
-      `,
-      WebkitMask: `
-        linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0)
-      `,
-      WebkitMaskComposite: "xor",
-      maskComposite: "exclude",
-      pointerEvents: "none",
-      zIndex: "-1"
-    }}
-  ></div>
-       
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: "0",
+              borderRadius: "inherit",
+              padding: "2px",
+              background: `
+                linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
+                linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
+              `,
+              WebkitMask: `
+                linear-gradient(#fff 0 0) content-box,
+                linear-gradient(#fff 0 0)
+              `,
+              WebkitMaskComposite: "xor",
+              maskComposite: "exclude",
+              pointerEvents: "none",
+              zIndex: "-1",
+            }}
+          ></div>
+
           {/* Back Arrow */}
           <div className="absolute top-6 left-6">
             <Link to="/sign-in" className="flex items-center gap-2 text-white">
@@ -584,28 +590,18 @@ export default function HeroForgetPg() {
               type="email"
               placeholder="John001@gmail.com"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError("");
-              }}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-[554px] h-[45px] px-4 py-2 rounded-[8px] bg-[#1F1B2E] border-[1px] border-solid border-[#FFFFFF33] text-white placeholder-gray-400 text-sm"
             />
-
-            {error && (
-              <div className="text-red-500 text-sm text-center">{error}</div>
-            )}
 
             <button
               onClick={handleSendOTP}
               disabled={isLoading}
-              className="w-[554px] h-[45px] rounded-full text-white font-medium mt-2 transition-all duration-300 hover:opacity-90 disabled:opacity-60"
-              style={{
-                border: "1px solid rgba(255, 255, 255, 0.1)",
-                borderRadius: "30px",
-                background: "rgba(138, 56, 245, 0.2)",
-              }}
+              className={`w-[554px] h-[45px] text-white font-medium mt-4 transition-all duration-300 
+    ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-[#8A38F580] hover:scale-105"} 
+    bg-[#8A38F533] border border-[#FFFFFF33] rounded-[30px]`}
             >
-              {isLoading ? "Sending..." : "Send OTP"}
+              {isLoading ? "Sending OTP..." : "Send OTP"}
             </button>
           </div>
         </div>
@@ -613,3 +609,4 @@ export default function HeroForgetPg() {
     </div>
   );
 }
+

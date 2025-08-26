@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import blur from "../../assets/product-pg/sec1bg.png";
+import sec1bg from "../../assets/product-pg/sec1bg.jpg";
 import arrow from "../../assets/home/Arrow.png";
 import group from "../../assets/product-pg/groupimg.png";
 import drag1 from "../../assets/product-pg/drag1.png";
@@ -85,13 +85,18 @@ export default function HeroProducts() {
   };
 
   return (
-    <section className="relative w-full h-[1187px] opacity-100 -mt-[82px] pt-[82px] overflow-hidden">
-      {/* Blur background image */}
-      <img
-        src={blur}
-        alt="Background"
-        className="absolute inset-0 w-full h-full object-cover z-0"
-      />
+     <>
+    <link rel="preload" href={sec1bg} as="image" />
+    <section
+        className="relative w-full h-[1187px] opacity-100 -mt-[82px] pt-[82px] overflow-hidden bg-[#0D0D0D]" // Fallback background color
+      >
+        {/* Blur background image */}
+        <img
+          src={sec1bg}
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          loading="eager" // Load immediately
+        />
       {/* Marquee Section */}
       <div className="h-[46px] marquee-container max-[440px]:w-[440px] max-[440px]:h-[46px]">
         <div className="marquee-content">
@@ -474,5 +479,6 @@ export default function HeroProducts() {
         }
       `}</style>
     </section>
+    </>
   );
 }
