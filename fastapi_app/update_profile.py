@@ -567,18 +567,10 @@ async def update_profile(
     last_name: Optional[str] = Form(None),
     new_email: Optional[str] = Form(None),
     phone_number: Optional[str] = Form(None),
-    current_password: Optional[str] = Form(None),
-    new_password: Optional[str] = Form(None),
-    confirm_password: Optional[str] = Form(None),
     profile_pic: Optional[UploadFile] = File(None)
 ):
     try:
-        # 1. Password verification if changing sensitive info
-        if new_email or new_password:
-            if not current_password or not check_password(current_password, current_user.password):
-                raise HTTPException(status_code=400, detail="Current password is required and must be correct")
-
-        # 2. Update fields
+        # Update fields
         if first_name:
             current_user.first_name = first_name
         if last_name:
@@ -586,21 +578,14 @@ async def update_profile(
         if phone_number:
             current_user.phone_number = phone_number
 
-        # 3. Email update
+        # Email update
         if new_email:
             existing = await sync_to_async(UserData.objects.filter(email=new_email).exclude(id=current_user.id).exists)()
             if existing:
                 raise HTTPException(status_code=400, detail="Email already in use")
             current_user.email = new_email
 
-        # 4. Password update
-        if new_password and confirm_password:
-            if new_password == confirm_password:
-                current_user.password = make_password(new_password)
-            else:
-                raise HTTPException(status_code=400, detail="Passwords do not match")
-
-        # 5. Profile picture update
+        # Profile picture update
         if profile_pic:
             try:
                 ext = profile_pic.filename.split('.')[-1]
@@ -626,10 +611,10 @@ async def update_profile(
                 traceback.print_exc()
                 raise HTTPException(status_code=500, detail=f"Profile picture upload failed: {str(e)}")
 
-        # 6. Save user
+        # Save user
         await sync_to_async(current_user.save)()
 
-        # 7. Update subscription name
+        # Update subscription name
         try:
             subscription = await sync_to_async(UserSubscription.objects.get)(user=current_user)
             updated_name = f"{current_user.first_name or ''} {current_user.last_name or ''}".strip()
@@ -639,6 +624,36 @@ async def update_profile(
             pass
 
         return {"message": "Profile updated successfully"}
+
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+    
+class ChangePasswordRequest(BaseModel):
+    new_password: str
+    confirm_password: str
+
+@router.post("/change_password")
+async def change_password(
+    request: ChangePasswordRequest,
+    current_user: UserData = Depends(get_current_user)
+):
+    try:
+        # Validate passwords
+        if not request.new_password or not request.confirm_password:
+            raise HTTPException(status_code=400, detail="Both password fields are required")
+        
+        if request.new_password != request.confirm_password:
+            raise HTTPException(status_code=400, detail="Passwords do not match")
+        
+        if len(request.new_password) < 6:
+            raise HTTPException(status_code=400, detail="Password must be at least 6 characters long")
+
+        # Update password
+        current_user.password = make_password(request.new_password)
+        await sync_to_async(current_user.save)()
+
+        return {"message": "Password changed successfully"}
 
     except Exception as e:
         traceback.print_exc()

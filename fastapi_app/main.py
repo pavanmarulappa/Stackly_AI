@@ -258,6 +258,8 @@ GENERATED_PATH = BASE_DIR / "fastapi_app" / "generated"
 UPLOADS_PATH = BASE_DIR / "fastapi_app" / "uploads"
 MEDIA_PATH = BASE_DIR / "fastapi_app" / "media"
 STATIC_PATH = BASE_DIR / "fastapi_app" / "static"
+INVOICE_PATH = BASE_DIR / "fastapi_app" / "generated_invoices"
+INVOICE_PATH.mkdir(parents=True, exist_ok=True)
 uploads_path.mkdir(parents=True, exist_ok=True)
 generated_path.mkdir(parents=True, exist_ok=True)
 # Ensure folders exist
@@ -272,6 +274,8 @@ app.mount("/media/generated", StaticFiles(directory=GENERATED_PATH), name="gener
 app.mount("/media/uploads", StaticFiles(directory=UPLOADS_PATH), name="uploads")
 app.mount("/static_uploads", StaticFiles(directory=uploads_path), name="static_uploads")
 app.mount("/static_generated", StaticFiles(directory=generated_path), name="static_generated")
+app.mount("/media", StaticFiles(directory=MEDIA_PATH), name="media") 
+app.mount("/generated_invoices", StaticFiles(directory=INVOICE_PATH), name="generated_invoices")
 
 # Routes
 @app.get("/")

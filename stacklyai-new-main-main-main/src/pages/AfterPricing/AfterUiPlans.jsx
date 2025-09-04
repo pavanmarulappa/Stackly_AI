@@ -1185,230 +1185,393 @@
 //   );
 // }
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Tik from "../../assets/pricing-pg/tik.png";
 import Silver from "../../assets/pricing-pg/silver.png";
-import Page from "../../assets/pricing-pg/page.png";
 import Gold from "../../assets/pricing-pg/grpGold.png";
 import DarkPg from "../../assets/pricing-pg/darkPg.png";
 import Rarrow from "../../assets/pricing-pg/Rarrow.png";
+import BG from "../../assets/pricing-pg/bg-plan.png";
 import { Link } from "react-router-dom";
-import BgImage from "../../assets/pricing-pg/bg-plan.png";
 
 export default function AfterUiPlans() {
-  const [showSilverMore, setShowSilverMore] = useState(false);
-  const [showGoldMore, setShowGoldMore] = useState(false);
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showMore, setShowMore] = useState({});
+  const [currentPlanIndex, setCurrentPlanIndex] = useState(0);
+  const [copiedCode, setCopiedCode] = useState(null);
 
-  const toggleSilverMore = () => {
-    setShowSilverMore(!showSilverMore);
+  // Static descriptions for each plan type
+  const staticDescriptions = {
+    basic: "Perfect for personal or casual users who want a simple idea of interior design.",
+    silver: "Ideal for homeowners or renters looking for more creative control and polished designs.",
+    gold: "Best for professionals, renovators, or anyone seeking top-tier results and personalization."
   };
 
-  const toggleGoldMore = () => {
-    setShowGoldMore(!showGoldMore);
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8001/api/plans/");
+        if (!response.ok) {
+          throw new Error("Failed to fetch plans");
+        }
+        const data = await response.json();
+        
+        // Map the API data to our format, keeping static descriptions
+        const mappedPlans = data.plans.map(plan => ({
+          ...plan,
+          // Use static description based on plan name
+          description: staticDescriptions[plan.name.toLowerCase()] || plan.description
+        }));
+        
+        setPlans(mappedPlans);
+
+        // Initialize showMore state for each plan
+        const showMoreState = {};
+        mappedPlans.forEach((plan) => {
+          showMoreState[plan.id] = false;
+        });
+        setShowMore(showMoreState);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
+  const toggleShowMore = (planId) => {
+    setShowMore((prev) => ({
+      ...prev,
+      [planId]: !prev[planId],
+    }));
   };
 
-  return (
-    <div>
-       <section
-        className="w-full py-16 px-4"
+  const handleCopy = (code) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
+
+  const PlanCard = ({ plan, mobile = false, isPopular = false }) => {
+    const features = Array.isArray(plan.features) ? plan.features : [];
+    const visibleFeatures = showMore[plan.id] ? features : features.slice(0, 5);
+
+    return (
+      <div
+        className={`${
+          mobile ? "w-[340px]" : "w-full"
+        } relative rounded-[12px] p-5 flex flex-col gap-6 ${
+          plan.name.toLowerCase() === "Premium"
+            ? "border-[5px] border-solid border-[#00B0BA]"
+            : plan.name.toLowerCase() === "gold"
+            ? "border-[1px] border-solid border-[#B5780F] shadow-[0_2px_12px_#007B8229]"
+            : "bg-[#FFFFFF1A] border-[1px] border-solid border-white shadow-[0_2px_12px_#007B8229]"
+        }`}
         style={{
-          backgroundImage: `url(${BgImage})`,
-          backgroundAttachment: 'fixed',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          background:
+            plan.name.toLowerCase() === "Premium"
+              ? "linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.04) 100%)"
+              : plan.name.toLowerCase() === "gold"
+              ? "linear-gradient(179.75deg, #B5780F 0.22%, rgba(255, 255, 255, 0.1) 100.65%)"
+              : "",
+          boxShadow:
+            plan.name.toLowerCase() === "Premium"
+              ? "8px 8px 4px 0px #00000029 inset, -8px -8px 4px 0px #00000029 inset"
+              : ""
         }}
       >
-        <div className="max-w-[1325px] mx-auto flex flex-col items-center gap-16">
-          <div className="text-center w-[1018px] mx-auto">
-            <h2 className="text-white w-[743px] h-[128px] text-[48px] leading-[64px] font-medium mx-auto">
-              Find the right plan that suits your needs
-            </h2>
-            <p className="text-white w-[1018px] h-[90px] text-[32px] leading-[140%] font-medium mt-6 mx-auto">
-              Start free or unlock premium features. Choose what fits your journey best.
-            </p>
+        {isPopular && (
+          <span className="absolute top-0 right-0 bg-gradient-to-b from-[#FFAA17] to-[#99660E] px-2 py-1 text-white text-xs font-medium rounded-tr-md rounded-bl-lg">
+            Most Popular
+          </span>
+        )}
+
+        <div className="flex flex-col gap-4">
+          <div className="flex justify-between items-center">
+            <h3 className="font-bold text-2xl text-white">
+              {plan.name}
+              {plan.name.toLowerCase() === "basic" && (
+                <span className="text-white text-lg"> (Free)</span>
+              )}
+            </h3>
+            {plan.name.toLowerCase() === "silver" && (
+              <img src={Silver} alt="silver" className="w-16 h-16" />
+            )}
+            {plan.name.toLowerCase() === "gold" && (
+              <img src={Gold} alt="gold" className="w-[63px] h-[47px] mt-4" />
+            )}
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {/* Basic Plan */}
-            <div className="rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-white shadow-[0px_2px_12px_0px_#007B8229] flex flex-col gap-[32px]">
-              <div className="flex flex-col gap-[34px]">
-                <div className="font-bold text-[32px] text-[#00b0ba]">
-                  Basic <span className="text-white text-[23px]">(Free)</span>
-                </div>
-                <p className="text-white text-[16px] font-normal">
-                  Perfect for personal or casual users who want a simple idea of interior design.
-                </p>
-                <div className="text-white font-bold text-[32px]">
-                  $0 <span className="text-lg font-normal">/per month</span>
-                </div>
-                {/* <Link to="/Sign-in">
-                  <div className="w-full h-[46px] bg-white rounded-[8px] border border-[#007B82] text-[#007B82] flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white">
-                    Get Started
-                  </div>
-                </Link> */}
-              </div>
 
-              <hr className="border-dashed border-[#1A1A1A2E]" />
+          {/* Static description from our mapping */}
+          <p className="text-white text-sm">{plan.description}</p>
 
-              <div className="flex flex-col gap-6 mt-6">
-                {["10 Room Designs per month",
-                  "Limited AI-generated layouts",
-                  "Basic furniture suggestions",
-                  "Download SD images,no advanced tools",
-                  "Email support (Standard)",
-                  "No customization options",
-                  "No revision support",
-                  "Watermark images"
-                ].map((item, idx) => (
-                  <div className="flex gap-2" key={idx}>
-                    <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-                    <span className="text-white text-lg font-medium leading-tight">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="text-white text-2xl font-bold">
+            ${plan.price}{" "}
+            <span className="text-base font-normal">/per month</span>
+          </div>
 
-            {/* Silver Plan */}
-            <div className={`rounded-[12px] px-[20px] py-[40px] bg-gradient-to-b from-[#00B0BA] via-[#FFFFFF1A] to-[#FFFFFF1A] border-[1px] border-solid border-white shadow-[0px_2px_12px_0px_#007B8229] flex flex-col gap-[32px] transition-all duration-300 ${showSilverMore ? "h-auto" : ""}`}>
-              <div className="flex flex-col gap-[34px]">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-white text-[32px] font-bold">Silver</h3>
-                  <img src={Silver} alt="silver" className="w-[85px] h-[80px]" />
-                </div>
-                <p className="text-white text-[16px] font-normal">
-                  Ideal for homeowners or renters looking for more creative control and polished designs.
-                </p>
-                <div className="text-white text-[32px] font-bold">
-                  $29 or ₹2,399 <span className="text-lg font-normal">/per month</span>
-                </div>
-                <div className="bg-[#FFFFFF1A] px-[40px] py-[18px] rounded-[12px] text-center text-white shadow-[0_2px_12px_0_#007B8229]">
-                  <p className="text-[14px] font-medium">Use code (Get 10%OFF)</p>
-                  <div className="flex items-center justify-center gap-3 mt-2">
-                    <img src={DarkPg} alt="page" className="w-[24px] h-[24px]" />
-                    <span className="font-bold text-[22px] text-[#00b0ba]">STACKLY10</span>
-                  </div>
-                </div>
-                <Link to="/AfterConformationPage">
-                  <div className="w-full h-[46px] bg-white rounded-[8px] border border-[#007B82] text-[#007B82] flex justify-center items-center hover:text-white hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
-                    Get Started
-                  </div>
-                </Link>
-              </div>
-
-              <hr className="border-dashed border-[#1A1A1A2E]" />
-
-              <div className="flex flex-col gap-6 mt-6">
-                {["50 Room Designs per month",
-                  "Advanced AI layout suggestions",
-                  "Access to premium themes & colour palettes",
-                  "Furniture & decor recommendations",
-                  "High-resolution image download"
-                ].map((item, idx) => (
-                  <div className="flex gap-2" key={idx}>
-                    <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-                    <span className="text-white text-lg font-medium leading-tight">{item}</span>
-                  </div>
-                ))}
-
-                {showSilverMore && [
-                  "Priority email support",
-                  "Basic customization options",
-                  "Limited revisions (up to 3)",
-                  "No watermark on images"
-                ].map((item, idx) => (
-                  <div className="flex gap-2" key={idx}>
-                    <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-                    <span className="text-white text-lg font-medium leading-tight">{item}</span>
-                  </div>
-                ))}
-
-                <div className="flex gap-2 cursor-pointer" onClick={toggleSilverMore}>
-                  <img
-                    src={Rarrow}
-                    alt="arrow"
-                    className={`w-[15px] h-[20px] transition-transform ${showSilverMore ? "rotate-90" : ""}`}
-                  />
-                  <span className="text-white text-lg font-medium">
-                    {showSilverMore ? "Show less" : "See 4 more"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Gold Plan */}
-            <div className={`relative rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-white shadow-[0px_2px_12px_0px_#007B8229] flex flex-col gap-[32px] transition-all duration-300 ${showGoldMore ? "h-auto" : ""}`}>
-              <span className="absolute top-[-1px] right-[0px] bg-gradient-to-b from-[#FFAA17] to-[#99660E] px-[10px] py-[4px] text-white text-[16px] font-medium rounded-tr-[13px] rounded-bl-[16px] z-10">
-                Most Popular
-              </span>
-              <div className="flex flex-col gap-[34px]">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-[#00b0ba] text-[32px] font-bold">Gold</h3>
-                  <img src={Gold} alt="gold" className="w-[85px] h-[80px]" />
-                </div>
-                <p className="text-white text-[16px] font-normal">
-                  Best for professionals, renovators, or anyone seeking top-tier results and personalization.
-                </p>
-                <div className="text-white text-[32px] font-bold">
-                  $59 or ₹4,799 <span className="text-lg font-normal">/per month</span>
-                </div>
-                <div className="bg-[#FFFFFF1A] px-[40px] py-[18px] rounded-[12px] text-center text-white shadow-[0_2px_12px_0_#007B8229] border border-solid border-[#FFFFFF2A]">
-                  <p className="text-[14px] font-medium">Use code (Get 10%OFF)</p>
-                  <div className="flex items-center justify-center gap-3 mt-2">
-                    <img src={DarkPg} alt="page" className="w-[24px] h-[24px]" />
-                    <span className="font-bold text-[22px] text-[#00b0ba]">STACKLY20</span>
-                  </div>
-                </div>
-                <Link to="/AfterConformationPage1">
-                  <div className="w-full h-[46px] bg-white rounded-[8px] border border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:text-white hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] transition-colors duration-300">
-                    Get Started
-                  </div>
-                </Link>
-              </div>
-
-              <hr className="border-t border-dashed border-[#1A1A1A2E]" />
-
-              <div className="flex flex-col gap-6 mt-6">
-                {["Unlimited Room Designs",
-                  "Commercial use upto 3-5 members",
-                  "Fully customized AI designs with layout and lighting suggestions",
-                  "Unlimited design revisions",
-                  "3D walk-through visualizations"
-                ].map((item, idx) => (
-                  <div className="flex gap-2 items-start" key={idx}>
-                    <img src={Tik} alt="tik" className="w-[28px] h-[28px] flex-shrink-0" />
-                    <span className="text-white text-lg font-medium leading-tight">{item}</span>
-                  </div>
-                ))}
-
-                {showGoldMore && [
-                  "Dedicated support with 24-hour response time",
-                  "Advanced customization tools",
-                  "Export designs in multiple formats",
-                  "Access to exclusive design templates"
-                ].map((item, idx) => (
-                  <div className="flex gap-2 items-start" key={idx}>
-                    <img src={Tik} alt="tik" className="w-[28px] h-[28px] flex-shrink-0" />
-                    <span className="text-white text-lg font-medium leading-tight">{item}</span>
-                  </div>
-                ))}
-
-                <button
-                  className="flex gap-2 items-center cursor-pointer text-white"
-                  onClick={toggleGoldMore}
+          {plan.offerCode && (
+            <div
+              className={`p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229] ${
+                plan.name.toLowerCase() === "gold"
+                  ? "bg-[#F9BC1C]"
+                  : "bg-[#FFFFFF1A]"
+              }`}
+            >
+              <p className="text-xs font-medium">
+                {plan.offerText || "Use code (Get 10%OFF)"}
+              </p>
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <img
+                  src={DarkPg}
+                  alt="copy"
+                  className={`w-4 h-4 cursor-pointer ${
+                    plan.name.toLowerCase() === "gold"
+                      ? "invert brightness-0"
+                      : ""
+                  }`}
+                  onClick={() => handleCopy(plan.offerCode)}
+                  title="Click to copy coupon"
+                />
+                <span
+                  onClick={() => handleCopy(plan.offerCode)}
+                  className={`font-bold text-lg cursor-pointer ${
+                    plan.name.toLowerCase() === "gold"
+                      ? "text-white"
+                      : "text-[#00B0BA]"
+                  }`}
                 >
-                  <img
-                    src={Rarrow}
-                    alt="arrow"
-                    className={`w-[15px] h-[20px] transition-transform ${showGoldMore ? "rotate-90" : ""}`}
-                  />
-                  <span className="text-lg font-medium">
-                    {showGoldMore ? "Show less" : "See 4 more"}
-                  </span>
-                </button>
+                  {plan.offerCode}
+                  {copiedCode === plan.offerCode && (
+                    <span className="text-xs ml-1">(Copied!)</span>
+                  )}
+                </span>
               </div>
             </div>
+          )}
+
+          {plan.name.toLowerCase() !== "basic" && (
+            <Link
+              to={`/AfterConformationPage${
+                plan.name.toLowerCase() === "gold" ? "1" : ""
+              }`}
+              state={{ plan }}
+            >
+              <div
+                className={`w-full py-3 rounded-lg border-2 flex justify-center items-center hover:text-white ${
+                  plan.name.toLowerCase() === "gold"
+                    ? "bg-white border-[#F3A216] text-[#F3A216] hover:bg-gradient-to-b from-[#F3A216] to-[#f5b543]"
+                    : "bg-white border-[#007B82] text-[#007B82] hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]"
+                }`}
+              >
+                Get Started
+              </div>
+            </Link>
+          )}
+        </div>
+
+        <hr className="border-dashed border-[#1A1A1A2E]" />
+
+        <div className="flex flex-col gap-4 mt-4">
+          {visibleFeatures.map((item, idx) => (
+            <div className="flex gap-2 items-start" key={idx}>
+              {plan.name.toLowerCase() === "gold" ? (
+                <div className="w-5 h-5 mt-0.5 flex-shrink-0 bg-[linear-gradient(180deg,#FBA716_41.67%,#95630D_157.14%)] rounded-[4px] flex items-center justify-center">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M5 13L9 17L19 7"
+                      stroke="white"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              ) : (
+                <img
+                  src={Tik}
+                  alt="tik"
+                  className="w-5 h-5 mt-0.5 flex-shrink-0"
+                />
+              )}
+              <span className="text-white text-sm font-medium">
+                {typeof item === "object" ? item.text || item.name : item}
+              </span>
+            </div>
+          ))}
+
+          {features.length > 5 && (
+            <button
+              className="flex gap-2 items-center cursor-pointer text-white"
+              onClick={() => toggleShowMore(plan.id)}
+            >
+              {plan.name.toLowerCase() === "gold" ? (
+                <svg
+                  width="10.4"
+                  height="18.8"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  className={`w-3 h-4 transition-transform ${
+                    showMore[plan.id] ? "rotate-90" : ""
+                  }`}
+                >
+                  <path
+                    d="M8 5L15 12L8 19"
+                    stroke="#F3A216"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              ) : (
+                <img
+                  src={Rarrow}
+                  alt="arrow"
+                  className={`w-3 h-4 transition-transform ${
+                    showMore[plan.id] ? "rotate-90" : ""
+                  }`}
+                />
+              )}
+              <span className="text-sm">
+                {showMore[plan.id] ? "Show Less" : `See ${features.length - 5} more`}
+              </span>
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  if (loading)
+    return <div className="text-white text-center py-12">Loading plans...</div>;
+  if (error)
+    return <div className="text-white text-center py-12">Error: {error}</div>;
+  if (plans.length === 0)
+    return (
+      <div className="text-white text-center py-12">
+        No active plans available
+      </div>
+    );
+
+  // Sort plans by price
+  const sortedPlans = [...plans].sort((a, b) => a.price - b.price);
+
+  return (
+    <section
+      className="w-full py-12 px-4 bg-black bg-cover bg-top bg-no-repeat max-[440px]:-mt-[118px]"
+      
+    >
+      <div className="hidden max-[440px]:block w-[168px] h-[168px] bg-[#00B0BA66] mx-auto mb-6 rounded-full blur-[124px]"></div>
+
+      <div className="max-w-6xl mx-auto flex flex-col items-center gap-12 max-[440px]:-mt-[185px]">
+        <div className="text-center">
+          <h2
+            className="text-white text-[32px] leading-[1.2] md:text-4xl font-medium mb-4 max-w-2xl mx-auto max-[440px]:w-[400px] max-[440px]:h-[24px] max-[440px]:text-[20px] max-[440px]:leading-[100%] max-[440px]:text-center"
+            style={{ fontFamily: "Aptos Serif" }}
+          >
+            Find the right plan that <br className="hidden md:inline" /> suits
+            your needs
+          </h2>
+
+          <p
+            className="text-white text-[20px] md:text-xl max-w-2xl mx-auto whitespace-nowrap max-[440px]:w-[400px] max-[440px]:h-[44px] max-[440px]:text-[16px] max-[440px]:leading-[140%] max-[440px]:text-center max-[440px]:whitespace-normal"
+            style={{ fontFamily: "Inter", fontWeight: 400 }}
+          >
+            Start free or unlock premium features. Choose what fits your journey
+            best.
+          </p>
+        </div>
+
+        {/* Mobile Slider */}
+        <div className="w-full md:hidden flex flex-col items-center">
+          <div className="overflow-hidden w-[366px]">
+            <div
+              className="flex transition-transform duration-300 ease-in-out"
+              style={{
+                transform: `translateX(-${currentPlanIndex * 366}px)`,
+              }}
+            >
+              {sortedPlans.map((plan) => (
+                <div key={plan.id} className="w-[366px] flex-shrink-0 px-2">
+                  <PlanCard
+                    plan={plan}
+                    mobile
+                    isPopular={plan.name.toLowerCase() === "gold"}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <button
+              onClick={() =>
+                setCurrentPlanIndex((prev) => (prev > 0 ? prev - 1 : 0))
+              }
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              aria-label="Previous plan"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M15 18L9 12L15 6"
+                  stroke="#2A2A2A"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            <div className="flex gap-2">
+              {sortedPlans.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentPlanIndex(index)}
+                  className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                    currentPlanIndex === index ? "bg-cyan-400" : "bg-gray-400"
+                  }`}
+                  aria-label={`Go to plan ${index + 1}`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() =>
+                setCurrentPlanIndex((prev) =>
+                  prev < sortedPlans.length - 1 ? prev + 1 : prev
+                )
+              }
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              aria-label="Next plan"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M9 18L15 12L9 6"
+                  stroke="#2A2A2A"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
           </div>
         </div>
-      </section>
-    </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-6 w-full">
+          {sortedPlans.map((plan) => (
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              isPopular={plan.name.toLowerCase() === "gold"}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }

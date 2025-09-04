@@ -81,7 +81,7 @@ export default function ImageSection() {
 ))}
       </div>
       </div>
-       <AfterCreditStats />
+       <AfterUiPlans />
     </div>
   );
 }

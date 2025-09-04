@@ -50,6 +50,7 @@
 
 #     return {"message": "Help Center form submitted successfully"}
 
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr, constr, Field
 from fastapi_app.django_setup import django_setup
@@ -71,22 +72,33 @@ class HelpCenterForm(BaseModel):
     subject: constr(max_length=30)
     message: constr(max_length=500)
     source: str = Field(default="help_center")
+    first_name: str | None = None
+    last_name: str | None = None
 
 @router.post("/help-center")
 def submit_help_center_form(data: HelpCenterForm):
+    # Clean up message first
+    safe_message = data.message.replace("\n", " ")
+    combined_message = f"Subject: {data.subject} - {safe_message}"
+
+    if len(combined_message) > 500:
+        raise HTTPException(
+            status_code=400,
+            detail="Combined subject and message exceed 500 characters"
+        )
+
     # Save form data to Django model
     try:
         ContactUs.objects.create(
-            first_name="",
-            last_name="",
+            first_name=data.first_name or "",
+            last_name=data.last_name or "",
             email=data.email,
             contact_number="",
-            subject=data.subject,
-            message=data.message,
+            message=combined_message,
             source=data.source
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Failed to save data")
+        raise HTTPException(status_code=500, detail=f"Failed to save data: {str(e)}")
 
     # Send thank-you email
     try:
@@ -95,10 +107,12 @@ def submit_help_center_form(data: HelpCenterForm):
         msg['From'] = os.getenv("EMAIL_FROM")
         msg['To'] = data.email
         msg.set_content(
-            f"Hi,\n\nThank you for reaching out to the Stackly.Ai Help Centre.\n\n"
-            f"We hope we were able to resolve your query efficiently.\n\n"
+            f"Hi {data.first_name or ''},\n\n"
+            f"Thank you for reaching out to the Stackly.Ai Help Centre.\n\n"
+            f"We received your message with subject: '{data.subject}'.\n\n"
+            f"Message:\n{data.message}\n\n"
             f"Should you need any further assistance, please don't hesitate to get in touch.\n\n"
-            f"-Regards,\n-Stackly.Ai Support Team"
+            f"-Regards,\nStackly.Ai Support Team"
         )
 
         smtp_host = os.getenv("SMTP_HOST")
@@ -111,9 +125,11 @@ def submit_help_center_form(data: HelpCenterForm):
             server.login(smtp_user, smtp_pass)
             server.send_message(msg)
     except Exception as e:
-        raise HTTPException(status_code=500, detail="Failed to send confirmation email")
+        raise HTTPException(status_code=500, detail=f"Failed to send confirmation email: {str(e)}")
 
     return {"message": "Help Center form submitted successfully"}
+
+
 
 
 

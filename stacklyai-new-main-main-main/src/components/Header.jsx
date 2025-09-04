@@ -33,6 +33,8 @@ export default function Header() {
     "/resetpopup",
     "/signuppopup",
     "/heroforgetpg",
+     "/afterconformationpage",
+     "/afterconformationpage1",
   ];
   const isHiddenPage = hiddenPages.includes(location.pathname.toLowerCase());
 
@@ -140,17 +142,13 @@ export default function Header() {
                     "linear-gradient(93.98deg, rgba(138, 56, 245, 0.7) 3.25%, rgba(194, 44, 162, 0.7) 102.29%)",
                 }}
               >
-<div className="w-[32px] h-[32px] rounded-full overflow-hidden flex items-center justify-center">
+<div className="w-[32px] h-[32px]  rounded-full overflow-hidden flex items-center justify-center">
   <img
     src={profile}
     alt="icon"
     className="w-full h-auto object-cover"
   />
-</div>
-
-
-
-             
+</div>    
               <svg
                 className="group-hover:rotate-180 transition-all"
                 xmlns="http://www.w3.org/2000/svg"
@@ -166,31 +164,55 @@ export default function Header() {
               </svg>
 
               <div
-                className="profile-list min-w-[150px] p-4 z-10 hidden group-hover:flex flex-col gap-2 absolute bottom-0 right-0 bg-white rounded-md"
-                style={{ transform: "translateY(95%)" }}
-              >
-                <NavLink to="/Profile">My Profile</NavLink>
-                <NavLink to="/mycreation">My Creations</NavLink>
+  className="profile-list min-w-[150px] p-4 z-10 hidden group-hover:flex flex-col gap-2 absolute top-full mt-0.5 right-0 bg-gray-800 rounded-md"
+>
+              
+               <div className="w-[173px] h-[24px] flex items-center gap-1 text-white text-[14px] font-normal poppins-font">
+  Activated plan:{" "}
+  <span
+    className="text-[16px] font-normal"
+    style={{
+      background: "linear-gradient(90deg, #8A38F5 0%, rgba(255,255,255,0.9) 50%, #8A38F5 100%)",
+      WebkitBackgroundClip: "text",
+    }}
+  >
+    Basic
+  </span>
+</div>
+
                 <p className="w-full h-[1px] bg-gray-600 my-1"></p>
-                <NavLink
-                  onClick={() => {
-                    // Clear user info from context
-                    setUserInfo({});
-                    // Clear any authentication tokens from storage
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
-                    localStorage.removeItem('userId');
-                    localStorage.removeItem('userInfo');
-                    localStorage.removeItem('userEmail');
-                    localStorage.removeItem('persist:root');
-                    // Redirect to login
-                    navigate("/sign-in");
-                    // Force refresh if needed (optional)
-                    window.location.reload();
-                  }}
-                >
-                  Logout
-                </NavLink>
+   <NavLink
+  to="/Profile"
+  className={({ isActive }) =>
+    `w-[173px] h-[32px] flex items-center px-3 pt-1 pb-1 rounded-[4px]
+     text-white border-b-2 border-solid border-[#FFFFFF33]
+     hover:bg-[#8A38F5]/30 active:bg-[#8A38F5]/50 transition-colors
+     ${isActive ? 'bg-[#8A38F5]/50' : ''}`
+  }
+>
+  My Profile
+</NavLink>
+
+
+<div
+  onClick={() => {
+    setUserInfo({});
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userInfo');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('persist:root');
+    navigate("/sign-in");
+    window.location.reload();
+  }}
+  className="w-[173px] h-[32px] flex items-center px-3 pt-1 pb-1 rounded-[4px] text-white 
+             hover:bg-[#8A38F5]/30  border-b-2 border-solid border-[#FFFFFF33] transition-colors cursor-pointer"
+>
+  Logout
+</div>
+
+
               </div>
             </div>
 
