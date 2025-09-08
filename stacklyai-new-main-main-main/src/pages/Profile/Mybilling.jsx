@@ -250,36 +250,40 @@ export default function MyBilling() {
                 </div>
 
                 {/* Table Rows */}
-                <div className="">
-                  {billingHistory.map((bill, index) => (
-                    <div
-                      key={index}
-                      className="flex text-[14px] border-b border-solid border-[#444]"
-                    >
-                      <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
-                        {bill.date}
-                      </div>
-                      <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
-                        ${bill.amount}
-                      </div>
-                      <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
-                        {bill.payment_method}
-                      </div>
-                      <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
-                        {bill.status}
-                      </div>
-                      <div className="flex-1 p-3 text-[#B0B0B0] cursor-pointer hover:underline poppins-font">
-                        {bill.invoice_url ? (
-                          <a href={bill.invoice_url} target="_blank" rel="noopener noreferrer">
-                            View
-                          </a>
-                        ) : (
-                          'N/A'
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                {/* Table Rows */}
+<div className="">
+  {billingHistory
+    .slice(0, 5) // <-- Show only last 5 entries
+    .map((bill, index) => (
+      <div
+        key={index}
+        className="flex text-[14px] border-b border-solid border-[#444]"
+      >
+        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
+          {bill.date}
+        </div>
+        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
+          ${bill.amount}
+        </div>
+        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
+          {bill.payment_method}
+        </div>
+        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
+          {bill.status}
+        </div>
+        <div className="flex-1 p-3 text-[#B0B0B0] cursor-pointer hover:underline poppins-font">
+          {bill.invoice_url ? (
+            <a href={bill.invoice_url} target="_blank" rel="noopener noreferrer">
+              View
+            </a>
+          ) : (
+            'N/A'
+          )}
+        </div>
+      </div>
+    ))}
+</div>
+
               </div>
             ) : (
               <div className="w-full text-center mt-4">

@@ -538,27 +538,32 @@ async def get_user_subscription(
 @router.get("/billing/history", response_model=BillingHistoryResponse, tags=["Billing"])
 async def get_user_billing_history(user=Depends(get_current_user)):
     try:
-        # Get latest 3 billing entries
-        history = await sync_to_async(
-            lambda: list(BillingHistory.objects.filter(user=user).order_by('-paid_on')[:3])
+        # Get all billing entries ordered by id ascending
+        all_history = await sync_to_async(
+            lambda: list(BillingHistory.objects.filter(user=user).order_by('id'))
         )()
+
+        # Take the last 5 entries
+        last_five = all_history[-3:]
 
         data = [
             BillingHistoryItem(
-                date=entry.paid_on.strftime('%Y-%m-%d'),  # formatted date
+                date=entry.paid_on.strftime('%Y-%m-%d'),
                 amount=str(entry.amount),
                 payment_method=entry.payment_method,
                 status=entry.status.capitalize(),
                 invoice_url=f"http://localhost:8000/generated_invoices/{os.path.basename(entry.invoice)}"
                 if entry.invoice else None
             )
-            for entry in history
+            for entry in last_five
         ]
 
         return {"billing_history": data}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
     
 @router.post("/update_profile")
 async def update_profile(
