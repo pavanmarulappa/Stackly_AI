@@ -1,15 +1,14 @@
 import React from "react";
-import AfterContactBanner from "./AfterContactBanner";
+import AfterContactFaq from "./AfterContactFaq";
 import AfterContactForm from "./AfterContactForm";
 
 
 export default function AfterHeroContact() {
   return (
     <div>
-      <AfterContactBanner />
 
       <AfterContactForm />
-
+      <AfterContactFaq />
       
     </div>
   );

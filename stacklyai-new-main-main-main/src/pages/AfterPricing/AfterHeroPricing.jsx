@@ -24,23 +24,23 @@ export default function ImageSection() {
   const [bgImg, setBgImg] = useState(Bg1); // default background
 
  const images = [
-  { top: 433, left: 352.73, rotate: -12, src: img1, z: 1 },
-  { top: 448.43, left: 531.5, rotate: 8.09, src: img2, z: 3 }, // higher z-index
-  { top: 442.41, left: 671.28, rotate: 12.53, src: img3, z: 2 },
-  { top: 452.02, left: 856.29, rotate: -9.26, src: img4, z: 1 },
+  { top: 433, left: 171.08, rotate: -12, src: img1, z: 1 },
+  { top: 448.43, left: 316.23, rotate: 8.09, src: img2, z: 3 }, // higher z-index
+  { top: 442.41, left: 429.72, rotate: 12.53, src: img3, z: 2 },
+  { top: 452.02, left: 579.93, rotate: -9.26, src: img4, z: 1 },
 ];
  
   return (
     <div>
      <div
-      className="w-[1440px] h-[750px] bg-cover bg-center -mt-[82px] pt-[82px] overflow-hidden relative"
+      className="w-full h-[652px] bg-cover bg-center -mt-[82px] pt-[82px] overflow-hidden relative"
       style={{ backgroundImage: `url(${bgImg})` }}
     >
         {/* Black overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
          <div
-          className="w-[939px] h-[123px] mx-auto relative flex flex-col items-center gap-[34px] opacity-100  "
+          className="w-[939px] h-[123px] mx-auto relative flex flex-col items-center gap-[34px] opacity-100  -mt-20"
           style={{ top: "146px" }}
         >
           {/* Top H2 Text */}
@@ -55,33 +55,40 @@ export default function ImageSection() {
         </div>
 
         {/* img container */}
-<div className="relative w-full h-full -mt-[200px]">
-     
-{images.map((img, i) => (
-  <div
-    key={i}
-    className="absolute w-[201.71px] h-[201.71px] rounded-[22px] border-[5.48px] border-[#FFFFFF33] overflow-hidden opacity-100 transition-transform duration-300 hover:scale-105"
-    style={{
-      top: `${img.top}px`,
-      left: `${img.left}px`,
-      transform: `rotate(${img.rotate}deg)`,
-      boxShadow:
-        "8.77px 8.77px 4.39px 0px #00000040 inset, -8.77px -8.77px 4.39px 0px #00000040 inset",
-      zIndex: img.z, // control stacking
-    }}
-    onMouseEnter={() => setBgImg(img.src)}
-    onMouseLeave={() => setBgImg(Bg1)}
-  >
-    <img
-      src={img.src}
-      alt={`img-${i}`}
-      className="w-full h-full object-cover"
-    />
+<div className="w-full flex justify-center -mt-[200px]">
+  {/* Centered container */}
+  <div className="relative max-w-[940px] w-full h-full">
+    {images.map((img, i) => (
+      <div
+        key={i}
+        className="absolute w-[163.71px] h-[163.71px] rounded-[22px] border-[5.48px] 
+                   border-[#FFFFFF33] overflow-hidden opacity-100 
+                   transition-transform duration-300 hover:scale-105"
+        style={{
+          top: `${img.top}px`,
+          left: `${img.left}px`,
+          transform: `rotate(${img.rotate}deg)`,
+          boxShadow:
+            "8.77px 8.77px 4.39px 0px #00000040 inset, -8.77px -8.77px 4.39px 0px #00000040 inset",
+          zIndex: img.z, // control stacking
+        }}
+        onMouseEnter={() => setBgImg(img.src)}
+        onMouseLeave={() => setBgImg(Bg1)}
+      >
+        <img
+          src={img.src}
+          alt={`img-${i}`}
+          className="w-full h-full object-cover"
+        />
+      </div>
+    ))}
   </div>
-))}
+</div>
+
       </div>
-      </div>
-       <AfterUiPlans />
+       <AfterCreditStats />
+       <AfterGraph/>
+       {/* <AfterUiPlans /> */}
     </div>
   );
 }

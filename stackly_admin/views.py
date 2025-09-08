@@ -1032,5 +1032,6 @@ def get_active_plans(request):
             'is_active': plan.is_active,
             'offerCode': offer['offerCode'] if offer else None,
             'offerText': offer['offerText'] if offer else None,
+            'discountPercentage': offer['discountPercentage'] if offer else 0,
         })
     return JsonResponse({'plans': plan_data})

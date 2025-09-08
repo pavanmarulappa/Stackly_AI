@@ -1138,26 +1138,39 @@ async def create_checkout_session(subscription_data: SubscriptionData):
             raise HTTPException(status_code=404, detail="User not found with this ID")
         
         # Fetch plan object dynamically from DB
-        plan_obj = await sync_to_async(Plan.objects.filter(name__iexact=subscription_data.plan, is_active=True).first)()
+        plan_obj = await sync_to_async(
+            Plan.objects.filter(name__iexact=subscription_data.plan, is_active=True).first
+        )()
         if not plan_obj:
             raise HTTPException(status_code=404, detail=f"Plan '{subscription_data.plan}' not found or inactive")
         
-        price = float(plan_obj.price)
+        # Take price from frontend if provided, else plan price
+        price = float(subscription_data.amount) if getattr(subscription_data, 'amount', None) else float(plan_obj.price)
         discount = 0.0
-        used_credits = 0  # Assuming credits logic comes later or zero for now
+        used_credits = 0  
 
+        # Apply coupon discount if valid
         if subscription_data.coupon_code:
-            coupon = await sync_to_async(CouponCode.objects.filter(
-                code=subscription_data.coupon_code, is_active=True,
-                valid_from__lte=timezone.now(), valid_to__gte=timezone.now()
-            ).first)()
+            coupon = await sync_to_async(
+                CouponCode.objects.filter(
+                    code=subscription_data.coupon_code,
+                    is_active=True,
+                    valid_from__lte=timezone.now(),
+                    valid_to__gte=timezone.now()
+                ).first
+            )()
             
             if coupon:
                 discount = (price * coupon.discount_percentage) / 100
             else:
                 raise HTTPException(status_code=400, detail="Invalid or expired coupon code")
 
+        # Apply discount
         final_price = max(price - discount, 0.0)
+
+        # Minimum amount for Stripe (1 cent)
+        if final_price < 0.01:
+            final_price = 0.01
 
         # Prepare billing info JSON
         billing_info_str = json.dumps({
@@ -1171,42 +1184,48 @@ async def create_checkout_session(subscription_data: SubscriptionData):
             "pincode": safe_str(subscription_data.billing_info.pincode)
         })
 
-        # Create Stripe checkout session
+        # ✅ Stripe expects smallest currency unit (cents for USD)
+        currency = "usd"
+        unit_amount = int(final_price * 100)  # $70 → 7000 cents
+
         checkout_session = stripe.checkout.Session.create(
-        payment_method_types=['card'],
-        line_items=[{
-            'price_data': {
-                'currency': 'inr',
-                'product_data': {
-                    'name': f"{plan_obj.name.capitalize()} Plan - {subscription_data.duration.capitalize()}"
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': currency,
+                    'product_data': {
+                        'name': f"{plan_obj.name.capitalize()} Plan - {subscription_data.duration.capitalize()}"
+                    },
+                    'unit_amount': unit_amount,
                 },
-                'unit_amount': int(final_price * 100),
-            },
-            'quantity': 1
-        }],
-        mode='payment',
-        success_url=FRONTEND_SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}",
-        cancel_url=FRONTEND_CANCEL_URL,
-        metadata={
-            "user_id": safe_str(subscription_data.userid),
-            "email": safe_str(subscription_data.email),
-            "plan": safe_str(plan_obj.name),
-            "duration": safe_str(subscription_data.duration),
-            "coupon_code": safe_str(subscription_data.coupon_code),
-            "payment_method": safe_str(subscription_data.payment_method),
-            "billing_info": billing_info_str,
-            "payment_success": safe_str(subscription_data.payment_success),
-            "max_api_calls": safe_str(plan_obj.max_api_calls),
-            "original_price": str(price),
-            "discount_amount": str(discount),
-            "used_credits": str(used_credits)
-        }
-    )
+                'quantity': 1
+            }],
+            mode='payment',
+            success_url=FRONTEND_SUCCESS_URL + "?session_id={CHECKOUT_SESSION_ID}",
+            cancel_url=FRONTEND_CANCEL_URL,
+            metadata={
+                "user_id": safe_str(subscription_data.userid),
+                "email": safe_str(subscription_data.email),
+                "plan": safe_str(plan_obj.name),
+                "duration": safe_str(subscription_data.duration),
+                "coupon_code": safe_str(subscription_data.coupon_code),
+                "payment_method": safe_str(subscription_data.payment_method),
+                "billing_info": billing_info_str,
+                "payment_success": safe_str(subscription_data.payment_success),
+                "max_api_calls": safe_str(plan_obj.max_api_calls),
+                "original_price": str(price),
+                "discount_amount": str(discount),
+                "used_credits": str(used_credits)
+            }
+        )
 
         return {"checkout_url": checkout_session.url}
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
     
 
 def generate_api_key():

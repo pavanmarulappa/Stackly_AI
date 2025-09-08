@@ -168,146 +168,162 @@ export default function Form({ selectedImage }) {
   });
 
   const handleSubmit = async (e) => { 
-  e.preventDefault();
-  setIsLoading(true);
-  setProgress(0);
+    if (e) e.preventDefault();
+    setIsLoading(true);
+    setProgress(0);
 
-  const progressInterval = setInterval(() => {
-    setProgress(prev => {
-      if (prev >= 90) {
-        clearInterval(progressInterval);
-        return prev;
-      }
-      return prev + 10;
-    });
-  }, 1000);
-
-  try {
-    if (!imgFile) throw new Error("Please upload an image first!");
-
-    const formDataToSend = new FormData();
-    formDataToSend.append("image", imgFile);
-    formDataToSend.append("design_style", formData.roomStyle);
-    formDataToSend.append("ai_strength", formData.aiStrength);
-    formDataToSend.append("num_designs", formData.numDesigns.toString());
-
-    // ✅ Safe userId fetch
-    let userId = localStorage.getItem("userId");
-    if (!userId) {
-      try {
-        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
-        userId = userInfo?.userId || null;
-      } catch {
-        userId = null;
-      }
-    }
-
-    if (!userId) {
-      alert("User not logged in.");
-      setIsLoading(false);
-      return;
-    }
-
-    formDataToSend.append("user_id", userId);
-
-    let endpoint = "";
-    let typeDetail = "";
-
-    switch (activeTab) {
-      case "Interiors":
-        endpoint = "generate-interior-design";
-        formDataToSend.append("room_type", formData.roomType);
-        typeDetail = formData.roomType;
-        break;
-      case "Exteriors":
-        endpoint = "generate-exterior-design";
-        formDataToSend.append("house_angle", formData.roomType);
-        typeDetail = formData.roomType;
-        break;
-      case "Outdoors":
-        endpoint = "generate-outdoor-design";
-        formDataToSend.append("space_type", formData.roomType);
-        typeDetail = formData.roomType;
-        break;
-      default:
-        throw new Error("Invalid design category selected.");
-    }
-
-    const response = await axios.post(
-      `http://localhost:8000/api/${endpoint}/`,
-      formDataToSend,
-      {
-        onUploadProgress: (progressEvent) => {
-          const uploadPercent = Math.round((progressEvent.loaded * 50) / progressEvent.total);
-          setProgress(uploadPercent);
-        },
-      }
-    );
-
-    for (let i = 50; i <= 100; i += 10) {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setProgress(i);
-    }
-
-    if (response.data.success) {
-      const designs = Array.isArray(response.data.designs)
-        ? response.data.designs.map(url => ({
-            url: url.startsWith("http") ? url : backendBaseUrl + url,
-            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-          }))
-        : [];
-
-      const base64Image = await toBase64(imgFile);
-
-      if (formData.numDesigns === "1") {
-        // Show generated image on the same page
-        setGeneratedImages(designs);
-      } else {
-        // Redirect to /ImageGeneration with state
-        const navState = {
-          originalImage: base64Image,
-          uploadedFile: imgFile,
-          generatedImages: designs,
-          formData: {
-            userId: userId,
-            category: activeTab.toLowerCase(),
-            typeDetail: typeDetail,
-            style: formData.roomStyle,
-            aiStrength: formData.aiStrength,
-            numDesigns: formData.numDesigns
-          }
-        };
-
-        localStorage.setItem("imageGenState", JSON.stringify(navState));
-        navigate("/ImageGeneration", { state: navState });
-      }
-    } else {
-      throw new Error(response.data.message || "Design generation failed");
-    }
-  } catch (error) {
-    const errorMessage = error.response?.data?.message || error.message || "Failed to connect to server";
-    alert(`Error: ${errorMessage}`);
-  } finally {
-    clearInterval(progressInterval);
-    setIsLoading(false);
-  }
-};
-
-// ✅ Keep selected image + safe fallback for profile picture
-useEffect(() => {
-  if (selectedImage) {
-    setImgURL(selectedImage); // Display in upload box
-    fetch(selectedImage)
-      .then(res => res.blob())
-      .then(blob => {
-        const file = new File([blob], "previous-image.png", { type: blob.type });
-        setImgFile(file); // Set as upload file
-      })
-      .catch(() => {
-        console.error("Failed to load selected image.");
+    const progressInterval = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 90) {
+          clearInterval(progressInterval);
+          return prev;
+        }
+        return prev + 10;
       });
-  }
-}, [selectedImage]);
+    }, 1000);
+
+    try {
+      if (!imgFile) throw new Error("Please upload an image first!");
+
+      const formDataToSend = new FormData();
+      formDataToSend.append("image", imgFile);
+      formDataToSend.append("design_style", formData.roomStyle);
+      formDataToSend.append("ai_strength", formData.aiStrength);
+      formDataToSend.append("num_designs", formData.numDesigns.toString());
+
+      // ✅ Safe userId fetch
+      let userId = localStorage.getItem("userId");
+      if (!userId) {
+        try {
+          const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+          userId = userInfo?.userId || null;
+        } catch {
+          userId = null;
+        }
+      }
+
+      if (!userId) {
+        alert("User not logged in.");
+        setIsLoading(false);
+        return;
+      }
+
+      formDataToSend.append("user_id", userId);
+
+      let endpoint = "";
+      let typeDetail = "";
+
+      switch (activeTab) {
+        case "Interiors":
+          endpoint = "generate-interior-design";
+          formDataToSend.append("room_type", formData.roomType);
+          typeDetail = formData.roomType;
+          break;
+        case "Exteriors":
+          endpoint = "generate-exterior-design";
+          formDataToSend.append("house_angle", formData.roomType);
+          typeDetail = formData.roomType;
+          break;
+        case "Outdoors":
+          endpoint = "generate-outdoor-design";
+          formDataToSend.append("space_type", formData.roomType);
+          typeDetail = formData.roomType;
+          break;
+        default:
+          throw new Error("Invalid design category selected.");
+      }
+
+      const response = await axios.post(
+        `http://localhost:8000/api/${endpoint}/`,
+        formDataToSend,
+        {
+          onUploadProgress: (progressEvent) => {
+            const uploadPercent = Math.round((progressEvent.loaded * 50) / progressEvent.total);
+            setProgress(uploadPercent);
+          },
+        }
+      );
+
+      for (let i = 50; i <= 100; i += 10) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        setProgress(i);
+      }
+
+      if (response.data.success) {
+        const designs = Array.isArray(response.data.designs)
+          ? response.data.designs.map(url => ({
+              url: url.startsWith("http") ? url : backendBaseUrl + url,
+              id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+            }))
+          : [];
+
+        const base64Image = await toBase64(imgFile);
+
+        if (formData.numDesigns === "1") {
+          // Show generated image on the same page
+          setGeneratedImages(designs);
+        } else {
+          // Redirect to /ImageGeneration with state
+          const navState = {
+            originalImage: base64Image,
+            uploadedFile: imgFile,
+            generatedImages: designs,
+            formData: {
+              userId: userId,
+              category: activeTab.toLowerCase(),
+              typeDetail: typeDetail,
+              style: formData.roomStyle,
+              aiStrength: formData.aiStrength,
+              numDesigns: formData.numDesigns
+            }
+          };
+
+          localStorage.setItem("imageGenState", JSON.stringify(navState));
+          navigate("/ImageGeneration", { state: navState });
+        }
+      } else {
+        throw new Error(response.data.message || "Design generation failed");
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || "Failed to connect to server";
+      alert(`Error: ${errorMessage}`);
+    } finally {
+      clearInterval(progressInterval);
+      setIsLoading(false);
+    }
+  };
+
+  const handleDownload = () => {
+    if (generatedImages.length === 0) return;
+    const url = generatedImages[0].url;
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'generated-image.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch(error => console.error('Download failed:', error));
+  };
+
+  // ✅ Keep selected image + safe fallback for profile picture
+  useEffect(() => {
+    if (selectedImage) {
+      setImgURL(selectedImage); // Display in upload box
+      fetch(selectedImage)
+        .then(res => res.blob())
+        .then(blob => {
+          const file = new File([blob], "previous-image.png", { type: blob.type });
+          setImgFile(file); // Set as upload file
+        })
+        .catch(() => {
+          console.error("Failed to load selected image.");
+        });
+    }
+  }, [selectedImage]);
 
   return (
     <section
@@ -480,6 +496,40 @@ useEffect(() => {
       <img src={CanvasImg} alt="Canvas" className="w-[26px] h-[26px] object-contain" />
     </div>
   )}
+  {isLoading && (
+                    <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center rounded-xl">
+                      <div className="relative w-24 h-24 mb-4">
+                        <svg className="w-full h-full" viewBox="0 0 100 100">
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="#FFFFFF20"
+                            strokeWidth="8"
+                          />
+                          <circle
+                            cx="50"
+                            cy="50"
+                            r="45"
+                            fill="none"
+                            stroke="#ffffff"
+                            strokeWidth="8"
+                            strokeLinecap="round"
+                            strokeDasharray="283"
+                            strokeDashoffset={283 - (283 * progress) / 100}
+                            transform="rotate(-90 50 50)"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-white text-xl font-bold">{progress}%</span>
+                        </div>
+                      </div>
+                      <p className="text-white text-lg text-center">
+                        {progress < 100 ? "Rendering..." : "Finalizing designs..."}
+                      </p>
+                    </div>
+                  )}
 </div>
 
         </div>
@@ -489,6 +539,7 @@ useEffect(() => {
           {/* Left child div */}
           <button
             type="submit"
+            onClick={handleSubmit}
             className="w-[283px] h-[44px] rounded-[30px] border border-[#C22CA299] flex items-center justify-center gap-[8px] px-[30px] py-[10px] transition-all duration-300 hover:scale-105 hover:shadow-lg hover:brightness-110"
             style={{
               background: "linear-gradient(95.92deg, rgba(138, 56, 245, 0.5) 15.32%, rgba(194, 44, 162, 0.5) 99.87%)",
@@ -506,6 +557,7 @@ useEffect(() => {
           {/* Right child div */}
           <button
             type="button"
+            onClick={handleDownload}
             className="w-[283px] h-[44px] rounded-[30px] border border-[#8A38F5] flex items-center justify-center gap-[8px] px-[30px] py-[10px] bg-[#8A38F580] group relative overflow-hidden transition-all duration-300 hover:bg-gradient-to-r hover:from-[#8A38F5] hover:to-[#C22CA2] hover:scale-105 hover:shadow-lg"
           >
             <span className="text-white text-[16px] font-poppins font-normal leading-[100%] transition-colors duration-300 z-[10]">
@@ -592,40 +644,6 @@ useEffect(() => {
                       <path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" />
                     </svg>
                   </div>
-                  {isLoading && (
-                    <div className="absolute inset-0 bg-black/50 flex flex-col justify-center items-center rounded-xl">
-                      <div className="relative w-24 h-24 mb-4">
-                        <svg className="w-full h-full" viewBox="0 0 100 100">
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="45"
-                            fill="none"
-                            stroke="#FFFFFF20"
-                            strokeWidth="8"
-                          />
-                          <circle
-                            cx="50"
-                            cy="50"
-                            r="45"
-                            fill="none"
-                            stroke="#ffffff"
-                            strokeWidth="8"
-                            strokeLinecap="round"
-                            strokeDasharray="283"
-                            strokeDashoffset={283 - (283 * progress) / 100}
-                            transform="rotate(-90 50 50)"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">{progress}%</span>
-                        </div>
-                      </div>
-                      <p className="text-white text-lg text-center">
-                        {progress < 100 ? "Rendering..." : "Finalizing designs..."}
-                      </p>
-                    </div>
-                  )}
                 </>
               ) : (
                 <div
@@ -770,7 +788,7 @@ useEffect(() => {
                     <option value="" className="text-black">
                       Number of designs
                     </option>
-                    {[...Array(12).keys()].map((num) => (
+                    {[...Array(4).keys()].map((num) => (
                       <option key={num + 1} value={num + 1} className="text-black">
                         {num + 1}
                       </option>
@@ -803,16 +821,22 @@ useEffect(() => {
   {/* Slider with Circle */}
   <div className="relative w-full h-[8px] rounded-[16px] bg-[#6D6D6D33]">
     <div
-      className={`absolute top-1/2 -translate-y-1/2 w-[24px] h-[24px] rounded-[30px] 
-        bg-gradient-to-tr from-[#8A38F5] to-[#C22CA2] flex items-center justify-center transition-all duration-500
-        ${formData.aiStrength === "low" ? "left-0" : formData.aiStrength === "medium" ? "left-1/2" : "right-0"}`}
-    >
-      <img
-        src={Frame}
-        alt="icon"
-        className="w-[12px] h-[12px] border border-white rounded-[2px]"
-      />
-    </div>
+  className={`absolute top-1/2 -translate-y-1/2 w-[24px] h-[24px] rounded-[30px] 
+    bg-gradient-to-tr from-[#8A38F5] to-[#C22CA2] flex items-center justify-center transition-all duration-500
+    ${
+      formData.aiStrength === "low"
+        ? "left-0"
+        : formData.aiStrength === "medium"
+        ? "left-1/2 -translate-x-1/2"   // ✅ add this
+        : "right-0"
+    }`}
+>
+  <img
+    src={Frame}
+    alt="icon"
+    className="w-[12px] h-[12px] border border-white rounded-[2px]"
+  />
+</div>
   </div>
 
   {/* Labels */}

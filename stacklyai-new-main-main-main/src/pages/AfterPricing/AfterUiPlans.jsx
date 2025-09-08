@@ -1,1190 +1,3 @@
-// import React from "react";
-// import Tik from "../../assets/pricing-pg/tik.png";
-// import Silver from "../../assets/pricing-pg/silver.png";
-// import Page from "../../assets/pricing-pg/page.png";
-// import Gold from "../../assets/pricing-pg/grpGold.png";
-// import DarkPg from "../../assets/pricing-pg/darkPg.png";
-// import Rarrow from "../../assets/pricing-pg/Rarrow.png";
-// import { Link } from "react-router-dom";
-
-// export default function AfterUiPlans() {
-//   return (
-//     <div>
-//       <section className="w-full h-[1600px] flex justify-center items-center bg-[#021314]">
-//         <div className="w-[1325px] h-[1201px] flex flex-col justify-start items-center gap-[116px]">
-//           <div className="w-[1018px] h-[414px] flex flex-col justify-start items-center gap-[61px]">
-//             <div className="w-[743px] h-[128px] font-medium text-[48px] leading-[64px] text-center text-white">
-//               Find the right plan that suits your needs
-//             </div>
-
-//             <div className="w-[1018px] h-[90px] text-[32px] text-center leading-[140%]  font-medium text-white">
-//               Start free or unlock premium features.choose what fits your
-//               journey best.
-//             </div>
-
-//           </div>
-
-//           {/* plan  */}
-
-//           <div className="w-[1325px] h-[810px] flex justify-between items-center gap-[43px]">
-//             {/* plan-1  */}
-
-//             <div className="w-[413px] h-[810px] min-w-[340px] rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px]">
-//               <div className="w-[373px] min-h-[232px] flex flex-col justify-start items-start gap-[34px]">
-//                 <div className="w-[360px] min-h-[32px] font-bold text-[32px] text-[#00b0ba]">
-//                   Basic{" "}
-//                   <span className="text-[white] text-[23px]"> (Free) </span>
-//                 </div>
-//                 <div className="font-[400] text-[16px] text-[white]">
-//                   Perfect for personal or casual users who want a simple idea of
-//                   interior design.
-//                 </div>
-//                 <div className="font-bold text-[32px] text-[white] leading-4x1">
-//                   $0{" "}
-//                   <span className="font-[400] text-lg leading-lg text-[white]">
-//                     /per month
-//                   </span>
-//                 </div>
-//                 <Link to="/AfterBilling">
-//                   <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white">
-//                     Get Started
-//                   </div>
-//                 </Link>
-//               </div>
-
-//               <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E] text-[white]"></div>
-
-//               {/* ticks  */}
-//               <div className="w-[373px] min-h-[420px] flex flex-col justify-start items-start gap-[24px] mt-[43px]">
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     10 Room Designs per month
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Limited AI-generated layouts
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Basic furniture suggestions
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Download SD images,no advanced tools
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Email support (Standard)
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     No customization options
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     No revision support
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Watermark images
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* plan-2  */}
-
-//             <div className="w-[413px] min-w-[340px] h-[810px] rounded-[12px] px-[20px] py-[40px] bg-gradient-to-b from-[#00B0BA] via-[#FFFFFF1A] to-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px]">
-//               <div className="w-[373px] min-h-[349px] flex flex-col justify-start items-start">
-//                 <div className="w-[373px] min-h-[349px] flex flex-col justify-start items-start gap-[34px]">
-//                   <div className="w-[360px] h-[32px] flex justify-between">
-//                     <div className="font-bold text-[32px] leading-xl text-[#FFFFFF]">
-//                       Silver
-//                     </div>
-//                     <img
-//                       src={Silver}
-//                       alt="silver"
-//                       className="w-[85.24px] h-[80px]"
-//                     />
-//                   </div>
-//                   <div className="font-[400] text-[16px] text-[white]">
-//                     Ideal for homeowners or renters looking for more creative
-//                     control and polished designs.
-//                   </div>
-//                   <div className="w-[374px] h-[52px] font-bold text-[32px] leading-4x1 text-[white]">
-//                     $29 or ₹2,399{" "}
-//                     <span className="font-[400] text-lg leading-lg text-[white]">
-//                       {" "}
-//                       /per month
-//                     </span>
-//                   </div>
-//                   <div className="w-[374px] h-[90px] rounded-[12px] px-[78px] py-[18px] flex flex-col justify-center items-center gap-[10px] bg-[#FFFFFF1A] shadow-[0_2px_12px_0] shadow-[#007B8229] shadow-inner-[2px_2px_12px_0] shadow-inner-[#FFFFFF14]">
-//                     <div className="font-medium text-[14px] leading-[100%] text-center text-[white]">
-//                       Use code (Get 10%OFF)
-//                     </div>
-//                     <div className="w-[163px] min-h-[27px] flex gap-[12px]">
-//                       <img
-//                         src={DarkPg}
-//                         alt="page"
-//                         className="w-[24px] h-[24px] text-[#00B0BA]"
-//                       />
-//                       <div className="font-bold text-[22px] text-[#00b0ba]">
-//                         STACKLY10
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <Link to="/AfterBilling">
-//                     {" "}
-//                     <div className="w-[373px] h-[46px] rounded-[5px] border-[1px] border-solid border-[#007B82] hover:text-[white] text-[#007B82] bg-white flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
-//                       Get Started
-//                     </div>
-//                   </Link>
-//                 </div>
-
-//                 <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E]"></div>
-
-//                 {/* tick  */}
-
-//                 <div className="w-[374px] min-h-[504px] flex flex-col justify-start items-start gap-[24px] mt-[32px]">
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       50 Room Designs per month
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Advanced AI layout suggestions
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Access to premium themes & colour palettes
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Furniture & decor recommendations
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       High-resolution image download
-//                     </div>
-//                   </div>
-//                   <Link>
-//                     {" "}
-//                     <div className="flex gap-2">
-//                       <img
-//                         src={Rarrow}
-//                         alt="tik"
-//                         className="w-[15px] h-[20px] flex items-center justify-center"
-//                       />
-//                       <div className="font-medium text-lg leading-lg text-[white]">
-//                         See 4 more
-//                       </div>
-//                     </div>
-//                   </Link>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* plan-3  */}
-//             <div className="w-[413px] h-[810px] min-w-[340px] rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px] overflow-hidden">
-//               <div className="w-[374px] min-h-[364px] flex flex-col justify-start items-start">
-//                 <div className="w-[374px] min-h-[364px] flex flex-col justify-start items-start gap-[34px]">
-//                   <span className="w-[122px] h-[40px] rounded-bl-[16px] px-[10px] py-[4px] flex justify-center items-center bg-gradient-to-b from-[#FFAA17] to-[#99660E] text-[white] font-medium text-[16px] text-center absolute mt-[-41px] ml-[271px] rounded-tr-[13px]">
-//                     Most Popular
-//                   </span>
-//                   <div className="w-[360px] h-[32px] flex justify-between">
-//                     <div className="font-bold text-[32px] leading-xl text-[#00b0ba]">
-//                       Gold
-//                     </div>
-//                     <img
-//                       src={Gold}
-//                       alt="silver"
-//                       className="w-[85.24px] h-[80px]"
-//                     />
-//                   </div>
-//                   <div className="font-[400] text-[16px] text-[white]">
-//                     Best for professionals, renovators, or anyone seeking
-//                     top-tier results and personalization.
-//                   </div>
-//                   <div className="w-[374px] h-[52px] font-bold text-[32px] leading-4x1 text-[white]">
-//                     $59 or ₹4,799{" "}
-//                     <span className="font-[400] text-lg leading-lg text-[white]">
-//                       {" "}
-//                       /per month
-//                     </span>
-//                   </div>
-//                   <div className="w-[374px] h-[90px] rounded-[12px] px-[78px] py-[18px] flex flex-col justify-center items-center gap-[10px] bg-[#FFFFFF1A] shadow-[0_2px_12px_0] shadow-[#007B8229] shadow-inner-[2px_2px_12px_0] shadow-inner-[#FFFFFF14]">
-//                     <div className="font-medium text-[14px] leading-[100%] text-center text-[white]">
-//                       Use code (Get 10%OFF)
-//                     </div>
-//                     <div className="w-[163px] min-h-[27px] flex gap-[12px]">
-//                       <img
-//                         src={DarkPg}
-//                         alt="page"
-//                         className="w-[24px] h-[24px] text-[#00B0BA]"
-//                       />
-//                       <div className="font-bold text-[22px] text-[#00b0ba]">
-//                         STACKLY20
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <Link to="/AfterBilling">
-//                     <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:text-[white] hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
-//                       Get Started
-//                     </div>
-//                   </Link>
-//                 </div>
-
-//                 <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E]"></div>
-
-//                 {/* tick  */}
-
-//                 <div className="w-[374px] min-h-[504px] flex flex-col justify-start items-start gap-[24px] mt-[32px]">
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Unlimited Room Designs
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Commercial use upto 3-5 members
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Fully customized AI designs with layout and lighting
-//                       suggestions{" "}
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Unlimited design revisions
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       3D walk-through visualizations
-//                     </div>
-//                   </div>
-//                   <Link>
-//                     {" "}
-//                     <div className="flex gap-2">
-//                       <img
-//                         src={Rarrow}
-//                         alt="tik"
-//                         className="w-[15px] h-[20px] flex items-center justify-center"
-//                       />
-//                       <div className="font-medium text-lg leading-lg text-[white]">
-//                         See 4 more
-//                       </div>
-//                     </div>
-//                   </Link>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// }
-
-
-// import React, { useState } from "react";
-// import Tik from "../../assets/pricing-pg/tik.png";
-// import Silver from "../../assets/pricing-pg/silver.png";
-// import Page from "../../assets/pricing-pg/page.png";
-// import Gold from "../../assets/pricing-pg/grpGold.png";
-// import DarkPg from "../../assets/pricing-pg/darkPg.png";
-// import Rarrow from "../../assets/pricing-pg/Rarrow.png";
-// import { Link } from "react-router-dom";
-
-// export default function AfterUiPlans() {
-//   const [showSilverMore, setShowSilverMore] = useState(false);
-//   const [showGoldMore, setShowGoldMore] = useState(false);
-
-//   const toggleSilverMore = () => {
-//     setShowSilverMore(!showSilverMore);
-//   };
-
-//   const toggleGoldMore = () => {
-//     setShowGoldMore(!showGoldMore);
-//   };
-
-//   return (
-//     <div>
-//       <section className="w-full h-[1600px] flex justify-center items-center bg-[#021314]">
-//         <div className="w-[1325px] h-[1201px] flex flex-col justify-start items-center gap-[116px]">
-//           <div className="w-[1018px] h-[414px] flex flex-col justify-start items-center gap-[61px]">
-//             <div className="w-[743px] h-[128px] font-medium text-[48px] leading-[64px] text-center text-white">
-//               Find the right plan that suits your needs
-//             </div>
-
-//             <div className="w-[1018px] h-[90px] text-[32px] text-center leading-[140%]  font-medium text-white">
-//               Start free or unlock premium features.choose what fits your
-//               journey best.
-//             </div>
-//           </div>
-
-//           {/* plan  */}
-
-//           <div className="w-[1325px] h-[810px] flex justify-between items-center gap-[43px]">
-//             {/* plan-1  */}
-
-//             <div className="w-[413px] h-[810px] min-w-[340px] rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px]">
-//               <div className="w-[373px] min-h-[232px] flex flex-col justify-start items-start gap-[34px]">
-//                 <div className="w-[360px] min-h-[32px] font-bold text-[32px] text-[#00b0ba]">
-//                   Basic{" "}
-//                   <span className="text-[white] text-[23px]"> (Free) </span>
-//                 </div>
-//                 <div className="font-[400] text-[16px] text-[white]">
-//                   Perfect for personal or casual users who want a simple idea of
-//                   interior design.
-//                 </div>
-//                 <div className="font-bold text-[32px] text-[white] leading-4x1">
-//                   $0{" "}
-//                   <span className="font-[400] text-lg leading-lg text-[white]">
-//                     /per month
-//                   </span>
-//                 </div>
-//                 <Link to="/AfterBilling">
-//                   <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white">
-//                     Get Started
-//                   </div>
-//                 </Link>
-//               </div>
-
-//               <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E] text-[white]"></div>
-
-//               {/* ticks  */}
-//               <div className="w-[373px] min-h-[420px] flex flex-col justify-start items-start gap-[24px] mt-[43px]">
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     10 Room Designs per month
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Limited AI-generated layouts
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Basic furniture suggestions
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Download SD images,no advanced tools
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Email support (Standard)
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     No customization options
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     No revision support
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Watermark images
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* plan-2  */}
-
-//             <div className="w-[413px] min-w-[340px] h-[810px] min-h-[810px] rounded-[12px] px-[20px] py-[40px] bg-gradient-to-b from-[#00B0BA] via-[#FFFFFF1A] to-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px]">
-//               <div className="w-[373px] min-h-[349px] flex flex-col justify-start items-start">
-//                 <div className="w-[373px] min-h-[349px] flex flex-col justify-start items-start gap-[34px]">
-//                   <div className="w-[360px] h-[32px] flex justify-between">
-//                     <div className="font-bold text-[32px] leading-xl text-[#FFFFFF]">
-//                       Silver
-//                     </div>
-//                     <img
-//                       src={Silver}
-//                       alt="silver"
-//                       className="w-[85.24px] h-[80px]"
-//                     />
-//                   </div>
-//                   <div className="font-[400] text-[16px] text-[white]">
-//                     Ideal for homeowners or renters looking for more creative
-//                     control and polished designs.
-//                   </div>
-//                   <div className="w-[374px] h-[52px] font-bold text-[32px] leading-4x1 text-[white]">
-//                     $29 or ₹2,399{" "}
-//                     <span className="font-[400] text-lg leading-lg text-[white]">
-//                       {" "}
-//                       /per month
-//                     </span>
-//                   </div>
-//                   <div className="w-[374px] h-[90px] rounded-[12px] px-[78px] py-[18px] flex flex-col justify-center items-center gap-[10px] bg-[#FFFFFF1A] shadow-[0_2px_12px_0] shadow-[#007B8229] shadow-inner-[2px_2px_12px_0] shadow-inner-[#FFFFFF14]">
-//                     <div className="font-medium text-[14px] leading-[100%] text-center text-[white]">
-//                       Use code (Get 10%OFF)
-//                     </div>
-//                     <div className="w-[163px] min-h-[27px] flex gap-[12px]">
-//                       <img
-//                         src={DarkPg}
-//                         alt="page"
-//                         className="w-[24px] h-[24px] text-[#00B0BA]"
-//                       />
-//                       <div className="font-bold text-[22px] text-[#00b0ba]">
-//                         STACKLY10
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <Link to="/AfterBilling">
-//                     {" "}
-//                     <div className="w-[373px] h-[46px] rounded-[5px] border-[1px] border-solid border-[#007B82] hover:text-[white] text-[#007B82] bg-white flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
-//                       Get Started
-//                     </div>
-//                   </Link>
-//                 </div>
-
-//                 <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E]"></div>
-
-//                 {/* tick  */}
-
-//                 <div className="w-[374px] min-h-[504px] flex flex-col justify-start items-start gap-[24px] mt-[32px]">
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       50 Room Designs per month
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Advanced AI layout suggestions
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Access to premium themes & colour palettes
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Furniture & decor recommendations
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       High-resolution image download
-//                     </div>
-//                   </div>
-
-//                   {/* Additional Silver features */}
-//                   {showSilverMore && (
-//                     <>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Priority email support
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Basic customization options
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Limited revisions (up to 3)
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           No watermark on images
-//                         </div>
-//                       </div>
-//                     </>
-//                   )}
-
-//                   <div
-//                     className="flex gap-2 cursor-pointer"
-//                     onClick={toggleSilverMore}
-//                   >
-//                     <img
-//                       src={Rarrow}
-//                       alt="tik"
-//                       className={`w-[15px] h-[20px] flex items-center justify-center transition-transform ${
-//                         showSilverMore ? "transform rotate-90" : ""
-//                       }`}
-//                     />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       {showSilverMore ? "Show less" : "See 4 more"}
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* plan-3  */}
-//             <div className="w-[413px] h-[810px] min-w-[340px] rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px] overflow-hidden">
-//               <div className="w-[374px] min-h-[364px] flex flex-col justify-start items-start">
-//                 <div className="w-[374px] min-h-[364px] flex flex-col justify-start items-start gap-[34px]">
-//                   <span className="w-[122px] h-[40px] rounded-bl-[16px] px-[10px] py-[4px] flex justify-center items-center bg-gradient-to-b from-[#FFAA17] to-[#99660E] text-[white] font-medium text-[16px] text-center absolute mt-[-41px] ml-[271px] rounded-tr-[13px]">
-//                     Most Popular
-//                   </span>
-//                   <div className="w-[360px] h-[32px] flex justify-between">
-//                     <div className="font-bold text-[32px] leading-xl text-[#00b0ba]">
-//                       Gold
-//                     </div>
-//                     <img
-//                       src={Gold}
-//                       alt="silver"
-//                       className="w-[85.24px] h-[80px]"
-//                     />
-//                   </div>
-//                   <div className="font-[400] text-[16px] text-[white]">
-//                     Best for professionals, renovators, or anyone seeking
-//                     top-tier results and personalization.
-//                   </div>
-//                   <div className="w-[374px] h-[52px] font-bold text-[32px] leading-4x1 text-[white]">
-//                     $59 or ₹4,799{" "}
-//                     <span className="font-[400] text-lg leading-lg text-[white]">
-//                       {" "}
-//                       /per month
-//                     </span>
-//                   </div>
-//                   <div className="w-[374px] h-[90px] rounded-[12px] px-[78px] py-[18px] flex flex-col justify-center items-center gap-[10px] bg-[#FFFFFF1A] shadow-[0_2px_12px_0] shadow-[#007B8229] shadow-inner-[2px_2px_12px_0] shadow-inner-[#FFFFFF14]">
-//                     <div className="font-medium text-[14px] leading-[100%] text-center text-[white]">
-//                       Use code (Get 10%OFF)
-//                     </div>
-//                     <div className="w-[163px] min-h-[27px] flex gap-[12px]">
-//                       <img
-//                         src={DarkPg}
-//                         alt="page"
-//                         className="w-[24px] h-[24px] text-[#00B0BA]"
-//                       />
-//                       <div className="font-bold text-[22px] text-[#00b0ba]">
-//                         STACKLY20
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <Link to="/AfterBilling">
-//                     <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:text-[white] hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
-//                       Get Started
-//                     </div>
-//                   </Link>
-//                 </div>
-
-//                 <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E]"></div>
-
-//                 {/* tick  */}
-
-//                 <div className="w-[374px] min-h-[504px] flex flex-col justify-start items-start gap-[24px] mt-[32px]">
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Unlimited Room Designs
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Commercial use upto 3-5 members
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Fully customized AI designs with layout and lighting
-//                       suggestions{" "}
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Unlimited design revisions
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       3D walk-through visualizations
-//                     </div>
-//                   </div>
-
-//                   {/* Additional Gold features */}
-//                   {showGoldMore && (
-//                     <>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Dedicated support with 24-hour response time
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Advanced customization tools
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Export designs in multiple formats
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Access to exclusive design templates
-//                         </div>
-//                       </div>
-//                     </>
-//                   )}
-
-//                   <div
-//                     className="flex gap-2 cursor-pointer"
-//                     onClick={toggleGoldMore}
-//                   >
-//                     <img
-//                       src={Rarrow}
-//                       alt="tik"
-//                       className={`w-[15px] h-[20px] flex items-center justify-center transition-transform ${
-//                         showGoldMore ? "transform rotate-90" : ""
-//                       }`}
-//                     />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       {showGoldMore ? "Show less" : "See 4 more"}
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// }
-
-// import React, { useState } from "react";
-// import Tik from "../../assets/pricing-pg/tik.png";
-// import Silver from "../../assets/pricing-pg/silver.png";
-// import Page from "../../assets/pricing-pg/page.png";
-// import Gold from "../../assets/pricing-pg/grpGold.png";
-// import DarkPg from "../../assets/pricing-pg/darkPg.png";
-// import Rarrow from "../../assets/pricing-pg/Rarrow.png";
-// import BgImage from "../../assets/pricing-pg/bg-plan.png";
-// import { Link } from "react-router-dom";
-
-// export default function AfterUiPlans() {
-//   const [showSilverMore, setShowSilverMore] = useState(false);
-//   const [showGoldMore, setShowGoldMore] = useState(false);
-
-//   const toggleSilverMore = () => {
-//     setShowSilverMore(!showSilverMore);
-//   };
-
-//   const toggleGoldMore = () => {
-//     setShowGoldMore(!showGoldMore);
-//   };
-
-//   return (
-//     <div>
-//       <section
-//         className="w-full min-h-[1600px] flex justify-center items-center bg-fixed bg-cover bg-center bg-no-repeat"
-//         style={{
-//           backgroundImage: `url(${BgImage})`,
-//           backgroundAttachment: 'fixed',
-//           backgroundSize: 'cover',
-//           backgroundPosition: 'center',
-//         }}
-//       >
-//         <div className="w-[1325px] h-[1201px] flex flex-col justify-start items-center gap-[116px]">
-//           <div className="w-[1018px] h-[414px] flex flex-col justify-start items-center gap-[61px]">
-//             <div className="w-[743px] h-[128px] font-medium text-[48px] leading-[64px] text-center text-white">
-//               Find the right plan that suits your needs
-//             </div>
-
-//             <div className="w-[1018px] h-[90px] text-[32px] text-center leading-[140%]  font-medium text-white">
-//               Start free or unlock premium features.choose what fits your
-//               journey best.
-//             </div>
-//           </div>
-
-//           {/* plan  */}
-
-//           <div className="w-[1325px] h-[810px] flex justify-between items-center gap-[43px]">
-//             {/* plan-1  */}
-
-//             <div className="w-[413px] h-[810px] min-w-[340px] rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px]">
-//               <div className="w-[373px] min-h-[232px] flex flex-col justify-start items-start gap-[34px]">
-//                 <div className="w-[360px] min-h-[32px] font-bold text-[32px] text-[#00b0ba]">
-//                   Basic{" "}
-//                   <span className="text-[white] text-[23px]"> (Free) </span>
-//                 </div>
-//                 <div className="font-[400] text-[16px] text-[white]">
-//                   Perfect for personal or casual users who want a simple idea of
-//                   interior design.
-//                 </div>
-//                 <div className="font-bold text-[32px] text-[white] leading-4x1">
-//                   $0{" "}
-//                   <span className="font-[400] text-lg leading-lg text-[white]">
-//                     /per month
-//                   </span>
-//                 </div>
-//                 {/* <Link to="">
-//                   <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white">
-//                     Get Started
-//                   </div>
-//                 </Link> */}
-//               </div>
-
-//               <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E] text-[white]"></div>
-
-//               {/* ticks  */}
-//               <div className="w-[373px] min-h-[420px] flex flex-col justify-start items-start gap-[24px] mt-[43px]">
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     10 Room Designs per month
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Limited AI-generated layouts
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Basic furniture suggestions
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Download SD images,no advanced tools
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Email support (Standard)
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     No customization options
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     No revision support
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                   <div className="font-medium text-lg leading-lg text-[white]">
-//                     Watermark images
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* plan-2  */}
-
-//             <div
-//               className={`w-[413px] min-w-[340px] ${showSilverMore ? "h-[1010px]" : "h-[810px]"
-//                 } rounded-[12px] px-[20px] py-[40px] bg-gradient-to-b from-[#00B0BA] via-[#FFFFFF1A] to-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px] transition-all duration-300`}
-//             >
-//               <div className="w-[373px] min-h-[349px] flex flex-col justify-start items-start">
-//                 <div className="w-[373px] min-h-[349px] flex flex-col justify-start items-start gap-[34px]">
-//                   <div className="w-[360px] h-[32px] flex justify-between">
-//                     <div className="font-bold text-[32px] leading-xl text-[#FFFFFF]">
-//                       Silver
-//                     </div>
-//                     <img
-//                       src={Silver}
-//                       alt="silver"
-//                       className="w-[85.24px] h-[80px]"
-//                     />
-//                   </div>
-//                   <div className="font-[400] text-[16px] text-[white]">
-//                     Ideal for homeowners or renters looking for more creative
-//                     control and polished designs.
-//                   </div>
-//                   <div className="w-[374px] h-[52px] font-bold text-[32px] leading-4x1 text-[white]">
-//                     $29 or ₹2,399{" "}
-//                     <span className="font-[400] text-lg leading-lg text-[white]">
-//                       {" "}
-//                       /per month
-//                     </span>
-//                   </div>
-//                   <div className="w-[374px] h-[90px] rounded-[12px] px-[78px] py-[18px] flex flex-col justify-center items-center gap-[10px] bg-[#FFFFFF1A] shadow-[0_2px_12px_0] shadow-[#007B8229] shadow-inner-[2px_2px_12px_0] shadow-inner-[#FFFFFF14]">
-//                     <div className="font-medium text-[14px] leading-[100%] text-center text-[white]">
-//                       Use code (Get 10%OFF)
-//                     </div>
-//                     <div className="w-[163px] min-h-[27px] flex gap-[12px]">
-//                       <img
-//                         src={DarkPg}
-//                         alt="page"
-//                         className="w-[24px] h-[24px] text-[#00B0BA]"
-//                       />
-//                       <div className="font-bold text-[22px] text-[#00b0ba]">
-//                         STACKLY10
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <Link to="/AfterConformationPage">
-//                     {" "}
-//                     <div className="w-[373px] h-[46px] rounded-[5px] border-[1px] border-solid border-[#007B82] hover:text-[white] text-[#007B82] bg-white flex justify-center items-center hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
-//                       Get Started
-//                     </div>
-//                   </Link>
-//                 </div>
-
-//                 <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E]"></div>
-
-//                 {/* tick  */}
-
-//                 <div className="w-[374px] min-h-[504px] flex flex-col justify-start items-start gap-[24px] mt-[32px]">
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       50 Room Designs per month
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Advanced AI layout suggestions
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Access to premium themes & colour palettes
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Furniture & decor recommendations
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       High-resolution image download
-//                     </div>
-//                   </div>
-
-//                   {/* Additional Silver features */}
-//                   {showSilverMore && (
-//                     <>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Priority email support
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Basic customization options
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Limited revisions (up to 3)
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           No watermark on images
-//                         </div>
-//                       </div>
-//                     </>
-//                   )}
-
-//                   <div
-//                     className="flex gap-2 cursor-pointer"
-//                     onClick={toggleSilverMore}
-//                   >
-//                     <img
-//                       src={Rarrow}
-//                       alt="tik"
-//                       className={`w-[15px] h-[20px] flex items-center justify-center transition-transform ${showSilverMore ? "transform rotate-90" : ""
-//                         }`}
-//                     />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       {showSilverMore ? "Show less" : "See 4 more"}
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-
-//             {/* plan-3  */}
-//             <div
-//               className={`w-[413px] min-w-[340px] ${showGoldMore ? "h-[1050px]" : "h-[810px]"
-//                 } rounded-[12px] px-[20px] py-[40px] bg-[#FFFFFF1A] border-[1px] border-solid border-[white] shadow-[0px_2px_12px_0] shadow-[#007B8229] gap-[32px] transition-all duration-300`}
-//             >
-//               <div className="w-[374px] min-h-[364px] flex flex-col justify-start items-start">
-//                 <div className="w-[374px] min-h-[364px] flex flex-col justify-start items-start gap-[34px]">
-//                   <span className="w-[122px] h-[40px] rounded-bl-[16px] px-[10px] py-[4px] flex justify-center items-center bg-gradient-to-b from-[#FFAA17] to-[#99660E] text-[white] font-medium text-[16px] text-center absolute mt-[-41px] ml-[271px] rounded-tr-[13px]">
-//                     Most Popular
-//                   </span>
-//                   <div className="w-[360px] h-[32px] flex justify-between">
-//                     <div className="font-bold text-[32px] leading-xl text-[#00b0ba]">
-//                       Gold
-//                     </div>
-//                     <img
-//                       src={Gold}
-//                       alt="silver"
-//                       className="w-[85.24px] h-[80px]"
-//                     />
-//                   </div>
-//                   <div className="font-[400] text-[16px] text-[white]">
-//                     Best for professionals, renovators, or anyone seeking
-//                     top-tier results and personalization.
-//                   </div>
-//                   <div className="w-[374px] h-[52px] font-bold text-[32px] leading-4x1 text-[white]">
-//                     $59 or ₹4,799{" "}
-//                     <span className="font-[400] text-lg leading-lg text-[white]">
-//                       {" "}
-//                       /per month
-//                     </span>
-//                   </div>
-//                   <div className="w-[374px] h-[90px] rounded-[12px] px-[78px] py-[18px] flex flex-col justify-center items-center gap-[10px] bg-[#FFFFFF1A] shadow-[0_2px_12px_0] shadow-[#007B8229] shadow-inner-[2px_2px_12px_0] shadow-inner-[#FFFFFF14]">
-//                     <div className="font-medium text-[14px] leading-[100%] text-center text-[white]">
-//                       Use code (Get 10%OFF)
-//                     </div>
-//                     <div className="w-[163px] min-h-[27px] flex gap-[12px]">
-//                       <img
-//                         src={DarkPg}
-//                         alt="page"
-//                         className="w-[24px] h-[24px] text-[#00B0BA]"
-//                       />
-//                       <div className="font-bold text-[22px] text-[#00b0ba]">
-//                         STACKLY20
-//                       </div>
-//                     </div>
-//                   </div>
-//                   <Link to="/AfterConformationPage1">
-//                     <div className="w-[373px] h-[46px] bg-[white] rounded-[8px] border-[1px] border-solid border-[#007B82] text-[#007B82] flex justify-center items-center hover:text-[white] hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]">
-//                       Get Started
-//                     </div>
-//                   </Link>
-//                 </div>
-
-//                 <div className="w-[373px] h-[1px] border-[1px] border-dashed border-[#1A1A1A2E]"></div>
-
-//                 {/* tick  */}
-
-//                 <div className="w-[374px] min-h-[504px] flex flex-col justify-start items-start gap-[24px] mt-[32px]">
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Unlimited Room Designs
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Commercial use upto 3-5 members
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Fully customized AI designs with layout and lighting
-//                       suggestions{" "}
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       Unlimited design revisions
-//                     </div>
-//                   </div>
-//                   <div className="flex gap-2">
-//                     <img src={Tik} alt="tik" className="w-[28px] h-[28px]" />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       3D walk-through visualizations
-//                     </div>
-//                   </div>
-
-//                   {/* Additional Gold features */}
-//                   {showGoldMore && (
-//                     <>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Dedicated support with 24-hour response time
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Advanced customization tools
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Export designs in multiple formats
-//                         </div>
-//                       </div>
-//                       <div className="flex gap-2">
-//                         <img
-//                           src={Tik}
-//                           alt="tik"
-//                           className="w-[28px] h-[28px]"
-//                         />
-//                         <div className="font-medium text-lg leading-lg text-[white]">
-//                           Access to exclusive design templates
-//                         </div>
-//                       </div>
-//                     </>
-//                   )}
-
-//                   <div
-//                     className="flex gap-2 cursor-pointer"
-//                     onClick={toggleGoldMore}
-//                   >
-//                     <img
-//                       src={Rarrow}
-//                       alt="tik"
-//                       className={`w-[15px] h-[20px] flex items-center justify-center transition-transform ${showGoldMore ? "transform rotate-90" : ""
-//                         }`}
-//                     />
-//                     <div className="font-medium text-lg leading-lg text-[white]">
-//                       {showGoldMore ? "Show less" : "See 4 more"}
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </section>
-//     </div>
-//   );
-// }
-
 import React, { useState, useEffect } from "react";
 import Tik from "../../assets/pricing-pg/tik.png";
 import Silver from "../../assets/pricing-pg/silver.png";
@@ -1205,8 +18,8 @@ export default function AfterUiPlans() {
   // Static descriptions for each plan type
   const staticDescriptions = {
     basic: "Perfect for personal or casual users who want a simple idea of interior design.",
-    silver: "Ideal for homeowners or renters looking for more creative control and polished designs.",
-    gold: "Best for professionals, renovators, or anyone seeking top-tier results and personalization."
+    premium: "Ideal for homeowners or renters looking for more creative control and polished designs.",
+    pro: "Best for professionals, renovators, or anyone seeking top-tier results and personalization."
   };
 
   useEffect(() => {
@@ -1218,11 +31,16 @@ export default function AfterUiPlans() {
         }
         const data = await response.json();
         
-        // Map the API data to our format, keeping static descriptions
-        const mappedPlans = data.plans.map(plan => ({
+        // Sort plans by price to determine tier
+        const sortedPlans = data.plans.sort((a, b) => a.price - b.price);
+        
+        // Map API data to our format, assigning tiers based on sorted order
+        const mappedPlans = sortedPlans.map((plan, index) => ({
           ...plan,
-          // Use static description based on plan name
-          description: staticDescriptions[plan.name.toLowerCase()] || plan.description
+          // Assign tier based on index: 0 = basic, 1 = mid-tier (premium), 2 = high-tier (pro)
+          tier: index === 0 ? "basic" : index === 1 ? "premium" : "pro",
+          // Use static description based on tier
+          description: staticDescriptions[index === 0 ? "basic" : index === 1 ? "premium" : "pro"] || plan.description
         }));
         
         setPlans(mappedPlans);
@@ -1260,28 +78,45 @@ export default function AfterUiPlans() {
     const features = Array.isArray(plan.features) ? plan.features : [];
     const visibleFeatures = showMore[plan.id] ? features : features.slice(0, 5);
 
+    // Dynamic styles based on tier
+    const getPlanStyles = (tier) => {
+      switch (tier) {
+        case "premium": // Formerly "silver"
+          return {
+            background: "linear-gradient(180deg, rgba(72, 32, 126, 0.8) 0%, rgba(0, 0, 0, 0.8) 77.57%)",
+            border: "2px solid #FFFFFF33",
+            boxShadow: "8px 8px 4px 0px #00000029 inset, -8px -8px 4px 0px #00000029 inset",
+            featureBg: "bg-[linear-gradient(180deg,#8A38F5_0%,#C22CA2_100%)]"
+          };
+        case "pro": // Formerly "gold"
+          return {
+            background: "black",
+            border: "2px solid #FFFFFF33",
+            boxShadow: "",
+            featureBg: "bg-[linear-gradient(180deg,#FBA716_41.67%,#95630D_157.14%)]"
+          };
+        case "basic":
+        default:
+          return {
+            background: "black",
+            border: "1px solid #FFFFFF33",
+            boxShadow: "",
+            featureBg: "bg-[linear-gradient(180deg,#8A38F5_0%,#C22CA2_100%)]"
+          };
+      }
+    };
+
+    const styles = getPlanStyles(plan.tier);
+
     return (
       <div
         className={`${
           mobile ? "w-[340px]" : "w-full"
-        } relative rounded-[12px] p-5 flex flex-col gap-6 ${
-          plan.name.toLowerCase() === "Premium"
-            ? "border-[5px] border-solid border-[#00B0BA]"
-            : plan.name.toLowerCase() === "gold"
-            ? "border-[1px] border-solid border-[#B5780F] shadow-[0_2px_12px_#007B8229]"
-            : "bg-[#FFFFFF1A] border-[1px] border-solid border-white shadow-[0_2px_12px_#007B8229]"
-        }`}
+        } relative rounded-[12px] p-5 flex flex-col gap-6`}
         style={{
-          background:
-            plan.name.toLowerCase() === "Premium"
-              ? "linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.04) 100%)"
-              : plan.name.toLowerCase() === "gold"
-              ? "linear-gradient(179.75deg, #B5780F 0.22%, rgba(255, 255, 255, 0.1) 100.65%)"
-              : "",
-          boxShadow:
-            plan.name.toLowerCase() === "Premium"
-              ? "8px 8px 4px 0px #00000029 inset, -8px -8px 4px 0px #00000029 inset"
-              : ""
+          background: styles.background,
+          border: styles.border,
+          boxShadow: styles.boxShadow
         }}
       >
         {isPopular && (
@@ -1291,36 +126,27 @@ export default function AfterUiPlans() {
         )}
 
         <div className="flex flex-col gap-4">
-          <div className="flex justify-between items-center">
-            <h3 className="font-bold text-2xl text-white">
+          <div className="flex justify-center items-center">
+            <h3 className="font-bold text-2xl text-white text-center">
               {plan.name}
-              {plan.name.toLowerCase() === "basic" && (
+              {plan.tier === "basic" && (
                 <span className="text-white text-lg"> (Free)</span>
               )}
             </h3>
-            {plan.name.toLowerCase() === "silver" && (
-              <img src={Silver} alt="silver" className="w-16 h-16" />
-            )}
-            {plan.name.toLowerCase() === "gold" && (
-              <img src={Gold} alt="gold" className="w-[63px] h-[47px] mt-4" />
-            )}
           </div>
 
-          {/* Static description from our mapping */}
-          <p className="text-white text-sm">{plan.description}</p>
+          {/* Description */}
+          <p className="text-white text-sm text-center">{plan.description}</p>
 
-          <div className="text-white text-2xl font-bold">
-            ${plan.price}{" "}
-            <span className="text-base font-normal">/per month</span>
+          {/* Price */}
+          <div className="text-white text-2xl font-bold text-center">
+            ${plan.price} <span className="text-base font-normal">/per month</span>
           </div>
 
+          {/* Offer Code */}
           {plan.offerCode && (
             <div
-              className={`p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229] ${
-                plan.name.toLowerCase() === "gold"
-                  ? "bg-[#F9BC1C]"
-                  : "bg-[#FFFFFF1A]"
-              }`}
+              className={`p-4 rounded-lg text-center text-white shadow-[0_2px_12px_#007B8229] bg-[#8A38F51A]`}
             >
               <p className="text-xs font-medium">
                 {plan.offerText || "Use code (Get 10%OFF)"}
@@ -1329,21 +155,13 @@ export default function AfterUiPlans() {
                 <img
                   src={DarkPg}
                   alt="copy"
-                  className={`w-4 h-4 cursor-pointer ${
-                    plan.name.toLowerCase() === "gold"
-                      ? "invert brightness-0"
-                      : ""
-                  }`}
+                  className="w-4 h-4 cursor-pointer filter brightness-0 invert"
                   onClick={() => handleCopy(plan.offerCode)}
                   title="Click to copy coupon"
                 />
                 <span
                   onClick={() => handleCopy(plan.offerCode)}
-                  className={`font-bold text-lg cursor-pointer ${
-                    plan.name.toLowerCase() === "gold"
-                      ? "text-white"
-                      : "text-[#00B0BA]"
-                  }`}
+                  className="font-bold text-lg cursor-pointer text-white"
                 >
                   {plan.offerCode}
                   {copiedCode === plan.offerCode && (
@@ -1354,50 +172,51 @@ export default function AfterUiPlans() {
             </div>
           )}
 
-          {plan.name.toLowerCase() !== "basic" && (
+          {/* Button */}
+          {plan.tier !== "basic" && (
             <Link
-              to={`/AfterConformationPage${
-                plan.name.toLowerCase() === "gold" ? "1" : ""
-              }`}
+              to={`/AfterConformationPage${plan.tier === "pro" ? "1" : ""}`}
               state={{ plan }}
             >
               <div
-                className={`w-full py-3 rounded-lg border-2 flex justify-center items-center hover:text-white ${
-                  plan.name.toLowerCase() === "gold"
-                    ? "bg-white border-[#F3A216] text-[#F3A216] hover:bg-gradient-to-b from-[#F3A216] to-[#f5b543]"
-                    : "bg-white border-[#007B82] text-[#007B82] hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA]"
-                }`}
+                className="w-full h-[42px] gap-[10px] rounded-[30px] border border-[#C22CA299] 
+                 px-[30px] py-[10px] text-white flex justify-center items-center 
+                 bg-gradient-to-r from-[#8A38F580] to-[#C22CA280]
+                 hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white"
               >
-                Get Started
+                Purchase
               </div>
             </Link>
           )}
         </div>
 
-        <hr className="border-dashed border-[#1A1A1A2E]" />
+        {/* Divider */}
+        <hr className="border-dashed border-[#C99FFF]" />
 
+        {/* Features */}
         <div className="flex flex-col gap-4 mt-4">
           {visibleFeatures.map((item, idx) => (
             <div className="flex gap-2 items-start" key={idx}>
-              {plan.name.toLowerCase() === "gold" ? (
-                <div className="w-5 h-5 mt-0.5 flex-shrink-0 bg-[linear-gradient(180deg,#FBA716_41.67%,#95630D_157.14%)] rounded-[4px] flex items-center justify-center">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M5 13L9 17L19 7"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              ) : (
-                <img
-                  src={Tik}
-                  alt="tik"
-                  className="w-5 h-5 mt-0.5 flex-shrink-0"
-                />
-              )}
+              <div
+                className={`w-5 h-5 mt-0.5 flex-shrink-0 rounded-[4px] flex items-center justify-center ${styles.featureBg}`}
+              >
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-3 h-3"
+                >
+                  <path
+                    d="M5 13L9 17L19 7"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
               <span className="text-white text-sm font-medium">
                 {typeof item === "object" ? item.text || item.name : item}
               </span>
@@ -1409,33 +228,23 @@ export default function AfterUiPlans() {
               className="flex gap-2 items-center cursor-pointer text-white"
               onClick={() => toggleShowMore(plan.id)}
             >
-              {plan.name.toLowerCase() === "gold" ? (
-                <svg
-                  width="10.4"
-                  height="18.8"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  className={`w-3 h-4 transition-transform ${
-                    showMore[plan.id] ? "rotate-90" : ""
-                  }`}
-                >
-                  <path
-                    d="M8 5L15 12L8 19"
-                    stroke="#F3A216"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              ) : (
-                <img
-                  src={Rarrow}
-                  alt="arrow"
-                  className={`w-3 h-4 transition-transform ${
-                    showMore[plan.id] ? "rotate-90" : ""
-                  }`}
+              <svg
+                width="10"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                className={`w-3 h-4 transition-transform ${
+                  showMore[plan.id] ? "rotate-90" : ""
+                }`}
+              >
+                <path
+                  d="M8 5L15 12L8 19"
+                  stroke="#8A38F5"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
-              )}
+              </svg>
               <span className="text-sm">
                 {showMore[plan.id] ? "Show Less" : `See ${features.length - 5} more`}
               </span>
@@ -1463,7 +272,6 @@ export default function AfterUiPlans() {
   return (
     <section
       className="w-full py-12 px-4 bg-black bg-cover bg-top bg-no-repeat max-[440px]:-mt-[118px]"
-      
     >
       <div className="hidden max-[440px]:block w-[168px] h-[168px] bg-[#00B0BA66] mx-auto mb-6 rounded-full blur-[124px]"></div>
 
@@ -1500,7 +308,7 @@ export default function AfterUiPlans() {
                   <PlanCard
                     plan={plan}
                     mobile
-                    isPopular={plan.name.toLowerCase() === "gold"}
+                    isPopular={plan.tier === "pro"}
                   />
                 </div>
               ))}
@@ -1551,7 +359,7 @@ export default function AfterUiPlans() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path
                   d="M9 18L15 12L9 6"
-                  stroke="#2A2A2A"
+                  stroke="#CDCDCD"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -1567,7 +375,7 @@ export default function AfterUiPlans() {
             <PlanCard
               key={plan.id}
               plan={plan}
-              isPopular={plan.name.toLowerCase() === "gold"}
+              isPopular={plan.tier === "pro"}
             />
           ))}
         </div>

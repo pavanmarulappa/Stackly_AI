@@ -4,7 +4,7 @@ import Silver from "../../assets/pricing-pg/silver.png";
 import Gold from "../../assets/pricing-pg/grpGold.png";
 import DarkPg from "../../assets/pricing-pg/darkPg.png";
 import Rarrow from "../../assets/pricing-pg/Rarrow.png";
-import BG from "../../assets/pricing-pg/Pricing1.png"; // <-- Background image
+import BG from "../../assets/pricing-pg/Pricing1.png"; 
 import { Link } from "react-router-dom";
 
 export default function AfterUiPlans() {

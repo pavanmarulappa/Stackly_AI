@@ -82,11 +82,16 @@ class Plan(models.Model):
 
     def get_offer(self):
         now = timezone.now()
-        coupon = self.coupons.filter(is_active=True, valid_from__lte=now, valid_to__gte=now).first()
+        coupon = self.coupons.filter(
+            is_active=True,
+            valid_from__lte=now,
+            valid_to__gte=now
+        ).first()
         if coupon:
             return {
                 "offerCode": coupon.code,
-                "offerText": coupon.offer_text
+                "offerText": coupon.offer_text,
+                "discountPercentage": coupon.discount_percentage  # <-- added
             }
         return None
 

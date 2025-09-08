@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import apiBackground from "../../assets/api/back.png";
 import AfterKeys from "./AfterKeys";
 import AfterApiIntegrate from "./AfterApiIntegrate";
 import AfterPlan from "./AfterPlan";
+import AfterUiPlan from "./AfterUiPlan";
 import AfterApiAccess from "./AfterApiAccess";
 import AfterHowItWorks from "./AfterHowItWorks";
 import AfterCustomAPIPlan from "./AfterCustomApiPlan";
@@ -23,6 +25,8 @@ import Group2 from "../../assets/afterHome/Group2.png";
 import ApiVector from "../../assets/afterHome/ApiVector.png";
 
 export default function AfterHeroApi() {
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
   const faqs = [
     {
       question: "How do I get started with StacklyAI APIs?",
@@ -107,13 +111,31 @@ export default function AfterHeroApi() {
       alert("Submission failed. Please try again.");
     }
   };
+
+      useEffect(() => {
+  if (!location.hash) return;
+
+  const element = document.querySelector(location.hash);
+  if (element) {
+    // Wait for next paint frame (DOM is ready)
+    requestAnimationFrame(() => {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
+      });
+    });
+  }
+}, [location]);
+      
   return (
     <div>
       {/* section1 */}
- <div
-  className="relative w-full h-[399px] flex flex-col items-center justify-center bg-white-to-cyan bg-cover bg-center -mt-[82px] pt-[82px] overflow-hidden"
-  style={{ backgroundImage: `url(${BG1})` }}
+<div
+  className="relative w-full h-[399px] flex flex-col items-center justify-center bg-cover bg-center -mt-[82px] pt-[82px] overflow-hidden"
+  style={{ backgroundImage: `url(${BG1})`, backgroundColor: "#0f0f0f" }}
 >
+
  <div className="flex justify-center w-full">
  <div
   className="w-[1213.24px] h-[261.51px] flex items-center justify-between gap-[107px]  opacity-100"
@@ -165,7 +187,7 @@ export default function AfterHeroApi() {
 
               {/* Bottom Text Div */}
               <div className="w-[358px] h-[42px] opacity-100">
-                <p className="font-[Poppins] font-normal text-[14px] leading-[100%] text-white">
+                <p className="font-[Poppins] font-normal text-[14px] leading-[130%] text-white">
                   Stay in control of your integration with clear access details and key usage limits.
                 </p>
               </div>
@@ -284,37 +306,12 @@ export default function AfterHeroApi() {
         </div>
       </div>
 
-      {/* section-3  */}
-
-      {/* <AfterKeys /> */}
-
-      {/* section 4  */}
-
-      {/* <AfterApiIntegrate /> */}
-
-      {/* section-5  */}
-
       <AfterPlan />
+<div id="afteruiplan"><AfterUiPlan /></div>
+      
 
-      {/* section-6  */}
-
-      {/* <AfterApiAccess /> */}
-
-      {/* section-7  */}
-
-      {/* <AfterHowItWorks /> */}
-
-      {/* section-8  */}
-
-      {/* <AfterCustomAPIPlan /> */}
-
-      {/* section-9  */}
-
-    
-        <div className="relative bg-black overflow-hidden w-full flex justify-center items-center py-28 px-4 min-h-screen mt-[-70px]">
+        <div className="relative bg-black overflow-hidden w-full flex justify-center items-center py-28 px-4 min-h-screen mt-[-40px]">
       {" "}
-      {/* Added mt-0 and mb-16 */}
-      {/* Ellipse background image */}
      
       {/* Form section */}
       <div className="relative z-10 w-[668px] flex flex-col items-center gap-[28px] text-white">
@@ -411,8 +408,6 @@ export default function AfterHeroApi() {
   />
 </div>
 
-
-
           <div>
             <label className="block text-sm mb-1 text-white">Message</label>
             <textarea
@@ -449,144 +444,8 @@ export default function AfterHeroApi() {
           we'll be in touch shortly.
         </p>
       </div>
-
 </div>
-      {/* {section-10} */}
-      {/* <section className="w-full py-16 px-4 flex flex-col justify-center items-center mt-20">
-        <h2 className="text-[48px] md:text-5xl font-semibold text-center text-gray-800 leading-[140%]">
-          Discover Our{" "}
-          <span className="text-[#007B82]">Advanced AI Interior Tools</span> and
-          Redesign
-        </h2>
-        <h2 className="text-[48px] md:text-5xl font-semibold text-center text-[black] mt-3">
-          Your Space Instantly
-        </h2>
-      </section> */}
-
-      {/* <div className="relative w-full h-[709px] flex items-center justify-center bg-[white]">
-        //Background API Image 
-        <img
-          src={apiBackground}
-          alt="API Background"
-          className="absolute w-[1150.91px] h-[848px] p-[34px] opacity-60"
-        />
-
-        //Text Content 
-        <div className="relative z-10 w-[1172px] h-[242px] flex flex-col items-center justify-center text-black text-center -mt-40">
-          <h2 className="w-[816px] h-[64px] font-semibold text-[48px] leading-[64px]">
-            Ready to{" "}
-            <span className="text-[#00B0BA]">Create Something Great?</span>
-          </h2>
-          <p className="w-[1280px] h-[199px] font-[400] text-[28px] leading-[36px] mt-4">
-            We offer flexible API plans tailored to your needs.
-            <br />
-            Let’s build the right setup—just for you.
-          </p>
-          <Link to="#">
-            {" "}
-            <button className="w-[800px] h-[70px] mt-[80] rounded-[6px] border border-transparent bg-gradient-to-l from-[#00B0BA] via-[#000000] to-[#007B82] text-white font-semibold text-[18px] leading-[100%] ">
-              Let’s Connect!
-            </button>
-          </Link>
-        </div>
-      </div> */}
-
-      {/* section-11  */}
-
-      {/* <AfterDraggable /> */}
-
-      {/* section-12  */}
-
-      {/* <section
-         className="relative w-full  absolute-0  bg-cover bg-center bg-no-repeat"
-         style={{ backgroundImage: "url('./src/assets/home/sec14/bg1.jpg')" }}
-       >
-         <div className="py-20 px-6 bg-[#00000096]">
-           <div className="flex flex-col items-center text-center text-white">
-             <h2 className="text-[48px] md:text-5xl leading-[140%] text-center font-bold mb-4">
-               <span className="text-6xl font-bold">“</span> Meet Our Members{" "}
-               <span className="text-6xl font-bold">”</span>
-             </h2>
-             <p className="max-w-[630px] min-h-[78px] text-[28px] leading-[140%] text-center md:text-xl text-gray-300 mb-8">
-               You're in good company with{" "}
-               <span className="text-cyan-400  font-semibold">Stackly AI</span>,
-               trusted by people in all 195 countries.
-             </p> */}
-      {/* Center logo */}
-      {/* <div className="mb-16">
-               <div className="bg-[#FFFFFF1F] rounded-full p-8 shadow-lg">
-                 <img src={sec14Img2} alt="Center Icon" className="w-12 h-12" />
-               </div>
-             </div> */}
-
-      {/* Member Cards */}
-      {/* <div className="w-[100vw] flex justify-center item-center flex-wrap gap-10"> */}
-      {/* Card 1 */}
-      {/* <div className="max-w-[413px] min-h-[288px] bg-white rounded-[12px] p-10 flex flex-col items-center">
-                 <div className="min-w-[413px] h-full flex justify-around items-center">
-                   <div className="max-w-[206px] min-h-[64px] flex flex-col items-start gap-1 ">
-                     <h3 className="text-black text-[22px] font-medium leading-[140%] ">Guru Ragav Auditor</h3>
-                     <p className="text-[#b0b0b0] font-[400] text-[18px] leading-[140%]">Auditor</p>
-                   </div>
-                   <img
-                     src={sec14Img3}
-                     alt="Member 1"
-                     className="w-20 h-20 rounded-full object-cover"
-                   />
-                 </div>
-                 <p className="text-[#2A2A2A] font-[400] text-[18px] leading-[140%] mt-10">
-                   “I use Stackly AI to help my clients visualize how their
-                   backyard could look like if they hire me for the job. It works
-                   flawlessly!”
-                 </p>
-               </div> */}
-
-      {/* Card 2 */}
-      {/* <div className="max-w-[413px] min-h-[288px] bg-white rounded-[12px] p-10 flex flex-col items-center">
-                 <div className="min-w-[413px] h-full flex justify-around items-center">
-                   <div className="max-w-[206px] min-h-[64px] flex flex-col items-start gap-1">
-                     <h3 className="text-black text-[22px] font-medium leading-[140%]">Cristian Rama</h3>
-                     <p className="text-[#b0b0b0] font-[400] text-[18px] leading-[140%]">Architect</p>
-                   </div>
-                   <img
-                     src={sec14Img4}
-                     alt="Member 2"
-                     className="w-20 h-20 rounded-full object-cover"
-                   />
-                 </div>
-                 <p className="text-[#2A2A2A] font-[400] text-[18px] leading-[140%] mt-10">
-                   “I needed to replace my living room furniture so I generated a
-                   few design ideas with Stackly AI. Awesome technology!”
-                 </p>
-               </div> */}
-
-      {/* Card 3 */}
-      {/* <div className="max-w-[413px] min-h-[288px] bg-white rounded-[12px] p-10 flex flex-col items-center">
-                 <div className="min-w-[413px] h-full flex justify-around items-center">
-                   <div className="max-w-[206px] min-h-[64px] flex flex-col items-start gap-1">
-                     <h3 className="text-black text-[22px] font-medium leading-[140%]">Ram Krishnan</h3>
-                     <p className="text-[#b0b0b0] font-[400] text-[18px] leading-[140%]">Architect</p>
-                   </div>
-                   <img
-                     src={sec14Img5}
-                     alt="Member 3"
-                     className="w-20 h-20 rounded-full object-cover"
-                   />
-                 </div>
-                 <p className="text-[#2A2A2A] font-[400] text-[18px] leading-[140%] mt-10">
-                   “I run a real estate agency and my clients send me pictures
-                   with their empty properties. I use Stackly AI to furnish them
-                   automatically!”
-                 </p>
-               </div>
-             </div>
-           </div>
-         </div>
-       </section> */}
-
-      {/* section-14  */}
-
-      {/* <AfterApiFaq faqs={faqs} /> */}
+     
     </div>
   );
 }

@@ -62,9 +62,9 @@
             <tr>
                 <td>{{ plan }}</td>
                 <td>{{ duration }}</td>
-                <td>{{ amount }}</td>
+                <td>$ {{ amount }}</td>
                 <td>{{ discount_percent }}%</td>
-                <td>{{ discount_amount }}</td>
+                <td>$ {{ discount_amount }}</td>
                 <td>{{ start_date }}</td>
                 <td>{{ expire_date }}</td>
                 <td>{{ discount_price }}</td>
@@ -88,10 +88,10 @@
         {% endif %}
         <tr>
             <td>Taxes</td>
-            <td align="right">INR 0</td>
+            <td align="right">$ 0</td>
         </tr>
         <tr style="background-color: #b8cdec;">
-            <td><strong>Total (INR)</strong></td>
+            <td><strong>Total ($)</strong></td>
             <td align="right"><strong>{{ discount_price }}</strong></td>
         </tr>
     </table>

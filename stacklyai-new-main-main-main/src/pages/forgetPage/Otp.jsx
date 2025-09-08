@@ -800,22 +800,19 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import { toast } from "react-toastify"; // ✅ import toast
-import "react-toastify/dist/ReactToastify.css";
-
 import Arrow from "../../assets/forgetPg/arrow1.png";
 import BgImage from "../../assets/forgetPg/ForgotPassword.png";
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(45);
-  const [isResending, setIsResending] = useState(false);
-const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(""); // ✅ FIX: error state
+  const [isResending, setIsResending] = useState(false); // ✅ For resend button state
+
   const navigate = useNavigate();
   const location = useLocation();
-  const email = location.state?.email || "";
+  const email = location.state?.email || ""; // ✅ Get email passed from previous page
 
-  // countdown
   useEffect(() => {
     if (timer > 0) {
       const interval = setInterval(() => setTimer((t) => t - 1), 1000);
@@ -829,6 +826,7 @@ const [loading, setLoading] = useState(false);
       newOtp[index] = value;
       setOtp(newOtp);
 
+      // Auto-focus next input
       if (value && index < 5) {
         const next = document.getElementById(`otp-${index + 1}`);
         if (next) next.focus();
@@ -836,42 +834,25 @@ const [loading, setLoading] = useState(false);
     }
   };
 
-  const handleVerify = async () => {
-    const enteredOtp = otp.join("");
+ const handleVerify = async () => {
+    const enteredOtp = otp.join('');
 
     if (enteredOtp.length !== 6) {
-      toast.error("Please enter a 6-digit OTP");
+      setError('Please enter a 6-digit OTP');
       return;
     }
 
     try {
-      await axios.post("http://localhost:8000/forget-password/verify-otp", {
-        otp: enteredOtp,
-        email,
-      });
-
-      toast.success("OTP verified successfully!");
-      localStorage.removeItem("resetEmail");
-      
-      // delay navigation so toast is visible
-      setTimeout(() => {
-        navigate("/ResetPassword", { state: { email } });
-      }, 1500);
-    } catch (err) {
-      console.error("OTP Verify Error:", err.response?.data || err.message);
-
-      let msg = "Invalid OTP";
-      if (err.response?.data) {
-        if (err.response.data.detail) {
-          msg = err.response.data.detail;
-        } else if (err.response.data.message) {
-          msg = err.response.data.message;
-        } else if (typeof err.response.data === "string") {
-          msg = err.response.data;
+      const response = await axios.post(
+        'http://localhost:8000/forget-password/verify-otp',
+        {
+          otp: enteredOtp,
+          email: email
         }
-      }
-
-      toast.error(msg);
+      );
+      navigate('/ResetPassword', { state: { email } });
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Invalid OTP');
     }
   };
 
@@ -879,27 +860,29 @@ const [loading, setLoading] = useState(false);
     if (timer > 0 || !email) return;
 
     setIsResending(true);
+    setError('');
 
     try {
-      await axios.post(
-        "http://localhost:8000/forget-password/resend-otp",
+      const response = await axios.post(
+        'http://localhost:8000/forget-password/resend-otp',
         { email },
         {
           headers: {
-            "Content-Type": "application/json",
-          },
+            'Content-Type': 'application/json'
+          }
         }
       );
 
       setTimer(45);
-      setOtp(["", "", "", "", "", ""]);
-      toast.info("A new OTP has been sent to your email.");
+      setOtp(['', '', '', '', '', '']);
+      alert('New OTP has been sent to your email');
     } catch (err) {
-      const errorMsg = err.response?.data?.detail || "Failed to resend OTP";
-      toast.error(errorMsg);
+      const errorMsg = err.response?.data?.detail || 'Failed to resend OTP';
+      setError(errorMsg);
 
+      // If rate limited, set timer to remaining time
       if (err.response?.status === 429) {
-        setTimer(60);
+        setTimer(60); // Reset to 1 minute
       }
     } finally {
       setIsResending(false);
@@ -922,35 +905,29 @@ const [loading, setLoading] = useState(false);
         `}
       >
         <div
-          style={{
-            position: "absolute",
-            inset: "0",
-            borderRadius: "inherit",
-            padding: "2px",
-            background: `
-              linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
-              linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
-            `,
-            WebkitMask: `
-              linear-gradient(#fff 0 0) content-box,
-              linear-gradient(#fff 0 0)
-            `,
-            WebkitMaskComposite: "xor",
-            maskComposite: "exclude",
-            pointerEvents: "none",
-            zIndex: "-1",
-          }}
-        ></div>
-
+    style={{
+      position: "absolute",
+      inset: "0",
+      borderRadius: "inherit",
+      padding: "2px",
+      background: `
+        linear-gradient(48.81deg, rgba(0, 0, 0, 0) 60.41%, #51218F 89.33%),
+        linear-gradient(221.1deg, rgba(0, 0, 0, 0) 74.13%, #51218F 92.57%)
+      `,
+      WebkitMask: `
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0)
+      `,
+      WebkitMaskComposite: "xor",
+      maskComposite: "exclude",
+      pointerEvents: "none",
+      zIndex: "-1"
+    }}
+  ></div>
         {/* Back Button */}
         <div className="absolute top-6 left-6">
-          <Link to="/sign-in" 
-          onClick={() => {
-                        localStorage.removeItem("resetEmail");  
-                        toast.info("OTP verification cancelled");
-                      }}
-                      className="flex items-center gap-2 text-white">
-            <div className="w-9 h-9 bg-[#8A38F533] rounded-full flex items-center justify-center border border-[#8A38F5]">
+          <Link to="/sign-in" className="flex items-center gap-2 text-white">
+            <div className="w-9 h-9 bg-[#8A38F533] rounded-full flex items-center justify-center border border-[#8A38F5">
               <img src={Arrow} alt="back" className="w-4 h-4" />
             </div>
             <span className="text-[18px] text-white">Back</span>
@@ -979,49 +956,40 @@ const [loading, setLoading] = useState(false);
               value={value}
               onChange={(e) => handleChange(index, e.target.value)}
               className="
-                w-[50px]
-                h-[50px]
-                text-center
-                text-white
-                text-[20px]
-                bg-transparent
-                outline-none
-                border-b-[1px]
-                border-solid
-                border-[#C22CA2]
-                focus:border-[#FF45EC]
-              "
+        w-[50px]
+        h-[50px]
+        text-center
+        text-white
+        text-[20px]
+        bg-transparent
+        outline-none
+        border-b-[1px]
+        border-solid
+        border-[#C22CA2]
+        focus:border-[#FF45EC]
+      "
             />
           ))}
         </div>
 
         {/* Verify Button */}
         <button
-  onClick={handleVerify}
-  disabled={loading} // ✅ Optional: disable while loading
-  className={`${
-    loading ? "opacity-50 cursor-not-allowed" : "hover:bg-[#8A38F580] hover:scale-105"
-  } bg-[#8A38F533] text-white font-bold w-[554px] mt-5 py-3 rounded-[30px] border border-[#FFFFFF33] transition-all`}
->
-  {loading ? "Verifying..." : "Verify OTP"} {/* ✅ Change text while loading */}
-</button>
+          onClick={handleVerify}
+          className="w-[554px] h-[45px] rounded-full text-white font-medium mt-2 transition-all duration-300 hover:opacity-90 disabled:opacity-60"
+          style={{
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            borderRadius: "30px",
+            background: "rgba(138, 56, 245, 0.2)",
+          }}
+        >
+          Verify OTP
+        </button>
 
         {/* Timer */}
         <p className="text-[#F7F7FF80] text-[14px] text-center mt-4 font-normal">
           Didn’t receive the code?{" "}
-          <span
-            onClick={handleResendOTP}
-            className={`${
-              timer > 0
-                ? "text-gray-400"
-                : "text-[#FF45EC] cursor-pointer hover:underline"
-            }`}
-          >
-            {isResending
-              ? "Resending..."
-              : timer > 0
-              ? `Resend in 00:${timer.toString().padStart(2, "0")}`
-              : "Resend OTP"}
+          <span className="text-[#FF45EC] font-medium">
+            Resend in {timer < 10 ? `00:0${timer}` : `00:${timer}`}
           </span>
         </p>
       </div>

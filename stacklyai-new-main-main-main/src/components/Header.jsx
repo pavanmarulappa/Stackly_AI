@@ -244,6 +244,7 @@ export default function Header() {
                       localStorage.removeItem("userInfo");
                       localStorage.removeItem("userEmail");
                       localStorage.removeItem("persist:root");
+                      localStorage.removeItem("theme");
                       navigate("/sign-in");
                       window.location.reload();
                     }}

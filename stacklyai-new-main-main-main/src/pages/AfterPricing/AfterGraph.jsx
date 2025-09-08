@@ -1,59 +1,106 @@
-import React from "react";
-import GraphImage from "../../assets/pricing-pg/Graph.png";
+import React, { useState } from "react";
+import incpirationBg3 from "../../assets/afterHome/incpirationBg3.png";
+
+import before1 from "../../assets/afterHome/study8.png";
+import after1 from "../../assets/afterHome/Bath1.png";
+import before2 from "../../assets/afterHome/Bath2.png";
+import after2 from "../../assets/afterHome/study4.png";
 
 export default function AfterGraph() {
+  const [toggle, setToggle] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Array of image pairs
+  const imagePairs = [
+    { before: before1, after: after1 },
+    { before: before2, after: after2 },
+    // Add more pairs as needed
+  ];
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev === 0 ? imagePairs.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === imagePairs.length - 1 ? 0 : prev + 1));
+  };
+
   return (
-    <section className="w-full bg-white px-4 py-16 text-center">
+    <section
+      className="relative w-full min-h-[555px] bg-black flex flex-col justify-center items-center gap-[50px] bg-contain bg-no-repeat bg-center"
+      style={{ backgroundImage: `url(${incpirationBg3})` }}
+    >
       {/* Heading */}
-      {/* <h2 className="text-[52px] leading-[100%] text-center font-semibold">
-        Daily <span className="text-[#009A98]">Credits</span> Usage
-      </h2> */}
+      <div className="w-[576px] h-[78px] flex flex-col items-center justify-center gap-4 mt-[-40px]">
+        <h2 className="w-full text-center text-white capitalize text-[26px] poppins-font font-normal leading-[1] mt-[-40px]">
+          Experience the magic of AI as it transforms spaces into beautiful works of art.
+        </h2>
+      </div>
 
-      {/* Subheading */}
-      <p className="mt-8 text-[#2A2A2A] max-w-[1064px] mx-auto text-[24px]  text-center font-bold">
-        Track your monthly <span className="text-[#009A98]">Design Credit</span> usage with an interactive bar graph—timestamps are shown in UTC for accuracy.
-      </p>
-      {/* <p className="mt-4 text-[16px] text-center font-[400] leading-[100%] text-[#B0B0B0]">
-        (Live graph here showing credit activity — label points like “Yesterday”, “Today”, etc.)
-      </p> */}
+      {/* Main Image + Toggle + Arrows */}
+      <div className="w-[1064px] h-[370px] flex justify-center items-center relative mt-[-40px]">
+        {/* Left Arrow */}
+        <button
+          className="absolute left-[-40px] top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 flex justify-center items-center shadow-md hover:bg-white/40 transition-colors"
+          onClick={handlePrev}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
 
-      {/* Graph Container */}
-      <div className="mt-10 max-w-[1204px] mx-auto bg-white shadow-[0_0.83px_11.64px_0] shadow-[#00000040] border-[9.14px] border-[#007B824A] border-solid rounded-[16.63px] p-4 ">
-        <div className="flex justify-between items-center text-sm mb-4">
-          <span className="text-[#2A2A2A] text-[16px] leading-[100%] text-center font-bold">Current Date : <span className="text-[#007B82]">26-03-2025</span></span>
-          <div className="flex items-center  gap-4">
-            <div className="flex items-center gap-2 text-[14px] text-gray-500">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#007B82]"></span> Designs Used
-              <span className="w-2.5 h-2.5 rounded-full bg-[#00B0BA] ml-4"></span> credits consumed in January
+        {/* Image Div */}
+        <div className="w-[864px] h-[370px] rounded-[12px] overflow-hidden relative">
+          <img
+            src={toggle ? imagePairs[currentIndex].after : imagePairs[currentIndex].before}
+            alt="Description"
+            className="w-full h-full object-cover rounded-[12px]"
+          />
+
+          {/* Toggle Button */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 w-[163px] h-[33px] flex justify-between items-center rounded-[20px] border border-[#E2E2E280] px-3 bg-black/25 shadow-[0_0_4px_0_#00000040] backdrop-blur-sm cursor-pointer">
+            <div
+              className={`w-[45px] h-[21px] flex items-center justify-center text-[14px] font-normal poppins-font text-white text-center rounded-[20px] transition-all duration-300
+                ${!toggle ? 'w-[91px] h-[33px] bg-gradient-to-r from-[#48207E]/60 via-[#6D2CC2]/60 to-[#48207E]/60 pt-[6px] px-3' : ''}`}
+              onClick={() => setToggle(false)}
+            >
+              Before
             </div>
-            <select className="border border-[rgba(0,123,130,1)] rounded-md text-[18px] px-3 py-1 focus:outline-none" style={{ border: '1px solid rgba(0, 123, 130, 1)' }}>
-              <option>January 2025</option>
-              {/* Add more options if needed */}
-            </select>
-            <button className="text-xl font-bold text-[#2a2a2a] hover:text-gray-600">≡</button>
+
+            <div
+              className={`w-[34px] h-[21px] flex items-center justify-center text-[14px] font-medium poppins-font text-white text-center rounded-[20px] transition-all duration-300
+                ${toggle ? 'w-[91px] h-[33px] bg-gradient-to-r from-[#48207E]/60 via-[#6D2CC2]/60 to-[#48207E]/60 pt-[6px] px-3' : ''}`}
+              onClick={() => setToggle(true)}
+            >
+              After
+            </div>
           </div>
         </div>
 
-        {/* Graph Placeholder */}
-        <div className="w-full mt-4">
-          <img
-            src={GraphImage}
-            alt="Credit Usage Graph"
-            //className="w-full max-h-[300px] object-contain"
-            className="w-full h-auto object-cover rounded-[10px]"
-          />
-        </div>
-
-        {/* Footer info */}
-        <p className="mt-[30px] mb-[20px] text-[18px] leading-[23.27px] text-center font-bold text-[#2A2A2A]">
-          Total credits consumed in January: <span className="text-[#009A98] font-medium">850</span>
-        </p>
+        {/* Right Arrow */}
+        <button
+          className="absolute right-[-40px] top-1/2 transform -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 flex justify-center items-center shadow-md hover:bg-white/40 transition-colors"
+          onClick={handleNext}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
-
-      {/* Final note */}
-      {/* <p className="mt-8 text-xs text-[#2a2a2a] max-w-[973px] font-[400] text-[18px] mx-auto">
-        These numbers reflect the real impact of Stackly.AI — developers, teams, and creators building smarter every day.
-      </p> */}
     </section>
   );
 }
