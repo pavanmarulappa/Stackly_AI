@@ -60,7 +60,7 @@ import AuthCallback from "./components/AuthCallback";
 export default function App() {
   const { userInfo, setUserInfo, loading } = useContext(UserContext);
   
-  console.log("App.jsx userInfo:", userInfo);
+  // console.log("App.jsx userInfo:", userInfo);
 
   if (loading) return <div className="text-center p-8">Loading...</div>;
 
