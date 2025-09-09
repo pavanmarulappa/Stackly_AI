@@ -1,24 +1,23 @@
-
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import Banner from "../../assets/profile/banner.jpg";
 import Pimage from "../../assets/profile/pimage.png";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 export default function MyBilling() {
   const [profileData, setProfileData] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone_number: '',
+    first_name: "",
+    last_name: "",
+    email: "",
+    phone_number: "",
     profile_pic: null,
-    previewImage: Pimage
+    previewImage: Pimage,
   });
 
   const [subscriptionData, setSubscriptionData] = useState({
-    current_plan: 'Basic',
-    duration: 'Monthly',
+    current_plan: "Basic",
+    duration: "Monthly",
     total_members: 1,
     original_price: 0,
     discount_price: null,
@@ -29,10 +28,10 @@ export default function MyBilling() {
     plan_expiring_date: null,
     start_date: null,
     user: {
-      name: '',
-      email: '',
-      userid: null
-    }
+      name: "",
+      email: "",
+      userid: null,
+    },
   });
 
   const [billingHistory, setBillingHistory] = useState([]);
@@ -62,15 +61,18 @@ export default function MyBilling() {
         if (!userId) throw new Error("No user ID found in storage");
 
         // Fetch profile data
-        const profileResponse = await axios.get("http://localhost:8000/profile", {
-          params: { userid: userId },
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const profileResponse = await axios.get(
+          "http://localhost:8000/profile",
+          {
+            params: { userid: userId },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         const profilePicUrl = profileResponse.data.profile_pic
-          ? (profileResponse.data.profile_pic.startsWith("/media/profile_pics")
-              ? `http://localhost:8000${profileResponse.data.profile_pic}`
-              : profileResponse.data.profile_pic)
+          ? profileResponse.data.profile_pic.startsWith("/media/profile_pics")
+            ? `http://localhost:8000${profileResponse.data.profile_pic}`
+            : profileResponse.data.profile_pic
           : Pimage;
 
         setProfileData((prev) => ({
@@ -84,10 +86,13 @@ export default function MyBilling() {
         }));
 
         // Fetch subscription data
-        const subscriptionResponse = await axios.get("http://localhost:8000/subscription", {
-          params: { userid: userId },
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const subscriptionResponse = await axios.get(
+          "http://localhost:8000/subscription",
+          {
+            params: { userid: userId },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         const subData = subscriptionResponse.data;
         setSubscriptionData({
@@ -98,29 +103,35 @@ export default function MyBilling() {
           discount_price: subData.discount_price || null,
           total_credits: subData.total_credits || 0,
           used_credits: subData.used_credits || 0,
-          balance_credits: subData.balance_credits || (subData.total_credits || 0) - (subData.used_credits || 0),
+          balance_credits:
+            subData.balance_credits ||
+            (subData.total_credits || 0) - (subData.used_credits || 0),
           renews_on: subData.renews_on || null,
           plan_expiring_date: subData.plan_expiring_date || null,
           start_date: subData.start_date || null,
           user: {
             name: subData.user?.name || "",
             email: subData.user?.email || "",
-            userid: subData.user?.userid || null
-          }
+            userid: subData.user?.userid || null,
+          },
         });
 
         // Fetch billing history
-        const billingHistoryResponse = await axios.get("http://localhost:8000/billing/history", {
-          params: { userid: userId },
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const billingHistoryResponse = await axios.get(
+          "http://localhost:8000/billing/history",
+          {
+            params: { userid: userId },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
 
         setBillingHistory(billingHistoryResponse.data.billing_history || []);
-
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err.response?.data?.detail || "Failed to load data");
-        toast.error(err.response?.data?.detail || "Failed to load billing data");
+        toast.error(
+          err.response?.data?.detail || "Failed to load billing data"
+        );
 
         if (err.response?.status === 401) {
           localStorage.removeItem("token");
@@ -165,24 +176,38 @@ export default function MyBilling() {
 
           {/* Plan Details */}
           <div className="flex justify-center gap-[67px]">
-            <div className="w-[159px] h-[61px] rounded-[12px] border-[1px] border-solid border-[#9747FF33] bg-gradient-to-r from-[rgba(151,71,255,0.12)] to-[rgba(91,43,153,0.12)] flex items-center justify-center px-[20px] gap-[2px] opacity-100 text-center">
-              <span className="text-white text-[12px] font-normal poppins-font">Current Plan:</span>
-              <span className="text-[#9747FF] text-[14px] font-medium poppins-font">{subscriptionData.current_plan}</span>
+            <div
+              className="w-[159px] h-[61px] rounded-[12px] border-[1px] border-solid border-[#9747FF33] 
+                bg-gradient-to-r from-[rgba(151,71,255,0.12)] to-[rgba(91,43,153,0.12)] 
+                flex items-center justify-center px-[10px] gap-[4px] opacity-100 text-center whitespace-nowrap"
+            >
+              <span className="text-white text-[12px] font-normal poppins-font">
+                Current Plan:
+              </span>
+              <span className="text-[#9747FF] text-[14px] font-medium poppins-font">
+                {subscriptionData.current_plan
+                  ? subscriptionData.current_plan.charAt(0).toUpperCase() +
+                    subscriptionData.current_plan.slice(1).toLowerCase()
+                  : ""}
+              </span>
             </div>
 
             <div className="w-[197px] h-[61px] rounded-[12px] border-[1px] border-solid border-[#9747FF33] bg-gradient-to-r from-[rgba(151,71,255,0.12)] to-[rgba(91,43,153,0.12)] flex flex-nowrap items-center justify-center px-[20px] gap-[4px] opacity-100 whitespace-nowrap">
-  <span className="text-white text-[12px] font-normal poppins-font">
-    Duration period:
-  </span>
-  <span className="text-[#9747FF] text-[14px] font-medium poppins-font">
-    {subscriptionData.duration}
-  </span>
-</div>
-
+              <span className="text-white text-[12px] font-normal poppins-font">
+                Duration period:
+              </span>
+              <span className="text-[#9747FF] text-[14px] font-medium poppins-font">
+                {subscriptionData.duration}
+              </span>
+            </div>
 
             <div className="w-[159px] h-[61px] rounded-[12px] border-[1px] border-solid border-[#9747FF33] bg-gradient-to-r from-[rgba(151,71,255,0.12)] to-[rgba(91,43,153,0.12)] flex items-center justify-center px-[20px] gap-[2px] opacity-100 text-center">
-              <span className="text-white text-[12px] font-normal poppins-font">Total members:</span>
-              <span className="text-[#9747FF] text-[14px] font-medium poppins-font">{subscriptionData.total_members}</span>
+              <span className="text-white text-[12px] font-normal poppins-font">
+                Total members:
+              </span>
+              <span className="text-[#9747FF] text-[14px] font-medium poppins-font">
+                {subscriptionData.total_members}
+              </span>
             </div>
           </div>
 
@@ -195,14 +220,18 @@ export default function MyBilling() {
               {/* First Row */}
               <div className="flex justify-between gap-3">
                 <div className="flex-1 flex flex-col gap-2 items-start">
-                  <span className="text-[16px] text-white">Monthly Design Credits</span>
+                  <span className="text-[16px] text-white">
+                    Monthly Design Credits
+                  </span>
                   <div className="w-[321px] h-[45px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF66] bg-[#FFFFFF1F] flex items-center justify-start font-medium text-white px-3 gap-[10px] opacity-100">
                     {subscriptionData.total_credits}
                   </div>
                 </div>
 
                 <div className="flex-1 flex flex-col gap-2 items-start">
-                  <span className="text-[16px] text-white">Used Design Credits</span>
+                  <span className="text-[16px] text-white">
+                    Used Design Credits
+                  </span>
                   <div className="w-[321px] h-[45px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF66] bg-[#FFFFFF1F] flex items-center justify-start font-medium text-white px-3 gap-[10px]">
                     {subscriptionData.used_credits}
                   </div>
@@ -212,19 +241,31 @@ export default function MyBilling() {
               {/* Second Row */}
               <div className="flex justify-between gap-3">
                 <div className="flex-1 flex flex-col gap-2 items-start">
-                  <span className="text-[16px] text-white">Balance Design Credits</span>
+                  <span className="text-[16px] text-white">
+                    Balance Design Credits
+                  </span>
                   <div className="w-[321px] h-[45px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF66] bg-[#FFFFFF1F] flex items-center justify-between px-3">
-                    <span className="font-medium text-white">{subscriptionData.balance_credits}</span>
+                    <span className="font-medium text-white">
+                      {subscriptionData.balance_credits}
+                    </span>
                   </div>
-                  <span className="text-[14px] text-[#6E6E6E]">*Stay updated for your remaining balance</span>
+                  <span className="text-[14px] text-[#6E6E6E]">
+                    *Stay updated for your remaining balance
+                  </span>
                 </div>
 
                 <div className="flex-1 flex flex-col gap-2 items-start">
                   <span className="text-[16px] text-white">Renews on</span>
                   <div className="w-[321px] h-[45px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF66] bg-[#FFFFFF1F] flex items-center justify-between px-3">
-                    <span className="font-medium text-white">{subscriptionData.renews_on || subscriptionData.plan_expiring_date || 'N/A'}</span>
+                    <span className="font-medium text-white">
+                      {subscriptionData.renews_on ||
+                        subscriptionData.plan_expiring_date ||
+                        "N/A"}
+                    </span>
                   </div>
-                  <span className="text-[14px] text-[#6E6E6E]">*Stay specified as your received time</span>
+                  <span className="text-[14px] text-[#6E6E6E]">
+                    *Stay specified as your received time
+                  </span>
                 </div>
               </div>
             </div>
@@ -251,39 +292,42 @@ export default function MyBilling() {
 
                 {/* Table Rows */}
                 {/* Table Rows */}
-<div className="">
-  {billingHistory
-    .slice(0, 5) // <-- Show only last 5 entries
-    .map((bill, index) => (
-      <div
-        key={index}
-        className="flex text-[14px] border-b border-solid border-[#444]"
-      >
-        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
-          {bill.date}
-        </div>
-        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
-          ${bill.amount}
-        </div>
-        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
-          {bill.payment_method}
-        </div>
-        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
-          {bill.status}
-        </div>
-        <div className="flex-1 p-3 text-[#B0B0B0] cursor-pointer hover:underline poppins-font">
-          {bill.invoice_url ? (
-            <a href={bill.invoice_url} target="_blank" rel="noopener noreferrer">
-              View
-            </a>
-          ) : (
-            'N/A'
-          )}
-        </div>
-      </div>
-    ))}
-</div>
-
+                <div className="">
+                  {billingHistory
+                    .slice(0, 5) // <-- Show only last 5 entries
+                    .map((bill, index) => (
+                      <div
+                        key={index}
+                        className="flex text-[14px] border-b border-solid border-[#444]"
+                      >
+                        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
+                          {bill.date}
+                        </div>
+                        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
+                          ${bill.amount}
+                        </div>
+                        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
+                          {bill.payment_method}
+                        </div>
+                        <div className="flex-1 p-3 text-[#B0B0B0] poppins-font">
+                          {bill.status}
+                        </div>
+                        <div className="flex-1 p-3 text-[#B0B0B0] cursor-pointer hover:underline poppins-font">
+                          {bill.invoice_url ? (
+                            <a
+                              href={bill.invoice_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View
+                            </a>
+                          ) : (
+                            "N/A"
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                </div>
               </div>
             ) : (
               <div className="w-full text-center mt-4">

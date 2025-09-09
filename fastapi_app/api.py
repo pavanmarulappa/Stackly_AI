@@ -137,6 +137,8 @@ import smtplib
 from email.mime.text import MIMEText
 import os
 from fastapi_app.django_setup import django_setup
+from dotenv import load_dotenv
+load_dotenv()
 
 django_setup()
 
@@ -229,7 +231,7 @@ def submit_api_request(data: ApiAccessRequestSchema):
         raise HTTPException(status_code=404, detail="User not found.")
 
     try:
-        with transaction.atomic():  # ✅ Correct usage
+        with transaction.atomic():
             ApiAccessRequest.objects.create(
                 user=user,
                 full_name=data.full_name,
@@ -239,17 +241,25 @@ def submit_api_request(data: ApiAccessRequestSchema):
                 address=data.address,
                 message=data.message,
             )
- 
-            # ✅ Move inside the transaction
-            #send_api_request_confirmation(data.email, data.full_name)
+
+            # ✅ Send confirmation to user
+            send_api_request_confirmation(
+                to_email=data.email,
+                full_name=data.full_name
+            )
+
+            # ✅ Send notification to admin (pass dict instead of model)
+            send_admin_notification(data.dict())
 
         return {"message": "API access request submitted successfully."}
 
-    except Exception:
-        raise HTTPException(status_code=500, detail="Something went wrong. Please try again later.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Something went wrong: {str(e)}")
 
-def send_api_request_confirmation(to_email, full_name):
-    subject = "StacklyAI API Access Request Received"
+
+# ---------- Helper Functions ----------
+def send_api_request_confirmation(to_email: str, full_name: str):
+    subject = "📩 StacklyAI API Access Request Received"
     body = f"""
 Hi {full_name},
 
@@ -262,15 +272,39 @@ If you have any questions, contact us at support@stackly.ai.
 
 – StacklyAI Team
 """
+    send_email(to_email, subject, body)
 
-    # Construct MIME email
+
+def send_admin_notification(user_data: dict):
+    admin_email = os.getenv("ADMIN_EMAIL")
+    subject = "📩 New API Access Request Received"
+    body = f"""
+Hello Admin,
+
+A new API access request has been submitted:
+
+👤 Name: {user_data.get("full_name", "-")}
+📧 Email: {user_data.get("email", "-")}
+📱 Contact: {user_data.get("contact_number", "-")}
+🏢 Company: {user_data.get("company_name", "-")}
+🏠 Address: {user_data.get("address", "-")}
+
+Message:
+{user_data.get("message", "-")}
+
+– StacklyAI System
+"""
+    send_email(admin_email, subject, body)
+
+
+def send_email(to_email, subject, body):
     msg = MIMEText(body)
     msg["Subject"] = subject
-    msg["From"] = os.getenv("EMAIL_FROM")          
+    msg["From"] = os.getenv("EMAIL_FROM")
     msg["To"] = to_email
 
     try:
-        smtp_host = os.getenv("SMTP_HOST")          
+        smtp_host = os.getenv("SMTP_HOST")
         smtp_port = int(os.getenv("SMTP_PORT", 587))
         smtp_user = os.getenv("SMTP_USER")
         smtp_pass = os.getenv("SMTP_PASS")
@@ -279,5 +313,6 @@ If you have any questions, contact us at support@stackly.ai.
             server.starttls()
             server.login(smtp_user, smtp_pass)
             server.send_message(msg)
-    except Exception:
-        pass
+        print(f"✅ Email sent to {to_email}")
+    except Exception as e:
+        print(f"❌ Failed to send email to {to_email}: {e}")

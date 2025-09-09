@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useLocation, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios";
-
+import { toast } from "react-toastify";
 import logoImg from "../assets/Logo1.png";
 import { UserContext } from "../context/UserContext";
 import arrow from "../assets/home/Arrow.png";
@@ -237,19 +237,34 @@ export default function Header() {
 
                   <div
                     onClick={() => {
-                      setUserInfo({});
-                      localStorage.removeItem("token");
-                      localStorage.removeItem("user");
-                      localStorage.removeItem("userId");
-                      localStorage.removeItem("userInfo");
-                      localStorage.removeItem("userEmail");
-                      localStorage.removeItem("persist:root");
-                      localStorage.removeItem("theme");
-                      navigate("/sign-in");
-                      window.location.reload();
+                      try {
+                        // Clear user info and localStorage
+                        setUserInfo({});
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        localStorage.removeItem("userId");
+                        localStorage.removeItem("userInfo");
+                        localStorage.removeItem("userEmail");
+                        localStorage.removeItem("persist:root");
+                        localStorage.removeItem("theme");
+
+                        // Show toast
+                        toast.success("✅ Logged out successfully!");
+
+                        // Delay navigation so toast is visible
+                        setTimeout(() => {
+                          navigate("/sign-in");
+                          window.location.reload();
+                        }, 3000); // 3 seconds delay
+                      } catch (error) {
+                        console.error("Logout failed:", error);
+                        toast.error(
+                          "❌ Something went wrong while logging out."
+                        );
+                      }
                     }}
                     className="w-[173px] h-[32px] flex items-center px-3 pt-1 pb-1 rounded-[4px] text-white 
-                               hover:bg-[#8A38F5]/30  border-b-2 border-solid border-[#FFFFFF33] transition-colors cursor-pointer"
+             hover:bg-[#8A38F5]/30 border-b-2 border-solid border-[#FFFFFF33] transition-colors cursor-pointer"
                   >
                     Logout
                   </div>

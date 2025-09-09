@@ -23,10 +23,13 @@ import Group from "../../assets/afterHome/GroupApi.png";
 import card from "../../assets/afterHome/ApiCard.png";
 import Group2 from "../../assets/afterHome/Group2.png";
 import ApiVector from "../../assets/afterHome/ApiVector.png";
+import { toast } from "react-toastify";
+
 
 export default function AfterHeroApi() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
+ 
   const faqs = [
     {
       question: "How do I get started with StacklyAI APIs?",
@@ -73,44 +76,56 @@ export default function AfterHeroApi() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
+  setLoading(true);
 
-    const userId = localStorage.getItem("userId"); // FIXED: use the correct key
-    const token = localStorage.getItem("token");
-
-    if (!userId || !token) {
-      alert("Login required to submit the form.");
+  try {
+    // ✅ Validation: check if any field in formData is empty
+    const isEmpty = Object.values(formData).some((val) => !val.trim());
+    if (isEmpty) {
+      toast.error("⚠️ Please fill in all the fields before submitting.");
+      setLoading(false);
       return;
     }
 
-    try {
-      const res = await axios.post(
-        "http://localhost:8000/submit-api-access",
-        {
-          user_id: parseInt(userId),
-          ...formData,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // add token if backend requires auth
-          },
-        }
-      );
+    const userId = localStorage.getItem("userId"); // ✅ correct key
+    const token = localStorage.getItem("token");
 
-      alert(res.data.message);
-      setFormData({
-        full_name: "",
-        email: "",
-        contact_number: "",
-        company_name: "",
-        address: "",
-        message: "",
-      });
-    } catch (err) {
-      console.error("Error submitting form:", err);
-      alert("Submission failed. Please try again.");
+    if (!userId || !token) {
+      toast.error("⚠️ Login required to submit the form.");
+      setLoading(false);
+      return;
     }
-  };
+
+    const res = await axios.post(
+      "http://localhost:8000/submit-api-access",
+      {
+        user_id: parseInt(userId),
+        ...formData,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    toast.success(res.data.message || "✅ Request submitted successfully!");
+    setFormData({
+      full_name: "",
+      email: "",
+      contact_number: "",
+      company_name: "",
+      address: "",
+      message: "",
+    });
+  } catch (err) {
+    console.error("❌ Error submitting form:", err.response?.data || err.message);
+    toast.error(err.response?.data?.detail || "❌ Submission failed. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
       useEffect(() => {
   if (!location.hash) return;
@@ -329,116 +344,108 @@ export default function AfterHeroApi() {
   </p>
 </div>
 
-        <form className="w-full flex flex-col gap-4">
-          <div className="flex gap-4">
-            <div className="flex-1">
-              <label className="block text-sm mb-1 text-white">
-                Full name*
-              </label>
-              <input
-                type="text"
-                placeholder="John"
-                className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
-                style={{
-                  borderRadius: "12px",
-                  border: "1px solid rgba(255, 255, 255, 0.40)",
-                  background: "rgba(255, 255, 255, 0.12)",
-                }}
-              />
-            </div>
-            <div className="flex-1">
-             <label className="block text-sm mb-1 text-white">Email ID*</label>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
-                style={{
-                  borderRadius: "12px",
-                  border: "1px solid rgba(255, 255, 255, 0.40)",
-                  background: "rgba(255, 255, 255, 0.12)",
-                }}
-              />
-            </div>
-          </div>
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
+  <div className="flex gap-4">
+    <div className="flex-1">
+      <label className="block text-sm mb-1 text-white">Full name*</label>
+      <input
+        type="text"
+        name="full_name"                     // ✅ add name
+        value={formData.full_name}           // ✅ bind value
+        onChange={handleChange}              // ✅ update state
+        placeholder="John"
+        className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
+      />
+    </div>
+    <div className="flex-1">
+      <label className="block text-sm mb-1 text-white">Email ID*</label>
+      <input
+        type="email"
+        name="email"                         // ✅ add name
+        value={formData.email}
+        onChange={handleChange}
+        placeholder="you@example.com"
+        className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
+      />
+    </div>
+  </div>
 
-          <div className="flex gap-4">
-            <div className="flex-1">
-              
-              <label className="block text-sm mb-1 text-white">Company Name*</label>
-              <input
-                type="text"
-                placeholder="Paul"
-                className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
-                style={{
-                  borderRadius: "12px",
-                  border: "1px solid rgba(255, 255, 255, 0.40)",
-                  background: "rgba(255, 255, 255, 0.12)",
-                }}
-              />
-            </div>
-            
-            <div className="flex-1">
-              <label className="block text-sm mb-1 text-white">
-                Phone Number
-              </label>
-              <input
-                type="tel"
-                placeholder="+91 99999 99999"
-                className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
-                style={{
-                  borderRadius: "12px",
-                  border: "1px solid rgba(255, 255, 255, 0.40)",
-                  background: "rgba(255, 255, 255, 0.12)",
-                }}
-              />
-            </div>
-          </div>
+  <div className="flex gap-4">
+    <div className="flex-1">
+      <label className="block text-sm mb-1 text-white">Company Name*</label>
+      <input
+        type="text"
+        name="company_name"                  // ✅ add name
+        value={formData.company_name}
+        onChange={handleChange}
+        placeholder="Paul"
+        className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
+      />
+    </div>
+    <div className="flex-1">
+      <label className="block text-sm mb-1 text-white">Phone Number</label>
+      <input
+        type="tel"
+        name="contact_number"                // ✅ add name
+        value={formData.contact_number}
+        onChange={handleChange}
+        placeholder="+91 99999 99999"
+        className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
+      />
+    </div>
+  </div>
 
-      <div className="mt-4">
-  <label className="block text-sm mb-1 text-white">Address</label>
-  <textarea
-    placeholder="eg: St. thomas lane.."
-    className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none resize-none overflow-hidden"
-    style={{
-      borderRadius: "12px",
-      border: "1px solid rgba(255, 255, 255, 0.40)",
-      background: "rgba(255, 255, 255, 0.12)",
-      height: "48px", // fixed height
-    }}
-  />
-</div>
+  <div className="mt-4">
+    <label className="block text-sm mb-1 text-white">Address</label>
+    <textarea
+      name="address"                         // ✅ add name
+      value={formData.address}
+      onChange={handleChange}
+      placeholder="eg: St. thomas lane.."
+      className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none resize-none"
+      style={{ height: "48px" }}
+    />
+  </div>
 
-          <div>
-            <label className="block text-sm mb-1 text-white">Message</label>
-            <textarea
-              rows="4"
-              placeholder="Type something..."
-              className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
-              style={{
-                borderRadius: "12px",
-                border: "1px solid rgba(255, 255, 255, 0.40)",
-                background: "rgba(255, 255, 255, 0.12)",
-              }}
-            />
-          </div>
+  <div>
+    <label className="block text-sm mb-1 text-white">Message</label>
+    <textarea
+      name="message"                         // ✅ add name
+      value={formData.message}
+      onChange={handleChange}
+      rows="4"
+      placeholder="Type something..."
+      className="w-full p-3 rounded-[12px] border border-white/40 bg-white/10 text-white placeholder-white/50 focus:outline-none"
+    />
+  </div>
 
-         
-<button
+  <button
   type="submit"
-  className="w-full mt-2 py-2 rounded-full text-white font-semibold flex items-center justify-center gap-2"
+  disabled={loading}
+  className={`w-full mt-2 py-2 rounded-full font-semibold flex items-center justify-center gap-2 transition ${
+    loading ? "bg-gray-500 cursor-not-allowed" : "text-white"
+  }`}
   style={{
     border: "1px solid rgba(255, 255, 255, 0.1)",
     borderRadius: "30px",
-    background: "rgba(138, 56, 245, 0.2)",
+    background: loading ? "rgba(138, 56, 245, 0.2)" : "rgba(138, 56, 245, 0.2)",
   }}
 >
-  <span>Let’s Connect</span>
-  <div className="w-[24px] h-[24px]">
-    <img src={ApiVector} alt="icon" className="w-full h-full object-contain" />
-  </div>
+  {loading ? (
+    <>
+      <span>Sending…</span>
+      <div className="w-[20px] h-[20px] border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+    </>
+  ) : (
+    <>
+      <span>Let’s Connect</span>
+      <div className="w-[24px] h-[24px]">
+        <img src={ApiVector} alt="icon" className="w-full h-full object-contain" />
+      </div>
+    </>
+  )}
 </button>
-        </form>
-
+</form>
         <p className="text-white text-center text-base font-normal mt-6">
           *Questions, comments, or suggestions? Simply fill in the form and
           we'll be in touch shortly.

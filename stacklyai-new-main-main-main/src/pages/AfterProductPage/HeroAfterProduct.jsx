@@ -973,12 +973,10 @@ export default function HeroAfterProducts() {
     </div>
   </div>
 )}
-
-
           {/* Download Popup */}
       {isDownloadPopupOpen && popupImage && (
         <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4" onClick={() => setIsDownloadPopupOpen(false)}>
-          <div className="w-[846px] h-[auto] flex flex-col gap-[24px] rounded-[12px] p-[40px] px-[60px] border border-[#8A38F580] shadow-[0px_0px_12px_0px_#FFFFFF1F]" style={{background: "linear-gradient(112.5deg, rgba(138, 56, 245, 0.15) 6.68%, rgba(194, 44, 162, 0.15) 92.82%)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)"}} onClick={(e) => e.stopPropagation()}>
+          <div className="w-[846px] h-[auto] flex flex-col gap-[24px] rounded-[12px] p-[40px] px-[60px] border border-[#8A38F580] shadow-[0px_0px_12px_0px_#FFFFFF1F]" style={{background: "linear-gradient(112.5deg, rgba(138, 56, 245, 0.15) 6.68%, rgba(194, 44, 162, 0.15) 92.82%)", backdropFilter: "blur(30px)", WebkitBackdropFilter: "blur(30px)"}} onClick={(e) => e.stopPropagation()}>
             <h2 className="text-white text-[24px] lora-text text-center">Download Preferences</h2>
             <p className="text-gray-200 text-center poppins-font text-[14px]">Choose how you'd like to download your design.</p>
 
