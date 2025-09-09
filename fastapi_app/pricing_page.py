@@ -1224,10 +1224,6 @@ async def create_checkout_session(subscription_data: SubscriptionData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-
-    
-
 def generate_api_key():
     return ''.join(random.choices(string.ascii_letters + string.digits, k=32))
 
