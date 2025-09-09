@@ -16,6 +16,8 @@ import Frame from "../../assets/home/Frame.png";
 import CanvasImg from "../../assets/afterHome/CanvasImg.png";
 import CanvasUplod from "../../assets/afterHome/CanvasUplod.png";
 import Upload from "../../assets/home/upload.png";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const CloseIcon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E";
 
 export default function Form({ selectedImage }) {
@@ -77,7 +79,7 @@ export default function Form({ selectedImage }) {
     Exteriors: ["Front side", "Back side", "Left side", "Right side"],
     Outdoors: [
       "Front Yard", "Backyard", "Balcony", "Terrace/Rooftop",
-      "Driveway/Parking Area", "Walkway/Path", "Lounge", "Porch",
+      "Driveway/Parking", "Walkway/Path", "Lounge", "Porch",
       "Fence", "Garden",
     ],
   };
@@ -86,24 +88,30 @@ export default function Form({ selectedImage }) {
 
   const changeImage = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setImgFile(file);
-      const preview = URL.createObjectURL(file);
-      setImgURL(preview);
-    } else {
-      alert("Please upload only image files.");
+    if (file) {
+      const fileExt = file.name.toLowerCase().split('.').pop();
+      if (['jpg', 'jpeg', 'png'].includes(fileExt)) {
+        setImgFile(file);
+        const preview = URL.createObjectURL(file);
+        setImgURL(preview);
+      } else {
+        toast.error("Only JPG, JPEG, and PNG formats are accepted");
+      }
     }
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image/")) {
-      setImgFile(file);
-      const preview = URL.createObjectURL(file);
-      setImgURL(preview);
-    } else {
-      alert("Please drop only image files.");
+    if (file) {
+      const fileExt = file.name.toLowerCase().split('.').pop();
+      if (['jpg', 'jpeg', 'png'].includes(fileExt)) {
+        setImgFile(file);
+        const preview = URL.createObjectURL(file);
+        setImgURL(preview);
+      } else {
+        toast.error("Only JPG, JPEG, and PNG formats are accepted");
+      }
     }
   };
 
@@ -117,7 +125,7 @@ export default function Form({ selectedImage }) {
 
   const handleTabChange = (tabName) => {
     if (tabName === "Upgrade to Unlock") {
-      alert("Please upgrade your account to access this feature");
+      toast.error("Please upgrade your account to access this feature");
     } else {
       setActiveTab(tabName);
       setVisibleRange({ start: 0, end: 8 });
@@ -203,7 +211,7 @@ export default function Form({ selectedImage }) {
       }
 
       if (!userId) {
-        alert("User not logged in.");
+        toast.error("User not logged in.");
         setIsLoading(false);
         return;
       }
@@ -285,8 +293,15 @@ export default function Form({ selectedImage }) {
         throw new Error(response.data.message || "Design generation failed");
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.message || "Failed to connect to server";
-      alert(`Error: ${errorMessage}`);
+      let errorMessage;
+      if (error.response?.status === 402) {
+        errorMessage = "Please upgrade your plan.";
+      } else if (error.response?.status === 400 && error.response.data.detail?.includes("Only JPG, JPEG, and PNG")) {
+        errorMessage = "only this jpg, jpeg , png formats accept";
+      } else {
+        errorMessage = error.response?.data?.detail || error.response?.data?.message || error.message || "Failed to connect to server";
+      }
+      toast.error(errorMessage);
     } finally {
       clearInterval(progressInterval);
       setIsLoading(false);
