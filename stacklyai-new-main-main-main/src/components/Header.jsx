@@ -128,9 +128,6 @@ export default function Header() {
       >
         <img
           className="w-[172.75px] h-[34px] cursor-pointer max-[400px]:w-[50%]"
-          onClick={() => {
-            navigate("/");
-          }}
           src={logoImg}
           alt="Logo"
         />

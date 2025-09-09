@@ -17,7 +17,7 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const { setUserInfo } = useContext(UserContext);
 
-  // ✅ Detect Auth0 login callback
+  //✅ Detect Auth0 login callback
    useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const token = queryParams.get("token");
@@ -75,22 +75,30 @@ export default function SignIn() {
     }
   };
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   if (
-  //     formData.email === "sample@gmail.com" &&
-  //     formData.password === "12345"
-  //   ) {
-  //     setUserInfo({
-  //       userName: "Sample User",
-  //       userId: "id2332451",
-  //       email: "sample@gmail.com",
-  //     });
-  //     navigate("/");
-  //   } else {
-  //     alert("Wrong credentials!");
-  //   }
-  // };
+//   const handleSubmit = (e) => {
+//   e.preventDefault();
+
+//   if (!formData.email || !formData.password) {
+//     toast.error("Please fill both email and password!");
+//     return;
+//   }
+
+//   if (formData.email === "sample@gmail.com") {
+//     if (formData.password === "12345") {
+//       setUserInfo({
+//         userName: "Sample User",
+//         userId: "id2332451",
+//         email: "sample@gmail.com",
+//       });
+//       toast.success("Login successful! 🎉");
+//       navigate("/");
+//     } else {
+//       toast.error("Invalid password!");
+//     }
+//   } else {
+//     toast.error("User not found!");
+//   }
+// };
 
   return (
     <section
