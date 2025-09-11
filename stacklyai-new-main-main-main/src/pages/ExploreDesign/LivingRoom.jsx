@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Link, useParams } from "react-router-dom";
 import Arrow from "../../assets/forgetPg/arrow1.png";
 import ExploreLv1 from "../../assets/afterHome/ExploreLv1.png";
 import ExploreLv2 from "../../assets/afterHome/ExploreLv2.png";
@@ -52,11 +52,21 @@ import Bath8 from "../../assets/afterHome/Bath8.png";
 import Star from "../../assets/afterHome/LikeStar.png";
 
 function LivingRoom() {
+  const { roomType } = useParams();
+
+  const roomToIndex = {
+    livingroom: 0,
+    bedroom: 1,
+    kitchen: 2,
+    bathroom: 3,
+    studyroom: 4,
+  };
   // Room categories array
   const roomCategories = ["Living Room", "Bedroom", "Kitchen", "Bathroom", "Studyroom"];
   
   // State to track current room category
-  const [currentCategory, setCurrentCategory] = useState(0);
+  // const [currentCategory, setCurrentCategory] = useState(0);
+    const [currentCategory, setCurrentCategory] = useState(roomToIndex[roomType] || 0);
   
   // Images data for each category
   const categoryImages = {
@@ -143,6 +153,12 @@ function LivingRoom() {
     setActiveStars(newStars);
   };
 
+useEffect(() => {
+    // whenever URL changes, update the category
+    if (roomType && roomToIndex[roomType] !== undefined) {
+      setCurrentCategory(roomToIndex[roomType]);
+    }
+  }, [roomType]);
   return (
     <section className="w-full h-[1267px] bg-black pt-[82px] -mt-[82px] overflow-hidden relative">
       {/* Header */}

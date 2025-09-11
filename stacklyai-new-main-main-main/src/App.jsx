@@ -57,6 +57,8 @@ import ExteriorForm from "./pages/AfterSignHome/ExteriorForm";
 import OutdoorForm from "./pages/AfterSignHome/OutdoorForm";
 import ImageGeneration from "./pages/Products/ImageGeneration";
 import AuthCallback from "./components/AuthCallback";
+import LivingRoom from "./pages/ExploreDesign/LivingRoom";
+import AfterCreditStats from "./pages/AfterPricing/AfterCreditStats";
 export default function App() {
   const { userInfo, setUserInfo, loading } = useContext(UserContext);
   
@@ -122,8 +124,13 @@ export default function App() {
         <Route path="/outdoorform" element={<OutdoorForm />} />
         <Route path="/ImageGeneration" element={<ImageGeneration />}/>
         <Route path="/auth-callback" element={<AuthCallback setUserInfo={setUserInfo} />} />
+        
+        <Route path="/explore" element={<AfterCreditStats />} />
+        <Route path="/explore/:roomType" element={<LivingRoom />} />
+      
         {/* Catch-all fallback for debugging */}
         <Route path="*" element={<div>404 - Page Not Found</div>} />
+        
       </Routes>
 
       <Footer />

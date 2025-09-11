@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { Outlet, useNavigate } from "react-router-dom";
 import BgSec2 from "../../assets/afterHome/InsSec23.png";
 import Lv1 from "../../assets/afterHome/lv1.png";
@@ -15,18 +14,16 @@ export default function AfterCreditStats() {
  
     const navigate = useNavigate();
 
-
-
   const tabs = ["Living Room", "Bedroom", "Kitchen", "Bathroom", "Study Room"];
 
   // Map tabs to routes
   const tabRoutes = [
-    "/explore/livingroom",
-    "/explore/livingroom",
-    "/explore/livingroom",
-    "/explore/livingroom",
-    "/explore/livingroom",
-  ];
+  "/explore/livingroom",
+  "/explore/bedroom",
+  "/explore/kitchen",
+  "/explore/bathroom",
+  "/explore/studyroom",
+];
 
 const content = [
   { 
@@ -55,12 +52,10 @@ const content = [
     img: study8 
   },
 ];
-
-
   // Handle Explore button click
-    const handleExplore = (room) => {
-    navigate(room); // room should match the nested route path, e.g., "livingroom"
-  };
+    const handleExplore = (route) => {
+  navigate(route); // ✅ use the route passed in
+};
 
   return (
     <section
@@ -125,7 +120,6 @@ const content = [
             <p className="w-[489px] h-[96px] text-white poppins-font font-normal text-[16px] leading-[150%]">
               {content[active].description}
             </p>
-
            <button
   onClick={() => handleExplore(tabRoutes[active])} // ✅ pass correct route
   className="w-[489px] h-[44px] py-[10px] px-[30px] rounded-[30px] border border-[#C22CA299] text-white bg-[linear-gradient(95.92deg,rgba(138,56,245,0.5)_15.32%,rgba(194,44,162,0.5)_99.87%)] flex items-center justify-center gap-[10px]"
@@ -140,9 +134,7 @@ const content = [
     <path d="M12 4l1.41 1.41L7.83 11H20v2H7.83l5.58 5.59L12 20l-8-8 8-8z" />
   </svg>
 </button>
-
           </div>
-
           <div className="w-[440px] h-[301px] rounded-[20px] overflow-hidden">
             <img
               src={content[active].img}
