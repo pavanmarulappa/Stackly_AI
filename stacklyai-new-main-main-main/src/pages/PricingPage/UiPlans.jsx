@@ -131,9 +131,9 @@ export default function AfterUiPlans() {
         </div>
         <Link to="/Sign-in">
           <div
-            className="w-full h-[42px] gap-[10px] rounded-[30px] border-[1px] border-solid border-[#C22CA299] 
-             px-[30px] py-[10px] text-[#C22CA2] flex justify-center items-center 
-             bg-[#FFFFFF]
+            className="w-full h-[42px] gap-[10px] rounded-[30px] border border-[#C22CA299] 
+             px-[30px] py-[10px] text-white flex justify-center items-center 
+             bg-gradient-to-r from-[#8A38F580] to-[#C22CA280]
              hover:bg-gradient-to-b from-[#007B82] to-[#00B0BA] hover:text-white"
           >
             Purchase

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import ellipse from "../../assets/contactus/Ellipse.png";
 import ellipse1 from "../../assets/contactus/Ellipse2.png";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -38,6 +40,8 @@ const ContactForm = () => {
       });
 
       setIsSubmitted(true);
+      toast.success("✅ Message sent successfully!");
+
       setFormData({
         first_name: "",
         last_name: "",
@@ -53,6 +57,7 @@ const ContactForm = () => {
     } catch (error) {
       console.error("Submission error:", error);
       setSubmitError("Failed to send message. Please try again.");
+      toast.error("❌ Failed to send message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

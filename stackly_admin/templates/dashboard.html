@@ -322,19 +322,19 @@ body {
     <!-- Stats Cards -->
     <div class="stats-container">
         <div class="stat-card">
-            <div class="stat-value" data-count="120">0</div>
+            <div class="stat-value" data-count="{{ total_users }}">0</div>
             <div class="stat-label">Total Users</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" data-count="10">0</div>
+            <div class="stat-value" data-count="{{ active_plans }}">0</div>
             <div class="stat-label">Active Plans</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" data-count="5">0</div>
+            <div class="stat-value" data-count="{{ expired_plans }}">0</div>
             <div class="stat-label">Expired Plans</div>
         </div>
         <div class="stat-card">
-            <div class="stat-value" data-count="3500">0</div>
+            <div class="stat-value" data-count="{{ total_api_calls }}">0</div>
             <div class="stat-label">API Calls</div>
         </div>
     </div>
@@ -346,36 +346,12 @@ body {
             <div class="chart-wrapper" style="height:250px;">
                 <canvas id="plansChart"></canvas>
             </div>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #007B82;"></div>
-                    <span class="legend-label">Basic</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #E2E2E2;"></div>
-                    <span class="legend-label">Silver</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #F89D14;"></div>
-                    <span class="legend-label">Gold</span>
-                </div>
-            </div>
         </div>
 
         <div class="chart-card">
             <h3 class="chart-title">API Calls Usage</h3>
             <div class="chart-wrapper" style="height:250px;">
                 <canvas id="apiChart"></canvas>
-            </div>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #007B82;"></div>
-                    <span class="legend-label">Errors %</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #00B0BA;"></div>
-                    <span class="legend-label">Success Rate %</span>
-                </div>
             </div>
         </div>
 
@@ -384,20 +360,6 @@ body {
             <div class="chart-wrapper" style="height:250px;">
                 <canvas id="couponsChart"></canvas>
             </div>
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #007B82;"></div>
-                    <span class="legend-label">10% Off</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #00B0BA;"></div>
-                    <span class="legend-label">20% Off</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #F89D14;"></div>
-                    <span class="legend-label">50% Off</span>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -405,12 +367,13 @@ body {
     <div class="bottom-section">
         <div class="progress-card">
             <h3 class="section-title">API Usage Progress</h3>
-            <div class="progress-bar"
-                style="background:#ddd; width:100%; height:20px; border-radius:10px; overflow:hidden;">
+            <div class="progress-bar" style="background:#ddd; width:100%; height:20px; border-radius:10px; overflow:hidden;">
                 <div class="progress-fill" id="apiProgress"
-                    style="height:100%; width:0; background:#007B82; transition: width 1s ease;"></div>
+                     style="height:100%; width:{{ api_progress_percent }}%; background:#007B82; transition: width 1s ease;"></div>
             </div>
-            <p class="progress-text" id="apiDesc">API calls: 0 of 100 Goal</p>
+            <p class="progress-text" id="apiDesc">
+                API calls: {{ total_api_calls }} of {{ api_goal }} Goal
+            </p>
         </div>
 
         <div class="notifications-card">
@@ -436,18 +399,18 @@ body {
     </div>
 </div>
 
-<!-- Chart.js CDN -->
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Animate numbers in stat cards
-        const counters = document.querySelectorAll('.stat-value');
-        counters.forEach(counter => {
-            const target = +counter.getAttribute('data-count');
-            let count = 0;
-            const step = target / 60; // animate for ~1 second at 60fps
+    const plansData = {{ plans_data|safe }};
+    const apiData = {{ api_data|safe }};
+    const couponData = {{ coupon_data|safe }};
 
+    document.addEventListener('DOMContentLoaded', () => {
+        // Animate counters
+        document.querySelectorAll('.stat-value').forEach(counter => {
+            const target = +counter.getAttribute('data-count');
+            let count = 0, step = target / 60;
             function update() {
                 count += step;
                 if (count < target) {
@@ -460,84 +423,37 @@ body {
             update();
         });
 
-        // Animate API progress bar
-        setTimeout(() => {
-            const progress = document.getElementById('apiProgress');
-            const desc = document.getElementById('apiDesc');
-            progress.style.width = '30%';
-            desc.textContent = 'API calls: 30 of 100 Goal';
-        }, 500);
+        // Plans Chart
+        new Chart(document.getElementById('plansChart'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(plansData),
+                datasets: [{ data: Object.values(plansData), backgroundColor: ['#007B82','#E2E2E2','#F89D14'], borderWidth:0 }]
+            },
+            options: { responsive: true, cutout: '70%', plugins:{ legend:{display:true} } }
+        });
 
-        // Initialize charts
-        initCharts();
+        // API Calls Chart
+        new Chart(document.getElementById('apiChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Errors', 'Success'],
+                datasets: [{ data: [apiData.errors, apiData.success], backgroundColor: ['#007B82','#00B0BA'], borderWidth:0 }]
+            },
+            options: { responsive:true, plugins:{legend:{display:true}} }
+        });
+
+        // Coupon Chart
+        new Chart(document.getElementById('couponsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['10% Off','20% Off','50% Off'],
+                datasets: [{ data: [couponData["10"], couponData["20"], couponData["50"]], backgroundColor: ['#007B82','#00B0BA','#F89D14'], borderWidth:0 }]
+            },
+            options: { responsive:true, cutout:'70%', plugins:{legend:{display:true}} }
+        });
     });
-
-    function initCharts() {
-        // User Plans Distribution (Doughnut)
-        const plansCtx = document.getElementById('plansChart');
-        if (plansCtx) {
-            new Chart(plansCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Basic', 'Silver', 'Gold'],
-                    datasets: [{
-                        data: [30, 50, 20],
-                        backgroundColor: ['#007B82', '#E2E2E2', '#F89D14'],
-                        borderWidth: 0,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-
-        // API Calls Usage (Pie)
-        const apiCtx = document.getElementById('apiChart');
-        if (apiCtx) {
-            new Chart(apiCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Errors', 'Success'],
-                    datasets: [{
-                        data: [15, 85],
-                        backgroundColor: ['#007B82', '#00B0BA'],
-                        borderWidth: 0,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-
-        // Coupon Discounts (Doughnut)
-        const couponsCtx = document.getElementById('couponsChart');
-        if (couponsCtx) {
-            new Chart(couponsCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['10% Off', '20% Off', '50% Off'],
-                    datasets: [{
-                        data: [40, 35, 25],
-                        backgroundColor: ['#007B82', '#00B0BA', '#F89D14'],
-                        borderWidth: 0,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '70%',
-                    plugins: { legend: { display: false } }
-                }
-            });
-        }
-    }
 </script>
+
 
 {% endblock content %}

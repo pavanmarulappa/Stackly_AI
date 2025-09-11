@@ -65,6 +65,7 @@ export default function HelpCenter() {
 
         // Prefill email field with profile email
         setEmail(profileResponse.data.email || "");
+        
       } catch (err) {
         console.error("Error fetching profile data:", err);
         setError(err.response?.data?.detail || "Failed to load profile data");
@@ -85,17 +86,17 @@ export default function HelpCenter() {
     // Client-side validation
     if (!email || !subject || !message) {
       setErrorMsg("All fields are required.");
-      toast.error("All fields are required.");
+      toast.error("⚠️ All fields are required.");
       return;
     }
     if (subject.length > 30) {
       setErrorMsg("Subject must be 30 characters or less.");
-      toast.error("Subject must be 30 characters or less.");
+      toast.error("⚠️ Subject must be 30 characters or less.");
       return;
     }
     if (message.length > 500) {
       setErrorMsg("Message must be 500 characters or less.");
-      toast.error("Message must be 500 characters or less.");
+      toast.error("⚠️ Message must be 500 characters or less.");
       return;
     }
 
@@ -125,10 +126,10 @@ export default function HelpCenter() {
       setEmail(profileData.email || ""); // Reset to profile email or empty
       setSubject("");
       setMessage("");
-      toast.success("Your message has been sent successfully!");
+      toast.success("✅ Your message has been sent successfully!");
     } catch (err) {
       setErrorMsg(err.response?.data?.detail || "Something went wrong.");
-      toast.error(err.response?.data?.detail || "Something went wrong.");
+      toast.error(err.response?.data?.detail || "❌ Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -143,13 +144,13 @@ export default function HelpCenter() {
   }
 
   if (error) {
+    toast.error("❌ Failed to load profile data!");
     return (
       <div className="w-full h-screen flex items-center justify-center text-red-500">
         Error: {error}
       </div>
     );
   }
-
   return (
     <div>
       <section className="absolute top-[321px] left-[251px] w-[1094px] rounded-[8px] border-[1px] border-solid border-[#FFFFFF1F] bg-[#FFFFFF0A] p-[32px] flex flex-col">

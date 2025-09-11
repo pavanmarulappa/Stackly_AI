@@ -216,55 +216,67 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <th>Valid To</th>
                         <th>Plan</th>
                         <th>Credits</th>
-                        <!-- <th>Status</th>
-                        <th>Actions</th> -->
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for user in users %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>7989900961</td>
-                        <td>India</td>
-                        <td>12/07/2025</td>
-                        <td>Gold</td>
-                        <td>130</td>
-                        <!-- <td class="{% if user.status == 'Active' %}active-status{% else %}expired-status{% endif %}">
-                            Active
-                        </td>
-                        <td>
-                            <a href="">
-                                <svg width="29" height="29" viewBox="0 0 29 29" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <rect width="28.2941" height="28.2941" rx="14.1471" fill="#007B82" />
-                                    <path
-                                        d="M16.8696 9.00124L19.4293 11.5609M15.1632 20.9461H21.9889M8.33758 17.5333L7.48438 20.9461L10.8972 20.0929L20.7824 10.2077C21.1023 9.88767 21.2821 9.45372 21.2821 9.00124C21.2821 8.54876 21.1023 8.1148 20.7824 7.7948L20.6357 7.64805C20.3157 7.32815 19.8817 7.14844 19.4293 7.14844C18.9768 7.14844 18.5428 7.32815 18.2228 7.64805L8.33758 17.5333Z"
-                                        stroke="white" stroke-width="1.57515" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                            </a>
-                            <a href="">
-                                <svg width="29" height="29" viewBox="0 0 29 29" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="0.294922" y="0.292969" width="28.2941" height="28.2941" rx="14.1471"
-                                        fill="#007B82" />
-                                    <path
-                                        d="M7.99034 9.33548L9.85472 20.5968C9.94 21.1123 10.2055 21.5808 10.604 21.9189C11.0025 22.2569 11.508 22.4425 12.0306 22.4426H14.9846M20.8945 9.33548L19.031 20.5968C18.9458 21.1123 18.6802 21.5808 18.2818 21.9189C17.8833 22.2569 17.3777 22.4425 16.8552 22.4426H13.9011M12.6976 13.6616V18.1165M16.1881 13.6616V18.1165M6.28125 9.33548H22.6045M16.8931 9.33548V7.76491C16.8931 7.4139 16.7537 7.07726 16.5055 6.82905C16.2573 6.58085 15.9206 6.44141 15.5696 6.44141H13.3161C12.9651 6.44141 12.6285 6.58085 12.3803 6.82905C12.1321 7.07726 11.9926 7.4139 11.9926 7.76491V9.33548H16.8931Z"
-                                        stroke="white" stroke-width="1.32351" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                            </a>
-                        </td> -->
-                    </tr>
+                        {% with sub=user.subscriptions.first %}
+                        <tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.phone_number|default:"-" }}</td>
+    <td>{{ user.location|default:"-" }}</td>
+    <td>
+        {% if sub and sub.plan_expiring_date %}
+            {{ sub.plan_expiring_date|date:"d/m/Y" }}
+        {% else %}
+            -
+        {% endif %}
+    </td>
+    <td>
+        {% if sub %}
+            {{ sub.current_plan|title }}
+        {% else %}
+            -
+        {% endif %}
+    </td>
+    <td>
+        {% if sub %}
+            {{ sub.balance_credits }}
+        {% else %}
+            0
+        {% endif %}
+    </td>
+    <td>
+        {% if user.provider == "inactive" %}
+            <span class="badge bg-danger">Inactive</span>
+        {% else %}
+            <span class="badge bg-success">Active</span>
+        {% endif %}
+    </td>
+    <td>
+        <form method="POST" action="{% url 'user_list' %}">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" value="{{ user.id }}">
+            <button type="submit" class="btn btn-sm {% if user.provider == 'inactive' %}btn-success{% else %}btn-danger{% endif %}">
+                {% if user.provider == "inactive" %} Activate {% else %} Deactivate {% endif %}
+            </button>
+        </form>
+    </td>
+</tr>
+
+                        {% endwith %}
                     {% empty %}
-                    <tr>
-                        <td colspan="9">No users found.</td>
-                    </tr>
+                        <tr>
+                            <td colspan="9" class="text-center">No users found.</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
 {% endblock content %}

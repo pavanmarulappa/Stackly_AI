@@ -843,8 +843,11 @@ class DesignResponse(BaseModel):
     is_favorite: bool
     category: str
 
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 def serialize_design(design: UserDesignHistory):
     return {

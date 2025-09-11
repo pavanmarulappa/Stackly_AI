@@ -55,6 +55,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr, constr, Field
 from fastapi_app.django_setup import django_setup
 from appln.models import ContactUs
+from django.db import transaction
 import smtplib
 from email.message import EmailMessage
 import os
@@ -87,47 +88,71 @@ def submit_help_center_form(data: HelpCenterForm):
             detail="Combined subject and message exceed 500 characters"
         )
 
-    # Save form data to Django model
+    # SMTP Config
+    smtp_host = os.getenv("SMTP_HOST")
+    smtp_port = int(os.getenv("SMTP_PORT", "587"))
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_pass = os.getenv("SMTP_PASS")
+    email_from = os.getenv("EMAIL_FROM")
+    admin_email = os.getenv("ADMIN_EMAIL")  # Add this in .env
+
     try:
-        ContactUs.objects.create(
-            first_name=data.first_name or "",
-            last_name=data.last_name or "",
-            email=data.email,
-            contact_number="",
-            message=combined_message,
-            source=data.source
-        )
+        with transaction.atomic():  # Ensures rollback if error occurs
+            # Save form data to DB
+            ContactUs.objects.create(
+                first_name=data.first_name or "",
+                last_name=data.last_name or "",
+                email=data.email,
+                contact_number="",
+                message=combined_message,
+                source=data.source
+            )
+
+            # -----------------------
+            # 1. Send Thank-You Email to User
+            # -----------------------
+            user_msg = EmailMessage()
+            user_msg['Subject'] = "Thank You for Your Inquiry!"
+            user_msg['From'] = email_from
+            user_msg['To'] = data.email
+            user_msg.set_content(
+                f"Hi {data.first_name or ''},\n\n"
+                f"Thank you for reaching out to the Stackly.Ai Help Centre.\n\n"
+                f"We received your message with subject: '{data.subject}'.\n\n"
+                f"Message:\n{data.message}\n\n"
+                f"Should you need any further assistance, please don't hesitate to get in touch.\n\n"
+                f"-Regards,\nStackly.Ai Support Team"
+            )
+
+            # -----------------------
+            # 2. Send Notification Email to Admin
+            # -----------------------
+            admin_msg = EmailMessage()
+            admin_msg['Subject'] = f"New Help Center Inquiry: {data.subject}"
+            admin_msg['From'] = email_from
+            admin_msg['To'] = admin_email
+            admin_msg.set_content(
+                f"New Help Center inquiry received.\n\n"
+                f"Name: {data.first_name or ''} {data.last_name or ''}\n"
+                f"Email: {data.email}\n"
+                f"Subject: {data.subject}\n"
+                f"Message:\n{data.message}\n\n"
+                f"Source: {data.source}"
+            )
+
+            # Send emails
+            with smtplib.SMTP(smtp_host, smtp_port) as server:
+                server.starttls()
+                server.login(smtp_user, smtp_pass)
+                server.send_message(user_msg)
+                server.send_message(admin_msg)
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to save data: {str(e)}")
-
-    # Send thank-you email
-    try:
-        msg = EmailMessage()
-        msg['Subject'] = "Thank You for Your Inquiry!"
-        msg['From'] = os.getenv("EMAIL_FROM")
-        msg['To'] = data.email
-        msg.set_content(
-            f"Hi {data.first_name or ''},\n\n"
-            f"Thank you for reaching out to the Stackly.Ai Help Centre.\n\n"
-            f"We received your message with subject: '{data.subject}'.\n\n"
-            f"Message:\n{data.message}\n\n"
-            f"Should you need any further assistance, please don't hesitate to get in touch.\n\n"
-            f"-Regards,\nStackly.Ai Support Team"
-        )
-
-        smtp_host = os.getenv("SMTP_HOST")
-        smtp_port = int(os.getenv("SMTP_PORT", "587"))
-        smtp_user = os.getenv("SMTP_USER")
-        smtp_pass = os.getenv("SMTP_PASS")
-
-        with smtplib.SMTP(smtp_host, smtp_port) as server:
-            server.starttls()
-            server.login(smtp_user, smtp_pass)
-            server.send_message(msg)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to send confirmation email: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to process request: {str(e)}")
 
     return {"message": "Help Center form submitted successfully"}
+
+
 
 
 
