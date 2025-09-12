@@ -39,12 +39,20 @@ class ContactUs(models.Model):
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
     contact_number = models.CharField(max_length=15)
-    # subject = models.CharField(max_length=30)
     message = models.TextField()
     source = models.CharField(max_length=20, default='contact_us')
     submitted_at = models.DateTimeField(auto_now_add=True)
 
+class AdminNotification(models.Model):
+    id = models.AutoField(primary_key=True)
+    contact = models.ForeignKey("ContactUs", on_delete=models.CASCADE)
+    message = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.message
+    
 # Pricing page 
 class UserSubscription(models.Model):
     PLAN_CHOICES = (
