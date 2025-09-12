@@ -214,6 +214,7 @@ from dotenv import load_dotenv
 from appln.models import UserData
 from asgiref.sync import sync_to_async
 from fastapi_app.forget_password import router as forgot_password_router
+from fastapi_app.notifications import router as notifications_router
 from pathlib import Path
 
 # Setup paths and environment
@@ -247,6 +248,7 @@ app.include_router(pricing_router, prefix="/pricing", tags=["pricing"])
 app.include_router(profile_router)
 app.include_router(contact_router)
 app.include_router(help_center.router)
+app.include_router(notifications_router)
 app.include_router(forgot_password_router)
 app.include_router(api.router)
 

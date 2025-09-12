@@ -50,24 +50,26 @@
 
 #     return {"message": "Help Center form submitted successfully"}
 
-
+# fastapi/help_center.py
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr, constr, Field
 from fastapi_app.django_setup import django_setup
-from appln.models import ContactUs
+from appln.models import ContactUs, AdminNotification
 from django.db import transaction
+from asgiref.sync import sync_to_async
 import smtplib
 from email.message import EmailMessage
 import os
 from dotenv import load_dotenv
 
+# Import centralized notification broadcaster
+from fastapi_app.notifications import broadcast_notification
+
 router = APIRouter()
 django_setup()
-
-# Load environment variables from .env file
 load_dotenv()
 
-# Define the Pydantic model
+
 class HelpCenterForm(BaseModel):
     email: EmailStr
     subject: constr(max_length=30)
@@ -76,9 +78,27 @@ class HelpCenterForm(BaseModel):
     first_name: str | None = None
     last_name: str | None = None
 
+
+async def save_contact(data, combined_message):
+    return await sync_to_async(ContactUs.objects.create)(
+        first_name=data.first_name or "",
+        last_name=data.last_name or "",
+        email=data.email,
+        contact_number="",
+        message=combined_message,
+        source=data.source
+    )
+
+
+async def save_admin_notification(contact):
+    return await sync_to_async(AdminNotification.objects.create)(
+        contact=contact,
+        message=f"New Help Center inquiry from {contact.email}"
+    )
+
+
 @router.post("/help-center")
-def submit_help_center_form(data: HelpCenterForm):
-    # Clean up message first
+async def submit_help_center_form(data: HelpCenterForm):
     safe_message = data.message.replace("\n", " ")
     combined_message = f"Subject: {data.subject} - {safe_message}"
 
@@ -88,29 +108,32 @@ def submit_help_center_form(data: HelpCenterForm):
             detail="Combined subject and message exceed 500 characters"
         )
 
-    # SMTP Config
     smtp_host = os.getenv("SMTP_HOST")
     smtp_port = int(os.getenv("SMTP_PORT", "587"))
     smtp_user = os.getenv("SMTP_USER")
     smtp_pass = os.getenv("SMTP_PASS")
     email_from = os.getenv("EMAIL_FROM")
-    admin_email = os.getenv("ADMIN_EMAIL")  # Add this in .env
+    admin_email = os.getenv("ADMIN_EMAIL")
 
     try:
-        with transaction.atomic():  # Ensures rollback if error occurs
-            # Save form data to DB
-            ContactUs.objects.create(
-                first_name=data.first_name or "",
-                last_name=data.last_name or "",
-                email=data.email,
-                contact_number="",
-                message=combined_message,
-                source=data.source
-            )
+        # Save contact and admin notification
+        contact = await save_contact(data, combined_message)
+        await save_admin_notification(contact)
 
-            # -----------------------
-            # 1. Send Thank-You Email to User
-            # -----------------------
+        # Broadcast via central WebSocket
+        await broadcast_notification(
+            f"New Help Center inquiry from {data.email}",
+            type_="helpcenter",
+            extra={
+                "email": data.email,
+                "subject": data.subject,
+                "name": f"{data.first_name or ''} {data.last_name or ''}",
+                "time": str(contact.submitted_at)
+            }
+        )
+
+        # Send emails (still sync, OK in thread)
+        def send_emails():
             user_msg = EmailMessage()
             user_msg['Subject'] = "Thank You for Your Inquiry!"
             user_msg['From'] = email_from
@@ -120,13 +143,9 @@ def submit_help_center_form(data: HelpCenterForm):
                 f"Thank you for reaching out to the Stackly.Ai Help Centre.\n\n"
                 f"We received your message with subject: '{data.subject}'.\n\n"
                 f"Message:\n{data.message}\n\n"
-                f"Should you need any further assistance, please don't hesitate to get in touch.\n\n"
                 f"-Regards,\nStackly.Ai Support Team"
             )
 
-            # -----------------------
-            # 2. Send Notification Email to Admin
-            # -----------------------
             admin_msg = EmailMessage()
             admin_msg['Subject'] = f"New Help Center Inquiry: {data.subject}"
             admin_msg['From'] = email_from
@@ -140,12 +159,13 @@ def submit_help_center_form(data: HelpCenterForm):
                 f"Source: {data.source}"
             )
 
-            # Send emails
             with smtplib.SMTP(smtp_host, smtp_port) as server:
                 server.starttls()
                 server.login(smtp_user, smtp_pass)
                 server.send_message(user_msg)
                 server.send_message(admin_msg)
+
+        await sync_to_async(send_emails)()
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to process request: {str(e)}")

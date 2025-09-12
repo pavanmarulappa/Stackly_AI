@@ -472,30 +472,26 @@
     <span class="bg-danger dots"></span>
     {% endif %}
     <div class="dropdown notification-dropdown">
-        <div class="notification-header">
-            <h4>Notifications</h4>
-            <div class="mark-read" id="mark-all-read">Mark all as read</div>
-        </div>
-        <div class="notification-list">
-            {% if notifications %}
-            {% for notification in notifications %}
-            <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
-                <div class="notification-icon">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round" />
-                    </svg>
-                </div>
-                <div class="notification-content">
-                    <div class="notification-title">{{ notification.message }}</div>
-                    <div class="notification-time">{{ notification.created_at|timesince }} ago</div>
-                </div>
-            </div>
-            {% endfor %}
-            {% else %}
-            <div class="p-3 text-center">No notifications</div>
-            {% endif %}
-        </div>
+    <div class="notification-header">
+      <h4>Notifications</h4>
+      <div class="mark-read" id="mark-all-read">Mark all as read</div>
     </div>
+    <div class="notification-list" id="header-notifications">
+      {% if notifications %}
+        {% for notification in notifications %}
+          <div class="notification-item {% if not notification.is_read %}unread{% endif %}">
+      <div class="notification-icon">...</div>
+      <div class="notification-content">
+        <div class="notification-title">{{ notification.message }}</div>
+        <div class="notification-time">{{ notification.created_at|timesince }} ago</div>
+      </div>
+    </div>
+        {% endfor %}
+      {% else %}
+        <div class="p-3 text-center">No notifications</div>
+      {% endif %}
+    </div>
+  </div>
 </div>
 
 
@@ -904,6 +900,83 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
   </script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const dashboardList = document.getElementById("dashboard-notifications");
+    const headerList = document.getElementById("header-notifications");
+    const notifDot = document.querySelector(".dots");
+    const markAllBtn = document.getElementById("mark-all-read");
+    const notifWrapper = document.querySelector(".notification-icon");
+
+    // Toggle dropdown
+    if (notifWrapper) {
+        notifWrapper.addEventListener("click", e => {
+            e.stopPropagation();
+            const dropdown = notifWrapper.querySelector(".notification-dropdown");
+            dropdown.classList.toggle("show");
+            document.querySelectorAll(".dropdown").forEach(d => {
+                if (d !== dropdown) d.classList.remove("show");
+            });
+        });
+    }
+
+    document.addEventListener("click", () => {
+        document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+    });
+
+    // WebSocket
+    const ws = new WebSocket("ws://127.0.0.1:8000/ws/admin/notifications");
+
+    ws.onopen = () => console.log("✅ Connected to notifications WebSocket");
+    ws.onmessage = event => {
+        try {
+            const data = JSON.parse(event.data);
+
+            const itemHTML = `
+                <div class="notification-item unread">
+                    <div class="notification-icon">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${data.message}</div>
+                        <div class="notification-time">just now</div>
+                    </div>
+                </div>
+            `;
+
+            if (dashboardList) dashboardList.insertAdjacentHTML("afterbegin", itemHTML);
+            if (headerList) headerList.insertAdjacentHTML("afterbegin", itemHTML);
+
+            if (notifDot) notifDot.style.display = "block";
+
+        } catch (err) {
+            console.error("WebSocket message error:", err);
+        }
+    };
+
+    ws.onclose = () => console.log("❌ WebSocket connection closed");
+
+    // Mark all as read
+    if (markAllBtn) {
+        markAllBtn.addEventListener("click", () => {
+            fetch("/notifications/mark_all_read/", {
+                method: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    document.querySelectorAll(".notification-item.unread").forEach(el => el.classList.remove("unread"));
+                    if (notifDot) notifDot.style.display = "none";
+                }
+            })
+            .catch(err => console.error(err));
+        });
+    }
+});
+</script>
 
 </body>
 

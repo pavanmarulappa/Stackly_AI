@@ -120,17 +120,22 @@ def submit_contact_form(data: ContactForm):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))"""
 
+#fastapi/contact.py
+# fastapi/contact.py
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, EmailStr, constr, Field
 from fastapi_app.django_setup import django_setup
-from appln.models import ContactUs
+from appln.models import ContactUs, AdminNotification
 from django.db import transaction
+from asgiref.sync import sync_to_async
 from email.message import EmailMessage
-from email.mime.text import MIMEText
 from twilio.rest import Client
 import smtplib
 import os
 from dotenv import load_dotenv
+
+# Centralized notification broadcaster
+from fastapi_app.notifications import broadcast_notification
 
 # Load .env variables
 load_dotenv()
@@ -148,115 +153,117 @@ class ContactForm(BaseModel):
     source: str = Field(default="contact_us")
 
 
-def send_email(to_email: str, subject: str, body: str):
-    """Generic email sender"""
-    msg = MIMEText(body)
-    msg["Subject"] = subject
-    msg["From"] = os.getenv("EMAIL_FROM")
-    msg["To"] = to_email
-
-    smtp_host = os.getenv("SMTP_HOST")
-    smtp_port = int(os.getenv("SMTP_PORT", 587))
-    smtp_user = os.getenv("SMTP_USER")
-    smtp_pass = os.getenv("SMTP_PASS")
-
-    with smtplib.SMTP(smtp_host, smtp_port) as server:
-        server.starttls()
-        server.login(smtp_user, smtp_pass)
-        server.send_message(msg)
+async def save_contact(data: ContactForm):
+    """Save contact in DB asynchronously"""
+    return await sync_to_async(ContactUs.objects.create)(
+        first_name=data.first_name,
+        last_name=data.last_name,
+        email=data.email,
+        contact_number=data.contact_number,
+        message=data.message,
+        source=data.source
+    )
 
 
-def send_admin_notification(user_data: dict):
-    """Send admin notification when a new contact form is submitted"""
-    admin_email = os.getenv("ADMIN_EMAIL")
-    subject = "📩 New Contact Form Submission"
-    body = f"""
-Hello Admin,
-
-A new contact form has been submitted:
-
-👤 Name: {user_data.get("first_name", "-")} {user_data.get("last_name", "-")}
-📧 Email: {user_data.get("email", "-")}
-📱 Contact: {user_data.get("contact_number", "-")}
-
-Message:
-{user_data.get("message", "-")}
-
-Source: {user_data.get("source", "-")}
-
-– Stackly.Ai System
-"""
-    send_email(admin_email, subject, body)
+async def save_admin_notification(contact: ContactUs):
+    """Save admin notification in DB asynchronously"""
+    return await sync_to_async(AdminNotification.objects.create)(
+        contact=contact,
+        message=f"New Contact Form submission from {contact.email}"
+    )
 
 
 def send_sms(to_number: str, user_name: str):
-    client = Client(
-        os.getenv("TWILIO_SID"),
-        os.getenv("TWILIO_AUTH_TOKEN")
-    )
-    message = client.messages.create(
-        body=f"Hi {user_name}, Thanks for reaching out to Stackly.Ai! We will get back to you shortly. – The Stackly.Ai Team",
-        from_=os.getenv("TWILIO_PHONE"),
-        to=to_number,
-    )
-    return message.sid
+    try:
+        client = Client(os.getenv("TWILIO_SID"), os.getenv("TWILIO_AUTH_TOKEN"))
+        client.messages.create(
+            body=f"Hi {user_name}, Thanks for reaching out to Stackly.Ai! We will get back to you shortly. – The Stackly.Ai Team",
+            from_=os.getenv("TWILIO_PHONE"),
+            to=to_number,
+        )
+    except Exception as e:
+        print(f"⚠️ SMS sending failed: {e}")
 
+
+def send_email(to_email: str, subject: str, body: str):
+    try:
+        msg = EmailMessage()
+        msg['Subject'] = subject
+        msg['From'] = os.getenv("EMAIL_FROM")
+        msg['To'] = to_email
+        msg.set_content(body)
+
+        smtp_host = os.getenv("SMTP_HOST")
+        smtp_port = int(os.getenv("SMTP_PORT", "587"))
+        smtp_user = os.getenv("SMTP_USER")
+        smtp_pass = os.getenv("SMTP_PASS")
+
+        with smtplib.SMTP(smtp_host, smtp_port) as server:
+            server.starttls()
+            server.login(smtp_user, smtp_pass)
+            server.send_message(msg)
+    except Exception as e:
+        print(f"⚠️ Email sending failed: {e}")
 
 @router.post("/contact")
-def submit_contact_form(data: ContactForm):
+async def submit_contact_form(data: ContactForm):
     try:
-        with transaction.atomic():
-            # 1. Save to DB
-            ContactUs.objects.create(
-                first_name=data.first_name,
-                last_name=data.last_name,
-                email=data.email,
-                contact_number=data.contact_number,
-                message=data.message,
-                source=data.source
-            )
+        # Wrap the DB operations in a synchronous function
+        def process_contact():
+            with transaction.atomic():
+                # Save contact
+                contact = ContactUs.objects.create(
+                    first_name=data.first_name,
+                    last_name=data.last_name,
+                    email=data.email,
+                    contact_number=data.contact_number,
+                    message=data.message,
+                    source=data.source
+                )
 
-            # 2. Send confirmation email to user
-            msg = EmailMessage()
-            msg['Subject'] = "Thanks for reaching out to Stackly.Ai!"
-            msg['From'] = os.getenv("EMAIL_FROM")
-            msg['To'] = data.email
-            msg.set_content(
-                f"Hi {data.first_name} {data.last_name},\n\n"
-                "Thank you for contacting Stackly.Ai! We've received your message and one of our team members will get back to you shortly.\n\n"
-                "If your inquiry is urgent, feel free to reply to this email or reach us at (info@stackly.ai - 123456789).\n\n"
-                "We appreciate your interest and look forward to assisting you!\n\n"
-                "- Best regards,\n"
-                "The Stackly.Ai Team"
-            )
+                # Send confirmation email to user
+                send_email(
+                    data.email,
+                    "Thanks for reaching out to Stackly.Ai!",
+                    f"Hi {data.first_name} {data.last_name},\n\n"
+                    "Thank you for contacting Stackly.Ai! We've received your message and one of our team members will get back to you shortly.\n\n"
+                    "- The Stackly.Ai Team"
+                )
 
-            smtp_host = os.getenv("SMTP_HOST")
-            smtp_port = int(os.getenv("SMTP_PORT", "587"))
-            smtp_user = os.getenv("SMTP_USER")
-            smtp_pass = os.getenv("SMTP_PASS")
+                # Send admin notification email
+                send_email(
+                    os.getenv("ADMIN_EMAIL"),
+                    "📩 New Contact Form Submission",
+                    f"New contact submission from {data.first_name} {data.last_name}, Email: {data.email}"
+                )
 
-            with smtplib.SMTP(smtp_host, smtp_port) as server:
-                server.starttls()
-                server.login(smtp_user, smtp_pass)
-                server.send_message(msg)
+                return contact
 
-            # 3. Send admin notification email
-            send_admin_notification(data.dict())
+        # Run synchronous DB + email in thread
+        contact = await sync_to_async(process_contact)()
 
-        # 4. Send SMS (ignore if fails)
-        try:
-            formatted_number = (
-                data.contact_number if data.contact_number.startswith('+')
-                else f"+91{data.contact_number}"
-            )
-            send_sms(formatted_number, data.first_name)
-        except Exception as sms_error:
-            print(f"⚠️ SMS sending failed: {sms_error}")  # only log in backend
+        # Save admin notification and broadcast via central WebSocket
+        await save_admin_notification(contact)
+        await broadcast_notification(
+            f"New Contact Form submission from {data.email}",
+            type_="contact",
+            extra={
+                "email": contact.email,
+                "name": f"{contact.first_name} {contact.last_name}",
+                "time": str(contact.submitted_at)
+            }
+        )
+
+        # Send SMS (ignore if fails)
+        formatted_number = data.contact_number if data.contact_number.startswith('+') else f"+91{data.contact_number}"
+        send_sms(formatted_number, data.first_name)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to process contact form: {str(e)}")
 
     return {"message": "Contact form submitted successfully"}
+
+
 
 
 
