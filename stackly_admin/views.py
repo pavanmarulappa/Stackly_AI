@@ -64,16 +64,21 @@ def access_management(request):
         profiles = UserProfile.objects.get(user=request.user)
     except UserProfile.DoesNotExist:
         profiles = None
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5] # top 5 notifications
     if request.method == 'POST':
         action = request.POST.get('action')
 
@@ -283,16 +288,21 @@ def dashboard(request):
     }
 
     # Notifications (user + admin)
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5]
 
     context = {
         "total_users": total_users,
@@ -314,15 +324,20 @@ def dashboard(request):
 @role_required('SuperAdmin', 'Admin')
 
 def manage_plans(request):
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
     all_notifications = all_notifications[:5]  # top 5 notifications
     if not request.user.is_authenticated:
         return redirect('admin_login')
@@ -511,11 +526,7 @@ def activate_plan(request, id):
 #         add_notification(f"Coupon '{coupon.code}' updated.", request.user)
 #         messages.success(request, 'Coupon updated successfully!')
 #         return redirect('create_coupon')
-    
-def mark_all_read(request):
-    if request.method == "POST":
-        AdminNotification.objects.filter(is_read=False).update(is_read=True)
-        return JsonResponse({"status": "success"}) 
+
     
 @role_required('SuperAdmin', 'Admin')
 def create_coupon(request):
@@ -527,15 +538,20 @@ def create_coupon(request):
     except UserProfile.DoesNotExist:
         profiles = None
 
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
     all_notifications = all_notifications[:5]  # top 5 notifications
 
     if request.method == 'POST':
@@ -778,16 +794,21 @@ def user_list(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5]
 
     # Get the user's profile
     try:
@@ -822,16 +843,21 @@ def user_list(request):
 
 @role_required('SuperAdmin','Admin','Moderator')
 def api_usage_monitor(request):
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5] # top 5 notifications
     if not request.user.is_authenticated:
         return redirect('login')  # or your login page
     
@@ -972,16 +998,21 @@ def delete_profile(request, profile_id):
 
 @login_required
 def settings_view(request):
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5] # top 5 notifications
     try:
         admin_settings = request.user.adminsettings
     except AdminSettings.DoesNotExist:
@@ -1019,15 +1050,20 @@ def contact_us_admin(request):
         return redirect('login')  # or your login page
 
     # ✅ Now it's safe to use request.user
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
     all_notifications = all_notifications[:5]  # top 5 notifications
 
     try:
@@ -1094,16 +1130,21 @@ Stackly Automated Support System
 
 
 def help_center(request):
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5] # top 5 notifications
     if not request.user.is_authenticated:
         return redirect('admin_login')  # or your login page
     
@@ -1127,12 +1168,17 @@ def clear_notifications(request):
     return JsonResponse({'success': True, 'updated': updated_count, 'unread_count':unread_count})
 
 @login_required
-@csrf_exempt  # Use this only if you are not using CSRF tokens
+@csrf_exempt  # Use only if you're not sending CSRF token in AJAX
 def mark_all_read(request):
     if request.method == 'POST':
-        notifications = Notification.objects.filter(register=request.user, is_read=False)
-        notifications.update(is_read=True)  # Mark all as read
+        # Mark user notifications as read
+        Notification.objects.filter(register=request.user, is_read=False).update(is_read=True)
+        
+        # Mark admin notifications as read
+        AdminNotification.objects.filter(is_read=False).update(is_read=True)
+
         return JsonResponse({'status': 'success'})
+    
     return JsonResponse({'status': 'error'}, status=400)
 
 @role_required('SuperAdmin','Admin', 'Moderator')
@@ -1146,16 +1192,21 @@ def manage_payments(request):
     except UserProfile.DoesNotExist:
         profiles = None
 
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5] # top 5 notifications
 
     # payments = Payment.objects.all().order_by('-payment_date')
 
@@ -1170,16 +1221,21 @@ def manage_payments(request):
 
 @role_required('SuperAdmin')
 def total_payments(request):
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5] # top 5 notifications
     # payments = Payment.objects.all().order_by('-date')
     context = {
         # 'payments': payments,
@@ -1190,15 +1246,20 @@ def total_payments(request):
     return render(request, 'payment_details.html', context)
 @role_required('SuperAdmin')
 def successful_payments(request):
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
     all_notifications = all_notifications[:5]  # top 5 notifications
     # payments = Payment.objects.filter(status='success').order_by('-date')
     context = {
@@ -1210,16 +1271,21 @@ def successful_payments(request):
     return render(request, 'payment_details.html', context)
 @role_required('SuperAdmin')
 def failed_payments(request):
-    user_notifications = Notification.objects.filter(register=request.user)
-    admin_notifications = AdminNotification.objects.all()
+    user_notifications = Notification.objects.filter(register=request.user, is_read=False)
+    admin_notifications = AdminNotification.objects.filter(is_read=False)
+
+    # Merge and sort by created_at descending
     all_notifications = sorted(
         chain(user_notifications, admin_notifications),
         key=attrgetter('created_at'),
         reverse=True
     )
 
-    unread_count = sum((not getattr(n, 'is_read', True)) for n in all_notifications)  # count unread
-    all_notifications = all_notifications[:5]  # top 5 notifications
+    # Count unread notifications (all are unread, so length works)
+    unread_count = len(all_notifications)
+
+    # Limit top 5
+    all_notifications = all_notifications[:5] # top 5 notifications
     # payments = Payment.objects.filter(status='failed').order_by('-date')
     context = {
         # 'payments': payments,
