@@ -929,52 +929,48 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ws.onopen = () => console.log("✅ Connected to notifications WebSocket");
     ws.onmessage = event => {
-        try {
-            const data = JSON.parse(event.data);
-
-            const itemHTML = `
-                <div class="notification-item unread">
-                    <div class="notification-icon">
-                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                            <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <div class="notification-content">
-                        <div class="notification-title">${data.message}</div>
-                        <div class="notification-time">just now</div>
-                    </div>
+    try {
+        const data = JSON.parse(event.data);
+        const itemHTML = `
+            <div class="notification-item unread">
+                <div class="notification-icon">...</div>
+                <div class="notification-content">
+                    <div class="notification-title">${data.message}</div>
+                    <div class="notification-time">just now</div>
                 </div>
-            `;
+            </div>
+        `;
 
-            if (dashboardList) dashboardList.insertAdjacentHTML("afterbegin", itemHTML);
-            if (headerList) headerList.insertAdjacentHTML("afterbegin", itemHTML);
+        if (dashboardList) dashboardList.insertAdjacentHTML("afterbegin", itemHTML);
+        if (headerList) headerList.insertAdjacentHTML("afterbegin", itemHTML);
 
-            if (notifDot) notifDot.style.display = "block";
+        // Show dot
+        if (notifDot) notifDot.style.display = "block";
+    } catch (err) {
+        console.error("WebSocket message error:", err);
+    }
+};
 
-        } catch (err) {
-            console.error("WebSocket message error:", err);
-        }
-    };
 
     ws.onclose = () => console.log("❌ WebSocket connection closed");
 
     // Mark all as read
     if (markAllBtn) {
-        markAllBtn.addEventListener("click", () => {
-            fetch("/notifications/mark_all_read/", {
-                method: "POST",
-                headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" }
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === "success") {
-                    document.querySelectorAll(".notification-item.unread").forEach(el => el.classList.remove("unread"));
-                    if (notifDot) notifDot.style.display = "none";
-                }
-            })
-            .catch(err => console.error(err));
-        });
-    }
+    markAllBtn.addEventListener("click", () => {
+        fetch("/notifications/mark_all_read/", {
+            method: "POST",
+            headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "success") {
+                document.querySelectorAll(".notification-item.unread").forEach(el => el.classList.remove("unread"));
+                if (notifDot) notifDot.style.display = "none";
+            }
+        })
+        .catch(err => console.error(err));
+    });
+}
 });
 </script>
 
