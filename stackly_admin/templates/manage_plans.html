@@ -233,23 +233,27 @@
   }
 
   @media (max-width: 768px) {
-
-    .plan,
-    .apiCalls,
-    .btns {
-      flex-direction: column;
-    }
-
-    .planname,
-    .api {
-      flex: 1 1 100%;
-    }
-
-    .submit,
-    .reset {
-      width: 100%;
-    }
+  .plan,
+  .apiCalls,
+  .btns {
+    flex-direction: column;
+    gap: 10px; /* Added for better spacing */
   }
+
+  .planname,
+  .api {
+    flex: 1 1 100%;
+  }
+
+  .submit,
+  .reset {
+    width: 100%;
+    max-width: 100%;
+    height: 40px;
+    font-size: 14px;
+    padding: 8px;
+  }
+}
 
   @media (max-width: 576px) {
     .heading {

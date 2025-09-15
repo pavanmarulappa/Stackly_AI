@@ -255,7 +255,7 @@ from django.shortcuts import render, redirect
 
 def dashboard(request):
     if not request.user.is_authenticated:
-        return redirect("login")
+        return redirect("admin_login")
 
     # Stats
     total_users = UserData.objects.count()
@@ -425,6 +425,7 @@ def edit_plan(request, id):
 
             plan.features = features
             plan.save()
+            add_notification(f"Plan '{plan.name}' Updated.",request.user)
 
             messages.success(request, "Plan updated successfully.")
             return redirect('manage_plans')

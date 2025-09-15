@@ -4,6 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import logoImg from "../assets/Logo1.png";
 import signBg from "../assets/signBg.png";
+import mobileBg from "../assets/LoginMobileBg.png";
 import LeftArrow from "../assets/LeftArrow.png";
 
 export default function SignUp({ setUser }) {
@@ -16,7 +17,15 @@ export default function SignUp({ setUser }) {
   const [isLoading, setIsLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  
+
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 639);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 639);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   // Email validation regex
   const emailRegex = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
 
@@ -81,7 +90,7 @@ export default function SignUp({ setUser }) {
         return;
       }
 
-      // ✅ Store email and password temporarily in localStorage
+      // Store email and password temporarily in localStorage
       localStorage.setItem("signupEmail", email);
       localStorage.setItem("signupPassword", password);
 
@@ -99,10 +108,13 @@ export default function SignUp({ setUser }) {
   };
 
   return (
-    <section
-      className="w-full min-h-[1024px] flex justify-center items-center bg-black bg-cover bg-center"
-      style={{ backgroundImage: `url(${signBg})` }}
+       <section
+      className="relative w-full min-h-[1024px] max-[1280px]:min-h-[100vh] flex justify-center items-center bg-black bg-cover bg-center"
+      style={{
+        backgroundImage: `url(${isMobile ? mobileBg : signBg})`,
+      }}
     >
+
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -115,19 +127,22 @@ export default function SignUp({ setUser }) {
         pauseOnHover
         theme="dark"
       />
-      
+
       {/* Main Card */}
-      <div
-        className="relative w-[740px] h-[869px] rounded-[16px] flex flex-col items-center overflow-hidden"
-        style={{
-          background: "transparent",
-          backdropFilter: "blur(90px)",
-          boxShadow: "0px 0px 46px 0px #00000040",
-          position: "relative",
-          isolation: "isolate"
-        }}
-      >
-        {/* Gradient Border - Precise Implementation */}
+   <div
+  className="relative w-full max-w-[740px] max-[1280px]:max-w-[640px] h-[869px] max-[1280px]:h-auto 
+             rounded-[16px] flex flex-col items-center overflow-hidden 
+             max-[639px]:mx-4"
+  style={{
+    background: "transparent",
+    backdropFilter: "blur(90px)",
+    boxShadow: "0px 0px 46px 0px #00000040",
+    position: "relative",
+    isolation: "isolate",
+  }}
+>
+
+        {/* Gradient Border */}
         <div
           style={{
             position: "absolute",
@@ -145,221 +160,265 @@ export default function SignUp({ setUser }) {
             WebkitMaskComposite: "xor",
             maskComposite: "exclude",
             pointerEvents: "none",
-            zIndex: "-1"
+            zIndex: "-1",
           }}
         ></div>
-        
+
         {/* Back Button */}
         <Link
           to="/"
-          className="absolute flex items-center gap-[12px] w-[174px] h-[32px] top-[20px] left-[20px] cursor-pointer"
+          className="absolute flex items-center gap-[12px] w-[174px] max-[1280px]:w-[140px] h-[32px] max-[1280px]:h-[28px] top-[20px] max-[1280px]:top-[16px] left-[20px] max-[1280px]:left-[16px] cursor-pointer"
         >
           <div
-            className="w-[32px] h-[32px] rounded-full border border-[#8A38F533] backdrop-blur-[90px] flex items-center justify-center"
+            className="w-[32px] max-[1280px]:w-[28px] h-[32px] max-[1280px]:h-[28px] rounded-full border border-[#8A38F533] backdrop-blur-[90px] flex items-center justify-center"
             style={{ background: "#8A38F533" }}
           >
-            <img src={LeftArrow} alt="Back" className="w-[16px] h-[16px]" />
+            <img
+              src={LeftArrow}
+              alt="Back"
+              className="w-[16px] max-[1280px]:w-[14px] h-[16px] max-[1280px]:h-[14px]"
+            />
           </div>
+          <div className="text-white text-[18px] max-[1280px]:text-[16px] font-normal font-poppins leading-[100%] max-[481px]:hidden">
+  Back to home
+</div>
 
-          <div className="text-white text-[18px] font-normal font-poppins leading-[100%]">
-            Back to home
-          </div>
         </Link>
-        
+
         {/* Centered Sign-Up Content */}
-        <div className="flex flex-col items-center gap-8 w-[692px] h-[649px] mt-[60px]">
+        <div className="flex flex-col items-center gap-8 max-[1280px]:gap-6 w-[692px] max-[1280px]:w-[90%] h-[649px] max-[1280px]:h-auto mt-[60px] max-[1280px]:mt-[40px]">
           {/* Top child */}
-          <div className="flex flex-col items-center gap-8 w-[501px] h-[141px]">
-            {/* 🔼 Top Image Div */}
-            <div
-              className="w-[230px] h-[44px] opacity-100"
-              style={{ transform: "rotate(0deg)" }}
-            >
+          <div className="flex flex-col items-center gap-8 max-[1280px]:gap-6 w-[501px] max-[1280px]:w-[90%] h-[141px] max-[1280px]:h-auto">
+            <div className="w-[230px] max-[1280px]:w-[180px] h-[44px] max-[1280px]:h-[36px] opacity-100 mt-4" style={{ transform: "rotate(0deg)" }}>
               <img
                 src={logoImg}
                 alt="Logo"
                 className="w-full h-full object-contain"
               />
             </div>
+            <div className="w-[501px] max-[1280px]:w-full h-[65px] max-[1280px]:h-auto flex flex-col items-center gap-[4px] opacity-100" style={{ transform: "rotate(0deg)" }}>
+              <div className="w-[501px] max-[1280px]:w-full h-[38px] max-[1280px]:h-auto">
+               <div className="w-full flex justify-center">
+  <p
+    className="text-center text-[28px] max-[1280px]:text-[24px] 
+               max-[490px]:text-[18px] 
+               max-[377px]:text-[14px] 
+               font-normal leading-[100%] whitespace-nowrap"
+    style={{
+      fontFamily: "Lora, serif",
+      color: "#FFFFFF",
+    }}
+  >
+    Welcome to Effortless Elegance
+  </p>
+</div>
 
-            {/* 🔽 Bottom Div */}
-            <div
-              className="w-[501px] h-[65px] flex flex-col items-center gap-[4px] opacity-100"
-              style={{ transform: "rotate(0deg)" }}
-            >
-              {/* 🔼 Top Child Div */}
-              <div className="w-[501px] h-[38px]">
-                <p
-                  className="text-center text-[28px] font-normal leading-[100%]"
-                  style={{
-                    fontFamily: "Lora, serif",
-                    color: "#FFFFFF",
-                  }}
-                >
-                  Welcome to Effortless Elegance
-                </p>
               </div>
+              <div className="w-[501px] max-[1280px]:w-full h-[23px] max-[1280px]:h-auto">
+               <div className="w-full flex justify-center">
+  <p
+    className="text-center text-[16px] max-[1280px]:text-[14px] 
+               max-[490px]:text-[12px] 
+               max-[377px]:text-[10px] 
+               font-normal leading-[100%] whitespace-nowrap"
+    style={{
+      fontFamily: "Poppins, sans-serif",
+      color: "#F7F7FF80",
+    }}
+  >
+    Step into a world where AI meets timeless luxury
+  </p>
+</div>
 
-              {/* 🔽 Bottom Child Div */}
-              <div className="w-[501px] h-[23px]">
-                <p
-                  className="text-center text-[16px] font-normal leading-[100%]"
-                  style={{
-                    fontFamily: "Poppins, sans-serif",
-                    color: "#F7F7FF80",
-                  }}
-                >
-                  Step into a world where AI meets timeless luxury
-                </p>
               </div>
             </div>
           </div>
 
-          <form
-            className="w-full max-w-[558px] min-h-[44px] flex flex-col gap-5 items-center justify-center"
-            onSubmit={handleSubmit}
-          >
+         <form
+  className="w-full max-w-[558px] max-[1280px]:w-full min-h-[44px] 
+             flex flex-col gap-5 max-[1280px]:gap-4 items-center justify-center
+             [@media(min-width:1281px)]:mt-[210px]"  // 👈 moves down only >1281px
+  onSubmit={handleSubmit}
+>
+
             {/* Email */}
-            <div className="w-[554px] h-[84px] flex flex-col gap-[8px] opacity-100">
-              <label className="w-full h-[24px] text-white text-[16px] font-normal leading-[100%] font-['Poppins']">
+            <div className="w-[554px] max-[1280px]:w-full h-[84px] max-[1280px]:h-auto flex flex-col gap-[8px] max-[1280px]:gap-[6px] opacity-100">
+              <label className="w-full h-[24px] text-white text-[16px] max-[1280px]:text-[14px] font-normal leading-[100%] font-['Poppins']">
                 Email
               </label>
-              <div className="w-[554px] h-[48px] flex items-center px-[12px] gap-[10px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
+              <div className="w-[554px] max-[1280px]:w-full h-[48px] max-[1280px]:h-[40px] flex items-center px-[12px] max-[1280px]:px-[10px] gap-[10px] max-[1280px]:gap-[8px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
                 <input
                   type="email"
                   placeholder="example@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-[530px] h-[24px] text-[#E0E0E0] text-[16px] font-normal leading-[100%] font-['Poppins'] outline-none border-none bg-transparent"
+                  className="w-[530px] max-[1280px]:w-full h-[24px] text-[#E0E0E0] text-[16px] max-[1280px]:text-[14px] font-normal leading-[100%] font-['Poppins'] outline-none border-none bg-transparent"
                   required
                 />
               </div>
             </div>
 
             {/* Password */}
-            <div className="w-[554px] h-[84px] flex flex-col gap-[8px] opacity-100">
-              <label className="w-full h-[24px] text-white text-[16px] font-normal leading-[100%] font-['Poppins']">
+            <div className="w-[554px] max-[1280px]:w-full h-[84px] max-[1280px]:h-auto flex flex-col gap-[8px] max-[1280px]:gap-[6px] opacity-100">
+              <label className="w-full h-[24px] text-white text-[16px] max-[1280px]:text-[14px] font-normal leading-[100%] font-['Poppins']">
                 Password
               </label>
-              <div className="w-[554px] h-[48px] flex items-center px-[12px] gap-[10px] rounded-[12px]  border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
+              <div className="w-[554px] max-[1280px]:w-full h-[48px] max-[1280px]:h-[40px] flex items-center px-[12px] max-[1280px]:px-[10px] gap-[10px] max-[1280px]:gap-[8px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="******"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-[500px] h-[24px] text-[#E0E0E0] text-[16px] font-normal leading-[100%] font-['Poppins'] outline-none border-none bg-transparent"
+                  className="w-[500px] max-[1280px]:w-full h-[24px] text-[#E0E0E0] text-[16px] max-[1280px]:text-[14px] font-normal leading-[100%] font-['Poppins'] outline-none border-none bg-transparent"
                   required
                 />
                 <span
                   className="cursor-pointer"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {/* Eye Icon */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="25"
-                    height="15"
-                    viewBox="0 0 25 15"
-                    fill="none"
-                  >
-                    <path
-                      d="M24.0705 7.51211C21.3277 4.35156 17.5375 0.71875 12.5 0.71875C10.4656 0.71875 8.60078 1.29395 6.63301 2.52305C4.97402 3.56445 3.27266 5.02969 0.935547 7.43945L0.875 7.5L1.28066 7.91777C4.6168 11.3326 7.49883 14.2812 12.5 14.2812C14.71 14.2812 16.8533 13.5607 19.0512 12.0773C20.9221 10.8119 22.5145 9.20742 23.792 7.91172L24.125 7.57871L24.0705 7.51211ZM12.5 12.3438C9.82988 12.3438 7.65625 10.1701 7.65625 7.5C7.65625 4.82988 9.82988 2.65625 12.5 2.65625C15.1701 2.65625 17.3438 4.82988 17.3438 7.5C17.3438 10.1701 15.1701 12.3438 12.5 12.3438Z"
-                      fill="#BEBCBC"
-                    />
-                    <path
-                      d="M12.1609 5.73203C12.1609 5.31426 12.282 4.9207 12.4939 4.59375C10.8895 4.59375 9.59375 5.90156 9.59375 7.51211C9.59375 9.12266 10.8955 10.4244 12.4939 10.4244C14.0924 10.4244 15.4002 9.12266 15.4002 7.51211C15.0732 7.72402 14.6797 7.84512 14.2619 7.84512C13.1055 7.83906 12.1609 6.89453 12.1609 5.73203Z"
-                      fill="#BEBCBC"
-                    />
-                  </svg>
+                                      {showPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 max-[1280px]:w-5 h-6 max-[1280px]:h-5 text-white hover:text-purple-300 transition-colors duration-300"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 max-[1280px]:w-5 h-6 max-[1280px]:h-5 text-white hover:text-purple-300 transition-colors duration-300"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                          />
+                        </svg>
+                      )}
                 </span>
               </div>
             </div>
 
             {/* Confirm Password */}
-           {/* Confirm Password */}
-<div className="w-[554px] flex flex-col gap-[8px] opacity-100">
-  <label className="w-full h-[24px] text-white text-[16px] font-normal leading-[100%] font-['Poppins']">
-    Confirm Password
-  </label>
-  <div className="w-[554px] h-[48px] flex items-center px-[12px] gap-[10px] rounded-[12px]  border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
-    <input
-      type={showConfirmPassword ? "text" : "password"}
-      placeholder="******"
-      value={confirmPassword}
-      onChange={(e) => setConfirmPassword(e.target.value)}
-      className="w-[500px] h-[24px] text-[#E0E0E0] text-[16px] font-normal leading-[100%] font-['Poppins'] outline-none border-none bg-transparent"
-      required
-    />
-    <span
-      className="cursor-pointer"
-      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-    >
-      {/* Eye Icon */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="25"
-        height="15"
-        viewBox="0 0 25 15"
-        fill="none"
-      >
-        <path
-          d="M24.0705 7.51211C21.3277 4.35156 17.5375 0.71875 12.5 0.71875C10.4656 0.71875 8.60078 1.29395 6.63301 2.52305C4.97402 3.56445 3.27266 5.02969 0.935547 7.43945L0.875 7.5L1.28066 7.91777C4.6168 11.3326 7.49883 14.2812 12.5 14.2812C14.71 14.2812 16.8533 13.5607 19.0512 12.0773C20.9221 10.8119 22.5145 9.20742 23.792 7.91172L24.125 7.57871L24.0705 7.51211ZM12.5 12.3438C9.82988 12.3438 7.65625 10.1701 7.65625 7.5C7.65625 4.82988 9.82988 2.65625 12.5 2.65625C15.1701 2.65625 17.3438 4.82988 17.3438 7.5C17.3438 10.1701 15.1701 12.3438 12.5 12.3438Z"
-          fill="#BEBCBC"
-        />
-        <path
-          d="M12.1609 5.73203C12.1609 5.31426 12.282 4.9207 12.4939 4.59375C10.8895 4.59375 9.59375 5.90156 9.59375 7.51211C9.59375 9.12266 10.8955 10.4244 12.4939 10.4244C14.0924 10.4244 15.4002 9.12266 15.4002 7.51211C15.0732 7.72402 14.6797 7.84512 14.2619 7.84512C13.1055 7.83906 12.1609 6.89453 12.1609 5.73203Z"
-          fill="#BEBCBC"
-        />
-      </svg>
-    </span>
-  </div>
+            <div className="w-[554px] max-[1280px]:w-full h-[84px] max-[1280px]:h-auto flex flex-col gap-[8px] max-[1280px]:gap-[6px] opacity-100">
+              <label className="w-full h-[24px] text-white text-[16px] max-[1280px]:text-[14px] font-normal leading-[100%] font-['Poppins']">
+                Confirm Password
+              </label>
+              <div className="w-[554px] max-[1280px]:w-full h-[48px] max-[1280px]:h-[40px] flex items-center px-[12px] max-[1280px]:px-[10px] gap-[10px] max-[1280px]:gap-[8px] rounded-[12px] border-[1px] border-solid border-[#FFFFFF33] bg-[#FFFFFF1F] opacity-100">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="******"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-[500px] max-[1280px]:w-full h-[24px] text-[#E0E0E0] text-[16px] max-[1280px]:text-[14px] font-normal leading-[100%] font-['Poppins'] outline-none border-none bg-transparent"
+                  required
+                />
+                <span
+                  className="cursor-pointer"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                       {showConfirmPassword ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 max-[1280px]:w-5 h-6 max-[1280px]:h-5 text-white hover:text-purple-300 transition-colors duration-300"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-6 max-[1280px]:w-5 h-6 max-[1280px]:h-5 text-white hover:text-purple-300 transition-colors duration-300"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={1.5}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                          />
+                        </svg>
+                      )}
+                </span>
+              </div>
+            </div>
 
-  {/* Remember Me Only */}
-  <div className="h-[24px] flex items-center">
-    <div className="flex items-center gap-2 whitespace-nowrap">
-      <input type="checkbox" className="w-4 h-4" />
-      <span className="text-white text-[16px] font-normal leading-none font-['Poppins']">
-        Remember me
-      </span>
-    </div>
-  </div>
-</div>
+            {/* Remember Me */}
+            <div className="w-[554px] max-[1280px]:w-full h-[24px] flex items-center">
+              <div className="flex items-center gap-2 whitespace-nowrap">
+                <input type="checkbox" className="w-4 max-[1280px]:w-3.5 h-4 max-[1280px]:h-3.5" />
+                <span className="text-white text-[16px] max-[1280px]:text-[14px] font-normal leading-none font-['Poppins']">
+                  Remember me
+                </span>
+              </div>
+            </div>
 
             {/* Submit */}
             <button
               type="submit"
               disabled={isLoading}
               className={`bg-[#8A38F533] border border-[#FFFFFF1A] text-base text-white cursor-pointer font-bold
-             w-[554px] h-[48px] gap-[10px] rounded-[30px]  border-[1px] border-solid border-[#FFFFFF33]
-             pt-[10px] pr-[30px] pb-[10px] pl-[30px]
-             hover:bg-[#8A38F580] hover:scale-105 transition-all duration-300 ease-in-out
-             ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+                w-[554px] max-[1280px]:w-full h-[48px] max-[1280px]:h-[40px] gap-[10px] rounded-[30px] border-[1px] border-solid border-[#FFFFFF33]
+                pt-[10px] pr-[30px] pb-[10px] pl-[30px]
+                hover:bg-[#8A38F580] hover:scale-105 transition-all duration-300 ease-in-out
+                ${isLoading ? "opacity-70 cursor-not-allowed" : ""}`}
             >
               {isLoading ? "Sending OTP..." : "Sign Up"}
             </button>
 
-            <div className="w-[554px] h-[24px] flex items-center justify-between gap-[18px] mt-2 opacity-100 ">
-              {/* Left Line */}
-              <div className="w-[191.5px] h-px bg-[#B0B0B0]" />
+           <div className="w-[554px] max-[1280px]:w-full h-[24px] flex items-center justify-center gap-3 max-[481px]:gap-2 mt-2 max-[1280px]:mt-1 opacity-100">
+  <div className="flex-grow max-w-[191.5px] max-[1280px]:max-w-[30%] max-[481px]:max-w-[25%] h-px bg-[#B0B0B0]" />
 
-              {/* Middle Text */}
-              <div className="w-[135px] h-[24px] text-[#B0B0B0] text-[16px] font-medium leading-[100%] font-['Poppins'] text-center">
-                Or Continue with
-              </div>
+  <div className="text-[#B0B0B0] text-[16px] max-[1280px]:text-[14px] max-[481px]:text-[12px] font-medium leading-[100%] font-['Poppins'] text-center whitespace-nowrap">
+    Or Continue with
+  </div>
 
-              {/* Right Line */}
-              <div className="w-[191.5px] h-px bg-[#B0B0B0]" />
-            </div>
+  <div className="flex-grow max-w-[191.5px] max-[1280px]:max-w-[30%] max-[481px]:max-w-[25%] h-px bg-[#B0B0B0]" />
+</div>
+
           </form>
-          
-          <div className="w-[554px] h-[44px] flex items-center justify-center gap-4 mt-6 opacity-100">
-            <div className="w-[202px] h-[44px] flex justify-between items-center">
+
+          <div className="w-[554px] max-[1280px]:w-full h-[44px] max-[1280px]:h-[36px] flex items-center justify-center gap-4 mt-6 max-[1280px]:mt-4 opacity-100">
+            <div
+  className="w-[202px] max-[1280px]:w-[150px] h-[14px] max-[1280px]:h-[36px] 
+             flex justify-between items-center 
+             [@media(min-width:1281px)]:mt-[350px]"
+>
+
               <a href="http://localhost:8000/login/google">
                 <button
-                  className="
-                         w-[44px] h-[44px] bg-white rounded-[38px] opacity-100
-                         shadow-[0px_2px_4px_0px_#00000014] p-[10px] flex items-center justify-center gap-[10px] cursor-pointer
-                       "
+                  className="w-[44px] max-[1280px]:w-[36px] h-[44px] max-[1280px]:h-[36px] bg-white rounded-[38px] opacity-100 shadow-[0px_2px_4px_0px_#00000014] p-[10px] max-[1280px]:p-[8px] flex items-center justify-center gap-[10px] cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -367,6 +426,7 @@ export default function SignUp({ setUser }) {
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
+                    className="max-[1280px]:w-[20px] max-[1280px]:h-[20px]"
                   >
                     <g clipPath="url(#clip0_36_40)">
                       <path
@@ -400,10 +460,7 @@ export default function SignUp({ setUser }) {
               </a>
               <a href="http://localhost:8000/login/apple">
                 <button
-                  className="
-                      w-[44px] h-[44px] bg-white rounded-[38px] opacity-100
-                      shadow-[0px_2px_4px_0px_#00000014] p-[10px] flex items-center justify-center gap-[10px] cursor-pointer
-                    "
+                  className="w-[44px] max-[1280px]:w-[36px] h-[44px] max-[1280px]:h-[36px] bg-white rounded-[38px] opacity-100 shadow-[0px_2px_4px_0px_#00000014] p-[10px] max-[1280px]:p-[8px] flex items-center justify-center gap-[10px] cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -411,6 +468,7 @@ export default function SignUp({ setUser }) {
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
+                    className="max-[1280px]:w-[20px] max-[1280px]:h-[20px]"
                   >
                     <path
                       d="M18.7026 12.7535C18.6719 9.71361 21.2398 8.25549 21.354 8.18348C19.911 6.11931 17.6636 5.83729 16.8629 5.80488C14.9508 5.61527 13.1308 6.90538 12.1594 6.90538C11.1916 6.90538 9.69339 5.83249 8.1067 5.86129C6.02388 5.89129 4.10193 7.04459 3.02858 8.86874C0.862246 12.541 2.47349 17.9835 4.58456 20.9621C5.61615 22.4203 6.84669 24.0584 8.46162 23.9984C10.0164 23.9384 10.6046 23.0155 12.4848 23.0155C14.365 23.0155 14.8943 23.9996 16.5399 23.9696C18.2138 23.9384 19.2737 22.4827 20.2979 21.021C21.483 19.3288 21.9705 17.6907 22 17.6067C21.9632 17.5911 18.7358 16.3826 18.7038 12.7523L18.7026 12.7535ZM15.6103 3.83312C16.4675 2.81663 17.0459 1.40652 16.8875 0C15.6533 0.048004 14.1562 0.804067 13.2708 1.81815C12.4762 2.71823 11.7799 4.15235 11.9666 5.53126C13.3445 5.63687 14.7519 4.84720 15.6103 3.83312Z"
@@ -421,10 +479,7 @@ export default function SignUp({ setUser }) {
               </a>
               <a href="http://localhost:8000/login/facebook">
                 <button
-                  className="
-                        w-[44px] h-[44px] bg-white rounded-[38px] opacity-100
-                           shadow-[0px_2px_4px_0px_#00000014] p-[10px] flex items-center justify-center gap-[10px] cursor-pointer
-                             "
+                  className="w-[44px] max-[1280px]:w-[36px] h-[44px] max-[1280px]:h-[36px] bg-white rounded-[38px] opacity-100 shadow-[0px_2px_4px_0px_#00000014] p-[10px] max-[1280px]:p-[8px] flex items-center justify-center gap-[10px] cursor-pointer"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -432,6 +487,7 @@ export default function SignUp({ setUser }) {
                     height="24"
                     viewBox="0 0 24 24"
                     fill="none"
+                    className="max-[1280px]:w-[20px] max-[1280px]:h-[20px]"
                   >
                     <g clipPath="url(#clip0_36_50)">
                       <mask
@@ -463,23 +519,23 @@ export default function SignUp({ setUser }) {
               </a>
             </div>
           </div>
-        </div>
-        
-        {/* Bottom child content at bottom */}
-        <div className="w-full flex justify-center items-center opacity-100 mt-14">
-          <div className="flex items-center gap-[4px]">
-            {/* Left Text */}
-            <span className="text-[#B0B0B0] text-[16px] font-normal leading-[100%] font-['Poppins']">
-              Already have an account?
-            </span>
 
-            {/* Right Link */}
-            <Link
-              to="/sign-in"
-              className="text-[#C22CA2] text-[16px] font-medium leading-[100%] underline font-['Poppins'] cursor-pointer"
-            >
-              Sign In
-            </Link>
+          {/* Bottom child content at bottom */}
+         <div
+  className="w-full flex justify-center items-center opacity-100 mt-14 max-[1280px]:mt-8 [@media(min-width:1281px)]:mt-[190px]"
+>
+
+            <div className="flex items-center gap-[4px]">
+              <span className="text-[#B0B0B0] text-[16px] mb-3 max-[1280px]:text-[14px] font-normal leading-[100%] font-['Poppins']">
+                Already have an account?
+              </span>
+              <Link
+                to="/sign-in"
+                className="text-[#C22CA2] text-[16px] mb-3 max-[1280px]:text-[14px] font-medium leading-[100%] underline font-['Poppins'] cursor-pointer"
+              >
+                Sign In
+              </Link>
+            </div>
           </div>
         </div>
       </div>

@@ -322,3 +322,21 @@ a.active{
   color: #ffffff !important;
 }
 
+
+@media (max-width: 1024px) {
+  .Toastify__toast-body {
+    font-size: 13px !important;
+  }
+}
+
+/* ✅ Mobile (up to 640px) */
+@media (max-width: 640px) {
+  .Toastify__toast-body {
+    font-size: 12px !important;
+  }
+
+  .Toastify__toast {
+    min-height: 40px !important;
+    padding: 6px 10px !important;
+  }
+}

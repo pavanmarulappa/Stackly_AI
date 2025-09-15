@@ -497,6 +497,9 @@ class OTPManager:
             logging.warning(f"Fallback: OTP for {email} is {otp}")
             print(f"\nOTP for {email}: {otp}\n")
 
+        # Track request time
+        otp_request_times[email] = datetime.now()
+
         return otp
 
     @staticmethod
@@ -525,6 +528,16 @@ class OTPManager:
         return True
 
     @staticmethod
+    def clear_existing_otp(email: str):
+        """Reset OTP and request timer for a fresh flow (used in send_otp)."""
+        if email in otp_storage:
+            del otp_storage[email]
+            logging.info(f"Cleared old OTP for {email}")
+        if email in otp_request_times:
+            del otp_request_times[email]
+            logging.info(f"Cleared OTP request timer for {email}")
+
+    @staticmethod
     def cleanup_expired_otps():
         now = datetime.now()
         to_delete = [email for email, data in otp_storage.items() if data["expires_at"] < now]
@@ -532,24 +545,30 @@ class OTPManager:
             del otp_storage[email]
             logging.info(f"Cleaned up expired OTP for {email}")
 
+
 # ---------------- Endpoints ----------------
 
+            
 @router.post("/forget-password/send-otp")
 def send_otp(request: EmailRequest):
     email = request.email
 
     OTPManager.cleanup_expired_otps()
 
-    if not OTPManager.can_request_otp(email):
-        raise HTTPException(status_code=429, detail="Please wait before requesting another OTP.")
-
+    # Step 1: Ensure user exists
     try:
         UserData.objects.get(email=email)
     except UserData.DoesNotExist:
         raise HTTPException(status_code=404, detail="User not found")
 
+    # Step 2: Always clear old OTP + timer (restart flow)
+    OTPManager.clear_existing_otp(email)
+
+    # Step 3: Generate fresh OTP
     OTPManager.generate_otp(email)
     return {"message": "OTP sent to email"}
+
+
 
 @router.post("/forget-password/resend-otp")
 def resend_otp(request: EmailRequest):
@@ -557,16 +576,21 @@ def resend_otp(request: EmailRequest):
 
     OTPManager.cleanup_expired_otps()
 
-    if not OTPManager.can_request_otp(email):
-        raise HTTPException(status_code=429, detail="Please wait before requesting another OTP.")
-
+    # ✅ Step 1: Ensure user exists
     try:
         UserData.objects.get(email=email)
     except UserData.DoesNotExist:
         raise HTTPException(status_code=404, detail="User not found")
 
+    # ✅ Step 2: Apply rate-limiting (resend should not be spammed)
+    if not OTPManager.can_request_otp(email):
+        raise HTTPException(status_code=429, detail="Please wait before requesting another OTP.")
+
+    # ✅ Step 3: Generate new OTP
     OTPManager.generate_otp(email)
     return {"message": "OTP resent successfully"}
+
+
 
 @router.post("/forget-password/verify-otp")
 def verify_otp(request: OTPOnlyRequest):

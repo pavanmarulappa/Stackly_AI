@@ -10,425 +10,541 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    .dashboard {
-      display: flex;
-      flex-direction: column;
-      min-height: 150vh;
-      background-color: #f8f9fa;
-    }
+ <style>
+  .dashboard {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Reduced from 150vh to better fit mobile */
+    background-color: #f8f9fa;
+  }
 
-    .header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      height: 70px;
-      z-index: 1000;
+  .header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 60px; /* Reduced height for mobile friendliness */
+    z-index: 1000;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+  }
 
-    }
+  .under {
+    display: flex;
+    flex: 1;
+    margin-top: 60px;
+    position: relative;
+    
+  }
 
-    .under {
-      display: flex;
-      flex: 1;
-      margin-top: 70px;
-      position: relative;
-    }
+  .navbar {
+    position: fixed;
+    width: 240px;
+    height: calc(100vh - 60px);
+    background-color: #f2f2f2;
+    transition: all 0.3s ease;
+    left: 0;
+    top: 60px;
+    z-index: 99;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+  }
 
+  .navbar.collapsed {
+    width: 60px;
+  }
+
+  .navbar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .menu-items {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    height: auto;
+    overflow-y: hidden;
+  }
+
+  .toggle-sidebar {
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: #f2f2f2;
+  }
+
+  .navbar.collapsed .toggle-sidebar {
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .navbar.collapsed .toggle-sidebar svg {
+    transform: rotate(180deg);
+  }
+
+  .Dash {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+    gap: 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+
+  .Dash:first-child {
+    margin-top: 20px;
+  }
+
+  .Dash:hover {
+    background-color: #007b82;
+    color: white;
+    transform: translateX(2px);
+  }
+
+  .Dash.active {
+    background-color: #007b82;
+    color: white;
+  }
+
+  .Dash:hover img,
+  .Dash.active img {
+    filter: brightness(0) invert(1);
+  }
+
+  .Dash img,
+  .Dash i {
+    width: 22px;
+    height: 22px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .inName {
+    transition: opacity 0.3s ease, width 0.3s ease;
+    white-space: nowrap;
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .navbar.collapsed .inName {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    position: absolute;
+  }
+
+  .dashboard-overview {
+    flex: 1;
+    padding: 20px;
+    margin-left: 240px;
+    transition: margin-left 0.3s ease;
+    min-height: calc(100vh - 60px); /* Adjusted for better mobile fit */
+    background-color: #fff;
+    overflow: auto;
+  }
+
+  .navbar.collapsed ~ .dashboard-overview {
+    margin-left: 60px;
+  }
+
+  /* Dark mode styles */
+  body.dark-mode {
+    background-color: #121212;
+  }
+
+  body.dark-mode .header {
+    background-color: #1e1e1e;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  body.dark-mode .navbar {
+    background-color: #1e1e1e;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+  }
+
+  body.dark-mode .Dash {
+    color: #e0e0e0;
+  }
+
+  body.dark-mode .Dash:hover,
+  body.dark-mode .Dash.active {
+    background-color: #007b82;
+    color: white;
+  }
+
+  body.dark-mode .dashboard-overview {
+    background-color: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .nav-icons {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .profile_img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .profile_img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .userDetails {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .userDetails .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .userDetails .role {
+    font-size: 12px;
+    color: #888;
+  }
+
+  .profile-dropdown {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    min-width: 160px;
+    z-index: 1000;
+  }
+
+  .icon-wrapper:hover .profile-dropdown {
+    display: flex;
+  }
+
+  .profile-menu {
+    padding: 10px 0;
+  }
+
+  .profile-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    color: #333;
+    text-decoration: none;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .profile-item i {
+    font-size: 16px;
+    margin-right: 10px;
+    transition: transform 0.3s ease, color 0.3s;
+  }
+
+  .profile-item:hover {
+    background-color: #007b82;
+    color: white;
+    transform: translateX(2px);
+  }
+
+  .profile-item:hover i {
+    transform: scale(1.2) rotate(10deg);
+    color: white;
+  }
+
+  .dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    min-width: 200px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .icon-wrapper.show .dropdown {
+    display: block;
+  }
+
+  .logo a {
+    color: #111;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  .logo a img {
+    height: 40px;
+    width: auto;
+    transition: filter 0.3s ease;
+  }
+
+  body.dark-mode .logo a {
+    color: #fff;
+  }
+
+  /* Media Queries */
+
+  /* Large tablets and small desktops (max-width: 991px) */
+  @media (max-width: 991px) {
     .navbar {
-      position: fixed;
-      width: 240px;
-      height: 100%;
-      background-color: #F2F2F2;
-      transition: all 0.3s ease;
-      left: 0;
-      top: 70px;
-      z-index: 99;
-      overflow-y: auto;
-      /* Allow scrolling if content overflows */
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+      width: 200px;
     }
 
     .navbar.collapsed {
-      width: 70px;
-    }
-
-    .navbar-content {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .menu-items {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      padding-top: 20px;
-      /* Adjust padding for better spacing */
-    }
-
-    .toggle-sidebar {
-      cursor: pointer;
-      padding: 10px 15px;
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 10px;
-      position: absolute;
-      right: 0;
-      top: 0;
-    }
-
-    .navbar.collapsed .toggle-sidebar {
-      justify-content: center;
-      padding: 10px;
-      right: 0;
-    }
-
-    .navbar.collapsed .toggle-sidebar svg {
-      transform: rotate(180deg);
-    }
-
-    .Dash {
-      display: flex;
-      align-items: center;
-      padding: 10px 15px;
-      margin: 0 10px;
-      text-decoration: none;
-      color: #333;
-      gap: 15px;
-      border-radius: 6px;
-      transition: all 0.2s ease;
-    }
-
-    .Dash:first-child {
-      margin-top: 20px;
-    }
-
-
-    .Dash:hover {
-      background-color: #007B82;
-      color: white;
-      transform: translateX(2px);
-    }
-
-    .Dash.active {
-      background-color: #007B82;
-      color: white;
-    }
-
-    .Dash:hover img,
-    .Dash.active img {
-      filter: brightness(0) invert(1);
-    }
-
-    .Dash img {
-      width: 22px;
-      height: 22px;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .inName {
-      transition: opacity 0.3s ease, width 0.3s ease;
-      white-space: nowrap;
-      font-size: 15px;
-      font-weight: 500;
-    }
-
-    .navbar.collapsed .inName {
-      opacity: 0;
-      width: 0;
-      overflow: hidden;
-      position: absolute;
+      width: 60px;
     }
 
     .dashboard-overview {
-      flex: 1;
-      padding: 25px;
       margin-left: 200px;
-      /* Adjust margin to match navbar width */
-      transition: margin-left 0.3s ease;
-      min-height: calc(140vh - 70px);
-      background-color: #fff;
-      /* padding: 20px; */
-      overflow: visible;
     }
 
-    .navbar.collapsed~.dashboard-overview {
-      margin-left: 70px;
-    }
-
-    /* Dark mode styles */
-    body.dark-mode {
-      background-color: #121212;
-    }
-
-    body.dark-mode .header {
-      background-color: #1e1e1e;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    body.dark-mode .navbar {
-      background-color: c;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
-    }
-
-    body.dark-mode .Dash {
-      color: #e0e0e0;
-    }
-
-    body.dark-mode .Dash:hover,
-    body.dark-mode .Dash.active {
-      background-color: #007B82;
-      color: white;
-    }
-
-    body.dark-mode .dashboard-overview {
-      background-color: #1a1a1a;
-      color: #ffffff;
-    }
-
-    body.dark-mode .bottom {
-      border-top: 1px solid #444;
+    .navbar.collapsed ~ .dashboard-overview {
+      margin-left: 60px;
     }
 
     .nav-icons {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      position: relative;
-    }
-
-    .icon-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
       gap: 10px;
     }
 
     .profile_img {
-      width: 65px;
-      height: 65px;
-      border-radius: 100%;
-      overflow: hidden;
-      border: 2px solid #ddd;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .profile_img img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .userDetails {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      width: 45px;
+      height: 45px;
     }
 
     .userDetails .name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #333;
+      font-size: 13px;
     }
 
     .userDetails .role {
-      font-size: 12px;
-      color: #888;
+      font-size: 11px;
+    }
+  }
+
+  /* Mobile devices (max-width: 767px) */
+  @media (max-width: 767px) {
+    .header {
+      height: 50px;
+      padding: 0 10px;
     }
 
-    /* Dropdown styles */
-    .profile-dropdown {
-      position: absolute;
+    .under {
+      margin-top: 50px;
+    }
+
+    .navbar {
+      width: 200px;
+      left: -200px;
+      height: calc(100vh - 50px);
+      transition: left 0.3s ease;
+    }
+
+    .navbar.show {
+      left: 0;
+    }
+
+    .navbar.collapsed {
+      width: 60px;
+      left: -60px;
+    }
+
+    .dashboard-overview {
+      margin-left: 0;
+      padding: 15px;
+      min-height: calc(100vh - 50px);
+    }
+
+    .navbar.collapsed ~ .dashboard-overview {
+      margin-left: 0;
+    }
+
+    .toggle-sidebar {
+      position: fixed;
       top: 55px;
-      right: 0;
-      background: #fff;
-      border: 1px solid #eee;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: none;
-      flex-direction: column;
-      min-width: 160px;
-      z-index: 10;
+      left: 10px;
+      z-index: 1001;
+      background: #f2f2f2;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      padding: 8px;
     }
 
-    .icon-wrapper:hover .profile-dropdown {
-      display: flex;
+    .nav-icons {
+      gap: 8px;
     }
 
-    .profile-menu {
-      padding: 10px 0;
-    }
-
-    .profile-item {
-      display: flex;
-      align-items: center;
-      padding: 10px 16px;
-      color: #333;
-      text-decoration: none;
-      transition: background 0.3s, color 0.3s;
-    }
-
-    .profile-item i {
-      font-size: 16px;
-      margin-right: 10px;
-      transition: transform 0.3s ease, color 0.3s;
-    }
-
-    .profile-item:hover {
-      background-color: #007B82;
-      color: white;
-      transform: translateX(2px);
-    }
-
-    .profile-item:hover i {
-      transform: scale(1.2) rotate(10deg);
-      color: white;
-    }
-
-    .dropdown {
-      position: absolute;
-      top: 110%;
-      right: 0;
-      min-width: 200px;
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 10px;
-      display: none;
-      z-index: 200;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .icon-wrapper.show .dropdown {
-      display: block;
-    }
-
-    a {
-      text-decoration: none;
-      color: #121212;
+    .profile_img {
+      width: 40px;
+      height: 40px;
     }
 
     .logo a {
-      color: #111;
-      /* default light mode color */
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 22px;
+      font-size: 18px;
     }
 
     .logo a img {
-      height: 45px;
-      width: auto;
-      transition: filter 0.3s ease;
+      height: 35px;
     }
 
-    body.dark-mode .logo a {
-      color: #fff;
-
+    .dropdown {
+      min-width: 150px;
+      right: 0;
+      max-height: 50vh;
+      overflow-y: auto;
     }
 
-    /* For tablets and smaller desktops */
-    @media (max-width: 991px) {
-      .navbar {
-        width: 200px;
-      }
-
-      .navbar.collapsed {
-        width: 60px;
-      }
-
-      .dashboard-overview {
-        margin-left: 250px;
-      }
-
-      .navbar.collapsed~.dashboard-overview {
-        margin-left: 60px;
-      }
+    .profile-dropdown {
+      top: 45px;
+      min-width: 140px;
     }
 
-    /* For mobile screens */
-    @media (max-width: 767px) {
-      .navbar {
-        position: fixed;
-        top: 70px;
-        left: -250px;
-        width: 200px;
-        height: calc(100vh - 70px);
-        transition: all 0.3s ease;
-        z-index: 999;
-      }
-
-      .navbar.show {
-        left: 0;
-      }
-
-      .navbar.collapsed {
-        left: -60px;
-      }
-
-      .under {
-        flex-direction: column;
-      }
-
-      .dashboard-overview {
-        margin-left: 0;
-        padding: 15px;
-      }
-
-      .navbar.collapsed~.dashboard-overview {
-        margin-left: 0;
-      }
-
-      .toggle-sidebar {
-        position: fixed;
-        left: 10px;
-        top: 75px;
-        z-index: 1000;
-        background: #f8f9fa;
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      }
-
-      .header {
-        height: 60px;
-      }
-
-      .profile_img {
-        width: 50px;
-        height: 50px;
-      }
-
-      .logo a {
-        font-size: 20px;
-      }
+    .userDetails {
+      display: none; /* Hide user details on mobile to save space */
     }
 
-    /* For very small screens */
-    @media (max-width: 480px) {
-      .toggle-sidebar {
-        padding: 8px;
-      }
-
-      .Dash {
-        padding: 8px 12px;
-        gap: 10px;
-      }
-
-      .inName {
-        font-size: 14px;
-      }
-
-      .userDetails .name {
-        font-size: 13px;
-      }
-
-      .userDetails .role {
-        font-size: 11px;
-      }
+    .icon-wrapper:hover .profile-dropdown {
+      display: block;
     }
-  </style>
+  }
+
+  /* Very small screens (max-width: 480px) */
+  @media (max-width: 480px) {
+    .navbar {
+      width: 180px;
+      left: -180px;
+    }
+
+    .navbar.show {
+      left: 0;
+    }
+
+    .navbar.collapsed {
+      width: 50px;
+      left: -50px;
+    }
+
+    .toggle-sidebar {
+      padding: 6px;
+    }
+
+    .Dash {
+      padding: 8px 10px;
+      gap: 8px;
+    }
+
+    .Dash img,
+    .Dash i {
+      width: 20px;
+      height: 20px;
+    }
+
+    .inName {
+      font-size: 13px;
+    }
+
+    .profile_img {
+      width: 35px;
+      height: 35px;
+    }
+
+    .logo a {
+      font-size: 16px;
+    }
+
+    .logo a img {
+      height: 30px;
+    }
+
+    .dropdown {
+      min-width: 120px;
+      font-size: 13px;
+    }
+
+    .profile-dropdown {
+      min-width: 120px;
+    }
+
+    .profile-item {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .profile-item i {
+      font-size: 14px;
+    }
+  }
+
+  /* Extra small screens (max-width: 360px) */
+  @media (max-width: 360px) {
+    .header {
+      padding: 0 5px;
+    }
+
+    .nav-icons {
+      gap: 5px;
+    }
+
+    .profile_img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .logo a img {
+      height: 25px;
+    }
+
+    .toggle-sidebar {
+      padding: 5px;
+    }
+
+    .Dash {
+      padding: 6px 8px;
+    }
+
+    .inName {
+      font-size: 12px;
+    }
+  }
+</style>
 </head>
 
 <body>
@@ -929,51 +1045,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ws.onopen = () => console.log("✅ Connected to notifications WebSocket");
     ws.onmessage = event => {
-    try {
-        const data = JSON.parse(event.data);
-        const itemHTML = `
-            <div class="notification-item unread">
-                <div class="notification-icon">...</div>
-                <div class="notification-content">
-                    <div class="notification-title">${data.message}</div>
-                    <div class="notification-time">just now</div>
+        try {
+            const data = JSON.parse(event.data);
+
+            const itemHTML = `
+                <div class="notification-item unread">
+                    <div class="notification-icon">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path d="M6 1V6M6 6V11M6 6H11M6 6H1" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <div class="notification-title">${data.message}</div>
+                        <div class="notification-time">just now</div>
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
 
-        if (dashboardList) dashboardList.insertAdjacentHTML("afterbegin", itemHTML);
-        if (headerList) headerList.insertAdjacentHTML("afterbegin", itemHTML);
+            if (dashboardList) dashboardList.insertAdjacentHTML("afterbegin", itemHTML);
+            if (headerList) headerList.insertAdjacentHTML("afterbegin", itemHTML);
 
-        // Show dot
-        if (notifDot) notifDot.style.display = "block";
-    } catch (err) {
-        console.error("WebSocket message error:", err);
-    }
-};
+            if (notifDot) notifDot.style.display = "block";
 
+        } catch (err) {
+            console.error("WebSocket message error:", err);
+        }
+    };
 
     ws.onclose = () => console.log("❌ WebSocket connection closed");
 
     // Mark all as read
     if (markAllBtn) {
-    markAllBtn.addEventListener("click", () => {
-        fetch("/notifications/mark_all_read/", {
-            method: "POST",
-            headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "success") {
-                document.querySelectorAll(".notification-item.unread").forEach(el => el.classList.remove("unread"));
-                if (notifDot) notifDot.style.display = "none";
-            }
-        })
-        .catch(err => console.error(err));
-    });
-}
+        markAllBtn.addEventListener("click", () => {
+            fetch("/notifications/mark_all_read/", {
+                method: "POST",
+                headers: { "X-CSRFToken": "{{ csrf_token }}", "Content-Type": "application/json" }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    document.querySelectorAll(".notification-item.unread").forEach(el => el.classList.remove("unread"));
+                    if (notifDot) notifDot.style.display = "none";
+                }
+            })
+            .catch(err => console.error(err));
+        });
+    }
 });
 </script>
 
 </body>
 
 </html>
+
+
+
+
