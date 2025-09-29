@@ -65,6 +65,17 @@ const ContactForm = () => {
 
   return (
     <div className="relative bg-black overflow-hidden w-full flex justify-center items-center py-28 px-4 min-h-screen mt-[-70px]">
+      {/* Autofill style fix */}
+      <style>{`
+        input:-webkit-autofill,
+        textarea:-webkit-autofill {
+          -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset !important;
+          -webkit-text-fill-color: #fff !important;
+          caret-color: #fff !important;
+          transition: background-color 9999s ease-in-out 0s;
+        }
+      `}</style>
+
       {/* Background */}
       <img
         src={ellipse}

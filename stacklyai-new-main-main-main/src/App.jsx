@@ -134,7 +134,7 @@ export default function App() {
       </Routes>
 
       <Footer />
-      <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
+      <ToastContainer position="top-right" autoClose={2000} hideProgressBar />
     </div>
  </>
   );

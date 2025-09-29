@@ -244,6 +244,7 @@ export default function Header() {
                         localStorage.removeItem("userEmail");
                         localStorage.removeItem("persist:root");
                         localStorage.removeItem("theme");
+                        localStorage.removeItem("resetEmail");
 
                         // Show toast
                         toast.success("✅ Logged out successfully!");

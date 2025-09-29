@@ -175,138 +175,175 @@ export default function Form({ selectedImage }) {
     reader.onerror = (err) => reject(err);
   });
 
-  const handleSubmit = async (e) => { 
-    if (e) e.preventDefault();
-    setIsLoading(true);
-    setProgress(0);
+  const handleSubmit = async (e) => {
+  if (e) e.preventDefault();
+  setIsLoading(true);
+  setProgress(0);
 
-    const progressInterval = setInterval(() => {
-      setProgress(prev => {
-        if (prev >= 90) {
-          clearInterval(progressInterval);
-          return prev;
-        }
-        return prev + 10;
-      });
-    }, 1000);
+  // ✅ Basic validation before sending
+  if (!imgFile) {
+    toast.error("Please upload an image first!");
+    setIsLoading(false);
+    return;
+  }
 
-    try {
-      if (!imgFile) throw new Error("Please upload an image first!");
+  if (!formData.roomStyle) {
+    toast.error("Kindly select room style.");
+    setIsLoading(false);
+    return;
+  }
 
-      const formDataToSend = new FormData();
-      formDataToSend.append("image", imgFile);
-      formDataToSend.append("design_style", formData.roomStyle);
-      formDataToSend.append("ai_strength", formData.aiStrength);
-      formDataToSend.append("num_designs", formData.numDesigns.toString());
+  if (!formData.roomType) {
+    toast.error("Kindly select room type.");
+    setIsLoading(false);
+    return;
+  }
 
-      // ✅ Safe userId fetch
-      let userId = localStorage.getItem("userId");
-      if (!userId) {
-        try {
-          const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
-          userId = userInfo?.userId || null;
-        } catch {
-          userId = null;
-        }
+  if (!formData.aiStrength) {
+    toast.error("Kindly select AI strength.");
+    setIsLoading(false);
+    return;
+  }
+
+  if (!formData.numDesigns) {
+    toast.error("Kindly select number of designs.");
+    setIsLoading(false);
+    return;
+  }
+
+  const progressInterval = setInterval(() => {
+    setProgress((prev) => {
+      if (prev >= 90) {
+        clearInterval(progressInterval);
+        return prev;
       }
+      return prev + 10;
+    });
+  }, 1000);
 
-      if (!userId) {
-        toast.error("User not logged in.");
-        setIsLoading(false);
-        return;
+  try {
+    const formDataToSend = new FormData();
+    formDataToSend.append("image", imgFile);
+    formDataToSend.append("design_style", formData.roomStyle);
+    formDataToSend.append("ai_strength", formData.aiStrength);
+    formDataToSend.append("num_designs", formData.numDesigns.toString());
+
+    // ✅ Safe userId fetch
+    let userId = localStorage.getItem("userId");
+    if (!userId) {
+      try {
+        const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+        userId = userInfo?.userId || null;
+      } catch {
+        userId = null;
       }
-
-      formDataToSend.append("user_id", userId);
-
-      let endpoint = "";
-      let typeDetail = "";
-
-      switch (activeTab) {
-        case "Interiors":
-          endpoint = "generate-interior-design";
-          formDataToSend.append("room_type", formData.roomType);
-          typeDetail = formData.roomType;
-          break;
-        case "Exteriors":
-          endpoint = "generate-exterior-design";
-          formDataToSend.append("house_angle", formData.roomType);
-          typeDetail = formData.roomType;
-          break;
-        case "Outdoors":
-          endpoint = "generate-outdoor-design";
-          formDataToSend.append("space_type", formData.roomType);
-          typeDetail = formData.roomType;
-          break;
-        default:
-          throw new Error("Invalid design category selected.");
-      }
-
-      const response = await axios.post(
-        `http://localhost:8000/api/${endpoint}/`,
-        formDataToSend,
-        {
-          onUploadProgress: (progressEvent) => {
-            const uploadPercent = Math.round((progressEvent.loaded * 50) / progressEvent.total);
-            setProgress(uploadPercent);
-          },
-        }
-      );
-
-      for (let i = 50; i <= 100; i += 10) {
-        await new Promise(resolve => setTimeout(resolve, 500));
-        setProgress(i);
-      }
-
-      if (response.data.success) {
-        const designs = Array.isArray(response.data.designs)
-          ? response.data.designs.map(url => ({
-              url: url.startsWith("http") ? url : backendBaseUrl + url,
-              id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-            }))
-          : [];
-
-        const base64Image = await toBase64(imgFile);
-
-        if (formData.numDesigns === "1") {
-          // Show generated image on the same page
-          setGeneratedImages(designs);
-        } else {
-          // Redirect to /ImageGeneration with state
-          const navState = {
-            originalImage: base64Image,
-            uploadedFile: imgFile,
-            generatedImages: designs,
-            formData: {
-              userId: userId,
-              category: activeTab.toLowerCase(),
-              typeDetail: typeDetail,
-              style: formData.roomStyle,
-              aiStrength: formData.aiStrength,
-              numDesigns: formData.numDesigns
-            }
-          };
-
-          localStorage.setItem("imageGenState", JSON.stringify(navState));
-          navigate("/ImageGeneration", { state: navState });
-        }
-      } else {
-        throw new Error(response.data.message || "Design generation failed");
-      }
-    } catch (error) {
-      let errorMessage;
-      if (error.response?.status === 402) {
-        errorMessage = "Please upgrade your plan.";
-      } else if (error.response?.status === 400 && error.response.data.detail?.includes("Only JPG, JPEG, and PNG")) {
-        errorMessage = "only this jpg, jpeg , png formats accept";
-      } else {
-        errorMessage = error.response?.data?.detail || error.response?.data?.message || error.message || "Failed to connect to server";
-      }
-      toast.error(errorMessage);
-    } finally {
-      clearInterval(progressInterval);
-      setIsLoading(false);
     }
-  };
+
+    if (!userId) {
+      toast.error("User not logged in.");
+      setIsLoading(false);
+      return;
+    }
+
+    formDataToSend.append("user_id", userId);
+
+    let endpoint = "";
+    let typeDetail = "";
+
+    switch (activeTab) {
+      case "Interiors":
+        endpoint = "generate-interior-design";
+        formDataToSend.append("room_type", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+      case "Exteriors":
+        endpoint = "generate-exterior-design";
+        formDataToSend.append("house_angle", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+      case "Outdoors":
+        endpoint = "generate-outdoor-design";
+        formDataToSend.append("space_type", formData.roomType);
+        typeDetail = formData.roomType;
+        break;
+      default:
+        throw new Error("Invalid design category selected.");
+    }
+
+    const response = await axios.post(
+      `http://localhost:8000/api/${endpoint}/`,
+      formDataToSend,
+      {
+        onUploadProgress: (progressEvent) => {
+          const uploadPercent = Math.round(
+            (progressEvent.loaded * 50) / progressEvent.total
+          );
+          setProgress(uploadPercent);
+        },
+      }
+    );
+
+    for (let i = 50; i <= 100; i += 10) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      setProgress(i);
+    }
+
+    if (response.data.success) {
+      const designs = Array.isArray(response.data.designs)
+        ? response.data.designs.map((url) => ({
+            url: url.startsWith("http") ? url : backendBaseUrl + url,
+            id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          }))
+        : [];
+
+      const base64Image = await toBase64(imgFile);
+
+      if (formData.numDesigns === "1") {
+        setGeneratedImages(designs);
+      } else {
+        const navState = {
+          originalImage: base64Image,
+          uploadedFile: imgFile,
+          generatedImages: designs,
+          formData: {
+            userId: userId,
+            category: activeTab.toLowerCase(),
+            typeDetail: typeDetail,
+            style: formData.roomStyle,
+            aiStrength: formData.aiStrength,
+            numDesigns: formData.numDesigns,
+          },
+        };
+
+        localStorage.setItem("imageGenState", JSON.stringify(navState));
+        navigate("/ImageGeneration", { state: navState });
+      }
+    } else {
+      throw new Error(response.data.message || "Design generation failed");
+    }
+  } catch (error) {
+    let errorMessage;
+    if (error.response?.status === 402) {
+      errorMessage = "Your credits over, Please upgrade your plan.";
+    } else if (
+      error.response?.status === 400 &&
+      error.response.data.detail?.includes("Only JPG, JPEG, and PNG")
+    ) {
+      errorMessage = "Only JPG, JPEG, and PNG formats are accepted.";
+    } else {
+      errorMessage =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to connect to server";
+    }
+    toast.error(errorMessage);
+  } finally {
+    clearInterval(progressInterval);
+    setIsLoading(false);
+  }
+};
+
 
   const handleDownload = () => {
     if (generatedImages.length === 0) return;
