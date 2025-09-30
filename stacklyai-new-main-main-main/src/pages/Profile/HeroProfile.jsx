@@ -72,8 +72,8 @@ export default function HeroProfile() {
           email: response.data.email || "",
           phone_number: response.data.phone_number || "",
           previewImage: response.data.profile_pic
-  ? `http://localhost:8000${response.data.profile_pic}?t=${Date.now()}`
-  : Pimage,
+            ? `http://localhost:8000${response.data.profile_pic}?t=${Date.now()}`
+            : Pimage,
         };
 
         setUserData(userDataResponse);
@@ -151,9 +151,17 @@ export default function HeroProfile() {
       if (response.data.profile_pic) {
         setUserData(prev => ({
           ...prev,
-          previewImage: `http://localhost:8000${response.data.profile_pic}`
+          previewImage: `http://localhost:8000${response.data.profile_pic}?t=${Date.now()}`
         }));
       }
+
+      // Dispatch profileUpdated event for Header component
+      window.dispatchEvent(new Event("profileUpdated"));
+
+      // Force page refresh after a short delay to allow toast notification
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000); // 1.5 seconds delay to show toast
 
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -214,8 +222,15 @@ export default function HeroProfile() {
       setUserData(prev => ({ 
         ...prev, 
         new_password: '', 
+
         confirm_password: '' 
       }));
+
+      // Force page refresh after a short delay to allow toast notification
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500); // 1.5 seconds delay to show toast
+
     } catch (error) {
       console.error('Error changing password:', error);
       toast.error(error.response?.data?.detail || 'Failed to change password');
@@ -233,6 +248,12 @@ export default function HeroProfile() {
       toast.success("Password reset link sent to your email");
       setShowForgotPasswordModal(false);
       setForgotEmail("");
+
+      // Force page refresh after a short delay to allow toast notification
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500); // 1.5 seconds delay to show toast
+
     } catch (err) {
       toast.error(err.response?.data?.detail || "Failed to send reset link");
     }
@@ -511,6 +532,45 @@ export default function HeroProfile() {
                 onClick={handlePasswordSubmit}
               >
                 Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ---------------- Forgot Password Modal ---------------- */}
+      {showForgotPasswordModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-[#1A1A1A] p-6 rounded-xl w-[400px] flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-white text-[18px] font-semibold">Forgot Password</h2>
+              <button onClick={() => setShowForgotPasswordModal(false)} className="text-gray-400 hover:text-white">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div>
+              <input
+                type="email"
+                placeholder="Enter your email"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                className="w-full h-[40px] rounded-[8px] bg-[#FFFFFF0D] border border-[#FFFFFF33] px-3 text-white focus:outline-none focus:border-[#8A38F5]"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 mt-2">
+              <button
+                className="px-3 py-1 rounded bg-gray-600 text-white"
+                onClick={() => setShowForgotPasswordModal(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-3 py-1 rounded bg-[#8A38F5] text-white"
+                onClick={handleForgotPassword}
+              >
+                Send Reset Link
               </button>
             </div>
           </div>
