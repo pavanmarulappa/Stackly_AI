@@ -1,9 +1,9 @@
 pipeline {
   agent any
   environment {
-    APP_DIR = "/opt/stackly/repo"
+    APP_DIR = "/opt/stackly/Stackly_AI"
     DEPLOY_USER = "stackly"
-    DEPLOY_HOST = "YOUR.EC2.IP.OR.HOST"   // you can replace with param or Jenkins credential
+    DEPLOY_HOST = "172.31.19.252"   // you can replace with param or Jenkins credential
     SSH_CRED = "ec2-deploy-key"           // credential id in Jenkins
   }
   stages {
